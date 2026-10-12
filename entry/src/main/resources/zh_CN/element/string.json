@@ -73,6 +73,10 @@
       "value": "导入"
     },
     {
+      "name": "common_copy",
+      "value": "复制"
+    },
+    {
       "name": "index_add_manually",
       "value": "手动添加"
     },
@@ -451,6 +455,46 @@
     {
       "name": "custom_rules_enter_rule_first",
       "value": "请先输入规则"
+    },
+    {
+      "name": "custom_rules_draft_hint",
+      "value": "example.com、10.0.0.0/8，或列表链接"
+    },
+    {
+      "name": "custom_rules_rule",
+      "value": "规则"
+    },
+    {
+      "name": "custom_rules_list",
+      "value": "列表"
+    },
+    {
+      "name": "custom_rules_selected_n",
+      "value": "已选 %d 项"
+    },
+    {
+      "name": "custom_rules_select_all",
+      "value": "全选"
+    },
+    {
+      "name": "custom_rules_cut",
+      "value": "剪切"
+    },
+    {
+      "name": "custom_rules_import_clipboard",
+      "value": "从剪贴板导入"
+    },
+    {
+      "name": "custom_rules_nothing_to_import",
+      "value": "剪贴板里没有可导入的规则"
+    },
+    {
+      "name": "custom_rules_imported_n",
+      "value": "已导入 %d 条规则"
+    },
+    {
+      "name": "custom_rules_removed_n",
+      "value": "已删除 %d 条规则"
     },
     {
       "name": "subscription_no_subscriptions",

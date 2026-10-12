@@ -104,10 +104,54 @@ export function addRule(userText: string, kind: string, value: string): string {
 
 /** Removes one rule, from whichever list holds it. Returns the new text. */
 export function removeRule(userText: string, value: string): string {
+  return removeRules(userText, [value]);
+}
+
+/**
+ * Removes a set of rules in one write. The editor deletes a whole selection at
+ * once, and removing them one at a time would rewrite the file once per rule
+ * and leave the page with a stale row for every step.
+ */
+export function removeRules(userText: string, values: string[]): string {
   const doc = parseAcl(userText);
-  const rule = value.trim();
-  doc.bypassEntries = doc.bypassEntries.filter((entry) => entry !== rule);
-  doc.proxyEntries = doc.proxyEntries.filter((entry) => entry !== rule);
-  doc.urls = doc.urls.filter((entry) => entry !== rule);
+  const gone = values.map((value) => value.trim());
+  const keep = (entry: string): boolean => gone.indexOf(entry) < 0;
+  doc.bypassEntries = doc.bypassEntries.filter(keep);
+  doc.proxyEntries = doc.proxyEntries.filter(keep);
+  doc.urls = doc.urls.filter(keep);
+  return serializeAcl(doc);
+}
+
+/**
+ * Adds the entries of another ACL, which is what importing from the clipboard
+ * does: a list copied out of another client, or the project's own gfwlist.
+ *
+ * Only the entries come across. The sections and the imports in that text
+ * describe the list it came from, not the user's own rules, and a rule here is
+ * one they want proxied — which is what the route does with what it is given.
+ */
+export function addRulesFromText(userText: string, aclText: string): string {
+  const incoming = parseAcl(aclText);
+  const doc: AclDocument = userText.trim().length === 0 ? emptyAcl() : parseAcl(userText);
+  // A text with no list of its own is taken as a list of things to proxy,
+  // which is what pasting one means. The entries of such a text land in the
+  // bypass list, because that is the list a file starts with, so both lists
+  // are read here. A text that does have sections contributes only what it
+  // lists as proxied: its bypass list describes the route it was written for,
+  // not this one.
+  const hasLists = /^\s*\[(proxy|bypass|white|black)_list\]/m.test(aclText);
+  const entries: string[] = hasLists
+    ? incoming.proxyEntries
+    : incoming.proxyEntries.concat(incoming.bypassEntries);
+  for (const entry of entries) {
+    if (doc.proxyEntries.indexOf(entry) < 0 && doc.bypassEntries.indexOf(entry) < 0) {
+      doc.proxyEntries.push(entry);
+    }
+  }
+  for (const url of incoming.urls) {
+    if (doc.urls.indexOf(url) < 0) {
+      doc.urls.push(url);
+    }
+  }
   return serializeAcl(doc);
 }

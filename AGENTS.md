@@ -454,8 +454,12 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   rejected (external plugin processes cannot be spawned on HarmonyOS). UDP
   does not pass through plugins (neither plugin supports UDP upstream either);
   with a plugin active, UDP associations time out.
-- The custom-rules editor has no multi-select, cut, paste or swipe gestures;
-  rules are added one at a time and removed one at a time.
+- The custom-rules editor has no per-rule edit dialog: a rule is added, copied
+  or deleted, and changed by deleting and adding it again. Android's opens a
+  dialog with the three templates on a tap. Android's one-tap import of the
+  bundled gfwlist is missing as well, though that list comes in through the
+  clipboard import. Editing is not gated on the current profile using the
+  custom-rules route, which Android does.
 - No QR code scanning: the SDK ships no barcode decoder. Displaying one is
   implemented, and reproduces zxing's output module for module (see Testing).
 - No launcher shortcuts and no connect-at-boot. The platform exposes

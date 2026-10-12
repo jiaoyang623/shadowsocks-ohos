@@ -73,6 +73,10 @@
       "value": "Import"
     },
     {
+      "name": "common_copy",
+      "value": "Copy"
+    },
+    {
       "name": "index_add_manually",
       "value": "Add manually"
     },
@@ -451,6 +455,46 @@
     {
       "name": "custom_rules_enter_rule_first",
       "value": "Enter a rule first"
+    },
+    {
+      "name": "custom_rules_draft_hint",
+      "value": "example.com, 10.0.0.0/8, or a list URL"
+    },
+    {
+      "name": "custom_rules_rule",
+      "value": "rule"
+    },
+    {
+      "name": "custom_rules_list",
+      "value": "list"
+    },
+    {
+      "name": "custom_rules_selected_n",
+      "value": "%d selected"
+    },
+    {
+      "name": "custom_rules_select_all",
+      "value": "Select all"
+    },
+    {
+      "name": "custom_rules_cut",
+      "value": "Cut"
+    },
+    {
+      "name": "custom_rules_import_clipboard",
+      "value": "Import from clipboard"
+    },
+    {
+      "name": "custom_rules_nothing_to_import",
+      "value": "The clipboard has no rules to import"
+    },
+    {
+      "name": "custom_rules_imported_n",
+      "value": "Imported %d rules"
+    },
+    {
+      "name": "custom_rules_removed_n",
+      "value": "Removed %d rules"
     },
     {
       "name": "subscription_no_subscriptions",
