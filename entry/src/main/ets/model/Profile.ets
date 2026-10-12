@@ -32,6 +32,36 @@ const DEFAULT_SOCKS_PORT = 1080;
 const DNS_PORT = 5453;
 
 /**
+ * Remote resolver for names this profile sends through the proxy. A hostname
+ * is fine: the core hands the name to the proxy, which resolves it there.
+ * shadowsocks-android's default is the same.
+ */
+export const DEFAULT_REMOTE_DNS = 'dns.google';
+
+/**
+ * Resolver for names the route sends directly. Only consulted when an ACL is
+ * deployed, since every name goes to the remote resolver otherwise.
+ */
+const LOCAL_DNS_ADDRESS = '1.1.1.1';
+
+/**
+ * Subscription states, mirroring shadowsocks-android's SubscriptionStatus.
+ * A user-configured profile is never touched by a subscription update; an
+ * active one belongs to a subscription that still lists it; an obsolete one
+ * belonged to a subscription that no longer does, and is kept so it can come
+ * back.
+ */
+export const STATUS_USER_CONFIGURED = 0;
+export const STATUS_ACTIVE = 1;
+export const STATUS_OBSOLETE = 2;
+
+/** A resolver address, split into the two fields the core's dns local wants. */
+export interface DnsAddress {
+  host: string;
+  port: number;
+}
+
+/**
  * Random UUIDv4-shaped id for profiles and subscriptions. Implemented with
  * Math.random (uniqueness only, not security) because util.generateRandomUUID
  * is unavailable in the host-side unit-test runtime.
@@ -81,6 +111,28 @@ export class Profile {
   plugin: string = '';
   /** SIP003 plugin options (`k=v;...`), e.g. `obfs=tls;obfs-host=example.com`. */
   pluginOpts: string = '';
+  /** Remote resolver for proxied names, as `host`, `host:port` or `dns://…`. */
+  remoteDns: string = DEFAULT_REMOTE_DNS;
+  /**
+   * Carried for import and export only. shadowsocks-android still stores and
+   * exports this field and no longer reads it anywhere, so nothing here reads
+   * it either.
+   */
+  udpdns: boolean = false;
+  /**
+   * Route IPv6 as well as IPv4. Recorded now and not yet acted on: the tun is
+   * configured for IPv4 only.
+   */
+  ipv6: boolean = false;
+  /** Profile used for UDP when this one cannot carry it. Unused so far. */
+  udpFallbackId: string = '';
+  /** One of the STATUS_* constants above. */
+  subscriptionStatus: number = STATUS_USER_CONFIGURED;
+  /** Cumulative counters in bytes, kept per profile as Android keeps them. */
+  tx: number = 0;
+  rx: number = 0;
+  /** Sort key for the list; ascending, ties in file order. */
+  userOrder: number = 0;
 
   /** Assigns a fresh random id if this profile does not have one yet. */
   ensureId(): void {
@@ -276,6 +328,30 @@ export class Profile {
     return profile;
   }
 
+  /**
+   * Splits a resolver address into host and port, defaulting the port to 53.
+   * Accepts `host`, `host:port`, `dns://host` and `dns://host:port`, which is
+   * what shadowsocks-android's `URI("dns://${'$'}remoteDns")` accepts. Brackets
+   * are stripped from an IPv6 literal.
+   */
+  static parseDnsAddress(text: string): DnsAddress {
+    let rest = text.trim();
+    if (rest.startsWith('dns://')) {
+      rest = rest.substring(6);
+    }
+    let host = rest;
+    let port = 53;
+    const colon = rest.lastIndexOf(':');
+    if (colon >= 0) {
+      const parsed = Number.parseInt(rest.substring(colon + 1), 10);
+      if (!Number.isNaN(parsed)) {
+        host = rest.substring(0, colon);
+        port = parsed;
+      }
+    }
+    return { host: host.replace('[', '').replace(']', ''), port: port };
+  }
+
   /** JSON config for the native sslocal core with a local SOCKS5 service. */
   toLocalConfig(): string {
     const config: Record<string, Object> = {
@@ -323,6 +399,7 @@ export class Profile {
       // resolver below is bound on loopback and handed to it. A tunnel built
       // from this config cannot have DNS depend on the server's UDP support.
       local['dns_gateway'] = `127.0.0.1:${DNS_PORT}`;
+      const remoteDns = Profile.parseDnsAddress(this.remoteDns);
       const dnsLocal: Record<string, Object> = {
         'protocol': 'dns',
         'local_address': '127.0.0.1',
@@ -331,10 +408,10 @@ export class Profile {
         // options and panics without them, which takes the whole local server
         // down before the tun ever serves. With no ACL deployed the local one
         // is never consulted — every name goes to the remote resolver.
-        'local_dns_address': '1.1.1.1',
+        'local_dns_address': LOCAL_DNS_ADDRESS,
         'local_dns_port': 53,
-        'remote_dns_address': '1.1.1.1',
-        'remote_dns_port': 53,
+        'remote_dns_address': remoteDns.host,
+        'remote_dns_port': remoteDns.port,
         // Resolving through the proxy over TCP only. The alternative races a
         // UDP query it cannot win against one sent 500–1500 ms later, so every
         // uncached lookup would pay that wait for nothing.

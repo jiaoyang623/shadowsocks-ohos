@@ -144,7 +144,11 @@ export default function profileTest() {
       expect(dns['protocol']).assertEqual('dns');
       expect(dns['local_address']).assertEqual('127.0.0.1');
       expect(dns['local_port']).assertEqual(5453);
-      expect(dns['remote_dns_address']).assertEqual('1.1.1.1');
+      expect(dns['local_dns_address']).assertEqual('1.1.1.1');
+      // the profile's own resolver, which defaults to the same one
+      // shadowsocks-android uses
+      expect(dns['remote_dns_address']).assertEqual('dns.google');
+      expect(dns['remote_dns_port']).assertEqual(53);
       expect(dns['remote_dns_protocol']).assertEqual('tcp_only');
 
       // without an interface address the tun is never started, so it is given
@@ -152,6 +156,34 @@ export default function profileTest() {
       const plain: object = JSON.parse(profile.toTunConfig()) as object;
       expect(plain['locals'][0]['dns_gateway'] === undefined).assertTrue();
       expect(plain['locals'][1] === undefined).assertTrue();
+    });
+
+    it('resolves through the resolver the profile names', 0, () => {
+      const profile = new Profile();
+      profile.host = 'example.com';
+      profile.password = 'pw';
+      profile.remoteDns = 'dns://9.9.9.9:5353';
+
+      const config: object = JSON.parse(profile.toTunConfig('', '172.19.0.1/30')) as object;
+      expect(config['locals'][1]['remote_dns_address']).assertEqual('9.9.9.9');
+      expect(config['locals'][1]['remote_dns_port']).assertEqual(5353);
+    });
+
+    it('splits the resolver address shapes android accepts', 0, () => {
+      // the shapes shadowsocks-android's URI("dns://$remoteDns") accepts, each
+      // defaulting the port to 53, plus an IPv6 literal in brackets
+      const inputs: string[] = [
+        'dns.google', '8.8.4.4:5353', 'dns://1.1.1.1', 'dns://1.1.1.1:53', '[2001:db8::1]:5353',
+      ];
+      const hosts: string[] = ['dns.google', '8.8.4.4', '1.1.1.1', '1.1.1.1', '2001:db8::1'];
+      const ports: number[] = [53, 5353, 53, 53, 5353];
+      for (let i = 0; i < inputs.length; i++) {
+        const parsed = Profile.parseDnsAddress(inputs[i]);
+        expect(parsed.host).assertEqual(hosts[i]);
+        expect(parsed.port).assertEqual(ports[i]);
+      }
+      // surrounding space is trimmed rather than becoming part of the host
+      expect(Profile.parseDnsAddress('  dns.google  ').host).assertEqual('dns.google');
     });
 
     it('injects acl path for bypass routes', 0, () => {

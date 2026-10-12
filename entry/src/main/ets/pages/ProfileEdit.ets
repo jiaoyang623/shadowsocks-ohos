@@ -20,7 +20,7 @@
 import { promptAction, router } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { Profile } from '../model/Profile';
+import { DEFAULT_REMOTE_DNS, Profile } from '../model/Profile';
 import { ProfileStore } from '../model/ProfileStore';
 import { abilityContext } from '../model/AppContext';
 import { ALL_ROUTES, ROUTE_ALL } from '../model/Routes';
@@ -61,6 +61,7 @@ struct ProfileEdit {
   @State routeIndex: number = 0;
   @State pluginIndex: number = 0;
   @State pluginOpts: string = '';
+  @State remoteDns: string = DEFAULT_REMOTE_DNS;
   /** PLUGINS plus the profile's current plugin when it is not a preset. */
   @State pluginOptions: string[] = PLUGINS;
   /**
@@ -93,6 +94,7 @@ struct ProfileEdit {
           }
           this.pluginIndex = Math.max(0, this.pluginOptions.indexOf(profile.plugin));
           this.pluginOpts = profile.pluginOpts;
+          this.remoteDns = profile.remoteDns;
         }
       });
     }
@@ -108,15 +110,11 @@ struct ProfileEdit {
       promptAction.showToast({ message: 'Server, password and method are required' });
       return;
     }
-    const existing = this.editedProfile;
-    const profile = new Profile();
+    // Edited in place when the profile already exists, so that every field
+    // this form does not show — the subscription it came from, its position in
+    // the list, its counters — survives the edit instead of being reset.
+    const profile = this.editedProfile !== null ? this.editedProfile : new Profile();
     profile.id = this.profileId;
-    // carry over the fields this form does not edit
-    if (existing !== null) {
-      profile.subscriptionId = existing.subscriptionId;
-      profile.localAddress = existing.localAddress;
-      profile.localPort = existing.localPort;
-    }
     profile.name = this.name.trim().length > 0 ? this.name.trim() : this.host.trim();
     profile.host = this.host.trim();
     profile.remotePort = Number.parseInt(this.remotePort, 10) || 8388;
@@ -126,6 +124,8 @@ struct ProfileEdit {
     profile.plugin = this.pluginOptions[this.pluginIndex] === 'none' ?
       '' : this.pluginOptions[this.pluginIndex];
     profile.pluginOpts = this.pluginOpts.trim();
+    const remoteDns = this.remoteDns.trim();
+    profile.remoteDns = remoteDns.length > 0 ? remoteDns : DEFAULT_REMOTE_DNS;
     profile.ensureId();
     try {
       await ProfileStore.upsert(abilityContext(), profile);
@@ -180,6 +180,9 @@ struct ProfileEdit {
         TextInput({ placeholder: 'Method (e.g. aes-256-gcm)', text: this.methodCustom })
           .onChange((value) => this.methodCustom = value)
       }
+
+      TextInput({ placeholder: `Remote DNS (default ${DEFAULT_REMOTE_DNS})`, text: this.remoteDns })
+        .onChange((value) => this.remoteDns = value)
 
       LabeledSelect({
         label: 'Route',

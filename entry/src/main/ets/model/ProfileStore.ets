@@ -19,7 +19,7 @@
 
 import { common } from '@kit.AbilityKit';
 import { JsonStore } from './JsonStore';
-import { Profile } from './Profile';
+import { DEFAULT_REMOTE_DNS, Profile, STATUS_USER_CONFIGURED } from './Profile';
 import { ROUTE_ALL } from './Routes';
 
 const STORE_PROFILES = 'profiles';
@@ -45,6 +45,14 @@ export class ProfileStore {
     profile.localPort = parsed.localPort ?? 1080;
     profile.plugin = parsed.plugin ?? '';
     profile.pluginOpts = parsed.pluginOpts ?? '';
+    profile.remoteDns = parsed.remoteDns ?? DEFAULT_REMOTE_DNS;
+    profile.udpdns = parsed.udpdns ?? false;
+    profile.ipv6 = parsed.ipv6 ?? false;
+    profile.udpFallbackId = parsed.udpFallbackId ?? '';
+    profile.subscriptionStatus = parsed.subscriptionStatus ?? STATUS_USER_CONFIGURED;
+    profile.tx = parsed.tx ?? 0;
+    profile.rx = parsed.rx ?? 0;
+    profile.userOrder = parsed.userOrder ?? 0;
     return profile;
   }
 
@@ -55,7 +63,11 @@ export class ProfileStore {
     }
     try {
       const parsed = JSON.parse(raw) as Profile[];
-      return parsed.map((p) => ProfileStore.fromJson(p));
+      const profiles = parsed.map((p) => ProfileStore.fromJson(p));
+      // The file order is not the display order: the user's is kept in
+      // userOrder, and a stable sort leaves a file written before that field
+      // existed in the order it was already in.
+      return profiles.sort((a, b) => a.userOrder - b.userOrder);
     } catch (e) {
       return [];
     }
@@ -73,8 +85,56 @@ export class ProfileStore {
     if (index >= 0) {
       profiles[index] = profile;
     } else {
+      if (profile.userOrder <= 0) {
+        profile.userOrder = ProfileStore.nextOrder(profiles);
+      }
       profiles.push(profile);
     }
+    await ProfileStore.saveAll(context, profiles);
+  }
+
+  /** One past the highest key in use, so a new profile lands at the end. */
+  static nextOrder(profiles: Profile[]): number {
+    let highest = 0;
+    for (const profile of profiles) {
+      if (profile.userOrder > highest) {
+        highest = profile.userOrder;
+      }
+    }
+    return highest + 1;
+  }
+
+  /**
+   * Moves the profile at `from` to `to` in the display order, then rewrites
+   * every key. Renumbering rather than swapping keeps the keys agreeing with
+   * the list the user sees, which is the only thing they order.
+   */
+  static async move(context: common.Context, from: number, to: number): Promise<Profile[]> {
+    const profiles = await ProfileStore.getAll(context);
+    if (from === to || from < 0 || to < 0 || from >= profiles.length || to >= profiles.length) {
+      return profiles;
+    }
+    const moved = profiles.splice(from, 1);
+    profiles.splice(to, 0, moved[0]);
+    for (let i = 0; i < profiles.length; i++) {
+      profiles[i].userOrder = i + 1;
+    }
+    await ProfileStore.saveAll(context, profiles);
+    return profiles;
+  }
+
+  /**
+   * Adds a session's counters to a profile, the way shadowsocks-android keeps
+   * tx and rx per profile.
+   */
+  static async addTraffic(context: common.Context, id: string, tx: number, rx: number): Promise<void> {
+    const profiles = await ProfileStore.getAll(context);
+    const index = profiles.findIndex((p) => p.id === id);
+    if (index < 0) {
+      return;
+    }
+    profiles[index].tx += tx;
+    profiles[index].rx += rx;
     await ProfileStore.saveAll(context, profiles);
   }
 
