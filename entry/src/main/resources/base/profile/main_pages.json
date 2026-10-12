@@ -4,6 +4,7 @@
     "pages/ProfileEdit",
     "pages/Subscription",
     "pages/Settings",
-    "pages/About"
+    "pages/About",
+    "pages/CustomRules"
   ]
 }

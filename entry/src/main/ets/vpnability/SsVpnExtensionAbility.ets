@@ -24,9 +24,10 @@ import { BusinessError } from '@kit.BasicServicesKit';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import sslocal from 'libsslocal.so';
 import { ProfileStore } from '../model/ProfileStore';
-import { aclFileForRoute, ROUTE_ALL } from '../model/Routes';
+import { aclFileForRoute, ROUTE_ALL, ROUTE_CUSTOM_RULES } from '../model/Routes';
 import { cachedAcl, refreshAcl } from '../model/AclSync';
 import { localDnsServer } from '../model/Network';
+import { composeCustomRules, readUserRules } from '../model/CustomRules';
 import { TrafficStatsStore } from '../model/TrafficStats';
 import { VpnStatusStore } from '../model/VpnStatus';
 
@@ -336,8 +337,11 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         // directory already exists
       }
       const dest = `${dir}/${file}`;
-      const raw = await this.context.resourceManager.getRawFileContent(`acl/${file}`);
-      const rawText = bufferToText(raw);
+      // the presets arrive as files; the custom route is composed from what the
+      // user wrote, since nothing ships for it
+      const rawText = route === ROUTE_CUSTOM_RULES
+        ? composeCustomRules(readUserRules(this.context))
+        : bufferToText(await this.context.resourceManager.getRawFileContent(`acl/${file}`));
 
       // A refreshed copy from an earlier start is used when there is one; the
       // list it came from may have moved on, but a start must not wait on the

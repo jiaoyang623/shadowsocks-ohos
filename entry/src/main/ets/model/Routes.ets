@@ -29,6 +29,12 @@ export const ROUTE_BYPASS_CHINA: string = 'bypass-china';
 export const ROUTE_BYPASS_LAN_CHINA: string = 'bypass-lan-china';
 export const ROUTE_GFWLIST: string = 'gfwlist';
 export const ROUTE_CHINA_LIST: string = 'china-list';
+/**
+ * The user's own rules, edited in the app (see CustomRules.ets). Unlike the
+ * presets it has no shipped file; what the core is handed is composed from what
+ * the user wrote.
+ */
+export const ROUTE_CUSTOM_RULES: string = 'custom-rules';
 
 export const ALL_ROUTES: string[] = [
   ROUTE_ALL,
@@ -37,6 +43,7 @@ export const ALL_ROUTES: string[] = [
   ROUTE_BYPASS_LAN_CHINA,
   ROUTE_GFWLIST,
   ROUTE_CHINA_LIST,
+  ROUTE_CUSTOM_RULES,
 ];
 
 /** Rawfile ACL name for a route, or '' when the route needs no ACL. */
@@ -52,6 +59,8 @@ export function aclFileForRoute(route: string): string {
       return 'gfwlist.acl';
     case ROUTE_CHINA_LIST:
       return 'china-list.acl';
+    case ROUTE_CUSTOM_RULES:
+      return 'custom-rules.acl';
     default:
       return '';
   }

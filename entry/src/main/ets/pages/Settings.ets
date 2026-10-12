@@ -113,6 +113,11 @@ struct Settings {
         })
 
       Row({ space: 12 }) {
+        Button('Custom rules')
+          .layoutWeight(1)
+          .onClick(() => {
+            router.pushUrl({ url: 'pages/CustomRules' });
+          })
         Button('About')
           .backgroundColor('#9E9E9E')
           .layoutWeight(1)
