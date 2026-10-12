@@ -220,11 +220,15 @@ export function routeProxiesByDefault(route: string): boolean {
  */
 export function interpretProbe(httpOk: boolean, httpCode: number,
   rxBefore: number, rxAfter: number, statsAvailable: boolean,
-  requireTunnel: boolean): ProbeVerdict {
+  requireTunnel: boolean, failureReason: string): ProbeVerdict {
   if (!httpOk) {
+    let reason = failureReason;
+    if (reason.length === 0) {
+      reason = httpCode > 0 ? `HTTP ${httpCode}` : 'no response';
+    }
     const verdict: ProbeVerdict = {
       verdict: PROBE_NO_INTERNET,
-      reason: httpCode > 0 ? `HTTP ${httpCode}` : 'no response',
+      reason: reason,
     };
     return verdict;
   }

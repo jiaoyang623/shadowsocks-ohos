@@ -55,30 +55,36 @@ export default function diagnosticsTest() {
     });
 
     it('treats a probe that moved no traffic as not tunnelled', 0, () => {
-      const verdict = interpretProbe(true, 204, 100, 100, true, true);
+      const verdict = interpretProbe(true, 204, 100, 100, true, true, '');
       expect(verdict.verdict).assertEqual(PROBE_NOT_TUNNELLED);
       expect(verdict.reason.length > 0).assertTrue();
     });
 
     it('treats a probe that moved traffic as tunnelled', 0, () => {
-      expect(interpretProbe(true, 204, 100, 200, true, true).verdict).assertEqual(PROBE_OK);
+      expect(interpretProbe(true, 204, 100, 200, true, true, '').verdict).assertEqual(PROBE_OK);
     });
 
     it('accepts a probe when the counters are unavailable', 0, () => {
-      expect(interpretProbe(true, 204, 0, 0, false, true).verdict).assertEqual(PROBE_OK);
+      expect(interpretProbe(true, 204, 0, 0, false, true, '').verdict).assertEqual(PROBE_OK);
     });
 
     it('accepts a probe on a route that connects directly by default', 0, () => {
       // gfwlist/china-list send foreign hosts out directly, so a still counter
       // is the configured behaviour rather than a bypassed tunnel
-      expect(interpretProbe(true, 204, 100, 100, true, false).verdict).assertEqual(PROBE_OK);
+      expect(interpretProbe(true, 204, 100, 100, true, false, '').verdict).assertEqual(PROBE_OK);
     });
 
     it('reports no internet for an HTTP failure', 0, () => {
-      const verdict = interpretProbe(false, 0, 0, 0, true, true);
+      // the transport's own message is preferred: "could not resolve host" and
+      // "connection timed out" point at different faults, and a generic label
+      // would hide which one happened
+      const verdict = interpretProbe(false, 0, 0, 0, true, true, 'could not resolve host');
       expect(verdict.verdict).assertEqual(PROBE_NO_INTERNET);
-      expect(verdict.reason).assertEqual('no response');
-      expect(interpretProbe(false, 403, 0, 0, true, true).reason).assertEqual('HTTP 403');
+      expect(verdict.reason).assertEqual('could not resolve host');
+      // with nothing from the transport, fall back to the status code, then to
+      // a generic label
+      expect(interpretProbe(false, 403, 0, 0, true, true, '').reason).assertEqual('HTTP 403');
+      expect(interpretProbe(false, 0, 0, 0, true, true, '').reason).assertEqual('no response');
     });
 
     it('maps the persisted status to a phase regardless of its age', 0, () => {

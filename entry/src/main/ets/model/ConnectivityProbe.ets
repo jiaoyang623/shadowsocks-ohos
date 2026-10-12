@@ -60,6 +60,12 @@ export async function probeThroughTunnel(url: string, timeoutMs: number): Promis
       connectTimeout: timeoutMs,
       readTimeout: timeoutMs,
       usingCache: false,
+      // The system proxy is used by default, and a device with one configured
+      // (a Wi-Fi network set to a manual proxy, say) would then have every
+      // probe answered — or, as observed, hung — by that proxy rather than by
+      // the tunnel this is meant to measure. A connectivity test has to
+      // describe the device's own path, so opt out.
+      usingProxy: false,
       header: headers,
       expectDataType: http.HttpDataType.STRING,
     });

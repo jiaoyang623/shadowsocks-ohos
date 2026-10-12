@@ -31,6 +31,29 @@ import { VpnStatusStore } from '../model/VpnStatus';
 const TAG = 'SsVpnExtension';
 
 const TUN_ADDRESS = '172.19.0.1';
+/**
+ * Tun prefix length. Together with TUN_ADDRESS this is handed to the core as
+ * `tun_interface_address`, so the two must stay the same values the system VPN
+ * is configured with below.
+ */
+const TUN_PREFIX_LENGTH = 30;
+/**
+ * Tun MTU.
+ *
+ * Deliberately below the 1500 of the underlying path. Every byte the client
+ * sends is wrapped in a shadowsocks frame — salt, length and AEAD tags, call it
+ * 50 bytes — and then in the tunnel's own IP and TCP headers, so a 1500-byte
+ * client packet leaves as roughly 1550 and is dropped by the network. The
+ * symptom is distinctive and easy to misread: handshakes and small responses
+ * get through, so a connectivity check passes, while anything that moves real
+ * data — a web page, a speed test — stalls with the core retransmitting frames
+ * the client never acknowledged.
+ *
+ * The core's own smoltcp stack is fixed at 1500 and is not configurable from
+ * here, but that is fine: TCP takes the smaller of the two MSS values, so
+ * advertising 1360 to the client keeps both directions inside the path MTU.
+ */
+const TUN_MTU = 1400;
 
 /** Loopback ports probed (in order) for the traffic-stat report endpoint. */
 const STAT_PORTS: number[] = [65080, 65081, 65082, 65083, 65084];
@@ -75,6 +98,8 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   private statServer: socket.TCPSocketServer | null = null;
   private statConnections: socket.TCPSocketConnection[] = [];
   private lastStatSave: number = 0;
+  /** Highest core log sequence number already written to hilog. */
+  private lastLogSeq: number = -1;
   /**
    * Set when this start attempt failed, so `onDestroy` does not overwrite the
    * recorded failure with `stopped`. Without it the UI would see a clean stop
@@ -100,7 +125,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
     const config: vpnExtension.VpnConfig = {
       addresses: [{
         address: { address: TUN_ADDRESS, family: 1 },
-        prefixLength: 30,
+        prefixLength: TUN_PREFIX_LENGTH,
       }],
       // default route: capture all IPv4 traffic into the tun
       routes: [{
@@ -116,7 +141,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       dnsAddresses: ['1.1.1.1'],
       trustedApplications: [],
       blockedApplications: [],
-      mtu: 1500,
+      mtu: TUN_MTU,
       isIPv4Accepted: true,
     };
     try {
@@ -149,8 +174,12 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         hilog.warn(0x0000, TAG, 'traffic stats unavailable: %{public}s', JSON.stringify(e));
       }
 
-      // Route the tun device through the shadowsocks tunnel.
-      const code = sslocal.startTunFd(profile.toTunConfig(aclPath), tunFd);
+      // Route the tun device through the shadowsocks tunnel. The address must
+      // accompany the fd: the core's serving loop reads the interface address
+      // and netmask before its packet loop and aborts without them, and on
+      // OpenHarmony the device cannot report them from the fd alone.
+      const tunAddress = `${TUN_ADDRESS}/${TUN_PREFIX_LENGTH}`;
+      const code = sslocal.startTunFd(profile.toTunConfig(aclPath, tunAddress), tunFd);
       if (code !== 0) {
         // read lastError() in the same statement as the failing call: the
         // native side only guarantees the message until the next call
@@ -210,6 +239,21 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   }
 
   private async teardown(): Promise<void> {
+    // `startTunFd` returns as soon as the tokio runtime has been spawned — it
+    // does not wait for `run_local` to build the local server, so a core that
+    // fell over immediately still reported success and the extension logged
+    // "tun routing started". Its reason is still sitting in lastError() here,
+    // and this is the last moment it can be read before `stop()` clears it.
+    const coreRunning = sslocal.isRunning();
+    const coreError = sslocal.lastError() ?? '';
+    hilog.info(0x0000, TAG, 'teardown: coreRunning=%{public}s lastError=%{public}s',
+      coreRunning ? 'true' : 'false', coreError);
+    if (!coreRunning && coreError.length > 0 && !this.failed) {
+      this.failed = true;
+      await VpnStatusStore.markFailed(this.context, '', '',
+        'The core stopped after starting', coreError).catch(() => {
+      });
+    }
     if (sslocal.isRunning()) {
       sslocal.stop();
     }
@@ -313,6 +357,36 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   }
 
   /**
+   * Forwards the core's own log records to hilog.
+   *
+   * The native core reports everything interesting about a broken tunnel — a
+   * server it cannot reach, a cipher the peer rejects — through the `log`
+   * facade, and a device has no console to attach to, so those records were
+   * simply discarded; a tunnel that came up and carried nothing had no
+   * explanation at all. The core posts a traffic sample here every ~500 ms, so
+   * draining the records on that same tick gives near-live logging with no
+   * extra timer. Records carry a sequence number because the ring wraps.
+   */
+  private flushCoreLogs(): void {
+    const raw = sslocal.recentLogs();
+    if (raw === null || raw.length === 0) {
+      return;
+    }
+    for (const line of raw.split('\n')) {
+      const split = line.indexOf(' ');
+      if (split <= 0) {
+        continue;
+      }
+      const seq = Number.parseInt(line.substring(0, split), 10);
+      if (Number.isNaN(seq) || seq <= this.lastLogSeq) {
+        continue;
+      }
+      this.lastLogSeq = seq;
+      hilog.info(0x0000, TAG, 'core %{public}s', line.substring(split + 1));
+    }
+  }
+
+  /**
    * Handles one flow-stat report. The core opens a **new** connection for
    * every 500 ms sample and closes it after the 16-byte write, so each
    * connection is dropped from the tracking list as soon as it ends —
@@ -321,6 +395,8 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
    */
   private onStatConnection(conn: socket.TCPSocketConnection): void {
     this.statConnections.push(conn);
+    // piggy-back on the core's ~500 ms report cadence to surface its own logs
+    this.flushCoreLogs();
     const forget = () => {
       const index = this.statConnections.indexOf(conn);
       if (index >= 0) {

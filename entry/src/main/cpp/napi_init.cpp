@@ -31,6 +31,7 @@ int sslocal_set_stat_address(const char *addr);
 int sslocal_stop();
 int sslocal_is_running();
 const char *sslocal_last_error();
+const char *sslocal_recent_logs();
 const char *sslocal_version();
 }
 
@@ -99,6 +100,17 @@ napi_value LastError(napi_env env, napi_callback_info info) {
     return result;
 }
 
+napi_value RecentLogs(napi_env env, napi_callback_info info) {
+    const char *logs = sslocal_recent_logs();
+    napi_value result;
+    if (logs == nullptr) {
+        napi_get_null(env, &result);
+    } else {
+        napi_create_string_utf8(env, logs, NAPI_AUTO_LENGTH, &result);
+    }
+    return result;
+}
+
 napi_value Version(napi_env env, napi_callback_info info) {
     napi_value result;
     napi_create_string_utf8(env, sslocal_version(), NAPI_AUTO_LENGTH, &result);
@@ -113,6 +125,7 @@ napi_value Init(napi_env env, napi_value exports) {
         {"stop", nullptr, Stop, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"isRunning", nullptr, IsRunning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"lastError", nullptr, LastError, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"recentLogs", nullptr, RecentLogs, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"version", nullptr, Version, nullptr, nullptr, nullptr, napi_default, nullptr},
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);

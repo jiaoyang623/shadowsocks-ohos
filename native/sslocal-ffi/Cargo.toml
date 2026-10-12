@@ -20,6 +20,16 @@ default = ["local-tun", "local-flow-stat"]
 local-tun = ["shadowsocks-service/local-tun"]
 # Periodic flow-stat reporting (tx/rx counters to a loopback TCP address)
 local-flow-stat = ["shadowsocks-service/local-flow-stat"]
+# Host-only diagnostic binary, never part of the HarmonyOS build. Gated behind a
+# feature because it must be buildable without the dev-dependencies (which the
+# cross build does not fetch) and because it has no business being compiled for
+# aarch64-unknown-linux-ohos.
+socks-probe = []
+
+[[bin]]
+name = "socks_probe"
+path = "src/bin/socks_probe.rs"
+required-features = ["socks-probe"]
 
 [dev-dependencies]
 env_logger = "0.11"
@@ -53,3 +63,14 @@ tokio = { version = "1", features = [
 ] }
 
 [workspace]
+
+# The published `tun` crate cannot drive a tun device on OpenHarmony. Its ohos
+# backend answers `Error::NotImplemented` to `address()` and `netmask()`, and
+# shadowsocks-service's tun serving loop returns that error before it reads a
+# single packet — so the tunnel came up, logged success, and forwarded nothing
+# (no traffic, no flow-stat samples, a probe that never answered). The vendored
+# copy reports the address and netmask the caller already placed in the
+# Configuration. The diff against tun 0.7.22 is confined to
+# src/platform/ohos/device.rs and is described in vendor/tun/PATCH.md.
+[patch.crates-io]
+tun = { path = "vendor/tun" }

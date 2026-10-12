@@ -31,11 +31,14 @@ mod obfs;
 mod plugin;
 mod v2ray_plugin;
 
+use std::collections::VecDeque;
 use std::ffi::{CStr, CString};
 #[cfg(feature = "local-flow-stat")]
 use std::net::SocketAddr;
 use std::os::raw::{c_char, c_int};
+use std::sync::Once;
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use shadowsocks_service::config::{Config, ConfigType};
 use tokio::runtime::Runtime;
@@ -65,6 +68,66 @@ static STAT_ADDR: Mutex<Option<SocketAddr>> = Mutex::new(None);
 fn set_last_error(message: String) {
     let cstring = CString::new(message).unwrap_or_default();
     *LAST_ERROR.lock().unwrap() = Some(cstring);
+}
+
+/// How many log records are kept for the app to read back.
+const LOG_CAPACITY: usize = 128;
+
+/// Recent core log records, newest last, each already carrying its sequence
+/// number.
+static LOG_RING: Mutex<VecDeque<String>> = Mutex::new(VecDeque::new());
+static LOG_SEQ: AtomicU64 = AtomicU64::new(0);
+/// Buffer most recently handed out by [`sslocal_recent_logs`]; see there for
+/// why the records are moved into a slot of their own.
+static LOG_HANDED_OUT: Mutex<Option<CString>> = Mutex::new(None);
+static LOGGER_INSTALLED: Once = Once::new();
+
+/// Collects what the core logs through the `log` facade.
+///
+/// shadowsocks-service reports everything interesting about a broken tunnel —
+/// a server it cannot reach, a cipher the peer rejects — with `log::error!`
+/// and `log::warn!`, and nothing in this crate was listening, so every one of
+/// those records was dropped. On a device there is no console to attach to,
+/// which left "the tunnel came up but carries nothing" completely
+/// unexplained. Holding the last few records in memory costs nothing and the
+/// app polls them alongside the traffic counters it already fetches.
+///
+/// Info is included deliberately: the core announces the tun device and mode
+/// it settled on at that level, which is the first thing worth knowing.
+struct RingLogger;
+
+impl log::Log for RingLogger {
+    fn enabled(&self, metadata: &log::Metadata<'_>) -> bool {
+        metadata.level() <= log::Level::Info
+    }
+
+    fn log(&self, record: &log::Record<'_>) {
+        if !self.enabled(record.metadata()) {
+            return;
+        }
+        let seq = LOG_SEQ.fetch_add(1, Ordering::Relaxed);
+        let line = format!("{seq} [{}] {}", record.level(), record.args());
+        let mut ring = LOG_RING.lock().unwrap();
+        while ring.len() >= LOG_CAPACITY {
+            ring.pop_front();
+        }
+        ring.push_back(line);
+    }
+
+    fn flush(&self) {}
+}
+
+static LOGGER: RingLogger = RingLogger;
+
+/// Installs the ring logger once, on the first start. A failure means some
+/// other component claimed the global logger first, which is not fatal — the
+/// tunnel works the same either way, only the diagnostics are lost.
+fn install_logger() {
+    LOGGER_INSTALLED.call_once(|| {
+        if log::set_logger(&LOGGER).is_ok() {
+            log::set_max_level(log::LevelFilter::Info);
+        }
+    });
 }
 
 /// Borrows a C string argument as `&str`. Kept as a helper (rather than
@@ -216,6 +279,7 @@ fn start_with_json(
         Ok(specs) => specs,
         Err(code) => return code,
     };
+    install_logger();
     let mut guard = INSTANCE.lock().unwrap();
     if guard.is_some() {
         set_last_error("sslocal is already running".to_owned());
@@ -468,6 +532,39 @@ pub extern "C" fn sslocal_last_error() -> *const c_char {
     let message = LAST_ERROR.lock().unwrap().clone();
     let mut handed_out = LAST_ERROR_HANDED_OUT.lock().unwrap();
     *handed_out = message;
+    match &*handed_out {
+        Some(message) => message.as_ptr(),
+        None => std::ptr::null(),
+    }
+}
+
+/// Returns the recent core log records, newest last, each prefixed with a
+/// monotonically increasing sequence number and separated by newlines. Returns
+/// null when nothing has been recorded. The pointer stays valid until the next
+/// call.
+///
+/// Sequence numbers rather than a fixed format: the caller keeps the highest
+/// it has already shown and emits only what is newer, so the ring can wrap
+/// without the app repeating or missing records.
+#[no_mangle]
+pub extern "C" fn sslocal_recent_logs() -> *const c_char {
+    let text = {
+        let ring = LOG_RING.lock().unwrap();
+        if ring.is_empty() {
+            return std::ptr::null();
+        }
+        let mut joined = String::new();
+        for line in ring.iter() {
+            joined.push_str(line);
+            joined.push('\n');
+        }
+        joined
+    };
+    // moved into its own slot for the same reason as sslocal_last_error: the
+    // ring is written from the core's threads and must not free this buffer
+    // while the caller is reading it
+    let mut handed_out = LOG_HANDED_OUT.lock().unwrap();
+    *handed_out = Some(CString::new(text).unwrap_or_default());
     match &*handed_out {
         Some(message) => message.as_ptr(),
         None => std::ptr::null(),

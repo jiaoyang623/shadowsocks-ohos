@@ -104,6 +104,9 @@ export function measureThroughput(url: string, timeoutMs: number): Promise<Speed
       connectTimeout: timeoutMs,
       readTimeout: timeoutMs,
       usingCache: false,
+      // bypass the system proxy for the same reason as the connectivity probe:
+      // otherwise an unreachable proxy, not the tunnel, decides the result
+      usingProxy: false,
     });
     stream.then((code: number) => {
       const endAt = Date.now();

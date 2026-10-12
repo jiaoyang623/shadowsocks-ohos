@@ -288,19 +288,30 @@ export class Profile {
 
   /**
    * JSON config for tun mode. The `tun` local's device fd is injected by the
-   * native layer (`sslocal.startTunFd`), so no interface address is set here —
-   * the fd from HarmonyOS `VpnConnection.create()` is already configured.
-   * `tcp_and_udp` routes both TCP streams and UDP datagrams through the tunnel.
+   * native layer (`sslocal.startTunFd`); `tcp_and_udp` routes both TCP streams
+   * and UDP datagrams through the tunnel.
+   *
+   * `tunAddress` is the interface address as `addr/prefix` (e.g. `172.19.0.1/30`)
+   * and must match what the system VPN was configured with. It is not optional
+   * in practice: the core refuses to serve a tun whose address it cannot read,
+   * and on OpenHarmony the device can only report what the config states.
    *
    * When the profile's route is not `all`, `aclPath` must point at the
    * deployed ACL file for that route (see Routes.ets); it is injected as the
    * core's top-level `acl` field.
    */
-  toTunConfig(aclPath: string = ''): string {
+  toTunConfig(aclPath: string = '', tunAddress: string = ''): string {
+    const local: Record<string, Object> = { 'protocol': 'tun' };
+    if (tunAddress.length > 0) {
+      // The core's tun serving loop asks the device for its address and netmask
+      // and refuses to start if either is missing. On OpenHarmony the device
+      // can only answer from the config — the fd carries no interface name to
+      // query — so the caller must state them. See
+      // native/sslocal-ffi/vendor/tun/PATCH.md.
+      local['tun_interface_address'] = tunAddress;
+    }
     const config: Record<string, Object> = {
-      'locals': [Object({
-        'protocol': 'tun',
-      })],
+      'locals': [local],
       'server': this.host,
       'server_port': this.remotePort,
       'password': this.password,

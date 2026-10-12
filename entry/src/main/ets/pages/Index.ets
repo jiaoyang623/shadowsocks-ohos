@@ -114,7 +114,11 @@ struct Index {
     // returning from the edit/subscription/settings page may have changed the
     // list and the endpoints
     this.reload();
-    if (this.phase === PHASE_IDLE) {
+    // Re-check for a VPN that is already up. FAILED counts: the system consent
+    // dialog can outlast this page's start timeout, and the extension comes up
+    // afterwards — leaving the page showing a failure over a working tunnel
+    // until something else re-syncs it.
+    if (this.phase === PHASE_IDLE || this.phase === PHASE_FAILED) {
       this.resumeStatus();
     }
   }
@@ -412,7 +416,7 @@ struct Index {
       const route = this.currentProfile()?.route ?? '';
       const verdict = interpretProbe(outcome.ok, outcome.httpCode,
         before?.rx ?? 0, after?.rx ?? 0, before !== null && after !== null,
-        routeProxiesByDefault(route));
+        routeProxiesByDefault(route), outcome.reason);
       if (verdict.verdict === PROBE_OK) {
         this.phase = PHASE_CONNECTED;
         this.probeRttMs = outcome.rttMs;
