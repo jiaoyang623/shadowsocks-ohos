@@ -233,5 +233,62 @@ export default function profileTest() {
         JSON.parse(profile.toTunConfig('/data/acl/bypass-lan-china.acl')) as object;
       expect(plain['acl'] === undefined).assertTrue();
     });
+
+    it('writes a profile as a url the way android writes it', 0, () => {
+      const profile = new Profile();
+      profile.name = 'My Server';
+      profile.host = 'example.com';
+      profile.remotePort = 8388;
+      profile.password = 'test-password';
+      profile.method = 'aes-256-gcm';
+      // base64url of "aes-256-gcm:test-password", without the padding Android drops
+      expect(profile.toUri()).assertEqual(
+        'ss://YWVzLTI1Ni1nY206dGVzdC1wYXNzd29yZA@example.com:8388#My%20Server');
+    });
+
+    it('puts the plugin and the port in the url', 0, () => {
+      const profile = new Profile();
+      profile.name = '';
+      profile.host = '2001:db8::1';
+      profile.remotePort = 443;
+      profile.password = 'pw';
+      profile.method = 'aes-128-gcm';
+      profile.plugin = 'obfs-local';
+      profile.pluginOpts = 'obfs=tls;obfs-host=example.com';
+      expect(profile.toUri()).assertEqual('ss://YWVzLTEyOC1nY206cHc@[2001:db8::1]:443' +
+        '?plugin=obfs-local%3Bobfs%3Dtls%3Bobfs-host%3Dexample.com');
+    });
+
+    it('reads back every url it writes', 0, () => {
+      const original = new Profile();
+      original.name = 'Node 节点';
+      original.host = 'example.com';
+      original.remotePort = 8388;
+      original.password = 'p@ss:word/with#chars';
+      original.method = 'aes-256-gcm';
+      original.plugin = 'v2ray-plugin';
+      original.pluginOpts = 'mode=websocket;tls;host=example.com';
+
+      const parsed = Profile.parseUrl(original.toUri());
+      expect(parsed !== null).assertTrue();
+      expect(parsed!.name).assertEqual(original.name);
+      expect(parsed!.host).assertEqual(original.host);
+      expect(parsed!.remotePort).assertEqual(original.remotePort);
+      expect(parsed!.password).assertEqual(original.password);
+      expect(parsed!.method).assertEqual(original.method);
+      expect(parsed!.plugin).assertEqual(original.plugin);
+      expect(parsed!.pluginOpts).assertEqual(original.pluginOpts);
+    });
+
+    it('encodes and decodes the string helpers it needs', 0, () => {
+      expect(Profile.encodeBase64(Profile.encodeUtf8('aes-256-gcm:pw'), true, false))
+        .assertEqual('YWVzLTI1Ni1nY206cHc');
+      expect(Profile.encodeBase64([0x61, 0x62, 0x63, 0x64], false, true)).assertEqual('YWJjZA==');
+      expect(Profile.decodeBase64('YWJjZA==')).assertEqual('abcd');
+      expect(Profile.encodeUtf8('节点')).assertEqual([0xe8, 0x8a, 0x82, 0xe7, 0x82, 0xb9]);
+      expect(Profile.decodeUtf8([0xe8, 0x8a, 0x82, 0xe7, 0x82, 0xb9])).assertEqual('节点');
+      expect(Profile.percentEncode('a b/c?d=e')).assertEqual('a%20b%2Fc%3Fd%3De');
+      expect(Profile.percentDecode('a%20b%2Fc%3Fd%3De')).assertEqual('a b/c?d=e');
+    });
   });
 }

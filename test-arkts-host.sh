@@ -47,7 +47,10 @@ find_tsc() {
                 "$HOME/command-line-tools" \
                 "$HOME/Downloads/command-line-tools"; do
         [[ -n "$root" && -d "$root" ]] || continue
-        hit=$(find "$root" -maxdepth 5 -path '*/node_modules/.bin/tsc' -print -quit 2>/dev/null)
+        # The compiler itself rather than the launcher: a .bin/tsc in the DevEco
+        # bundle can point at a file that is not in the bundle, fail to load, and
+        # leave the run with no output and a success-looking exit.
+        hit=$(find "$root" -maxdepth 6 -path '*/typescript/lib/tsc.js' -print -quit 2>/dev/null)
         if [[ -n "$hit" ]]; then
             printf '%s' "$hit"
             return
@@ -88,7 +91,14 @@ cp "$SHIMS/hypium.ts" "$SHIMS/stubs.ts" "$SHIMS/run.ts" "$WORK/"
 # by the ArkTS compiler in the build, and what matters here is that the logic
 # behaves. A syntax error does stop it, with tsc's message and a non-zero exit.
 set +e
-"$TSC_BIN" --module node16 --target es2022 --moduleResolution node16 \
+# A .js path is run through node, because that is all TypeScript ships.
+if [[ "$TSC_BIN" == *.js ]]; then
+    TSC_CMD=("$NODE" "$TSC_BIN")
+else
+    TSC_CMD=("$TSC_BIN")
+fi
+
+"${TSC_CMD[@]}" --module node16 --target es2022 --moduleResolution node16 \
     --skipLibCheck --noImplicitAny false --outDir "$WORK/out" "$WORK/run.ts" > "$WORK/tsc.log" 2>&1
 TSC_STATUS=$?
 set -e

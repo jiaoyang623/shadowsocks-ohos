@@ -187,6 +187,75 @@ export class Profile {
   }
 
   /**
+   * Encodes bytes as base64. `urlSafe` swaps the last two characters for the
+   * URL-safe pair, and `pad` adds the `=` padding: gzip, and
+   * shadowsocks-android's own `ss://` URLs, both want URL-safe without padding.
+   * Pure ArkTS, for the same host-runtime reason as `decodeBase64`.
+   */
+  static encodeBase64(bytes: number[], urlSafe: boolean = false, pad: boolean = true): string {
+    const STANDARD = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const URL_SAFE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    const table = urlSafe ? URL_SAFE : STANDARD;
+    let out = '';
+    for (let i = 0; i < bytes.length; i += 3) {
+      const remaining = bytes.length - i;
+      const second = remaining > 1 ? bytes[i + 1] : 0;
+      const third = remaining > 2 ? bytes[i + 2] : 0;
+      const triple = (bytes[i] << 16) | (second << 8) | third;
+      out += table.charAt((triple >> 18) & 0x3f);
+      out += table.charAt((triple >> 12) & 0x3f);
+      if (remaining > 1) {
+        out += table.charAt((triple >> 6) & 0x3f);
+      } else if (pad) {
+        out += '=';
+      }
+      if (remaining > 2) {
+        out += table.charAt(triple & 0x3f);
+      } else if (pad) {
+        out += '=';
+      }
+    }
+    return out;
+  }
+
+  /**
+   * Encodes text as UTF-8 bytes without util.TextEncoder, which is unavailable
+   * in the host-side unit-test runtime. A lone surrogate, which cannot be
+   * encoded, becomes the replacement character, as TextEncoder does with it.
+   */
+  static encodeUtf8(text: string): number[] {
+    const bytes: number[] = [];
+    let i = 0;
+    while (i < text.length) {
+      let codePoint = text.charCodeAt(i);
+      i++;
+      if (codePoint >= 0xd800 && codePoint <= 0xdbff) {
+        const low = i < text.length ? text.charCodeAt(i) : 0;
+        if (low >= 0xdc00 && low <= 0xdfff) {
+          codePoint = 0x10000 + ((codePoint - 0xd800) << 10) + (low - 0xdc00);
+          i++;
+        } else {
+          codePoint = 0xfffd;
+        }
+      } else if (codePoint >= 0xdc00 && codePoint <= 0xdfff) {
+        codePoint = 0xfffd;
+      }
+      if (codePoint < 0x80) {
+        bytes.push(codePoint);
+      } else if (codePoint < 0x800) {
+        bytes.push(0xc0 | (codePoint >> 6), 0x80 | (codePoint & 0x3f));
+      } else if (codePoint < 0x10000) {
+        bytes.push(0xe0 | (codePoint >> 12), 0x80 | ((codePoint >> 6) & 0x3f),
+          0x80 | (codePoint & 0x3f));
+      } else {
+        bytes.push(0xf0 | (codePoint >> 18), 0x80 | ((codePoint >> 12) & 0x3f),
+          0x80 | ((codePoint >> 6) & 0x3f), 0x80 | (codePoint & 0x3f));
+      }
+    }
+    return bytes;
+  }
+
+  /**
    * Decodes UTF-8 bytes without util.TextDecoder, which is unavailable in the
    * host-side unit-test runtime. Invalid sequences are skipped.
    */
@@ -244,6 +313,48 @@ export class Profile {
     } catch (e) {
       return text;
     }
+  }
+
+  /**
+   * Percent-encodes text, leaving alone the characters java.net.URI leaves
+   * alone. This is the rule shadowsocks-android's `Uri.Builder` applies to the
+   * name and the plugin query, so a URL written here matches one written there.
+   */
+  static percentEncode(text: string): string {
+    const UNRESERVED = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-!.~'()*";
+    const HEX = '0123456789ABCDEF';
+    let out = '';
+    for (const byte of Profile.encodeUtf8(text)) {
+      if (byte < 0x80 && UNRESERVED.indexOf(String.fromCharCode(byte)) >= 0) {
+        out += String.fromCharCode(byte);
+      } else {
+        out += `%${HEX.charAt(byte >> 4)}${HEX.charAt(byte & 0xf)}`;
+      }
+    }
+    return out;
+  }
+
+  /**
+   * This profile as an `ss://` URL: the form shadowsocks-android writes when it
+   * copies a profile or shows its QR code, and the form other clients import.
+   *
+   * The user information is base64url without padding, the host is bracketed
+   * when it is an IPv6 literal, the plugin goes in the query, and the name goes
+   * in the fragment. `parseUrl` reads all of it back.
+   */
+  toUri(): string {
+    const userInfo = Profile.encodeBase64(
+      Profile.encodeUtf8(`${this.method}:${this.password}`), true, false);
+    const host = this.host.indexOf(':') >= 0 ? `[${this.host}]` : this.host;
+    let url = `ss://${userInfo}@${host}:${this.remotePort}`;
+    if (this.plugin.length > 0) {
+      const options = this.pluginOpts.length > 0 ? `${this.plugin};${this.pluginOpts}` : this.plugin;
+      url += `?plugin=${Profile.percentEncode(options)}`;
+    }
+    if (this.name.length > 0) {
+      url += `#${Profile.percentEncode(this.name)}`;
+    }
+    return url;
   }
 
   /**

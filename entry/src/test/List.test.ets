@@ -7,6 +7,7 @@ import customRulesTest from './CustomRules.test';
 import subscriptionTest from './Subscription.test';
 import diagnosticsTest from './Diagnostics.test';
 import settingsTest from './Settings.test';
+import qrCodeTest from './QrCode.test';
 
 export default function testsuite() {
   profileTest();
@@ -18,4 +19,5 @@ export default function testsuite() {
   subscriptionTest();
   diagnosticsTest();
   settingsTest();
+  qrCodeTest();
 }

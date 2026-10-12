@@ -36,3 +36,6 @@ native/.tun-e2e
 
 # CI toolchain bundle built by ci/package-hos-toolchain.sh
 hos-bundle/
+
+# zxing jar and classes fetched by tools/qr-oracle/run.sh
+tools/qr-oracle/.cache/

@@ -1,0 +1,27 @@
+# One entry per line: name <TAB> level <TAB> text.
+#
+# The level decides the error correction, and the text decides the mode and
+# the charset: numeric and alphanumeric text use the compact modes, text that
+# fits ISO-8859-1 is encoded as Latin-1, and anything else is UTF-8 with the
+# ECI segment the Android client's charset hint produces.
+numeric-l	L	0123456789012345678901234567890123456789
+numeric-m	M	0123456789012345678901234567890123456789
+alnum-l	L	HELLO WORLD $%*+-./: 0123
+alnum-h	H	HELLO WORLD $%*+-./: 0123
+byte-l-1	L	a
+byte-l-17	L	aaaaaaaaaaaaaaaaa
+byte-l-18	L	aaaaaaaaaaaaaaaaaa
+byte-l-54	L	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-l-107	L	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-l-135	L	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-l-140	L	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-l-231	L	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-m-100	M	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-q-100	Q	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+byte-h-13	H	aaaaaaaaaaaaa
+byte-h-100	H	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+latin1-l	L	café crème
+utf8-l	L	节点 A
+utf8-h	H	节点名称 A
+ss-url-l	L	ss://YWVzLTI1Ni1nY206dGVzdC1wYXNzd29yZA@example.com:8388#My%20Server
+ss-url-h	H	ss://YWVzLTI1Ni1nY206dGVzdC1wYXNzd29yZA@example.com:8388?plugin=obfs-local%3Bobfs%3Dtls#My%20Server

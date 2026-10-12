@@ -35,20 +35,24 @@ entry/                        main (and only) HAP module
     ets/pages/                Index.ets (profile list + connect + stats bar,
                               with search, drag-to-reorder and undoable delete),
                               ProfileEdit.ets (profile form, method/route/plugin
-                              pickers, remote resolver), Subscription.ets
+                              pickers, remote resolver, and the profile's QR
+                              code), ProfileQr.ets (that code, drawn on a
+                              Canvas), Subscription.ets
                               (subscription management), CustomRules.ets (the
                               rules for the custom-rules route), Settings.ets,
                               About.ets, VpnGrant.ts (undocumented
                               updateVpnAuthorizedState shim for the emulator's
                               missing consent app)
-    ets/model/                Profile.ets (SIP002 ss:// parsing, config
-                              serialization), ProfilesFile.ets (import and
-                              export, in the shapes shadowsocks-android uses),
-                              Transfer.ets (document picker and clipboard),
-                              Acl.ets / AclSync.ets / CustomRules.ets (ACL
-                              parsing, imported lists, the user's own rules),
-                              ConnectionNotification.ets (the ongoing
-                              notification and its disconnect action),
+    ets/model/                Profile.ets (SIP002 ss:// parsing, ss:// writing,
+                              config serialization), ProfilesFile.ets (import
+                              and export, in the shapes shadowsocks-android
+                              uses), Transfer.ets (document picker and
+                              clipboard), Acl.ets / AclSync.ets /
+                              CustomRules.ets (ACL parsing, imported lists, the
+                              user's own rules), QrCode.ets (a QR encoder that
+                              reproduces zxing's output) with its generated
+                              QrTables.ets, ConnectionNotification.ets (the
+                              ongoing notification and its disconnect action),
                               Network.ets (the platform's resolver),
                               ProfileStore.ets (multi-profile
                               list + selection), Subscription.ets (subscription
@@ -66,9 +70,12 @@ entry/                        main (and only) HAP module
     cpp/CMakeLists.txt        builds libsslocal.so, links libsslocal_core.a
     cpp/types/libsslocal/     ArkTS typings (Index.d.ts) for libsslocal.so
   src/test/                   ArkTS unit tests (hypium): ss:// URL parsing
-                              (incl. SIP003 plugin query), SOCKS and tun config
-                              serialization (incl. ACL injection, plugin fields),
-                              subscription body parsing
+                              (incl. SIP003 plugin query), ss:// writing and
+                              its round trip, SOCKS and tun config
+                              serialization (incl. ACL injection, plugin
+                              fields), subscription body parsing, and the QR
+                              encoder against zxing's own matrices
+                              (QrVectors.ets, generated — see `tools/qr-oracle`)
   src/ohosTest/               on-device tests: NAPI surface (incl. startTunFd),
                               SOCKS tunnel e2e (emulator-capable, run by CI),
                               VPN/tun e2e (real devices only)
@@ -125,10 +132,14 @@ test-arkts-host.sh            runs the model-layer ArkTS specs on the host with
                               node (see Testing)
 tools/arkts-host/             the shims that makes that possible: hypium, the
                               @kit stand-ins, and the runner entry point
+tools/qr-oracle/              regenerates the QR tables and the golden matrices
+                              from zxing, the encoder shadowsocks-android uses
+                              (see Testing)
 ```
 
 Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
-`.hvigor/`, `oh_modules/`, `native/sslocal-ffi/target`, `native/.tun-e2e`.
+`.hvigor/`, `oh_modules/`, `native/sslocal-ffi/target`, `native/.tun-e2e`,
+`tools/qr-oracle/.cache/`.
 
 ## Technology stack and runtime architecture
 
@@ -184,6 +195,16 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
   included) outside the tunnel. On API < 22 there is no per-socket hook; the
   ability logs a warning and the server must be reachable through a more
   specific route.
+- **Proxy mode**: the other half of shadowsocks-android's service modes. No
+  tunnel is created; the core runs in the UI process with a SOCKS5 listener
+  (`Profile.toLocalConfig`), and the app holds a `DATA_TRANSFER` continuous task
+  (`backgroundTaskManager.startBackgroundRunning`, needing
+  `ohos.permission.KEEP_BACKGROUND_RUNNING`) in place of Android's foreground
+  service. A refused grant is logged and not fatal — the listener still serves
+  while the app is in front. "Share over LAN" binds `0.0.0.0` instead of
+  loopback, and the listener has no authentication, as Android's has none.
+  Transparent proxy is not ported: it needs root and external packet
+  redirection, and neither exists here.
 - **SIP003 plugins**: profiles carry `plugin`/`pluginOpts` (parsed from the
   `?plugin=` query of ss:// URLs, editable in ProfileEdit) which the
   serializers emit as the standard `plugin`/`plugin_opts` server fields.
@@ -317,9 +338,9 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   - The emulator needs HVF and is macOS/Windows-only, so no GitHub-hosted
     runner can run it; only a self-hosted Apple-silicon machine can.
 
-- **ArkTS unit tests** — `entry/src/test` (hypium): `ss://` URL parsing, both
-  SOCKS and tun config serialization (including ACL injection), subscription
-  body parsing. Run from DevEco Studio or headless:
+- **ArkTS unit tests** — `entry/src/test` (hypium): `ss://` URL parsing and
+  writing, both SOCKS and tun config serialization (including ACL injection),
+  subscription body parsing, the QR encoder. Run from DevEco Studio or headless:
   `hvigorw test --mode module -p module=entry -p product=default`
   (failures show up as `Error in <test name>` lines).
 - **`./test-arkts-host.sh`** — those same spec files, on the host, in about a
@@ -330,6 +351,13 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   them on node, with `tools/arkts-host` standing in for `@ohos/hypium` and the
   `@kit.*` modules. Only what needs no native API can run there, which is the
   parsing, serialisation and arithmetic the model layer is made of.
+- **`tools/qr-oracle/run.sh`** — regenerates what that QR spec compares against.
+  The app cannot link zxing, so `QrCode.ets` is a translation of it, and a
+  translation needs the original to check against: this runs zxing itself and
+  writes the tables (`model/QrTables.ets`) and the matrices
+  (`test/QrVectors.ets`). It needs a JDK and network access, so it is not in
+  CI — run it by hand after touching the encoder, `corpus.txt`, or the pinned
+  zxing version, and commit the two generated files.
 - **On-device tests** — `entry/src/ohosTest`, run from DevEco Studio or
   headless via **`ci/hos-emulator-e2e.sh`** (`HOS_TOOLS=<command-line-tools>
   HOS_IMAGES=~/Library/Huawei/Sdk ci/hos-emulator-e2e.sh`), which builds and
@@ -406,12 +434,8 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   with a plugin active, UDP associations time out.
 - The custom-rules editor has no multi-select, cut, paste or swipe gestures;
   rules are added one at a time and removed one at a time.
-- No proxy-only mode and no "share over LAN": the core runs inside the VPN
-  extension, and `AppServiceExtensionAbility`, which would host it without a
-  tunnel, is unverified here.
-- No QR code display or scanning. Generating one is portable but has no oracle
-  to verify an encoder against; scanning needs a barcode decoder the SDK does
-  not ship.
+- No QR code scanning: the SDK ships no barcode decoder. Displaying one is
+  implemented, and reproduces zxing's output module for module (see Testing).
 - No launcher shortcuts and no connect-at-boot. The platform exposes
   `BOOT_COMPLETED` and a `STATIC_SUBSCRIBER` extension type, but the ability
   class is not in the public SDK, so this needs a device experiment.

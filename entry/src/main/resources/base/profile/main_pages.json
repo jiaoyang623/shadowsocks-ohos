@@ -5,6 +5,7 @@
     "pages/Subscription",
     "pages/Settings",
     "pages/About",
-    "pages/CustomRules"
+    "pages/CustomRules",
+    "pages/ProfileQr"
   ]
 }

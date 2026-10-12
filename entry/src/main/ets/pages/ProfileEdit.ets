@@ -25,6 +25,7 @@ import { ProfileStore } from '../model/ProfileStore';
 import { abilityContext } from '../model/AppContext';
 import { ALL_ROUTES, ROUTE_ALL } from '../model/Routes';
 import { EditParams } from './Index';
+import { QrParams } from './ProfileQr';
 
 const METHODS: string[] = [
   'aes-128-gcm',
@@ -104,22 +105,27 @@ struct ProfileEdit {
     return this.methodIndex >= 0 ? METHODS[this.methodIndex] : this.methodCustom.trim();
   }
 
-  private async save(): Promise<void> {
-    const method = this.selectedMethod();
-    if (this.host.trim().length === 0 || this.password.length === 0 || method.length === 0) {
-      promptAction.showToast({ message: 'Server, password and method are required' });
-      return;
-    }
-    // Edited in place when the profile already exists, so that every field
-    // this form does not show — the subscription it came from, its position in
-    // the list, its counters — survives the edit instead of being reset.
+  /** True when the form holds enough to describe a server at all. */
+  private isComplete(): boolean {
+    return this.host.trim().length > 0 && this.password.length > 0
+      && this.selectedMethod().length > 0;
+  }
+
+  /**
+   * The profile the form describes, saved or not.
+   *
+   * An existing profile is edited in place, so that every field this form does
+   * not show — the subscription it came from, its position in the list, its
+   * counters — survives instead of being reset.
+   */
+  private buildProfile(): Profile {
     const profile = this.editedProfile !== null ? this.editedProfile : new Profile();
     profile.id = this.profileId;
     profile.name = this.name.trim().length > 0 ? this.name.trim() : this.host.trim();
     profile.host = this.host.trim();
     profile.remotePort = Number.parseInt(this.remotePort, 10) || 8388;
     profile.password = this.password;
-    profile.method = method;
+    profile.method = this.selectedMethod();
     profile.route = ALL_ROUTES[this.routeIndex] ?? ROUTE_ALL;
     profile.plugin = this.pluginOptions[this.pluginIndex] === 'none' ?
       '' : this.pluginOptions[this.pluginIndex];
@@ -127,6 +133,15 @@ struct ProfileEdit {
     const remoteDns = this.remoteDns.trim();
     profile.remoteDns = remoteDns.length > 0 ? remoteDns : DEFAULT_REMOTE_DNS;
     profile.ensureId();
+    return profile;
+  }
+
+  private async save(): Promise<void> {
+    if (!this.isComplete()) {
+      promptAction.showToast({ message: 'Server, password and method are required' });
+      return;
+    }
+    const profile = this.buildProfile();
     try {
       await ProfileStore.upsert(abilityContext(), profile);
       await ProfileStore.setCurrentId(abilityContext(), profile.id);
@@ -138,6 +153,20 @@ struct ProfileEdit {
       return;
     }
     router.back();
+  }
+
+  /**
+   * Shows the code for the profile the form describes, not for the one that was
+   * last saved, so a name changed here is the name in the code.
+   */
+  private showQrCode(): void {
+    if (!this.isComplete()) {
+      promptAction.showToast({ message: 'Server, password and method are required' });
+      return;
+    }
+    const profile = this.buildProfile();
+    const params: QrParams = { url: profile.toUri(), name: profile.name };
+    router.pushUrl({ url: 'pages/ProfileQr', params: params });
   }
 
   build() {
@@ -210,6 +239,15 @@ struct ProfileEdit {
       }
 
       Blank()
+
+      if (this.profileId.length > 0) {
+        Button('Show QR code')
+          .width('100%')
+          .height(48)
+          .backgroundColor('#9E9E9E')
+          .margin({ bottom: 12 })
+          .onClick(() => this.showQrCode())
+      }
 
       Button('Save')
         .width('100%')
