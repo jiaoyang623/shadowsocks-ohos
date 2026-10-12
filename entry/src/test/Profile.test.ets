@@ -124,6 +124,36 @@ export default function profileTest() {
       expect(config['acl'] === undefined).assertTrue();
     });
 
+    it('hands the core a DNS gateway inside the tun', 0, () => {
+      const profile = new Profile();
+      profile.host = 'example.com';
+      profile.remotePort = 8388;
+      profile.password = 'pw';
+      profile.method = 'aes-256-gcm';
+      const config: object =
+        JSON.parse(profile.toTunConfig('', '172.19.0.1/30')) as object;
+
+      // the tun answers queries itself, through the resolver it is given
+      expect(config['locals'][0]['tun_interface_address']).assertEqual('172.19.0.1/30');
+      expect(config['locals'][0]['dns_gateway']).assertEqual('127.0.0.1:5453');
+
+      // that resolver is a loopback listener, and resolves through the proxy
+      // over TCP only: the server does not relay UDP, so racing a UDP query
+      // against it would cost every lookup the fallback wait for nothing
+      const dns: object = config['locals'][1];
+      expect(dns['protocol']).assertEqual('dns');
+      expect(dns['local_address']).assertEqual('127.0.0.1');
+      expect(dns['local_port']).assertEqual(5453);
+      expect(dns['remote_dns_address']).assertEqual('1.1.1.1');
+      expect(dns['remote_dns_protocol']).assertEqual('tcp_only');
+
+      // without an interface address the tun is never started, so it is given
+      // no gateway and nothing is intercepted
+      const plain: object = JSON.parse(profile.toTunConfig()) as object;
+      expect(plain['locals'][0]['dns_gateway'] === undefined).assertTrue();
+      expect(plain['locals'][1] === undefined).assertTrue();
+    });
+
     it('injects acl path for bypass routes', 0, () => {
       const profile = new Profile();
       profile.host = 'example.com';

@@ -10,10 +10,13 @@ directory is `harmony/` in that repo) and shares the same Rust core
 - **App layer**: ArkTS/ArkUI, Stage model, API 12+ (`compatibleSdkVersion
   5.0.0(12)`), bundle `com.xbt.project`, version 5.3.5,
   GPL-3.0-or-later.
-- **Native layer**: the Rust crate `native/sslocal-ffi` path-depends on
-  `../../../core/src/main/rust/shadowsocks-rust/crates/shadowsocks-service`
+- **Native layer**: the Rust crate `native/sslocal-ffi` depends on a vendored
+  `shadowsocks-service` (`native/sslocal-ffi/vendor/shadowsocks-service`),
+  patched so the tun answers DNS itself; that crate in turn path-depends on
+  `shadowsocks` from `../../../core/src/main/rust/shadowsocks-rust/crates/`
   (i.e. `<repo-root>/core/...` — the checkout one level above this directory
-  must contain the `core/` module for any Rust build to work).
+  must contain the `core/` module for any Rust build to work, and must stay in
+  step with the vendored copy's version).
 - **Bridge**: a C++ NAPI shim (`entry/src/main/cpp/napi_init.cpp`) is compiled
   by CMake into `libsslocal.so`, linked against the Rust staticlib
   `libsslocal_core.a`.
@@ -75,6 +78,14 @@ native/
                               in-process simple-obfs plugin (fake obfs server
                               shim in front of the in-process ssserver)
     examples/net_helper.rs    helper binary used by the tun e2e
+    vendor/tun/               vendored `tun` 0.7.22 (see its PATCH.md)
+    vendor/shadowsocks-service/       vendored shadowsocks-service, patched so
+                              the tun answers DNS itself; everything here is
+                              replaced wholesale by the script below
+    vendor/shadowsocks-service.patch  the local change, reapplied on refresh
+    vendor/shadowsocks-service.PATCH.md  why it exists, and how to rebase it
+  vendor-shadowsocks-service.sh  re-copy the vendored crate from the pinned
+                              core checkout and re-apply the patch
   build-ohos.sh               cross-compile the Rust core for
                               aarch64-unknown-linux-ohos; installs the staticlib
                               into entry/libs/arm64-v8a/
@@ -111,7 +122,7 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
   shadowsocks-android's main screen); connecting starts
   `SsVpnExtensionAbility`, which creates the system VPN via
   `vpnExtension.createVpnConnection` (default route 0.0.0.0/0, tun address
-  172.19.0.1/30, DNS 1.1.1.1), then hands the tun fd to the core with
+  172.19.0.1/30, DNS 172.19.0.2), then hands the tun fd to the core with
   `sslocal.startTunFd(profile.toTunConfig(aclPath), tunFd)`. The core's
   smoltcp-based tun stack terminates TCP/UDP flows and re-establishes them
   through the shadowsocks tunnel — the role tun2socks plays in the Android
@@ -120,6 +131,19 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
   down (in the background, see `sslocal_stop`), while `VpnConnection.destroy()`
   closes the app's — sharing one number would risk a second close landing on an
   unrelated descriptor.
+- **DNS**: the core answers it inside the tun, because relaying it as UDP only
+  works when the server relays UDP and plenty do not — and a client that picks
+  its own resolver (a browser, typically) then cannot resolve anything at all.
+  `toTunConfig` gives the tun local a `dns_gateway` of `127.0.0.1:5453` and runs
+  the core's own resolver there, and every port-53 packet entering the tun goes
+  to it on the transport it arrived on. Clients are told to use `172.19.0.2` —
+  the *other* end of the tun's /30, so their queries go out through the
+  interface; a query to the tun's own address would be delivered to the local
+  socket stack and never reach the core. Resolution goes through the proxy over
+  TCP (`remote_dns_protocol: tcp_only`), so it cannot be poisoned by whatever
+  the local network's DNS says, and the first lookup of a name costs about a
+  round trip. This is a downstream patch to `shadowsocks-service`; see
+  `native/sslocal-ffi/vendor/shadowsocks-service.PATCH.md`.
 - **Policy routes**: each profile carries a `route` (the same constants as
   shadowsocks-android's `Acl`: `all`, `bypass-lan`, `bypass-china`,
   `bypass-lan-china`, `gfwlist`, `china-list`). For any route ≠ `all` the VPN
@@ -206,9 +230,13 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
 - **`./test-e2e-host.sh [tests|cross|tun ...]`** — host-side verification, no
   HarmonyOS SDK needed. All three steps by default, or any subset by name (CI
   runs one per workflow, so this stays the single definition of each):
-  1. `cargo test` in `native/sslocal-ffi` (includes `tests/e2e.rs`: a genuine
-     end-to-end SOCKS5 round-trip through an in-process shadowsocks server,
-     driving sslocal through the same C ABI the NAPI layer uses).
+  1. `cargo test --workspace` in `native/sslocal-ffi` (includes `tests/e2e.rs`:
+     a genuine end-to-end SOCKS5 round-trip through an in-process shadowsocks
+     server, driving sslocal through the same C ABI the NAPI layer uses).
+     `--workspace`, not the default, because the vendored `shadowsocks-service`
+     is a path dependency rather than the root package: selecting the workspace
+     is what builds and runs its tests, and what unifies the features that make
+     its `local-tun` code compile at all.
   2. `cargo check --target aarch64-unknown-linux-ohos` (real OHOS SDK clang if
      `OHOS_NDK_HOME` is set, else the zig cc shim).
   3. Tun packet-routing e2e (`native/tun-e2e-linux.sh`): a real TCP flow into

@@ -1,0 +1,842 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 50352d7..7bedee8 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -196,7 +196,10 @@ serde = { version = "1.0", features = ["derive"] }
+ json5 = "0.4"
+ bson = { version = "2.13.0", optional = true }
+ 
+-shadowsocks = { version = "1.23.1", path = "../shadowsocks", default-features = false }
++# Vendored copy: see vendor/shadowsocks-service/PATCH.md. The rest of the
++# upstream workspace stays in the sibling checkout that the CI action and
++# AGENTS.md describe, so this path points back out of the repository.
++shadowsocks = { version = "1.23.1", path = "../../../../../core/src/main/rust/shadowsocks-rust/crates/shadowsocks", default-features = false }
+ 
+ # Just for the ioctl call macro
+ [target.'cfg(any(target_os = "macos", target_os = "ios", target_os = "freebsd", target_os = "openbsd"))'.dependencies]
+diff --git a/src/config.rs b/src/config.rs
+index 9a07e25..81bca4c 100644
+--- a/src/config.rs
++++ b/src/config.rs
+@@ -295,6 +295,10 @@ struct SSLocalExtConfig {
+     #[cfg(feature = "local-dns")]
+     #[serde(skip_serializing_if = "Option::is_none")]
+     client_cache_size: Option<usize>,
++    /// Protocol used for queries to `remote_dns_address`, defaults to `mode`
++    #[cfg(feature = "local-dns")]
++    #[serde(skip_serializing_if = "Option::is_none")]
++    remote_dns_protocol: Option<String>,
+ 
+     /// Tunnel
+     #[cfg(feature = "local-tunnel")]
+@@ -314,6 +318,11 @@ struct SSLocalExtConfig {
+     #[cfg(feature = "local-tun")]
+     #[serde(skip_serializing_if = "Option::is_none")]
+     tun_interface_destination: Option<String>,
++    /// Address of a resolver that DNS queries received on the tun are
++    /// forwarded to, instead of being relayed through the proxy
++    #[cfg(feature = "local-tun")]
++    #[serde(skip_serializing_if = "Option::is_none")]
++    dns_gateway: Option<String>,
+     #[cfg(all(feature = "local-tun", unix))]
+     #[serde(skip_serializing_if = "Option::is_none")]
+     tun_device_fd_from_path: Option<String>,
+@@ -974,6 +983,15 @@ pub struct LocalConfig {
+     // increase the size
+     #[cfg(feature = "local-dns")]
+     pub client_cache_size: Option<usize>,
++    /// Protocol used for queries to `remote_dns_addr`, defaults to `mode`
++    ///
++    /// `mode` has to cover both the listeners and the upstream transport, so
++    /// with a server that does not relay UDP there is no way to keep a UDP
++    /// listener while skipping an upstream attempt that can never succeed. On
++    /// such a server `TcpAndUdp` costs every uncached lookup the 500–1500 ms
++    /// `DnsClient::lookup_remote_inner` waits before starting its TCP attempt.
++    #[cfg(feature = "local-dns")]
++    pub remote_dns_protocol: Option<Mode>,
+ 
+     /// Tun interface's name
+     ///
+@@ -987,6 +1005,20 @@ pub struct LocalConfig {
+     /// Tun interface's destination address and netmask
+     #[cfg(feature = "local-tun")]
+     pub tun_interface_destination: Option<IpNet>,
++    /// Forward DNS queries received on the tun to this address
++    ///
++    /// A query is sent on to the gateway over the transport it arrived on — a
++    /// UDP query as a datagram, a TCP query as a stream — so the gateway
++    /// answers with the framing the client is waiting for, and a truncted UDP
++    /// answer still makes the client retry over TCP, which lands here again.
++    ///
++    /// This exists because the tun's UDP relay is useless against a server
++    /// that does not relay UDP, and that leaves every client which picks its
++    /// own DNS server — web browsers, most notably — unable to resolve
++    /// anything, while clients going through the system resolver keep working
++    /// off the resolver this crate is separately configured to run.
++    #[cfg(feature = "local-tun")]
++    pub dns_gateway: Option<SocketAddr>,
+     /// Tun interface's file descriptor
+     #[cfg(all(feature = "local-tun", unix))]
+     pub tun_device_fd: Option<std::os::unix::io::RawFd>,
+@@ -1086,6 +1118,8 @@ impl LocalConfig {
+             remote_dns_addr: None,
+             #[cfg(feature = "local-dns")]
+             client_cache_size: None,
++            #[cfg(feature = "local-dns")]
++            remote_dns_protocol: None,
+ 
+             #[cfg(feature = "local-tun")]
+             tun_interface_name: None,
+@@ -1093,6 +1127,8 @@ impl LocalConfig {
+             tun_interface_address: None,
+             #[cfg(feature = "local-tun")]
+             tun_interface_destination: None,
++            #[cfg(feature = "local-tun")]
++            dns_gateway: None,
+             #[cfg(all(feature = "local-tun", unix))]
+             tun_device_fd: None,
+             #[cfg(all(feature = "local-tun", unix))]
+@@ -1784,6 +1820,17 @@ impl Config {
+                             local_config.client_cache_size = Some(client_cache_size);
+                         }
+ 
++                        #[cfg(feature = "local-dns")]
++                        if let Some(remote_dns_protocol) = local.remote_dns_protocol {
++                            match remote_dns_protocol.parse::<Mode>() {
++                                Ok(protocol) => local_config.remote_dns_protocol = Some(protocol),
++                                Err(..) => {
++                                    let err = Error::new(ErrorKind::Malformed, "invalid `remote_dns_protocol`", None);
++                                    return Err(err);
++                                }
++                            }
++                        }
++
+                         #[cfg(feature = "local-dns")]
+                         if let Some(remote_dns_address) = local.remote_dns_address {
+                             let remote_dns_port = local.remote_dns_port.unwrap_or(53);
+@@ -1821,6 +1868,17 @@ impl Config {
+                             local_config.tun_interface_name = Some(tun_interface_name);
+                         }
+ 
++                        #[cfg(feature = "local-tun")]
++                        if let Some(dns_gateway) = local.dns_gateway {
++                            match dns_gateway.parse::<SocketAddr>() {
++                                Ok(addr) => local_config.dns_gateway = Some(addr),
++                                Err(..) => {
++                                    let err = Error::new(ErrorKind::Malformed, "`dns_gateway` invalid", None);
++                                    return Err(err);
++                                }
++                            }
++                        }
++
+                         #[cfg(all(feature = "local-tun", unix))]
+                         if let Some(tun_device_fd_from_path) = local.tun_device_fd_from_path {
+                             local_config.tun_device_fd_from_path = Some(From::from(tun_device_fd_from_path));
+@@ -2882,12 +2940,16 @@ impl fmt::Display for Config {
+                         },
+                         #[cfg(feature = "local-dns")]
+                         client_cache_size: local.client_cache_size,
++                        #[cfg(feature = "local-dns")]
++                        remote_dns_protocol: local.remote_dns_protocol.map(|p| p.to_string()),
+                         #[cfg(feature = "local-tun")]
+                         tun_interface_name: local.tun_interface_name.clone(),
+                         #[cfg(feature = "local-tun")]
+                         tun_interface_address: local.tun_interface_address.as_ref().map(ToString::to_string),
+                         #[cfg(feature = "local-tun")]
+                         tun_interface_destination: local.tun_interface_destination.as_ref().map(ToString::to_string),
++                        #[cfg(feature = "local-tun")]
++                        dns_gateway: local.dns_gateway.map(|a| a.to_string()),
+                         #[cfg(all(feature = "local-tun", unix))]
+                         tun_device_fd_from_path: local
+                             .tun_device_fd_from_path
+diff --git a/src/local/dns/server.rs b/src/local/dns/server.rs
+index 1a16b5d..8742419 100644
+--- a/src/local/dns/server.rs
++++ b/src/local/dns/server.rs
+@@ -51,6 +51,7 @@ use super::{client_cache::DnsClientCache, config::NameServerAddr};
+ pub struct DnsBuilder {
+     context: Arc<ServiceContext>,
+     mode: Mode,
++    remote_protocol: Option<Mode>,
+     local_addr: NameServerAddr,
+     remote_addr: Address,
+     bind_addr: ServerAddr,
+@@ -94,6 +95,7 @@ impl DnsBuilder {
+         DnsBuilder {
+             context,
+             mode: Mode::UdpOnly,
++            remote_protocol: None,
+             local_addr,
+             remote_addr,
+             bind_addr,
+@@ -111,6 +113,15 @@ impl DnsBuilder {
+         self.mode = mode;
+     }
+ 
++    /// Set the transport used for queries to the remote DNS server
++    ///
++    /// Defaults to `mode`. Only the upstream transport changes: the listeners
++    /// are still chosen by `mode`, so a UDP client of this server is answered
++    /// over UDP either way.
++    pub fn set_remote_dns_protocol(&mut self, protocol: Mode) {
++        self.remote_protocol = Some(protocol);
++    }
++
+     /// macOS launchd activate socket
+     #[cfg(target_os = "macos")]
+     pub fn set_launchd_tcp_socket_name(&mut self, n: String) {
+@@ -128,7 +139,7 @@ impl DnsBuilder {
+         let client = Arc::new(DnsClient::new(
+             self.context.clone(),
+             self.balancer,
+-            self.mode,
++            self.remote_protocol.unwrap_or(self.mode),
+             self.client_cache_size,
+         ));
+ 
+@@ -714,17 +725,26 @@ fn should_forward_by_response(
+ struct DnsClient {
+     context: Arc<ServiceContext>,
+     client_cache: DnsClientCache,
+-    mode: Mode,
++    /// Transport used for `lookup_remote`. This used to be the server's
++    /// `mode`, which also decides which listeners exist — so a server that
++    /// cannot relay UDP had no way to keep its UDP listener while skipping an
++    /// upstream attempt that is certain to time out.
++    protocol: Mode,
+     balancer: PingBalancer,
+     attempts: usize,
+ }
+ 
+ impl DnsClient {
+-    fn new(context: Arc<ServiceContext>, balancer: PingBalancer, mode: Mode, client_cache_size: usize) -> DnsClient {
++    fn new(
++        context: Arc<ServiceContext>,
++        balancer: PingBalancer,
++        protocol: Mode,
++        client_cache_size: usize,
++    ) -> DnsClient {
+         DnsClient {
+             context,
+             client_cache: DnsClientCache::new(client_cache_size),
+-            mode,
++            protocol,
+             balancer,
+             attempts: 2,
+         }
+@@ -867,7 +887,7 @@ impl DnsClient {
+ 
+         // Query UDP and TCP
+ 
+-        match self.mode {
++        match self.protocol {
+             Mode::TcpOnly => {
+                 let server = self.balancer.best_tcp_server();
+                 self.client_cache
+diff --git a/src/local/mod.rs b/src/local/mod.rs
+index cacce89..8e65b64 100644
+--- a/src/local/mod.rs
++++ b/src/local/mod.rs
+@@ -409,6 +409,9 @@ impl Server {
+                         )
+                     };
+                     server_builder.set_mode(local_config.mode);
++                    if let Some(protocol) = local_config.remote_dns_protocol {
++                        server_builder.set_remote_dns_protocol(protocol);
++                    }
+ 
+                     #[cfg(target_os = "macos")]
+                     if let Some(n) = local_config.launchd_tcp_socket_name {
+@@ -434,6 +437,9 @@ impl Server {
+                     if let Some(name) = local_config.tun_interface_name {
+                         builder.name(&name);
+                     }
++                    if let Some(gateway) = local_config.dns_gateway {
++                        builder.dns_gateway(gateway);
++                    }
+                     if let Some(c) = config.udp_max_associations {
+                         builder.udp_capacity(c);
+                     }
+diff --git a/src/local/tun/dns.rs b/src/local/tun/dns.rs
+new file mode 100644
+index 0000000..8084abf
+--- /dev/null
++++ b/src/local/tun/dns.rs
+@@ -0,0 +1,341 @@
++//! Answer DNS queries received on the tun, instead of relaying them as UDP.
++//!
++//! Relaying only works when the server relays UDP, and plenty do not. Client
++//! DNS is the one flow that cannot survive that: a browser resolving names
++//! through its own UDP client, or any resolver the system handed out, silently
++//! times out, and everything addressed by name becomes unreachable even though
++//! the tunnel itself is carrying traffic perfectly well. go-tun2socks answers
++//! this with its `dnsgw` option, and this is the same idea — port 53 comes off
++//! the relay path and goes to a resolver the caller nominates, over the
++//! transport the query arrived on so the client sees the framing it expects.
++
++use std::{
++    io::{self, ErrorKind},
++    net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
++    sync::Arc,
++    time::Duration,
++};
++
++use bytes::{BufMut, BytesMut};
++use etherparse::PacketBuilder;
++use log::{debug, trace, warn};
++use tokio::{
++    io::copy_bidirectional,
++    net::{TcpStream, UdpSocket},
++    sync::{Semaphore, mpsc},
++    time,
++};
++
++use super::tcp::TcpConnection;
++
++/// The port that makes a packet a DNS query.
++const DNS_PORT: u16 = 53;
++
++/// How long to wait for the gateway's answer before giving up.
++///
++/// Our gateway resolves through the proxy, which costs a round trip; a UDP DNS
++/// client retries on its own, so dropping a query that takes longer than this
++/// is better than letting them pile up.
++const QUERY_TIMEOUT: Duration = Duration::from_secs(5);
++
++/// Largest answer we will read back. TCP DNS caps at 65535 and EDNS0 keeps UDP
++/// well below it, so this is simply as large as it can be.
++const MAX_RESPONSE_SIZE: usize = 65535;
++
++/// How many queries may be in flight at once.
++///
++/// Each one holds an ephemeral socket, so this is what stops a flood of
++/// lookups from exhausting descriptors. Past it queries are dropped and the
++/// client retries, which is what it would do after a timeout anyway.
++const MAX_INFLIGHT: usize = 64;
++
++/// Forwards DNS queries from the tun to a resolver the caller nominated.
++#[derive(Clone)]
++pub struct DnsTun {
++    gateway: Option<SocketAddr>,
++    tun_tx: mpsc::Sender<BytesMut>,
++    inflight: Arc<Semaphore>,
++}
++
++impl DnsTun {
++    pub fn new(gateway: Option<SocketAddr>, tun_tx: mpsc::Sender<BytesMut>) -> DnsTun {
++        DnsTun {
++            gateway,
++            tun_tx,
++            inflight: Arc::new(Semaphore::new(MAX_INFLIGHT)),
++        }
++    }
++
++    /// Whether a packet addressed to `dst` is answered here rather than
++    /// relayed.
++    ///
++    /// Without a gateway nothing is intercepted, which is what keeps this
++    /// inert for every caller that does not ask for it.
++    pub fn intercepts(&self, dst: SocketAddr) -> bool {
++        self.gateway.is_some() && dst.port() == DNS_PORT
++    }
++
++    /// Hand a UDP query to the gateway and write the answer back into the tun.
++    ///
++    /// Returns immediately: the query is answered on its own task so a gateway
++    /// that is slow — ours resolves through the proxy, which is a round trip —
++    /// never stalls the tun's packet loop.
++    pub fn forward_udp(&self, src: SocketAddr, dst: SocketAddr, payload: &[u8]) {
++        let Some(gateway) = self.gateway else {
++            return;
++        };
++
++        let Ok(permit) = self.inflight.clone().try_acquire_owned() else {
++            warn!("dns gateway busy, dropping query {} -> {}", src, dst);
++            return;
++        };
++
++        let tun_tx = self.tun_tx.clone();
++        let query = BytesMut::from(payload);
++
++        tokio::spawn(async move {
++            let _permit = permit;
++
++            let response = match query_udp(gateway, &query).await {
++                Ok(response) => response,
++                Err(err) => {
++                    debug!("dns query {} -> {} failed: {}", src, dst, err);
++                    return;
++                }
++            };
++
++            trace!("dns answer {} -> {}, {} bytes", dst, src, response.len());
++
++            let packet = match build_udp_reply(src, dst, &response) {
++                Ok(packet) => packet,
++                Err(err) => {
++                    debug!("dns answer {} -> {} could not be packed: {}", dst, src, err);
++                    return;
++                }
++            };
++
++            if tun_tx.send(packet).await.is_err() {
++                debug!("tun closed before the dns answer {} -> {} was written", dst, src);
++            }
++        });
++    }
++
++    /// Relay a TCP DNS connection to the gateway.
++    ///
++    /// DNS over TCP is a length-prefixed stream, so a byte copy is all the
++    /// translation this needs — including for a client that fell back to TCP
++    /// because an answer came back over UDP truncated.
++    pub async fn relay_tcp(&self, connection: TcpConnection, src: SocketAddr, dst: SocketAddr) -> io::Result<()> {
++        let Some(addr) = self.gateway else {
++            return Ok(());
++        };
++
++        let Ok(_permit) = self.inflight.clone().try_acquire_owned() else {
++            warn!("dns gateway busy, dropping TCP query {} -> {}", src, dst);
++            return Ok(());
++        };
++
++        let mut gateway = match TcpStream::connect(addr).await {
++            Ok(gateway) => gateway,
++            Err(err) => {
++                debug!("dns gateway {} unreachable, {} -> {}: {}", addr, src, dst, err);
++                return Ok(());
++            }
++        };
++
++        let mut connection = connection;
++
++        debug!("established TCP dns relay {} -> {} via {}", src, dst, addr);
++
++        match copy_bidirectional(&mut connection, &mut gateway).await {
++            Ok((up, down)) => trace!("TCP dns relay {} -> {} finished, {} up, {} down", src, dst, up, down),
++            Err(err) => debug!("TCP dns relay {} -> {} failed: {}", src, dst, err),
++        }
++
++        Ok(())
++    }
++}
++
++/// Send one query to the gateway and read its answer.
++async fn query_udp(gateway: SocketAddr, query: &[u8]) -> io::Result<BytesMut> {
++    // A socket per query: the answer comes back to a port nothing else shares,
++    // which is what keeps concurrent lookups from having to be matched up by
++    // hand. UDP has no handshake, so this is cheap.
++    let bind = if gateway.is_ipv4() {
++        SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), 0)
++    } else {
++        SocketAddr::new(IpAddr::V6(Ipv6Addr::UNSPECIFIED), 0)
++    };
++
++    let socket = UdpSocket::bind(bind).await?;
++    socket.connect(gateway).await?;
++    socket.send(query).await?;
++
++    let mut buffer = vec![0u8; MAX_RESPONSE_SIZE];
++    let n = time::timeout(QUERY_TIMEOUT, socket.recv(&mut buffer)).await??;
++    buffer.truncate(n);
++
++    Ok(BytesMut::from(&buffer[..]))
++}
++
++/// Wrap an answer in the IP and UDP headers that carry it back to the client.
++///
++/// The address the query was sent to becomes the source, which is what makes
++/// the reply look like it came from the resolver the client chose — whichever
++/// one that was.
++fn build_udp_reply(src: SocketAddr, dst: SocketAddr, payload: &[u8]) -> io::Result<BytesMut> {
++    match (dst, src) {
++        (SocketAddr::V4(server), SocketAddr::V4(client)) => {
++            let builder = PacketBuilder::ipv4(server.ip().octets(), client.ip().octets(), 20)
++                .udp(server.port(), client.port());
++
++            let packet = BytesMut::with_capacity(builder.size(payload.len()));
++            let mut packet_writer = packet.writer();
++            builder
++                .write(&mut packet_writer, payload)
++                .expect("PacketBuilder::write");
++
++            Ok(packet_writer.into_inner())
++        }
++        (SocketAddr::V6(server), SocketAddr::V6(client)) => {
++            let builder = PacketBuilder::ipv6(server.ip().octets(), client.ip().octets(), 20)
++                .udp(server.port(), client.port());
++
++            let packet = BytesMut::with_capacity(builder.size(payload.len()));
++            let mut packet_writer = packet.writer();
++            builder
++                .write(&mut packet_writer, payload)
++                .expect("PacketBuilder::write");
++
++            Ok(packet_writer.into_inner())
++        }
++        _ => Err(io::Error::new(
++            ErrorKind::InvalidData,
++            "source and destination type unmatch",
++        )),
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use etherparse::{NetSlice, SlicedPacket, TransportSlice};
++    use tokio::net::UdpSocket;
++
++    use super::*;
++
++    /// A DNS answer, in the shape a gateway would return one.
++    const ANSWER: &[u8] = b"\x12\x34\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00answer";
++
++    /// A gateway that answers every query with [`ANSWER`].
++    async fn spawn_gateway() -> SocketAddr {
++        let socket = UdpSocket::bind("127.0.0.1:0").await.expect("bind gateway");
++        let addr = socket.local_addr().expect("gateway address");
++
++        tokio::spawn(async move {
++            let mut buffer = [0u8; 512];
++            while let Ok((_, peer)) = socket.recv_from(&mut buffer).await {
++                let _ = socket.send_to(ANSWER, peer).await;
++            }
++        });
++
++        addr
++    }
++
++    fn addr(s: &str) -> SocketAddr {
++        s.parse().expect("test address")
++    }
++
++    #[test]
++    fn intercepts_the_dns_port_only_when_a_gateway_is_configured() {
++        let (tx, _rx) = mpsc::channel(1);
++
++        let without = DnsTun::new(None, tx.clone());
++        assert!(!without.intercepts(addr("223.5.5.5:53")));
++
++        let with = DnsTun::new(Some(addr("127.0.0.1:5353")), tx);
++        assert!(with.intercepts(addr("223.5.5.5:53")));
++        assert!(with.intercepts(addr("1.1.1.1:53")));
++        assert!(!with.intercepts(addr("223.5.5.5:443")));
++    }
++
++    #[test]
++    fn a_reply_wears_the_address_the_query_was_sent_to() {
++        let packet = build_udp_reply(addr("172.19.0.1:40000"), addr("223.5.5.5:53"), ANSWER).expect("reply");
++
++        let sliced = SlicedPacket::from_ip(&packet).expect("reply is not an IP packet");
++
++        match sliced.net {
++            Some(NetSlice::Ipv4(ip)) => {
++                assert_eq!(ip.header().source(), [223, 5, 5, 5], "source is the resolver");
++                assert_eq!(ip.header().destination(), [172, 19, 0, 1], "destination is the client");
++            }
++            _ => panic!("expected an IPv4 reply, got {:?}", sliced.net),
++        }
++
++        match sliced.transport {
++            Some(TransportSlice::Udp(udp)) => {
++                assert_eq!(udp.source_port(), 53);
++                assert_eq!(udp.destination_port(), 40000);
++                assert_eq!(udp.payload(), ANSWER);
++            }
++            _ => panic!("expected a UDP reply, got {:?}", sliced.transport),
++        }
++    }
++
++    #[test]
++    fn a_reply_between_mismatched_families_is_refused() {
++        assert!(build_udp_reply(addr("172.19.0.1:40000"), addr("[2001:db8::1]:53"), ANSWER).is_err());
++    }
++
++    #[tokio::test]
++    async fn a_udp_query_is_answered_and_written_back_to_the_tun() {
++        let gateway = spawn_gateway().await;
++
++        let (tun_tx, mut tun_rx) = mpsc::channel(4);
++        let dns = DnsTun::new(Some(gateway), tun_tx);
++
++        let src = addr("172.19.0.1:40000");
++        let dst = addr("223.5.5.5:53");
++        dns.forward_udp(src, dst, b"\x12\x34\x01\x00query");
++
++        let packet = time::timeout(Duration::from_secs(5), tun_rx.recv())
++            .await
++            .expect("no answer was written back within the timeout")
++            .expect("the tun channel closed");
++
++        let sliced = SlicedPacket::from_ip(&packet).expect("not an IP packet");
++        match sliced.transport {
++            Some(TransportSlice::Udp(udp)) => assert_eq!(udp.payload(), ANSWER),
++            _ => panic!("expected a UDP reply, got {:?}", sliced.transport),
++        }
++    }
++
++    #[tokio::test]
++    async fn a_query_with_no_gateway_writes_nothing_back() {
++        let (tun_tx, mut tun_rx) = mpsc::channel(4);
++        let dns = DnsTun::new(None, tun_tx);
++
++        dns.forward_udp(addr("172.19.0.1:40000"), addr("223.5.5.5:53"), b"query");
++
++        // Nothing was spawned, so there is nothing to wait for: give the
++        // runtime a chance to run anything that was, then look.
++        tokio::task::yield_now().await;
++        assert!(tun_rx.try_recv().is_err());
++    }
++
++    #[tokio::test]
++    async fn a_query_the_gateway_never_answers_is_dropped() {
++        // Bound but never read from, so the answer never comes.
++        let silent = UdpSocket::bind("127.0.0.1:0").await.expect("bind gateway");
++        let gateway = silent.local_addr().expect("gateway address");
++
++        let (tun_tx, mut tun_rx) = mpsc::channel(4);
++        let dns = DnsTun::new(Some(gateway), tun_tx);
++
++        dns.forward_udp(addr("172.19.0.1:40000"), addr("223.5.5.5:53"), b"query");
++
++        // Past the query timeout: the task gives up, and nothing is written.
++        time::sleep(QUERY_TIMEOUT + Duration::from_secs(1)).await;
++        assert!(tun_rx.try_recv().is_err());
++    }
++}
+diff --git a/src/local/tun/mod.rs b/src/local/tun/mod.rs
+index 2f9f82f..15241b7 100644
+--- a/src/local/tun/mod.rs
++++ b/src/local/tun/mod.rs
+@@ -11,6 +11,7 @@ use std::{
+ };
+ 
+ use byte_string::ByteStr;
++use bytes::BytesMut;
+ use cfg_if::cfg_if;
+ use ipnet::IpNet;
+ use log::{debug, error, info, trace, warn};
+@@ -42,13 +43,21 @@ cfg_if! {
+ 
+ use crate::local::{context::ServiceContext, loadbalancing::PingBalancer};
+ 
+-use self::{ip_packet::IpPacket, tcp::TcpTun, udp::UdpTun, virt_device::TokenBuffer};
++use self::{dns::DnsTun, ip_packet::IpPacket, tcp::TcpTun, udp::UdpTun, virt_device::TokenBuffer};
+ 
++mod dns;
+ mod ip_packet;
+ mod tcp;
+ mod udp;
+ mod virt_device;
+ 
++/// How many answers from the DNS gateway may be waiting to be written back.
++///
++/// Answers are produced by a task per query and consumed by the single packet
++/// loop, so a full channel simply makes those tasks wait; `DnsTun` already
++/// bounds how many there can be.
++const MAX_PENDING_DNS_REPLIES: usize = 64;
++
+ /// Tun service builder
+ pub struct TunBuilder {
+     context: Arc<ServiceContext>,
+@@ -56,6 +65,7 @@ pub struct TunBuilder {
+     tun_config: TunConfiguration,
+     udp_expiry_duration: Option<Duration>,
+     udp_capacity: Option<usize>,
++    dns_gateway: Option<SocketAddr>,
+     mode: Mode,
+ }
+ 
+@@ -71,6 +81,7 @@ impl TunBuilder {
+             tun_config: TunConfiguration::default(),
+             udp_expiry_duration: None,
+             udp_capacity: None,
++            dns_gateway: None,
+             mode: Mode::TcpOnly,
+         }
+     }
+@@ -104,6 +115,14 @@ impl TunBuilder {
+         self.mode = mode;
+     }
+ 
++    /// Answer DNS queries received on the tun from this resolver, rather than
++    /// relaying them through the proxy
++    ///
++    /// See [`DnsTun`] for why this is worth doing and what it costs.
++    pub fn dns_gateway(&mut self, gateway: SocketAddr) {
++        self.dns_gateway = Some(gateway);
++    }
++
+     /// Build Tun server
+     pub async fn build(mut self) -> io::Result<Tun> {
+         self.tun_config.layer(Layer::L3).up();
+@@ -129,12 +148,22 @@ impl TunBuilder {
+             self.udp_capacity,
+         );
+ 
+-        let tcp = TcpTun::new(self.context, self.balancer, device.mtu().unwrap_or(1500) as u32);
++        let (dns_tx, dns_rx) = mpsc::channel(MAX_PENDING_DNS_REPLIES);
++        let dns = DnsTun::new(self.dns_gateway, dns_tx);
++
++        let tcp = TcpTun::new(
++            self.context,
++            self.balancer,
++            device.mtu().unwrap_or(1500) as u32,
++            dns.clone(),
++        );
+ 
+         Ok(Tun {
+             device,
+             tcp,
+             udp,
++            dns_rx,
++            dns,
+             udp_cleanup_interval,
+             udp_keepalive_rx,
+             mode: self.mode,
+@@ -147,6 +176,12 @@ pub struct Tun {
+     device: AsyncDevice,
+     tcp: TcpTun,
+     udp: UdpTun,
++    /// Answers from the DNS gateway, waiting to be written back to clients
++    dns_rx: mpsc::Receiver<BytesMut>,
++    /// Hands DNS queries to the gateway; shared with `tcp`, which relays the
++    /// stream-shaped ones. Always present so that `dns_rx` never closes, but
++    /// it only intercepts anything once a gateway is configured.
++    dns: DnsTun,
+     udp_cleanup_interval: Duration,
+     udp_keepalive_rx: mpsc::Receiver<SocketAddr>,
+     mode: Mode,
+@@ -264,6 +299,24 @@ impl Tun {
+                         }
+                     }
+                 }
++
++                // DNS answer from the gateway, sent back in place of the
++                // packet that would have come from the server
++                packet = self.dns_rx.recv() => {
++                    let packet = packet.expect("dns channel closed unexpectly");
++                    match self.device.write(&packet).await {
++                        Ok(n) => {
++                            if n < packet.len() {
++                                warn!("[TUN] sent IP packet (DNS), but truncated. sent {} < {}, {:?}", n, packet.len(), ByteStr::new(&packet));
++                            } else {
++                                trace!("[TUN] sent IP packet (DNS) {:?}", ByteStr::new(&packet));
++                            }
++                        }
++                        Err(err) => {
++                            error!("[TUN] failed to set packet information, error: {}, {:?}", err, ByteStr::new(&packet));
++                        }
++                    }
++                }
+             }
+         }
+     }
+@@ -347,11 +400,6 @@ impl Tun {
+                 self.tcp.drive_interface_state(frame).await;
+             }
+             IpProtocol::Udp => {
+-                if !self.mode.enable_udp() {
+-                    trace!("received UDP packet but mode is {}, throwing away", self.mode);
+-                    return Ok(());
+-                }
+-
+                 let udp_packet = match UdpPacket::new_checked(packet.payload()) {
+                     Ok(p) => p,
+                     Err(err) => {
+@@ -378,6 +426,22 @@ impl Tun {
+                     src_addr, !src_non_unicast, dst_addr, !dst_non_unicast, udp_packet
+                 );
+ 
++                // DNS is answered by the gateway rather than relayed, which is
++                // the only thing that works against a server that does not
++                // relay UDP. Checked ahead of `mode` because resolving names
++                // is a property of the tun, not of proxying UDP: it has to keep
++                // working for a caller that dropped down to `tcp_only`
++                // precisely because UDP was getting nowhere.
++                if self.dns.intercepts(dst_addr) {
++                    self.dns.forward_udp(src_addr, dst_addr, payload);
++                    return Ok(());
++                }
++
++                if !self.mode.enable_udp() {
++                    trace!("received UDP packet but mode is {}, throwing away", self.mode);
++                    return Ok(());
++                }
++
+                 if let Err(err) = self.udp.handle_packet(src_addr, dst_addr, payload).await {
+                     error!("handle UDP packet failed, err: {}, packet: {:?}", err, udp_packet);
+                 }
+diff --git a/src/local/tun/tcp.rs b/src/local/tun/tcp.rs
+index 11eda65..c83eafa 100644
+--- a/src/local/tun/tcp.rs
++++ b/src/local/tun/tcp.rs
+@@ -40,7 +40,10 @@ use crate::{
+     net::utils::to_ipv4_mapped,
+ };
+ 
+-use super::virt_device::{TokenBuffer, VirtTunDevice};
++use super::{
++    dns::DnsTun,
++    virt_device::{TokenBuffer, VirtTunDevice},
++};
+ 
+ // NOTE: Default buffer could contain 5 AEAD packets
+ const DEFAULT_TCP_SEND_BUFFER_SIZE: u32 = (0x3FFFu32 * 5).next_power_of_two();
+@@ -92,7 +95,7 @@ struct TcpSocketCreation {
+     socket_created_tx: oneshot::Sender<()>,
+ }
+ 
+-struct TcpConnection {
++pub(super) struct TcpConnection {
+     control: SharedTcpConnectionControl,
+     manager_notify: Arc<ManagerNotify>,
+ }
+@@ -238,6 +241,9 @@ impl AsyncWrite for TcpConnection {
+ 
+ pub struct TcpTun {
+     context: Arc<ServiceContext>,
++    /// TCP DNS is a byte stream, so it is relayed to the gateway here rather
++    /// than answered by the packet loop; see [`DnsTun`].
++    dns: DnsTun,
+     manager_handle: Option<JoinHandle<()>>,
+     manager_notify: Arc<ManagerNotify>,
+     manager_socket_creation_tx: mpsc::UnboundedSender<TcpSocketCreation>,
+@@ -257,7 +263,7 @@ impl Drop for TcpTun {
+ }
+ 
+ impl TcpTun {
+-    pub fn new(context: Arc<ServiceContext>, balancer: PingBalancer, mtu: u32) -> TcpTun {
++    pub fn new(context: Arc<ServiceContext>, balancer: PingBalancer, mtu: u32, dns: DnsTun) -> TcpTun {
+         let mut capabilities = DeviceCapabilities::default();
+         capabilities.medium = Medium::Ip;
+         capabilities.max_transmission_unit = mtu as usize;
+@@ -488,6 +494,7 @@ impl TcpTun {
+ 
+         TcpTun {
+             context,
++            dns,
+             manager_handle: Some(manager_handle),
+             manager_notify,
+             manager_socket_creation_tx,
+@@ -537,6 +544,20 @@ impl TcpTun {
+                 &accept_opts.tcp,
+             );
+ 
++            // DNS goes to the gateway instead of through the proxy. It still
++            // has to be accepted by smoltcp first, which is what the socket
++            // above does; only the far end of the relay changes.
++            if self.dns.intercepts(dst_addr) {
++                let dns = self.dns.clone();
++                tokio::spawn(async move {
++                    let connection = connection.await;
++                    if let Err(err) = dns.relay_tcp(connection, src_addr, dst_addr).await {
++                        error!("TCP dns relay failure, {} <-> {}, error: {}", src_addr, dst_addr, err);
++                    }
++                });
++                return Ok(());
++            }
++
+             // establish a tunnel
+             let context = self.context.clone();
+             let balancer = self.balancer.clone();

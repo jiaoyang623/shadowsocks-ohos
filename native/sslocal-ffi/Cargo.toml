@@ -47,7 +47,11 @@ meow-transport = { git = "https://github.com/madeye/meow-rs", tag = "v0.18.0" }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
-shadowsocks-service = { path = "../../../core/src/main/rust/shadowsocks-rust/crates/shadowsocks-service", default-features = false, features = [
+# Vendored, not the sibling checkout's copy: the HarmonyOS client needs the tun
+# to answer DNS itself, and that lives inside this crate (local/tun). The
+# sibling checkout still supplies `shadowsocks`; see
+# vendor/shadowsocks-service/PATCH.md and native/vendor-shadowsocks-service.sh.
+shadowsocks-service = { path = "vendor/shadowsocks-service", default-features = false, features = [
     "local",
     "server",
     "aead-cipher",

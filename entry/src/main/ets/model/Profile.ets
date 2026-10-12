@@ -22,6 +22,16 @@ import { ROUTE_ALL } from './Routes';
 const DEFAULT_SOCKS_PORT = 1080;
 
 /**
+ * Port the core's own DNS resolver listens on, bound to loopback and handed to
+ * the tun as its `dns_gateway`.
+ *
+ * Not 53 — binding a privileged port is refused (EACCES) — and not 5353, which
+ * belongs to mDNS and is very likely taken already by a daemon holding it on
+ * all interfaces, loopback included.
+ */
+const DNS_PORT = 5453;
+
+/**
  * Random UUIDv4-shaped id for profiles and subscriptions. Implemented with
  * Math.random (uniqueness only, not security) because util.generateRandomUUID
  * is unavailable in the host-side unit-test runtime.
@@ -304,24 +314,31 @@ export class Profile {
     const local: Record<string, Object> = { 'protocol': 'tun' };
     const locals: Object[] = [local];
     if (tunAddress.length > 0) {
-      // The core's tun stack relays client DNS as plain UDP through the
-      // tunnel, which only works if the server relays UDP — and many do not.
-      // When it does not, every lookup silently times out and the device looks
-      // offline while TCP still tunnels fine. So let the core answer DNS
-      // itself: this binds a resolver on the tun's own address, which apps are
-      // pointed at, and it resolves upstream through the proxy *over TCP*.
       local['tun_interface_address'] = tunAddress;
+      // Resolving names has to happen inside the tun, not by relaying UDP
+      // through the server: a server that does not relay UDP (many do not) is
+      // otherwise fatal to DNS, because clients which pick their own resolver —
+      // browsers, above all — send their queries straight at it and wait
+      // forever. The core answers port 53 itself when given a gateway, so the
+      // resolver below is bound on loopback and handed to it. A tunnel built
+      // from this config cannot have DNS depend on the server's UDP support.
+      local['dns_gateway'] = `127.0.0.1:${DNS_PORT}`;
       const dnsLocal: Record<string, Object> = {
         'protocol': 'dns',
-        'local_address': tunAddress.split('/')[0],
-        'local_port': 5353,
-        // Both are required: DnsBuilder treats a missing `local_dns_addr` as a
-        // programming error and panics, which takes the whole local server
-        // down before the tun ever serves.
+        'local_address': '127.0.0.1',
+        'local_port': DNS_PORT,
+        // Both are required: DnsBuilder takes them as arguments rather than
+        // options and panics without them, which takes the whole local server
+        // down before the tun ever serves. With no ACL deployed the local one
+        // is never consulted — every name goes to the remote resolver.
         'local_dns_address': '1.1.1.1',
         'local_dns_port': 53,
         'remote_dns_address': '1.1.1.1',
         'remote_dns_port': 53,
+        // Resolving through the proxy over TCP only. The alternative races a
+        // UDP query it cannot win against one sent 500–1500 ms later, so every
+        // uncached lookup would pay that wait for nothing.
+        'remote_dns_protocol': 'tcp_only',
       };
       locals.push(dnsLocal);
     }

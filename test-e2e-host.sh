@@ -34,7 +34,12 @@ STEPS=("$@")
 step_tests() {
     echo "=== host tests (incl. SOCKS5 e2e round-trip) ==="
     cd "$CRATE_DIR"
-    cargo test
+    # --workspace, not the default: the vendored shadowsocks-service is a path
+    # dependency rather than the root package, so its own tests — the tun's DNS
+    # gateway among them — are only built and run when the workspace is
+    # selected. Selecting it is also what unifies the features the FFI asks
+    # for, which is what makes `local-tun` code compile at all.
+    cargo test --workspace
 }
 
 step_cross() {

@@ -55,11 +55,18 @@ const TUN_PREFIX_LENGTH = 30;
  */
 const TUN_MTU = 1400;
 /**
- * Port the core's own DNS resolver listens on. It cannot be 53: binding a
- * privileged port is refused (EACCES), so the resolver listens high and the
- * VPN's DNS address carries the port to match.
+ * Address clients are told to send DNS to: the *other* end of the tun's /30,
+ * which nothing is configured to own.
+ *
+ * Deliberately not `TUN_ADDRESS`. A query to the tun's own address is delivered
+ * to the local socket stack rather than out through the interface, so it never
+ * reaches the core's tun stack, and the interception that answers DNS — see
+ * `dns_gateway` in Profile.toTunConfig — would never see it. An address merely
+ * *on* the tun's subnet is on-link and does go out the interface, which is what
+ * puts the query in front of the core. shadowsocks-android uses the same trick
+ * with the same address.
  */
-const DNS_PORT = 5353;
+const DNS_ADDRESS = '172.19.0.2';
 
 /** Loopback ports probed (in order) for the traffic-stat report endpoint. */
 const STAT_PORTS: number[] = [65080, 65081, 65082, 65083, 65084];
@@ -144,12 +151,11 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         hasGateway: false,
         isDefaultRoute: true,
       }],
-      // The core answers DNS on the tun's own address (see toTunConfig); point
-      // clients there instead of at a public resolver, whose queries would be
-      // relayed as UDP and dropped by a server without UDP relay. The port
-      // matters: the resolver cannot bind 53 (a privileged port, refused with
-      // EACCES), so it listens high and the address has to carry the port.
-      dnsAddresses: [`${TUN_ADDRESS}:${DNS_PORT}`],
+      // Clients resolve against DNS_ADDRESS; whatever they do with it, the
+      // core answers (see toTunConfig). Pointing them at a public resolver
+      // would not work: their queries would be relayed as UDP and dropped by a
+      // server that does not relay UDP.
+      dnsAddresses: [DNS_ADDRESS],
       trustedApplications: [],
       blockedApplications: [],
       mtu: TUN_MTU,
