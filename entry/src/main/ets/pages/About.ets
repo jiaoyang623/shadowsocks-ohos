@@ -63,7 +63,7 @@ struct AboutPage {
   }
 
   @Builder
-  Line(label: string, value: string) {
+  Line(label: ResourceStr, value: ResourceStr) {
     Row() {
       Text(label)
         .fontSize(14)
@@ -79,11 +79,11 @@ struct AboutPage {
   build() {
     Column({ space: 12 }) {
       Row() {
-        Text('‹ Back')
+        Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
-        Text('About')
+        Text($r('app.string.about_about'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -94,16 +94,16 @@ struct AboutPage {
       .padding({ top: 8, bottom: 8 })
 
       Column() {
-        this.Line('Shadowsocks', this.versions.app)
-        this.Line('Native core', this.versions.core)
-        this.Line('Licence', 'GPL-3.0-or-later')
+        this.Line($r('app.string.app_name'), this.versions.app)
+        this.Line($r('app.string.about_native_core'), this.versions.core)
+        this.Line($r('app.string.about_licence'), $r('app.string.about_licence_value'))
       }
       .width('100%')
       .padding(12)
       .borderRadius(8)
       .backgroundColor($r('app.color.surface'))
 
-      Text('A client for HarmonyOS NEXT, built on the same Rust core as the Android client. It is free software: you may redistribute and modify it under the terms of the GNU General Public License, version 3 or later, as published by the Free Software Foundation.')
+      Text($r('app.string.about_about_text'))
         .fontSize(13)
         .fontColor($r('app.color.text_body'))
 

@@ -84,14 +84,14 @@ struct CustomRulesPage {
     } catch (e) {
       const err = e as BusinessError;
       hilog.error(0x0000, TAG, 'save failed: %{public}s', err.message ?? String(e));
-      promptAction.showToast({ message: `Save failed: ${err.message ?? String(e)}` });
+      promptAction.showToast({ message: $r('app.string.common_save_failed', err.message ?? String(e)) });
     }
   }
 
   private async add(kind: string): Promise<void> {
     const value = this.draft.trim();
     if (value.length === 0) {
-      promptAction.showToast({ message: 'Enter a rule first' });
+      promptAction.showToast({ message: $r('app.string.custom_rules_enter_rule_first') });
       return;
     }
     await this.change(addRule(readUserRules(abilityContext()), kind, value));
@@ -108,11 +108,11 @@ struct CustomRulesPage {
   build() {
     Column({ space: 12 }) {
       Row() {
-        Text('‹ Back')
+        Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
-        Text('Custom rules')
+        Text($r('app.string.settings_custom_rules'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -122,7 +122,7 @@ struct CustomRulesPage {
       .width('100%')
       .padding({ top: 8, bottom: 8 })
 
-      Text('Destinations listed here go through the proxy. Profiles using the custom-rules route apply them.')
+      Text($r('app.string.custom_rules_explainer'))
         .fontSize(13)
         .fontColor($r('app.color.text_body'))
 
@@ -130,20 +130,20 @@ struct CustomRulesPage {
         .onChange((value) => this.draft = value)
 
       Row({ space: 8 }) {
-        Button('Domain')
+        Button($r('app.string.custom_rules_kind_domain'))
           .layoutWeight(1)
           .onClick(() => this.add(RULE_KIND_DOMAIN))
-        Button('Subnet')
+        Button($r('app.string.custom_rules_kind_subnet'))
           .layoutWeight(1)
           .onClick(() => this.add(RULE_KIND_SUBNET))
-        Button('List URL')
+        Button($r('app.string.custom_rules_kind_url'))
           .layoutWeight(1)
           .onClick(() => this.add(RULE_KIND_URL))
       }
       .width('100%')
 
       if (this.rows.length === 0) {
-        Text('No rules yet.')
+        Text($r('app.string.custom_rules_no_rules'))
           .fontSize(14)
           .fontColor($r('app.color.text_secondary'))
           .margin({ top: 16 })

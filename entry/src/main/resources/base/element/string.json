@@ -15,6 +15,546 @@
     {
       "name": "vpn_ability_desc",
       "value": "Shadowsocks VPN service"
+    },
+    {
+      "name": "common_back",
+      "value": "‹ Back"
+    },
+    {
+      "name": "common_cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "common_ok",
+      "value": "OK"
+    },
+    {
+      "name": "common_save",
+      "value": "Save"
+    },
+    {
+      "name": "common_add",
+      "value": "Add"
+    },
+    {
+      "name": "common_delete",
+      "value": "Delete"
+    },
+    {
+      "name": "common_update",
+      "value": "Update"
+    },
+    {
+      "name": "common_undo",
+      "value": "Undo"
+    },
+    {
+      "name": "common_edit",
+      "value": "Edit"
+    },
+    {
+      "name": "common_test",
+      "value": "Test"
+    },
+    {
+      "name": "common_testing",
+      "value": "Testing…"
+    },
+    {
+      "name": "common_save_failed",
+      "value": "Save failed: %s"
+    },
+    {
+      "name": "common_replace",
+      "value": "Replace"
+    },
+    {
+      "name": "common_import",
+      "value": "Import"
+    },
+    {
+      "name": "index_add_manually",
+      "value": "Add manually"
+    },
+    {
+      "name": "index_import_url",
+      "value": "Import ss:// URL"
+    },
+    {
+      "name": "index_paste_from_clipboard",
+      "value": "Paste from clipboard"
+    },
+    {
+      "name": "index_import_from_file",
+      "value": "Import from file"
+    },
+    {
+      "name": "index_replace_from_file",
+      "value": "Replace from file"
+    },
+    {
+      "name": "index_export_to_file",
+      "value": "Export to file"
+    },
+    {
+      "name": "index_copy_to_clipboard",
+      "value": "Copy to clipboard"
+    },
+    {
+      "name": "index_subscriptions",
+      "value": "Subscriptions"
+    },
+    {
+      "name": "index_search_profiles",
+      "value": "Search profiles"
+    },
+    {
+      "name": "index_connect",
+      "value": "Connect"
+    },
+    {
+      "name": "index_disconnect",
+      "value": "Disconnect"
+    },
+    {
+      "name": "index_test_connection",
+      "value": "Test connection"
+    },
+    {
+      "name": "index_speed_test",
+      "value": "Speed test"
+    },
+    {
+      "name": "index_not_connected",
+      "value": "Not connected"
+    },
+    {
+      "name": "index_no_profile_selected",
+      "value": "No profile selected"
+    },
+    {
+      "name": "index_connecting",
+      "value": "Connecting…"
+    },
+    {
+      "name": "index_verifying_tunnel",
+      "value": "Verifying the tunnel…"
+    },
+    {
+      "name": "index_connected",
+      "value": "Connected"
+    },
+    {
+      "name": "index_connected_rtt",
+      "value": "Connected · %s"
+    },
+    {
+      "name": "index_tunnel_up_no_internet",
+      "value": "Tunnel up, but no internet"
+    },
+    {
+      "name": "index_failed",
+      "value": "Failed"
+    },
+    {
+      "name": "index_failed_reason",
+      "value": "Failed: %s"
+    },
+    {
+      "name": "index_test_failed",
+      "value": "Test failed: %s"
+    },
+    {
+      "name": "index_speed_test_failed",
+      "value": "Speed test failed: %s"
+    },
+    {
+      "name": "index_replace_all_profiles",
+      "value": "Replace all profiles?"
+    },
+    {
+      "name": "index_replace_all_profiles_message",
+      "value": "Every profile will be replaced by the ones in the file. Profiles with the same server keep their counters."
+    },
+    {
+      "name": "index_deleted_profile",
+      "value": "Deleted %s"
+    },
+    {
+      "name": "index_deleted_profile_message",
+      "value": "Its password was only stored here."
+    },
+    {
+      "name": "index_could_not_start_vpn",
+      "value": "Could not start the VPN extension"
+    },
+    {
+      "name": "index_vpn_start_timeout",
+      "value": "Timed out starting the VPN"
+    },
+    {
+      "name": "index_connection_lost",
+      "value": "Connection lost"
+    },
+    {
+      "name": "index_no_traffic",
+      "value": "The tunnel started, but the core is not reporting traffic"
+    },
+    {
+      "name": "index_add_and_select_profile",
+      "value": "Please add and select a profile first"
+    },
+    {
+      "name": "index_clipboard_empty",
+      "value": "The clipboard is empty"
+    },
+    {
+      "name": "index_nothing_to_import",
+      "value": "Nothing to import from %s"
+    },
+    {
+      "name": "index_imported_n",
+      "value": "Imported %d profile(s)"
+    },
+    {
+      "name": "index_replaced_n",
+      "value": "Replaced with %d profile(s)"
+    },
+    {
+      "name": "index_exported_n",
+      "value": "Exported %d profile(s)"
+    },
+    {
+      "name": "index_copied_n",
+      "value": "Copied %d profile(s)"
+    },
+    {
+      "name": "index_source_text",
+      "value": "the text"
+    },
+    {
+      "name": "index_source_link",
+      "value": "the link"
+    },
+    {
+      "name": "index_source_file",
+      "value": "the file"
+    },
+    {
+      "name": "index_source_clipboard",
+      "value": "the clipboard"
+    },
+    {
+      "name": "index_proxy_on",
+      "value": "Proxy on %s:%d"
+    },
+    {
+      "name": "index_could_not_start_proxy",
+      "value": "Could not start the proxy: %s"
+    },
+    {
+      "name": "index_vpn_start_failed",
+      "value": "Failed to start VPN: %s"
+    },
+    {
+      "name": "index_vpn_stop_failed",
+      "value": "Failed to stop VPN: %s"
+    },
+    {
+      "name": "index_op_reorder",
+      "value": "Reorder"
+    },
+    {
+      "name": "index_op_select_profile",
+      "value": "Select profile"
+    },
+    {
+      "name": "index_op_delete_profile",
+      "value": "Delete profile"
+    },
+    {
+      "name": "index_op_undo_delete",
+      "value": "Undo delete"
+    },
+    {
+      "name": "index_op_import",
+      "value": "Import"
+    },
+    {
+      "name": "index_op_export",
+      "value": "Export"
+    },
+    {
+      "name": "index_op_copy",
+      "value": "Copy"
+    },
+    {
+      "name": "index_op_failed",
+      "value": "%s failed"
+    },
+    {
+      "name": "index_status_profile",
+      "value": "%s · %s"
+    },
+    {
+      "name": "profile_edit_add_profile",
+      "value": "Add profile"
+    },
+    {
+      "name": "profile_edit_edit_profile",
+      "value": "Edit profile"
+    },
+    {
+      "name": "profile_edit_profile_name",
+      "value": "Profile name (optional)"
+    },
+    {
+      "name": "profile_edit_server_host",
+      "value": "Server host"
+    },
+    {
+      "name": "profile_edit_server_port",
+      "value": "Server port"
+    },
+    {
+      "name": "profile_edit_password",
+      "value": "Password"
+    },
+    {
+      "name": "profile_edit_encryption_method",
+      "value": "Encryption method"
+    },
+    {
+      "name": "profile_edit_custom",
+      "value": "Custom…"
+    },
+    {
+      "name": "profile_edit_method_custom",
+      "value": "Method (e.g. aes-256-gcm)"
+    },
+    {
+      "name": "profile_edit_route",
+      "value": "Route"
+    },
+    {
+      "name": "profile_edit_plugin",
+      "value": "Plugin"
+    },
+    {
+      "name": "profile_edit_plugin_options",
+      "value": "Plugin options (k=v;...)"
+    },
+    {
+      "name": "profile_edit_show_qr_code",
+      "value": "Show QR code"
+    },
+    {
+      "name": "profile_edit_required_fields",
+      "value": "Server, password and method are required"
+    },
+    {
+      "name": "about_about",
+      "value": "About"
+    },
+    {
+      "name": "about_native_core",
+      "value": "Native core"
+    },
+    {
+      "name": "about_licence",
+      "value": "Licence"
+    },
+    {
+      "name": "about_licence_value",
+      "value": "GPL-3.0-or-later"
+    },
+    {
+      "name": "about_about_text",
+      "value": "A client for HarmonyOS NEXT, built on the same Rust core as the Android client. It is free software: you may redistribute and modify it under the terms of the GNU General Public License, version 3 or later, as published by the Free Software Foundation."
+    },
+    {
+      "name": "settings_settings",
+      "value": "Settings"
+    },
+    {
+      "name": "settings_service_mode",
+      "value": "Service mode"
+    },
+    {
+      "name": "settings_vpn",
+      "value": "VPN"
+    },
+    {
+      "name": "settings_proxy",
+      "value": "Proxy"
+    },
+    {
+      "name": "settings_proxy_explainer",
+      "value": "A local SOCKS5 listener, without taking over the device. Point apps at it. These settings apply the next time you connect."
+    },
+    {
+      "name": "settings_allow_other_devices",
+      "value": "Allow other devices on the network"
+    },
+    {
+      "name": "settings_share_warning",
+      "value": "The listener has no authentication, so anyone who can reach this device can use the tunnel."
+    },
+    {
+      "name": "settings_socks_port",
+      "value": "SOCKS5 port (%d)"
+    },
+    {
+      "name": "settings_connection_test_url",
+      "value": "Connection test URL"
+    },
+    {
+      "name": "settings_connection_test_url_hint",
+      "value": "Must return 2xx; used to confirm traffic really reaches the internet through the tunnel. Default: %s"
+    },
+    {
+      "name": "settings_speed_test_url",
+      "value": "Speed test URL"
+    },
+    {
+      "name": "settings_speed_test_url_hint",
+      "value": "Downloaded in full and timed. Default: %s"
+    },
+    {
+      "name": "settings_custom_rules",
+      "value": "Custom rules"
+    },
+    {
+      "name": "settings_reset_to_defaults",
+      "value": "Reset to defaults"
+    },
+    {
+      "name": "custom_rules_explainer",
+      "value": "Destinations listed here go through the proxy. Profiles using the custom-rules route apply them."
+    },
+    {
+      "name": "custom_rules_kind_domain",
+      "value": "Domain"
+    },
+    {
+      "name": "custom_rules_kind_subnet",
+      "value": "Subnet"
+    },
+    {
+      "name": "custom_rules_kind_url",
+      "value": "List URL"
+    },
+    {
+      "name": "custom_rules_no_rules",
+      "value": "No rules yet."
+    },
+    {
+      "name": "custom_rules_enter_rule_first",
+      "value": "Enter a rule first"
+    },
+    {
+      "name": "subscription_no_subscriptions",
+      "value": "No subscriptions yet"
+    },
+    {
+      "name": "subscription_add_subscription",
+      "value": "Add subscription"
+    },
+    {
+      "name": "subscription_never_updated",
+      "value": "never updated"
+    },
+    {
+      "name": "subscription_profiles_updated",
+      "value": "%d profiles · updated %s"
+    },
+    {
+      "name": "subscription_url_required",
+      "value": "Subscription must be an http(s) URL"
+    },
+    {
+      "name": "subscription_no_profiles",
+      "value": "No profiles found in subscription"
+    },
+    {
+      "name": "subscription_updated_n",
+      "value": "Updated: %d profiles"
+    },
+    {
+      "name": "subscription_update_failed",
+      "value": "Update failed: %s"
+    },
+    {
+      "name": "qr_title",
+      "value": "QR code"
+    },
+    {
+      "name": "qr_copy_url",
+      "value": "Copy the URL"
+    },
+    {
+      "name": "qr_copied",
+      "value": "Copied"
+    },
+    {
+      "name": "qr_could_not_copy",
+      "value": "Could not copy"
+    },
+    {
+      "name": "qr_no_profile",
+      "value": "There is no profile to show."
+    },
+    {
+      "name": "qr_too_long",
+      "value": "This profile is too long to show as a QR code."
+    },
+    {
+      "name": "qr_explainer",
+      "value": "Point another Shadowsocks client at this code to add the profile. It carries the password, so do not show it to anyone you would not give the password to."
+    },
+    {
+      "name": "route_all",
+      "value": "All"
+    },
+    {
+      "name": "route_bypass_lan",
+      "value": "Bypass LAN"
+    },
+    {
+      "name": "route_bypass_china",
+      "value": "Bypass China"
+    },
+    {
+      "name": "route_bypass_lan_china",
+      "value": "Bypass LAN and China"
+    },
+    {
+      "name": "route_gfwlist",
+      "value": "GFW list"
+    },
+    {
+      "name": "route_china_list",
+      "value": "China list"
+    },
+    {
+      "name": "route_custom_rules",
+      "value": "Custom rules"
+    },
+    {
+      "name": "notification_connected_to",
+      "value": "Connected to %s"
+    },
+    {
+      "name": "notification_traffic",
+      "value": "%s up, %s down"
+    },
+    {
+      "name": "source_device",
+      "value": "this device"
+    },
+    {
+      "name": "remote_dns",
+      "value": "Remote DNS (default %s)"
     }
   ]
 }

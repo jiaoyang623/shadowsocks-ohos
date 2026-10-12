@@ -67,14 +67,14 @@ struct Settings {
     } catch (e) {
       const err = e as BusinessError;
       hilog.error(0x0000, TAG, 'save failed: %{public}s', err.message ?? String(e));
-      promptAction.showToast({ message: `Save failed: ${err.message ?? String(e)}` });
+      promptAction.showToast({ message: $r('app.string.common_save_failed', err.message ?? String(e)) });
       return;
     }
     router.back();
   }
 
   @Builder
-  Field(label: string, hint: string, value: string, onEdit: (text: string) => void) {
+  Field(label: ResourceStr, hint: ResourceStr, value: string, onEdit: (text: string) => void) {
     Column({ space: 4 }) {
       Text(label)
         .fontSize(13)
@@ -95,11 +95,11 @@ struct Settings {
   build() {
     Column({ space: 16 }) {
       Row() {
-        Text('‹ Back')
+        Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
-        Text('Settings')
+        Text($r('app.string.settings_settings'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -110,29 +110,29 @@ struct Settings {
       .padding({ top: 8, bottom: 8 })
 
       Column({ space: 8 }) {
-        Text('Service mode')
+        Text($r('app.string.settings_service_mode'))
           .fontSize(13)
           .fontColor($r('app.color.text_body'))
         Row({ space: 8 }) {
-          Button('VPN')
+          Button($r('app.string.settings_vpn'))
             .layoutWeight(1)
             .backgroundColor(this.serviceMode === MODE_VPN ? $r('app.color.accent') : $r('app.color.button_neutral'))
             .onClick(() => this.serviceMode = MODE_VPN)
-          Button('Proxy')
+          Button($r('app.string.settings_proxy'))
             .layoutWeight(1)
             .backgroundColor(this.serviceMode === MODE_PROXY ? $r('app.color.accent') : $r('app.color.button_neutral'))
             .onClick(() => this.serviceMode = MODE_PROXY)
         }
         .width('100%')
         if (this.serviceMode === MODE_PROXY) {
-          Text('A local SOCKS5 listener, without taking over the device. Point apps at it. These settings apply the next time you connect.')
+          Text($r('app.string.settings_proxy_explainer'))
             .fontSize(12)
             .fontColor($r('app.color.text_body'))
-          TextInput({ placeholder: `SOCKS5 port (${DEFAULT_PROXY_PORT})`, text: this.proxyPort })
+          TextInput({ placeholder: $r('app.string.settings_socks_port', DEFAULT_PROXY_PORT), text: this.proxyPort })
             .type(InputType.Number)
             .onChange((value) => this.proxyPort = value)
           Row() {
-            Text('Allow other devices on the network')
+            Text($r('app.string.settings_allow_other_devices'))
               .fontSize(14)
               .layoutWeight(1)
             Toggle({ type: ToggleType.Switch, isOn: this.shareOverLan })
@@ -140,7 +140,7 @@ struct Settings {
           }
           .width('100%')
           if (this.shareOverLan) {
-            Text('The listener has no authentication, so anyone who can reach this device can use the tunnel.')
+            Text($r('app.string.settings_share_warning'))
               .fontSize(12)
               .fontColor($r('app.color.error_strong'))
           }
@@ -151,39 +151,38 @@ struct Settings {
       .borderRadius(8)
       .backgroundColor($r('app.color.surface'))
 
-      this.Field('Connection test URL',
-        'Must return 2xx; used to confirm traffic really reaches the internet '
-          + 'through the tunnel. Default: ' + DEFAULT_PROBE_URL,
+      this.Field($r('app.string.settings_connection_test_url'),
+        $r('app.string.settings_connection_test_url_hint', DEFAULT_PROBE_URL),
         this.probeUrl, (text: string) => {
           this.probeUrl = text;
         })
 
-      this.Field('Speed test URL',
-        'Downloaded in full and timed. Default: ' + DEFAULT_SPEED_URL,
+      this.Field($r('app.string.settings_speed_test_url'),
+        $r('app.string.settings_speed_test_url_hint', DEFAULT_SPEED_URL),
         this.speedTestUrl, (text: string) => {
           this.speedTestUrl = text;
         })
 
       Row({ space: 12 }) {
-        Button('Custom rules')
+        Button($r('app.string.settings_custom_rules'))
           .layoutWeight(1)
           .onClick(() => {
             router.pushUrl({ url: 'pages/CustomRules' });
           })
-        Button('About')
+        Button($r('app.string.about_about'))
           .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => {
             router.pushUrl({ url: 'pages/About' });
           })
-        Button('Reset to defaults')
+        Button($r('app.string.settings_reset_to_defaults'))
           .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => {
             this.probeUrl = DEFAULT_PROBE_URL;
             this.speedTestUrl = DEFAULT_SPEED_URL;
           })
-        Button('Save')
+        Button($r('app.string.common_save'))
           .layoutWeight(1)
           .onClick(() => this.save())
       }

@@ -65,7 +65,7 @@ struct SubscriptionPage {
   private async addSubscription(url: string): Promise<void> {
     const trimmed = url.trim();
     if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
-      promptAction.showToast({ message: 'Subscription must be an http(s) URL' });
+      promptAction.showToast({ message: $r('app.string.subscription_url_required') });
       return;
     }
     const subscription = new Subscription();
@@ -84,17 +84,17 @@ struct SubscriptionPage {
     try {
       const profiles = await fetchSubscription(subscription.url, subscription.id);
       if (profiles.length === 0) {
-        promptAction.showToast({ message: 'No profiles found in subscription' });
+        promptAction.showToast({ message: $r('app.string.subscription_no_profiles') });
       } else {
         const context = abilityContext();
         const merged = mergeSubscription(await ProfileStore.getAll(context), profiles, subscription.id);
         await ProfileStore.saveAll(context, merged);
         subscription.updatedAt = Date.now();
         await SubscriptionStore.upsert(abilityContext(), subscription);
-        promptAction.showToast({ message: `Updated: ${profiles.length} profiles` });
+        promptAction.showToast({ message: $r('app.string.subscription_updated_n', profiles.length) });
       }
     } catch (e) {
-      promptAction.showToast({ message: `Update failed: ${JSON.stringify(e)}` });
+      promptAction.showToast({ message: $r('app.string.subscription_update_failed', JSON.stringify(e)) });
     } finally {
       this.updatingId = '';
       await this.reload();
@@ -111,11 +111,11 @@ struct SubscriptionPage {
   build() {
     Column() {
       Row() {
-        Text('‹ Back')
+        Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
-        Text('Subscriptions')
+        Text($r('app.string.index_subscriptions'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -129,7 +129,7 @@ struct SubscriptionPage {
       .padding(16)
 
       if (this.subscriptions.length === 0) {
-        Text('No subscriptions yet')
+        Text($r('app.string.subscription_no_subscriptions'))
           .fontSize(14)
           .fontColor($r('app.color.text_secondary'))
           .margin({ top: 32 })
@@ -144,10 +144,11 @@ struct SubscriptionPage {
                 .maxLines(1)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
               Row() {
-                Text(`${this.profileCounts.get(subscription.id) ?? 0} profiles · ` +
-                  (subscription.updatedAt > 0 ?
-                    `updated ${new Date(subscription.updatedAt).toLocaleDateString()}` :
-                    'never updated'))
+                Text(subscription.updatedAt > 0
+                  ? $r('app.string.subscription_profiles_updated',
+                    this.profileCounts.get(subscription.id) ?? 0,
+                    new Date(subscription.updatedAt).toLocaleDateString())
+                  : $r('app.string.subscription_never_updated'))
                   .fontSize(12)
                   .fontColor($r('app.color.text_secondary'))
                   .layoutWeight(1)
@@ -157,13 +158,13 @@ struct SubscriptionPage {
                     .height(20)
                     .margin({ right: 12 })
                 } else {
-                  Text('Update')
+                  Text($r('app.string.common_update'))
                     .fontSize(14)
                     .fontColor($r('app.color.accent'))
                     .margin({ right: 16 })
                     .onClick(() => this.update(subscription))
                 }
-                Text('Delete')
+                Text($r('app.string.common_delete'))
                   .fontSize(14)
                   .fontColor($r('app.color.error'))
                   .onClick(() => this.remove(subscription))
@@ -197,17 +198,17 @@ struct AddSubscriptionDialog {
 
   build() {
     Column({ space: 12 }) {
-      Text('Add subscription')
+      Text($r('app.string.subscription_add_subscription'))
         .fontSize(18)
         .fontWeight(FontWeight.Medium)
       TextInput({ placeholder: 'https://…', text: this.url })
         .onChange((value) => this.url = value)
       Row({ space: 12 }) {
-        Button('Cancel')
+        Button($r('app.string.common_cancel'))
           .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
-        Button('Add')
+        Button($r('app.string.common_add'))
           .layoutWeight(1)
           .onClick(() => {
             this.onConfirm(this.url);

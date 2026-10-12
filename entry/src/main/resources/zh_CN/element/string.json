@@ -1,0 +1,560 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "Shadowsocks"
+    },
+    {
+      "name": "module_desc",
+      "value": "HarmonyOS NEXT 上的 Shadowsocks 客户端"
+    },
+    {
+      "name": "ability_desc",
+      "value": "Shadowsocks 主界面"
+    },
+    {
+      "name": "vpn_ability_desc",
+      "value": "Shadowsocks VPN 服务"
+    },
+    {
+      "name": "common_back",
+      "value": "‹ 返回"
+    },
+    {
+      "name": "common_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "common_ok",
+      "value": "确定"
+    },
+    {
+      "name": "common_save",
+      "value": "保存"
+    },
+    {
+      "name": "common_add",
+      "value": "添加"
+    },
+    {
+      "name": "common_delete",
+      "value": "删除"
+    },
+    {
+      "name": "common_update",
+      "value": "更新"
+    },
+    {
+      "name": "common_undo",
+      "value": "撤销"
+    },
+    {
+      "name": "common_edit",
+      "value": "编辑"
+    },
+    {
+      "name": "common_test",
+      "value": "测试"
+    },
+    {
+      "name": "common_testing",
+      "value": "测试中…"
+    },
+    {
+      "name": "common_save_failed",
+      "value": "保存失败：%s"
+    },
+    {
+      "name": "common_replace",
+      "value": "替换"
+    },
+    {
+      "name": "common_import",
+      "value": "导入"
+    },
+    {
+      "name": "index_add_manually",
+      "value": "手动添加"
+    },
+    {
+      "name": "index_import_url",
+      "value": "导入 ss:// 链接"
+    },
+    {
+      "name": "index_paste_from_clipboard",
+      "value": "从剪贴板粘贴"
+    },
+    {
+      "name": "index_import_from_file",
+      "value": "从文件导入"
+    },
+    {
+      "name": "index_replace_from_file",
+      "value": "用文件替换"
+    },
+    {
+      "name": "index_export_to_file",
+      "value": "导出到文件"
+    },
+    {
+      "name": "index_copy_to_clipboard",
+      "value": "复制到剪贴板"
+    },
+    {
+      "name": "index_subscriptions",
+      "value": "订阅"
+    },
+    {
+      "name": "index_search_profiles",
+      "value": "搜索服务器"
+    },
+    {
+      "name": "index_connect",
+      "value": "连接"
+    },
+    {
+      "name": "index_disconnect",
+      "value": "断开"
+    },
+    {
+      "name": "index_test_connection",
+      "value": "测试连接"
+    },
+    {
+      "name": "index_speed_test",
+      "value": "测速"
+    },
+    {
+      "name": "index_not_connected",
+      "value": "未连接"
+    },
+    {
+      "name": "index_no_profile_selected",
+      "value": "未选择服务器"
+    },
+    {
+      "name": "index_connecting",
+      "value": "正在连接…"
+    },
+    {
+      "name": "index_verifying_tunnel",
+      "value": "正在验证隧道…"
+    },
+    {
+      "name": "index_connected",
+      "value": "已连接"
+    },
+    {
+      "name": "index_connected_rtt",
+      "value": "已连接 · %s"
+    },
+    {
+      "name": "index_tunnel_up_no_internet",
+      "value": "隧道已建立，但无法联网"
+    },
+    {
+      "name": "index_failed",
+      "value": "失败"
+    },
+    {
+      "name": "index_failed_reason",
+      "value": "失败：%s"
+    },
+    {
+      "name": "index_test_failed",
+      "value": "测试失败：%s"
+    },
+    {
+      "name": "index_speed_test_failed",
+      "value": "测速失败：%s"
+    },
+    {
+      "name": "index_replace_all_profiles",
+      "value": "替换全部服务器？"
+    },
+    {
+      "name": "index_replace_all_profiles_message",
+      "value": "文件中的服务器会替换现有的全部服务器。同一服务器的用量统计会保留。"
+    },
+    {
+      "name": "index_deleted_profile",
+      "value": "已删除 %s"
+    },
+    {
+      "name": "index_deleted_profile_message",
+      "value": "它的密码只保存在本机。"
+    },
+    {
+      "name": "index_could_not_start_vpn",
+      "value": "无法启动 VPN 扩展"
+    },
+    {
+      "name": "index_vpn_start_timeout",
+      "value": "启动 VPN 超时"
+    },
+    {
+      "name": "index_connection_lost",
+      "value": "连接已断开"
+    },
+    {
+      "name": "index_no_traffic",
+      "value": "隧道已启动，但核心没有上报流量"
+    },
+    {
+      "name": "index_add_and_select_profile",
+      "value": "请先添加并选择服务器"
+    },
+    {
+      "name": "index_clipboard_empty",
+      "value": "剪贴板是空的"
+    },
+    {
+      "name": "index_nothing_to_import",
+      "value": "从%1$s中没有可导入的内容"
+    },
+    {
+      "name": "index_imported_n",
+      "value": "已导入 %d 个服务器"
+    },
+    {
+      "name": "index_replaced_n",
+      "value": "已用 %d 个服务器替换"
+    },
+    {
+      "name": "index_exported_n",
+      "value": "已导出 %d 个服务器"
+    },
+    {
+      "name": "index_copied_n",
+      "value": "已复制 %d 个服务器"
+    },
+    {
+      "name": "index_source_text",
+      "value": "文本"
+    },
+    {
+      "name": "index_source_link",
+      "value": "链接"
+    },
+    {
+      "name": "index_source_file",
+      "value": "文件"
+    },
+    {
+      "name": "index_source_clipboard",
+      "value": "剪贴板"
+    },
+    {
+      "name": "index_proxy_on",
+      "value": "代理已启动 %s:%d"
+    },
+    {
+      "name": "index_could_not_start_proxy",
+      "value": "无法启动代理：%s"
+    },
+    {
+      "name": "index_vpn_start_failed",
+      "value": "启动 VPN 失败：%s"
+    },
+    {
+      "name": "index_vpn_stop_failed",
+      "value": "停止 VPN 失败：%s"
+    },
+    {
+      "name": "index_op_reorder",
+      "value": "排序"
+    },
+    {
+      "name": "index_op_select_profile",
+      "value": "选择服务器"
+    },
+    {
+      "name": "index_op_delete_profile",
+      "value": "删除服务器"
+    },
+    {
+      "name": "index_op_undo_delete",
+      "value": "撤销删除"
+    },
+    {
+      "name": "index_op_import",
+      "value": "导入"
+    },
+    {
+      "name": "index_op_export",
+      "value": "导出"
+    },
+    {
+      "name": "index_op_copy",
+      "value": "复制"
+    },
+    {
+      "name": "index_op_failed",
+      "value": "%s失败"
+    },
+    {
+      "name": "index_status_profile",
+      "value": "%s · %s"
+    },
+    {
+      "name": "profile_edit_add_profile",
+      "value": "添加服务器"
+    },
+    {
+      "name": "profile_edit_edit_profile",
+      "value": "编辑服务器"
+    },
+    {
+      "name": "profile_edit_profile_name",
+      "value": "名称（可选）"
+    },
+    {
+      "name": "profile_edit_server_host",
+      "value": "服务器地址"
+    },
+    {
+      "name": "profile_edit_server_port",
+      "value": "服务器端口"
+    },
+    {
+      "name": "profile_edit_password",
+      "value": "密码"
+    },
+    {
+      "name": "profile_edit_encryption_method",
+      "value": "加密方式"
+    },
+    {
+      "name": "profile_edit_custom",
+      "value": "自定义…"
+    },
+    {
+      "name": "profile_edit_method_custom",
+      "value": "加密方式（例如 aes-256-gcm）"
+    },
+    {
+      "name": "profile_edit_route",
+      "value": "路由"
+    },
+    {
+      "name": "profile_edit_plugin",
+      "value": "插件"
+    },
+    {
+      "name": "profile_edit_plugin_options",
+      "value": "插件参数（k=v;…）"
+    },
+    {
+      "name": "profile_edit_show_qr_code",
+      "value": "显示二维码"
+    },
+    {
+      "name": "profile_edit_required_fields",
+      "value": "服务器、密码和加密方式必须填写"
+    },
+    {
+      "name": "about_about",
+      "value": "关于"
+    },
+    {
+      "name": "about_native_core",
+      "value": "核心版本"
+    },
+    {
+      "name": "about_licence",
+      "value": "许可证"
+    },
+    {
+      "name": "about_licence_value",
+      "value": "GPL-3.0-or-later"
+    },
+    {
+      "name": "about_about_text",
+      "value": "这是一个 HarmonyOS NEXT 客户端，与 Android 版共用同一套 Rust 核心。它是自由软件：你可以按自由软件基金会发布的 GNU 通用公共许可证第 3 版或更高版本转发和修改它。"
+    },
+    {
+      "name": "settings_settings",
+      "value": "设置"
+    },
+    {
+      "name": "settings_service_mode",
+      "value": "服务模式"
+    },
+    {
+      "name": "settings_vpn",
+      "value": "VPN"
+    },
+    {
+      "name": "settings_proxy",
+      "value": "代理"
+    },
+    {
+      "name": "settings_proxy_explainer",
+      "value": "只在本机开一个 SOCKS5 端口，不接管设备流量。把应用指向它即可。这些设置在你下次连接时生效。"
+    },
+    {
+      "name": "settings_allow_other_devices",
+      "value": "允许局域网内其他设备使用"
+    },
+    {
+      "name": "settings_share_warning",
+      "value": "这个端口没有身份验证，能访问本机的设备都可以使用这条隧道。"
+    },
+    {
+      "name": "settings_socks_port",
+      "value": "SOCKS5 端口（%d）"
+    },
+    {
+      "name": "settings_connection_test_url",
+      "value": "连通性测试地址"
+    },
+    {
+      "name": "settings_connection_test_url_hint",
+      "value": "必须返回 2xx。用来确认流量确实经隧道到达了互联网。默认：%s"
+    },
+    {
+      "name": "settings_speed_test_url",
+      "value": "测速地址"
+    },
+    {
+      "name": "settings_speed_test_url_hint",
+      "value": "完整下载并计时。默认：%s"
+    },
+    {
+      "name": "settings_custom_rules",
+      "value": "自定义规则"
+    },
+    {
+      "name": "settings_reset_to_defaults",
+      "value": "恢复默认"
+    },
+    {
+      "name": "custom_rules_explainer",
+      "value": "这里列出的目标走代理。使用「自定义规则」路由的服务器会应用这些规则。"
+    },
+    {
+      "name": "custom_rules_kind_domain",
+      "value": "域名"
+    },
+    {
+      "name": "custom_rules_kind_subnet",
+      "value": "网段"
+    },
+    {
+      "name": "custom_rules_kind_url",
+      "value": "列表链接"
+    },
+    {
+      "name": "custom_rules_no_rules",
+      "value": "还没有规则。"
+    },
+    {
+      "name": "custom_rules_enter_rule_first",
+      "value": "请先输入规则"
+    },
+    {
+      "name": "subscription_no_subscriptions",
+      "value": "还没有订阅"
+    },
+    {
+      "name": "subscription_add_subscription",
+      "value": "添加订阅"
+    },
+    {
+      "name": "subscription_never_updated",
+      "value": "从未更新"
+    },
+    {
+      "name": "subscription_profiles_updated",
+      "value": "%d 个服务器 · 更新于 %s"
+    },
+    {
+      "name": "subscription_url_required",
+      "value": "订阅地址必须是 http(s) 链接"
+    },
+    {
+      "name": "subscription_no_profiles",
+      "value": "订阅里没有服务器"
+    },
+    {
+      "name": "subscription_updated_n",
+      "value": "已更新：%d 个服务器"
+    },
+    {
+      "name": "subscription_update_failed",
+      "value": "更新失败：%s"
+    },
+    {
+      "name": "qr_title",
+      "value": "二维码"
+    },
+    {
+      "name": "qr_copy_url",
+      "value": "复制链接"
+    },
+    {
+      "name": "qr_copied",
+      "value": "已复制"
+    },
+    {
+      "name": "qr_could_not_copy",
+      "value": "复制失败"
+    },
+    {
+      "name": "qr_no_profile",
+      "value": "没有可显示的服务器。"
+    },
+    {
+      "name": "qr_too_long",
+      "value": "这个服务器信息太长，无法生成二维码。"
+    },
+    {
+      "name": "qr_explainer",
+      "value": "用另一台设备的 Shadowsocks 客户端扫描这个二维码即可导入。码里带着密码，不要给不该知道密码的人看。"
+    },
+    {
+      "name": "route_all",
+      "value": "全部"
+    },
+    {
+      "name": "route_bypass_lan",
+      "value": "绕过局域网"
+    },
+    {
+      "name": "route_bypass_china",
+      "value": "绕过中国大陆"
+    },
+    {
+      "name": "route_bypass_lan_china",
+      "value": "绕过局域网及中国大陆"
+    },
+    {
+      "name": "route_gfwlist",
+      "value": "GFW 列表"
+    },
+    {
+      "name": "route_china_list",
+      "value": "中国列表"
+    },
+    {
+      "name": "route_custom_rules",
+      "value": "自定义规则"
+    },
+    {
+      "name": "notification_connected_to",
+      "value": "已连接到 %s"
+    },
+    {
+      "name": "notification_traffic",
+      "value": "%s 上行，%s 下行"
+    },
+    {
+      "name": "source_device",
+      "value": "本机"
+    },
+    {
+      "name": "remote_dns",
+      "value": "远程 DNS（默认 %s）"
+    }
+  ]
+}

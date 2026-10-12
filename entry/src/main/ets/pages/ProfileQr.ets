@@ -54,7 +54,8 @@ export interface QrParams {
 struct ProfileQr {
   @State profileName: string = '';
   @State url: string = '';
-  @State error: string = '';
+  @State hasError: boolean = false;
+  @State error: ResourceStr = '';
   private code: QrCode | null = null;
   private settings: RenderingContextSettings = new RenderingContextSettings(true);
   // not named `context`: that collides with the component framework's own field
@@ -66,7 +67,8 @@ struct ProfileQr {
     this.url = params?.url ?? '';
     this.profileName = params?.name ?? '';
     if (this.url.length === 0) {
-      this.error = 'There is no profile to show.';
+      this.hasError = true;
+      this.error = $r('app.string.qr_no_profile');
       return;
     }
     try {
@@ -74,7 +76,8 @@ struct ProfileQr {
     } catch (e) {
       // only reachable with a name long enough to push the URL past what a
       // version 40 code holds, which is close to three thousand characters
-      this.error = 'This profile is too long to show as a QR code.';
+      this.hasError = true;
+      this.error = $r('app.string.qr_too_long');
       hilog.warn(0x0000, TAG, 'the profile URL does not encode: %{public}s',
         e instanceof Error ? e.message : String(e));
       return;
@@ -112,20 +115,20 @@ struct ProfileQr {
   private async copyUrl(): Promise<void> {
     try {
       await writeClipboard(this.url);
-      promptAction.showToast({ message: 'Copied' });
+      promptAction.showToast({ message: $r('app.string.qr_copied') });
     } catch (e) {
-      promptAction.showToast({ message: 'Could not copy' });
+      promptAction.showToast({ message: $r('app.string.qr_could_not_copy') });
     }
   }
 
   build() {
     Column({ space: 16 }) {
       Row() {
-        Text('‹ Back')
+        Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
-        Text('QR code')
+        Text($r('app.string.qr_title'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -137,7 +140,7 @@ struct ProfileQr {
       .width('100%')
       .padding({ top: 8, bottom: 8 })
 
-      if (this.error.length > 0) {
+      if (this.hasError) {
         Text(this.error)
           .fontSize(14)
           .fontColor($r('app.color.error'))
@@ -159,10 +162,10 @@ struct ProfileQr {
         .textAlign(TextAlign.Center)
         .copyOption(CopyOptions.LocalDevice)
 
-      Button('Copy the URL')
+      Button($r('app.string.qr_copy_url'))
         .onClick(() => this.copyUrl())
 
-      Text('Point another Shadowsocks client at this code to add the profile. It carries the password, so do not show it to anyone you would not give the password to.')
+      Text($r('app.string.qr_explainer'))
         .fontSize(12)
         .fontColor($r('app.color.text_secondary'))
         .textAlign(TextAlign.Center)

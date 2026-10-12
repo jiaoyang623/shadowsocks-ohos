@@ -17,7 +17,7 @@
  *                                                                             *
  *******************************************************************************/
 
-import { WantAgent, wantAgent } from '@kit.AbilityKit';
+import { common, WantAgent, wantAgent } from '@kit.AbilityKit';
 import { notificationManager } from '@kit.NotificationKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
@@ -65,24 +65,34 @@ async function disconnectAgent(): Promise<WantAgent> {
  * way back to the disconnect button without this. `detail` carries the live
  * traffic, as shadowsocks-android's notification does; calling again with the
  * same profile and a new detail is how that line is kept current.
+ *
+ * The context is here because the notification's fields take plain strings,
+ * where a page would be handed a resource and let the framework resolve it.
  */
-export async function showConnected(profileName: string, detail: string = ''): Promise<void> {
+export async function showConnected(context: common.Context, profileName: string,
+                                    detail: ResourceStr = ''): Promise<void> {
   try {
+    const strings = context.resourceManager;
     const request: notificationManager.NotificationRequest = {
       id: NOTIFICATION_ID,
       content: {
         notificationContentType: notificationManager.ContentType.NOTIFICATION_CONTENT_BASIC_TEXT,
         normal: {
-          title: 'Shadowsocks',
-          text: profileName.length > 0 ? `Connected to ${profileName}` : 'Connected',
-          additionalText: detail,
+          title: strings.getStringSync($r('app.string.app_name').id),
+          text: profileName.length > 0
+            ? strings.getStringSync($r('app.string.notification_connected_to').id, profileName)
+            : strings.getStringSync($r('app.string.index_connected').id),
+          additionalText: resolve(context, detail),
         },
       },
       // no slotType: the field is typed as the pre-9 `notification.SlotType`,
       // a different enum from `notificationManager.SlotType` even though the
       // values match, and leaving it out uses the app's default slot
       isOngoing: true,
-      actionButtons: [{ title: 'Disconnect', wantAgent: await disconnectAgent() }],
+      actionButtons: [{
+        title: strings.getStringSync($r('app.string.index_disconnect').id),
+        wantAgent: await disconnectAgent(),
+      }],
     };
     // publishing again with the same id replaces what is there, which is how
     // the traffic line is kept up to date
@@ -94,6 +104,13 @@ export async function showConnected(profileName: string, detail: string = ''): P
     hilog.warn(0x0000, TAG, 'could not publish the connection notification: %{public}s',
       err.message ?? JSON.stringify(e));
   }
+}
+
+/** A resource as the text it stands for, for a field that takes a string. */
+function resolve(context: common.Context, value: ResourceStr): string {
+  return typeof value === 'string'
+    ? value
+    : context.resourceManager.getStringSync(value.id);
 }
 
 /** Takes the notification away, whether or not one was published. */

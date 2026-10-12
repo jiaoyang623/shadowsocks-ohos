@@ -64,6 +64,9 @@ entry/                        main (and only) HAP module
                               that drives the native core in tun mode; deploys
                               the route's ACL file and hosts the flow-stat
                               endpoint
+    resources/base/element/   string.json (English) and color.json (light)
+    resources/zh_CN/element/  string.json — the Chinese UI
+    resources/dark/element/   color.json — the dark theme
     resources/rawfile/acl/    ACL files for policy routes, copied verbatim from
                               shadowsocks-android's core/src/main/assets/acl
     cpp/napi_init.cpp         NAPI shim; exports the libsslocal.so module
@@ -409,6 +412,18 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
 - Anything the user reads while the app is dark is affected by the same rule
   from the other side: a `Text` with no `fontColor` takes the theme's default,
   so leaving one on a hardcoded light background makes it white on white.
+- User-visible text comes from `$r('app.string.…')`, with the English in
+  `resources/base/element/string.json` and the Chinese in
+  `resources/zh_CN/element/string.json`. The compiler checks the names, so a
+  missing string is a build failure, but it does not check `%s` against the
+  arguments — count those by hand.
+- A resource is a `Resource`, so anything that returns text for a view returns
+  `ResourceStr`: `text('…')` in the UI is the exception, for messages the code
+  assembles rather than hands over, and it resolves through
+  `abilityContext().resourceManager`. The notification goes further and takes
+  a context, because its fields are plain `string`.
+- Resource names are three dot-separated parts and no more, so groups are
+  joined with an underscore: `app.string.settings_service_mode`.
 - The host-side unit-test runtime (`hvigorw test`) has no native util codecs —
   `util.Base64Helper`, `util.TextDecoder/TextEncoder` and
   `util.generateRandomUUID` are unavailable there. `Profile.ets` therefore
@@ -446,9 +461,13 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
 - No launcher shortcuts and no connect-at-boot. The platform exposes
   `BOOT_COMPLETED` and a `STATIC_SUBSCRIBER` extension type, but the ability
   class is not in the public SDK, so this needs a device experiment.
-- The UI is English only: shadowsocks-android ships 13 locales. Colours are
-  resource references with a dark variant, so the app follows the system theme;
-  the strings are not extracted yet.
+- The model layer's own failure reasons are English: the probe, latency and
+  throughput modules hand the UI a plain `reason` string, which the host-side
+  specs assert on. Translating them means giving each one a code the page maps
+  to a string, and some of the text is not ours anyway — a network failure
+  carries the platform's own message, in the platform's language.
+- shadowsocks-android ships 13 locales; this has English and Chinese, and
+  adding a third is a file under `resources/`.
 - The connection notification shows the profile but not the live traffic
   Android puts in its own.
 - Starting the VPN normally requires the system consent app

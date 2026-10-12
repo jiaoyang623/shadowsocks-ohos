@@ -16,6 +16,15 @@ export namespace common {
   export type Context = any;
 }
 
+/**
+ * The ArkUI global resource lookup, which is a compile-time construct rather
+ * than an import. Only `ConnectionNotification` uses it, for the strings the
+ * notification API takes as plain text, and no spec goes near that.
+ */
+declare global {
+  function $r(key: string, ...args: (string | number)[]): { id: number };
+}
+
 const unavailable = new Proxy({}, {
   get: (_target, name) => {
     if (typeof name === 'symbol') {

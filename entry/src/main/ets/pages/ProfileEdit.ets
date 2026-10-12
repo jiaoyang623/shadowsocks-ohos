@@ -24,7 +24,7 @@ import { DEFAULT_REMOTE_DNS, Profile } from '../model/Profile';
 import { ProfileStore } from '../model/ProfileStore';
 import { abilityContext } from '../model/AppContext';
 import { ALL_ROUTES, ROUTE_ALL } from '../model/Routes';
-import { EditParams } from './Index';
+import { EditParams, ROUTE_LABELS } from './Index';
 import { QrParams } from './ProfileQr';
 
 const METHODS: string[] = [
@@ -138,7 +138,7 @@ struct ProfileEdit {
 
   private async save(): Promise<void> {
     if (!this.isComplete()) {
-      promptAction.showToast({ message: 'Server, password and method are required' });
+      promptAction.showToast({ message: $r('app.string.profile_edit_required_fields') });
       return;
     }
     const profile = this.buildProfile();
@@ -149,7 +149,7 @@ struct ProfileEdit {
       const err = e as BusinessError;
       hilog.error(0x0000, 'ProfileEdit', 'save failed: %{public}s %{public}s',
         err.code?.toString() ?? '', err.message ?? String(e));
-      promptAction.showToast({ message: `Save failed: ${err.message ?? String(e)}` });
+      promptAction.showToast({ message: $r('app.string.common_save_failed', err.message ?? String(e)) });
       return;
     }
     router.back();
@@ -161,7 +161,7 @@ struct ProfileEdit {
    */
   private showQrCode(): void {
     if (!this.isComplete()) {
-      promptAction.showToast({ message: 'Server, password and method are required' });
+      promptAction.showToast({ message: $r('app.string.profile_edit_required_fields') });
       return;
     }
     const profile = this.buildProfile();
@@ -172,11 +172,11 @@ struct ProfileEdit {
   build() {
     Column({ space: 12 }) {
       Row() {
-        Text('‹ Back')
+        Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
-        Text(this.profileId.length > 0 ? 'Edit profile' : 'Add profile')
+        Text(this.profileId.length > 0 ? $r('app.string.profile_edit_edit_profile') : $r('app.string.profile_edit_add_profile'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -186,36 +186,36 @@ struct ProfileEdit {
       .width('100%')
       .padding({ top: 8, bottom: 8 })
 
-      TextInput({ placeholder: 'Profile name (optional)', text: this.name })
+      TextInput({ placeholder: $r('app.string.profile_edit_profile_name'), text: this.name })
         .onChange((value) => this.name = value)
-      TextInput({ placeholder: 'Server host', text: this.host })
+      TextInput({ placeholder: $r('app.string.profile_edit_server_host'), text: this.host })
         .onChange((value) => this.host = value)
-      TextInput({ placeholder: 'Server port', text: this.remotePort })
+      TextInput({ placeholder: $r('app.string.profile_edit_server_port'), text: this.remotePort })
         .type(InputType.Number)
         .onChange((value) => this.remotePort = value)
-      TextInput({ placeholder: 'Password', text: this.password })
+      TextInput({ placeholder: $r('app.string.profile_edit_password'), text: this.password })
         .type(InputType.Password)
         .onChange((value) => this.password = value)
 
       LabeledSelect({
-        label: 'Encryption method',
-        options: METHODS.concat(['Custom…']),
+        label: $r('app.string.profile_edit_encryption_method'),
+        options: [...METHODS, $r('app.string.profile_edit_custom')],
         selected: this.methodIndex >= 0 ? this.methodIndex : METHODS.length,
         onSelect: (index: number) => {
           this.methodIndex = index < METHODS.length ? index : -1;
         },
       })
       if (this.methodIndex < 0) {
-        TextInput({ placeholder: 'Method (e.g. aes-256-gcm)', text: this.methodCustom })
+        TextInput({ placeholder: $r('app.string.profile_edit_method_custom'), text: this.methodCustom })
           .onChange((value) => this.methodCustom = value)
       }
 
-      TextInput({ placeholder: `Remote DNS (default ${DEFAULT_REMOTE_DNS})`, text: this.remoteDns })
+      TextInput({ placeholder: $r('app.string.remote_dns', DEFAULT_REMOTE_DNS), text: this.remoteDns })
         .onChange((value) => this.remoteDns = value)
 
       LabeledSelect({
-        label: 'Route',
-        options: ALL_ROUTES,
+        label: $r('app.string.profile_edit_route'),
+        options: ROUTE_LABELS,
         selected: this.routeIndex,
         onSelect: (index: number) => {
           this.routeIndex = index;
@@ -223,7 +223,7 @@ struct ProfileEdit {
       })
 
       LabeledSelect({
-        label: 'Plugin',
+        label: $r('app.string.profile_edit_plugin'),
         options: this.pluginOptions,
         selected: this.pluginIndex,
         onSelect: (index: number) => {
@@ -232,7 +232,7 @@ struct ProfileEdit {
       })
       if (this.pluginIndex > 0) {
         TextInput({
-          placeholder: PLUGIN_OPTS_HINTS[this.pluginIndex] || 'Plugin options (k=v;...)',
+          placeholder: PLUGIN_OPTS_HINTS[this.pluginIndex] || $r('app.string.profile_edit_plugin_options'),
           text: this.pluginOpts,
         })
           .onChange((value) => this.pluginOpts = value)
@@ -241,7 +241,7 @@ struct ProfileEdit {
       Blank()
 
       if (this.profileId.length > 0) {
-        Button('Show QR code')
+        Button($r('app.string.profile_edit_show_qr_code'))
           .width('100%')
           .height(48)
           .backgroundColor($r('app.color.button_neutral'))
@@ -249,7 +249,7 @@ struct ProfileEdit {
           .onClick(() => this.showQrCode())
       }
 
-      Button('Save')
+      Button($r('app.string.common_save'))
         .width('100%')
         .height(48)
         .margin({ bottom: 24 })
@@ -263,8 +263,8 @@ struct ProfileEdit {
 
 @Component
 struct LabeledSelect {
-  label: string = '';
-  options: string[] = [];
+  label: ResourceStr = '';
+  options: ResourceStr[] = [];
   selected: number = 0;
   onSelect: (index: number) => void = () => {
   };

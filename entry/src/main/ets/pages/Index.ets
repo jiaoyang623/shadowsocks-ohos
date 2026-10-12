@@ -27,6 +27,7 @@ import { applyImport, exportProfiles, parseProfilesText } from '../model/Profile
 import { EXPORT_FILE_NAME, pickTextFile, readClipboard, saveTextFile, writeClipboard } from '../model/Transfer';
 import { abilityContext, takePendingImport } from '../model/AppContext';
 import { MODE_PROXY } from '../model/Diagnostics';
+import { ALL_ROUTES } from '../model/Routes';
 import { ProxyService } from '../model/ProxyService';
 import { formatBytes, formatRate, TrafficStats, TrafficStatsStore } from '../model/TrafficStats';
 import { grantVpnAuthorization } from './VpnGrant';
@@ -51,6 +52,27 @@ const VPN_ABILITY: Want = {
 };
 
 const STATS_POLL_INTERVAL_MS = 1000;
+
+/**
+ * The route names as a user reads them, in the order of ALL_ROUTES. The
+ * compiler checks `$r` names, so this is a list of literals rather than a
+ * loop over the route constants.
+ */
+export const ROUTE_LABELS: Resource[] = [
+  $r('app.string.route_all'),
+  $r('app.string.route_bypass_lan'),
+  $r('app.string.route_bypass_china'),
+  $r('app.string.route_bypass_lan_china'),
+  $r('app.string.route_gfwlist'),
+  $r('app.string.route_china_list'),
+  $r('app.string.route_custom_rules'),
+];
+
+/** The name of a route, for a line that has only its identifier. */
+export function routeLabel(route: string): Resource {
+  const index = ALL_ROUTES.indexOf(route);
+  return ROUTE_LABELS[index >= 0 ? index : 0];
+}
 
 /**
  * Main page: the profile list with the active profile highlighted, a bottom
@@ -114,7 +136,7 @@ struct Index {
   @State proxyUp: boolean = false;
   private importDialog: CustomDialogController = new CustomDialogController({
     builder: ImportDialog({
-      onConfirm: (text: string) => this.importFromText(text, 'the text'),
+      onConfirm: (text: string) => this.importFromText(text, $r('app.string.index_source_text')),
     }),
     autoCancel: true,
   });
@@ -122,9 +144,9 @@ struct Index {
   // first. Importing does not, which is why only this one is confirmed.
   private replaceDialog: CustomDialogController = new CustomDialogController({
     builder: ConfirmDialog({
-      title: 'Replace all profiles?',
-      message: 'Every profile will be replaced by the ones in the file. Profiles with the same server keep their counters.',
-      confirmLabel: 'Replace',
+      title: $r('app.string.index_replace_all_profiles'),
+      message: $r('app.string.index_replace_all_profiles_message'),
+      confirmLabel: $r('app.string.common_replace'),
       onConfirm: () => this.importFromFile(true),
     }),
     autoCancel: true,
@@ -149,7 +171,7 @@ struct Index {
     if (uri.length === 0) {
       return;
     }
-    this.importFromText(uri, 'the link');
+    this.importFromText(uri, $r('app.string.index_source_link'));
   }
 
   aboutToDisappear(): void {
@@ -196,7 +218,7 @@ struct Index {
     try {
       await ProfileStore.move(abilityContext(), from, insertIndex);
     } catch (e) {
-      this.reportFailure('Reorder', e as Object);
+      this.reportFailure($r('app.string.index_op_reorder'), e as Object);
     }
     await this.reload();
   }
@@ -245,10 +267,25 @@ struct Index {
       (this.profiles.length > 0 ? this.profiles[0] : null);
   }
 
-  /** Reports a failed store operation instead of rejecting into a click handler. */
-  private reportFailure(what: string, e: Object): void {
-    hilog.error(0x0000, TAG, '%{public}s failed: %{public}s', what, JSON.stringify(e));
-    promptAction.showToast({ message: `${what} failed` });
+  /**
+   * A failure the user did not ask to see. `what` is the app.string of the
+   * operation, so that it is named in the language the app is speaking.
+   */
+  private reportFailure(what: Resource, e: Object): void {
+    const label = this.text(what);
+    hilog.error(0x0000, TAG, '%{public}s failed: %{public}s', label, JSON.stringify(e));
+    promptAction.showToast({ message: $r('app.string.index_op_failed', label) });
+  }
+
+  /**
+   * A resource as the text it stands for. Needed where a message is put
+   * together in code: a component formats `$r` itself, and a template
+   * literal cannot take a Resource.
+   */
+  private text(value: ResourceStr): string {
+    return typeof value === 'string'
+      ? value
+      : abilityContext().resourceManager.getStringSync(value.id);
   }
 
   private async selectProfile(profile: Profile): Promise<void> {
@@ -256,7 +293,7 @@ struct Index {
     try {
       await ProfileStore.setCurrentId(abilityContext(), profile.id);
     } catch (e) {
-      this.reportFailure('Select profile', e as Object);
+      this.reportFailure($r('app.string.index_op_select_profile'), e as Object);
     }
   }
 
@@ -267,17 +304,17 @@ struct Index {
       this.lastDeleted = profile;
       this.lastDeletedIndex = index;
     } catch (e) {
-      this.reportFailure('Delete profile', e as Object);
+      this.reportFailure($r('app.string.index_op_delete_profile'), e as Object);
       return;
     }
     await this.reload();
     // the profile is gone from the list, so the undo has to be offered here
     const answer = await promptAction.showDialog({
-      title: `Deleted ${profile.name}`,
-      message: 'Its password was only stored here.',
+      title: $r('app.string.index_deleted_profile', profile.name),
+      message: $r('app.string.index_deleted_profile_message'),
       buttons: [
-        { text: 'Undo', color: $r('app.color.accent') },
-        { text: 'OK', color: $r('app.color.text_body') },
+        { text: $r('app.string.common_undo'), color: $r('app.color.accent') },
+        { text: $r('app.string.common_ok'), color: $r('app.color.text_body') },
       ],
     });
     if (answer.index === 0) {
@@ -300,7 +337,7 @@ struct Index {
       stored.splice(index >= 0 && index <= stored.length ? index : stored.length, 0, profile);
       await ProfileStore.saveAll(context, stored);
     } catch (e) {
-      this.reportFailure('Undo delete', e as Object);
+      this.reportFailure($r('app.string.index_op_undo_delete'), e as Object);
     }
     await this.reload();
   }
@@ -310,10 +347,10 @@ struct Index {
    * list of `ss://` URLs, or a base64 blob of them. Appending rather than
    * replacing, which is what Android's own import does.
    */
-  private async importText(text: string, source: string, replace: boolean = false): Promise<void> {
+  private async importText(text: string, source: ResourceStr, replace: boolean = false): Promise<void> {
     const imported = parseProfilesText(text);
     if (imported.length === 0) {
-      promptAction.showToast({ message: `Nothing to import from ${source}` });
+      promptAction.showToast({ message: $r('app.string.index_nothing_to_import', this.text(source)) });
       return;
     }
     const context = abilityContext();
@@ -324,15 +361,18 @@ struct Index {
       await ProfileStore.setCurrentId(context, profiles[0].id);
     }
     await this.reload();
-    const verb = replace ? 'Replaced with' : 'Imported';
-    promptAction.showToast({ message: `${verb} ${imported.length} profile(s)` });
+    promptAction.showToast({
+      message: replace
+        ? $r('app.string.index_replaced_n', imported.length)
+        : $r('app.string.index_imported_n', imported.length),
+    });
   }
 
-  private async importFromText(text: string, source: string): Promise<void> {
+  private async importFromText(text: string, source: ResourceStr): Promise<void> {
     try {
       await this.importText(text, source);
     } catch (e) {
-      this.reportFailure('Import', e as Object);
+      this.reportFailure($r('app.string.index_op_import'), e as Object);
     }
   }
 
@@ -342,9 +382,9 @@ struct Index {
       if (text.length === 0) {
         return; // the user cancelled
       }
-      await this.importText(text, 'the file', replace);
+      await this.importText(text, $r('app.string.index_source_file'), replace);
     } catch (e) {
-      this.reportFailure('Import', e as Object);
+      this.reportFailure($r('app.string.index_op_import'), e as Object);
     }
   }
 
@@ -352,12 +392,12 @@ struct Index {
     try {
       const text = await readClipboard();
       if (text.trim().length === 0) {
-        promptAction.showToast({ message: 'The clipboard is empty' });
+        promptAction.showToast({ message: $r('app.string.index_clipboard_empty') });
         return;
       }
-      await this.importText(text, 'the clipboard');
+      await this.importText(text, $r('app.string.index_source_clipboard'));
     } catch (e) {
-      this.reportFailure('Import', e as Object);
+      this.reportFailure($r('app.string.index_op_import'), e as Object);
     }
   }
 
@@ -368,18 +408,18 @@ struct Index {
       if (uri.length === 0) {
         return; // the user cancelled
       }
-      promptAction.showToast({ message: `Exported ${this.profiles.length} profile(s)` });
+      promptAction.showToast({ message: $r('app.string.index_exported_n', this.profiles.length) });
     } catch (e) {
-      this.reportFailure('Export', e as Object);
+      this.reportFailure($r('app.string.index_op_export'), e as Object);
     }
   }
 
   private async copyToClipboard(): Promise<void> {
     try {
       await writeClipboard(exportProfiles(this.profiles));
-      promptAction.showToast({ message: `Copied ${this.profiles.length} profile(s)` });
+      promptAction.showToast({ message: $r('app.string.index_copied_n', this.profiles.length) });
     } catch (e) {
-      this.reportFailure('Copy', e as Object);
+      this.reportFailure($r('app.string.index_op_copy'), e as Object);
     }
   }
 
@@ -392,7 +432,7 @@ struct Index {
   private async connect(): Promise<void> {
     const profile = this.currentProfile();
     if (profile === null || profile.host.length === 0 || profile.password.length === 0) {
-      promptAction.showToast({ message: 'Please add and select a profile first' });
+      promptAction.showToast({ message: $r('app.string.index_add_and_select_profile') });
       return;
     }
     if ((this.settings?.serviceMode ?? '') === MODE_PROXY) {
@@ -432,9 +472,11 @@ struct Index {
       } catch (e2) {
         hilog.error(0x0000, TAG, 'vpn start failed: %{public}s', JSON.stringify(e2));
         this.phase = PHASE_FAILED;
-        this.failReason = 'Could not start the VPN extension';
+        this.failReason = this.text($r('app.string.index_could_not_start_vpn'));
         this.stopHealthPolling();
-        promptAction.showToast({ message: `Failed to start VPN: ${JSON.stringify(e2)}` });
+        promptAction.showToast({
+          message: $r('app.string.index_vpn_start_failed', JSON.stringify(e2)),
+        });
         return;
       }
     }
@@ -455,16 +497,18 @@ struct Index {
     try {
       await ProxyService.start(abilityContext(), profile, settings.proxyPort, settings.shareOverLan);
       this.proxyUp = true;
-      const host = settings.shareOverLan ? 'this device' : '127.0.0.1';
+      const host = settings.shareOverLan
+        ? this.text($r('app.string.source_device'))
+        : '127.0.0.1';
       this.phase = PHASE_CONNECTED;
       this.runningSince = Date.now();
       promptAction.showToast({
-        message: `Proxy on ${host}:${settings.proxyPort}`,
+        message: $r('app.string.index_proxy_on', host, settings.proxyPort),
       });
     } catch (e) {
       const err = e as BusinessError;
       this.phase = PHASE_FAILED;
-      this.failReason = `Could not start the proxy: ${err.message ?? String(e)}`;
+      this.failReason = this.text($r('app.string.index_could_not_start_proxy', err.message ?? String(e)));
       this.proxyUp = false;
     }
   }
@@ -487,7 +531,9 @@ struct Index {
       // the extension may already be gone; report but still leave the UI
       // in the disconnected state rather than rejecting into the click handler
       hilog.warn(0x0000, TAG, 'vpn stop failed: %{public}s', JSON.stringify(e));
-      promptAction.showToast({ message: `Failed to stop VPN: ${JSON.stringify(e)}` });
+      promptAction.showToast({
+        message: $r('app.string.index_vpn_stop_failed', JSON.stringify(e)),
+      });
     } finally {
       this.phase = PHASE_IDLE;
       this.failReason = '';
@@ -548,7 +594,7 @@ struct Index {
       if (this.phase === PHASE_CONNECTING &&
         (Date.now() - this.connectingSince) > CONNECT_TIMEOUT_MS) {
         this.phase = PHASE_FAILED;
-        this.failReason = 'Timed out starting the VPN';
+        this.failReason = this.text($r('app.string.index_vpn_start_timeout'));
         this.stopHealthPolling();
       }
       return;
@@ -583,13 +629,13 @@ struct Index {
     if (stats !== null) {
       if (isStale(stats.timestamp, Date.now(), STATS_STALE_MS)) {
         this.phase = PHASE_PROBE_FAILED;
-        this.failReason = 'Connection lost';
+        this.failReason = this.text($r('app.string.index_connection_lost'));
         return;
       }
     } else if (this.runningSince > 0 &&
       (Date.now() - this.runningSince) > STATS_STALE_MS) {
       this.phase = PHASE_PROBE_FAILED;
-      this.failReason = 'The tunnel started, but the core is not reporting traffic';
+      this.failReason = this.text($r('app.string.index_no_traffic'));
       return;
     }
     if (this.phase === PHASE_CONNECTING || this.phase === PHASE_IDLE) {
@@ -613,7 +659,7 @@ struct Index {
     const status = this.lastStatus;
     if (status === null || status.state !== VPN_STATE_RUNNING) {
       if (manual) {
-        promptAction.showToast({ message: 'Not connected' });
+        promptAction.showToast({ message: $r('app.string.index_not_connected') });
       }
       return;
     }
@@ -642,14 +688,18 @@ struct Index {
         this.probeRttMs = outcome.rttMs;
         this.failReason = '';
         if (manual) {
-          promptAction.showToast({ message: `Connected · ${formatRtt(outcome.rttMs)}` });
+          promptAction.showToast({
+            message: $r('app.string.index_connected_rtt', formatRtt(outcome.rttMs)),
+          });
         }
       } else {
         this.phase = PHASE_PROBE_FAILED;
         this.failReason = verdict.reason;
         this.probeRttMs = 0;
         if (manual) {
-          promptAction.showToast({ message: `Test failed: ${verdict.reason}` });
+          promptAction.showToast({
+            message: $r('app.string.index_test_failed', verdict.reason),
+          });
         }
       }
     } finally {
@@ -673,7 +723,7 @@ struct Index {
       promptAction.showToast({
         message: result.ok
           ? `↓ ${formatMbps(result.mbps)} (${formatBytes(result.bytes)})`
-          : `Speed test failed: ${result.reason}`,
+          : $r('app.string.index_speed_test_failed', result.reason),
       });
     } finally {
       this.speedRunning = false;
@@ -721,22 +771,27 @@ struct Index {
     return entry.ok ? $r('app.color.success') : $r('app.color.error');
   }
 
-  private statusText(): string {
+  private statusText(): ResourceStr {
     switch (this.phase) {
       case PHASE_CONNECTING:
-        return 'Connecting…';
+        return $r('app.string.index_connecting');
       case PHASE_VERIFYING:
-        return 'Verifying the tunnel…';
+        return $r('app.string.index_verifying_tunnel');
       case PHASE_CONNECTED:
-        return `Connected${this.probeRttMs > 0 ? ` · ${formatRtt(this.probeRttMs)}` : ''}`;
+        return this.probeRttMs > 0
+          ? $r('app.string.index_connected_rtt', formatRtt(this.probeRttMs))
+          : $r('app.string.index_connected');
       case PHASE_PROBE_FAILED:
-        return this.failReason.length > 0 ? this.failReason : 'Tunnel up, but no internet';
+        return this.failReason.length > 0 ? this.failReason : $r('app.string.index_tunnel_up_no_internet');
       case PHASE_FAILED:
-        return this.failReason.length > 0 ? `Failed: ${this.failReason}` : 'Failed';
+        return this.failReason.length > 0
+          ? $r('app.string.index_failed_reason', this.failReason)
+          : $r('app.string.index_failed');
       default:
-        return this.currentProfile() !== null ?
-          `${this.currentProfile()!.name} · ${this.currentProfile()!.route}` :
-          'No profile selected';
+        return this.currentProfile() !== null
+          ? $r('app.string.index_status_profile', this.currentProfile()!.name,
+            this.text(routeLabel(this.currentProfile()!.route)))
+          : $r('app.string.index_no_profile_selected');
     }
   }
 
@@ -789,12 +844,12 @@ struct Index {
           .fontColor($r('app.color.success'))
           .margin({ right: 8 })
       }
-      Text(this.measuringId === profile.id ? '…' : 'Test')
+      Text(this.measuringId === profile.id ? '…' : $r('app.string.common_test'))
         .fontSize(14)
         .fontColor($r('app.color.accent'))
         .margin({ right: 12 })
         .onClick(() => this.measureProfileLatency(profile))
-      Text('Edit')
+      Text($r('app.string.common_edit'))
         .fontSize(14)
         .fontColor($r('app.color.accent'))
         .margin({ right: 12 })
@@ -819,23 +874,23 @@ struct Index {
   @Builder
   AddMenu() {
     Menu() {
-      MenuItem({ content: 'Add manually' })
+      MenuItem({ content: $r('app.string.index_add_manually') })
         .onClick(() => {
           router.pushUrl({ url: 'pages/ProfileEdit' });
         })
-      MenuItem({ content: 'Import ss:// URL' })
+      MenuItem({ content: $r('app.string.index_import_url') })
         .onClick(() => this.importDialog.open())
-      MenuItem({ content: 'Paste from clipboard' })
+      MenuItem({ content: $r('app.string.index_paste_from_clipboard') })
         .onClick(() => this.importFromClipboard())
-      MenuItem({ content: 'Import from file' })
+      MenuItem({ content: $r('app.string.index_import_from_file') })
         .onClick(() => this.importFromFile(false))
-      MenuItem({ content: 'Replace from file' })
+      MenuItem({ content: $r('app.string.index_replace_from_file') })
         .onClick(() => this.replaceDialog.open())
-      MenuItem({ content: 'Export to file' })
+      MenuItem({ content: $r('app.string.index_export_to_file') })
         .onClick(() => this.exportToFile())
-      MenuItem({ content: 'Copy to clipboard' })
+      MenuItem({ content: $r('app.string.index_copy_to_clipboard') })
         .onClick(() => this.copyToClipboard())
-      MenuItem({ content: 'Subscriptions' })
+      MenuItem({ content: $r('app.string.index_subscriptions') })
         .onClick(() => {
           router.pushUrl({ url: 'pages/Subscription' });
         })
@@ -846,7 +901,7 @@ struct Index {
     Column() {
       // title bar
       Row() {
-        Text('Shadowsocks')
+        Text($r('app.string.app_name'))
           .fontSize(24)
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
@@ -867,7 +922,7 @@ struct Index {
 
       // the filter, hidden while there is nothing to filter
       if (this.profiles.length > 1) {
-        TextInput({ placeholder: 'Search profiles', text: this.search })
+        TextInput({ placeholder: $r('app.string.index_search_profiles'), text: this.search })
           .onChange((value) => this.search = value)
           .margin({ left: 16, right: 16, bottom: 8 })
       }
@@ -911,7 +966,7 @@ struct Index {
             .fontSize(13)
             .fontColor($r('app.color.success'))
         }
-        Button(this.isUp() ? 'Disconnect' : 'Connect')
+        Button(this.isUp() ? $r('app.string.index_disconnect') : $r('app.string.index_connect'))
           .width('100%')
           .height(48)
           .backgroundColor(this.isUp() ? $r('app.color.error') : $r('app.color.accent'))
@@ -923,7 +978,7 @@ struct Index {
             }
           })
         Row({ space: 12 }) {
-          Button(this.probeRunning ? 'Testing…' : 'Test connection')
+          Button(this.probeRunning ? $r('app.string.common_testing') : $r('app.string.index_test_connection'))
             .fontSize(14)
             .height(38)
             .layoutWeight(1)
@@ -931,7 +986,7 @@ struct Index {
             .enabled(!this.probeRunning &&
               (this.phase === PHASE_CONNECTED || this.phase === PHASE_PROBE_FAILED))
             .onClick(() => this.runProbe(true))
-          Button(this.speedRunning ? 'Testing…' : 'Speed test')
+          Button(this.speedRunning ? $r('app.string.common_testing') : $r('app.string.index_speed_test'))
             .fontSize(14)
             .height(38)
             .layoutWeight(1)
@@ -955,9 +1010,9 @@ struct Index {
 @CustomDialog
 struct ConfirmDialog {
   controller: CustomDialogController;
-  title: string = '';
-  message: string = '';
-  confirmLabel: string = 'OK';
+  title: ResourceStr = '';
+  message: ResourceStr = '';
+  confirmLabel: ResourceStr = $r('app.string.common_ok');
   onConfirm: () => void = () => {
   };
 
@@ -970,7 +1025,7 @@ struct ConfirmDialog {
         .fontSize(14)
         .fontColor($r('app.color.text_body'))
       Row({ space: 12 }) {
-        Button('Cancel')
+        Button($r('app.string.common_cancel'))
           .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
@@ -1001,17 +1056,17 @@ struct ImportDialog {
 
   build() {
     Column({ space: 12 }) {
-      Text('Import ss:// URL')
+      Text($r('app.string.index_import_url'))
         .fontSize(18)
         .fontWeight(FontWeight.Medium)
       TextInput({ placeholder: 'ss://…', text: this.url })
         .onChange((value) => this.url = value)
       Row({ space: 12 }) {
-        Button('Cancel')
+        Button($r('app.string.common_cancel'))
           .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
-        Button('Import')
+        Button($r('app.string.common_import'))
           .layoutWeight(1)
           .onClick(() => {
             this.onConfirm(this.url);

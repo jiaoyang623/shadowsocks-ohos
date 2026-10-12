@@ -242,7 +242,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         await VpnStatusStore.markRunning(this.context, profile.id, profile.name);
         // the tunnel outlives this app's window, so the way out of it has to
         // outlive the window too
-        await showConnected(profile.name);
+        await showConnected(this.context, profile.name);
         this.watchCoreLiveness(profile.id, profile.name);
       }
     } catch (e) {
@@ -508,7 +508,8 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       return;
     }
     this.lastNotificationAt = now;
-    showConnected(this.runningProfileName, `${formatRate(up)} up, ${formatRate(down)} down`)
+    showConnected(this.context, this.runningProfileName,
+      $r('app.string.notification_traffic', formatRate(up), formatRate(down)))
       .catch(() => {
       });
   }
