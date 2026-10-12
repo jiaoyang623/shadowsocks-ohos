@@ -2,6 +2,7 @@
   "src": [
     "pages/Index",
     "pages/ProfileEdit",
-    "pages/Subscription"
+    "pages/Subscription",
+    "pages/Settings"
   ]
 }

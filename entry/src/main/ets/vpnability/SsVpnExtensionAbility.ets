@@ -20,11 +20,13 @@
 import { VpnExtensionAbility, vpnExtension, socket } from '@kit.NetworkKit';
 import { Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import sslocal from 'libsslocal.so';
 import { ProfileStore } from '../model/ProfileStore';
 import { aclFileForRoute, ROUTE_ALL } from '../model/Routes';
 import { TrafficStatsStore } from '../model/TrafficStats';
+import { VpnStatusStore } from '../model/VpnStatus';
 
 const TAG = 'SsVpnExtension';
 
@@ -34,6 +36,8 @@ const TUN_ADDRESS = '172.19.0.1';
 const STAT_PORTS: number[] = [65080, 65081, 65082, 65083, 65084];
 /** Stat samples reach us every ~500 ms; persist at most one per second. */
 const STAT_SAVE_INTERVAL_MS = 1000;
+/** How long after a successful start to check the core is still alive. */
+const CORE_LIVENESS_DELAY_MS = 3000;
 
 /**
  * VPN extension ability that establishes the system VPN interface and routes
@@ -71,16 +75,26 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   private statServer: socket.TCPSocketServer | null = null;
   private statConnections: socket.TCPSocketConnection[] = [];
   private lastStatSave: number = 0;
+  /**
+   * Set when this start attempt failed, so `onDestroy` does not overwrite the
+   * recorded failure with `stopped`. Without it the UI would see a clean stop
+   * and could not tell a failed start from a user-initiated disconnect.
+   */
+  private failed: boolean = false;
 
   async onCreate(want: Want): Promise<void> {
     hilog.info(0x0000, TAG, 'onCreate, core version %{public}s', sslocal.version());
     const profile = await ProfileStore.getCurrent(this.context);
     if (profile === null || profile.host.length === 0) {
       hilog.error(0x0000, TAG, 'no profile configured, aborting');
+      // report it: otherwise the UI sits on "Connecting…" until its own
+      // timeout, which reads as a hang rather than as a configuration problem
+      await VpnStatusStore.markFailed(this.context, '', '', 'No profile configured', '');
       return;
     }
     hilog.info(0x0000, TAG, 'starting profile %{public}s (route %{public}s)',
       profile.name, profile.route);
+    await VpnStatusStore.markStarting(this.context, profile.id, profile.name);
 
     this.connection = vpnExtension.createVpnConnection(this.context);
     const config: vpnExtension.VpnConfig = {
@@ -138,21 +152,61 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       // Route the tun device through the shadowsocks tunnel.
       const code = sslocal.startTunFd(profile.toTunConfig(aclPath), tunFd);
       if (code !== 0) {
+        // read lastError() in the same statement as the failing call: the
+        // native side only guarantees the message until the next call
+        const detail: string = sslocal.lastError() ?? `startTunFd returned ${code}`;
         hilog.error(0x0000, TAG, 'sslocal.startTunFd failed: %{public}d %{public}s',
-          code, sslocal.lastError() ?? '');
+          code, detail);
+        this.failed = true;
+        await VpnStatusStore.markFailed(this.context, profile.id, profile.name,
+          'Could not start the tunnel', detail);
         await this.teardown();
       } else {
         hilog.info(0x0000, TAG, 'shadowsocks tun routing started');
+        await VpnStatusStore.markRunning(this.context, profile.id, profile.name);
+        this.watchCoreLiveness(profile.id, profile.name);
       }
     } catch (e) {
-      hilog.error(0x0000, TAG, 'failed to establish VPN: %{public}s', JSON.stringify(e));
+      const detail: string = (e as BusinessError).message ?? JSON.stringify(e);
+      hilog.error(0x0000, TAG, 'failed to establish VPN: %{public}s', detail);
+      this.failed = true;
+      await VpnStatusStore.markFailed(this.context, profile.id, profile.name,
+        'Could not establish the VPN interface', detail);
       await this.teardown();
     }
   }
 
   async onDestroy(): Promise<void> {
     hilog.info(0x0000, TAG, 'onDestroy');
+    // a failed start has already recorded why; a clean stop must not mask it
+    if (!this.failed) {
+      await VpnStatusStore.markStopped(this.context);
+    }
     await this.teardown();
+  }
+
+  /**
+   * `startTunFd` returning 0 only means the core accepted the tun fd — it can
+   * still fall over moments later, and when it does the only other signal is
+   * that the traffic counters never start moving, which is indistinguishable
+   * from a slow start. So look once shortly after startup, and if the core is
+   * gone record why: `sslocal.lastError()` holds the reason the runtime
+   * stopped, and this is the last moment it can be read from this process.
+   */
+  private watchCoreLiveness(profileId: string, profileName: string): void {
+    setTimeout(() => {
+      const alive = sslocal.isRunning();
+      const error = sslocal.lastError() ?? '';
+      hilog.info(0x0000, TAG, 'core liveness check: running=%{public}s lastError=%{public}s',
+        alive ? 'true' : 'false', error);
+      if (alive) {
+        return;
+      }
+      this.failed = true;
+      VpnStatusStore.markFailed(this.context, profileId, profileName,
+        'The core stopped right after starting', error).catch(() => {
+      });
+    }, CORE_LIVENESS_DELAY_MS);
   }
 
   private async teardown(): Promise<void> {
@@ -183,6 +237,9 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       this.connection = null;
     }
     await TrafficStatsStore.clear(this.context);
+    // The *status* file is deliberately left alone here — see VpnStatusStore.
+    // Clearing it would erase the failed/stopped/crashed distinction the UI
+    // depends on. The traffic counters above are per-connection and do go.
   }
 
   /**
