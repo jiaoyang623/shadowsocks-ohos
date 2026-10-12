@@ -28,6 +28,7 @@ import { aclFileForRoute, ROUTE_ALL, ROUTE_CUSTOM_RULES } from '../model/Routes'
 import { cachedAcl, refreshAcl } from '../model/AclSync';
 import { localDnsServer } from '../model/Network';
 import { composeCustomRules, readUserRules } from '../model/CustomRules';
+import { clear as clearNotification, showConnected } from '../model/ConnectionNotification';
 import { TrafficStatsStore } from '../model/TrafficStats';
 import { VpnStatusStore } from '../model/VpnStatus';
 
@@ -222,6 +223,9 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       } else {
         hilog.info(0x0000, TAG, 'shadowsocks tun routing started');
         await VpnStatusStore.markRunning(this.context, profile.id, profile.name);
+        // the tunnel outlives this app's window, so the way out of it has to
+        // outlive the window too
+        await showConnected(profile.name);
         this.watchCoreLiveness(profile.id, profile.name);
       }
     } catch (e) {
@@ -240,6 +244,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
     if (!this.failed) {
       await VpnStatusStore.markStopped(this.context);
     }
+    await clearNotification();
     await this.teardown();
   }
 

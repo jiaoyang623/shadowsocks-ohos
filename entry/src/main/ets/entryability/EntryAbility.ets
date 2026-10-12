@@ -20,7 +20,10 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { vpnExtension } from '@kit.NetworkKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 import { setAbilityContext, setPendingImport } from '../model/AppContext';
+import { ACTION_DISCONNECT } from '../model/ConnectionNotification';
 
 const TAG = 'EntryAbility';
 
@@ -33,15 +36,40 @@ function takeImportUri(want: Want): void {
   }
 }
 
+/** The VPN extension this app runs; the same want the list page starts it with. */
+const VPN_ABILITY: Want = {
+  deviceId: '',
+  bundleName: 'com.xbt.project',
+  abilityName: 'SsVpnExtensionAbility',
+};
+
+/**
+ * Stops the tunnel when the notification's button asked for it. This is the
+ * ability rather than the extension because a notification's action can only
+ * bring up an ability, and an ability is what can stop the extension.
+ */
+function handleAction(want: Want): void {
+  if (want.action !== ACTION_DISCONNECT) {
+    return;
+  }
+  hilog.info(0x0000, TAG, 'disconnect requested from the notification');
+  vpnExtension.stopVpnExtensionAbility(VPN_ABILITY).catch((e: BusinessError) => {
+    hilog.warn(0x0000, TAG, 'could not stop the VPN extension: %{public}s', e.message ?? '');
+  });
+}
+
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, TAG, 'onCreate');
     setAbilityContext(this.context);
+    handleAction(want);
     takeImportUri(want);
   }
 
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-    // the ability is already up: a link opened from a browser arrives here
+    // the ability is already up: a link from a browser, or the notification's
+    // button, arrives here
+    handleAction(want);
     takeImportUri(want);
   }
 
