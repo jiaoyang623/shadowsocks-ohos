@@ -123,7 +123,7 @@ struct ProfileQr {
       Row() {
         Text('‹ Back')
           .fontSize(16)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
         Text('QR code')
           .fontSize(20)
@@ -140,12 +140,12 @@ struct ProfileQr {
       if (this.error.length > 0) {
         Text(this.error)
           .fontSize(14)
-          .fontColor('#F44336')
+          .fontColor($r('app.color.error'))
       } else {
         Canvas(this.painter)
           .width(CODE_SIZE)
           .height(CODE_SIZE)
-          .backgroundColor('#FFFFFF')
+          .backgroundColor($r('app.color.surface'))
           .onReady(() => this.draw())
       }
 
@@ -155,7 +155,7 @@ struct ProfileQr {
 
       Text(this.url)
         .fontSize(12)
-        .fontColor('#616161')
+        .fontColor($r('app.color.text_body'))
         .textAlign(TextAlign.Center)
         .copyOption(CopyOptions.LocalDevice)
 
@@ -164,7 +164,7 @@ struct ProfileQr {
 
       Text('Point another Shadowsocks client at this code to add the profile. It carries the password, so do not show it to anyone you would not give the password to.')
         .fontSize(12)
-        .fontColor('#9E9E9E')
+        .fontColor($r('app.color.text_secondary'))
         .textAlign(TextAlign.Center)
 
       Blank()
@@ -172,6 +172,6 @@ struct ProfileQr {
     .width('100%')
     .height('100%')
     .padding(16)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor($r('app.color.background'))
   }
 }

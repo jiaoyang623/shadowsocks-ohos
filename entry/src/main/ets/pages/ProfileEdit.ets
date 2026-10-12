@@ -174,7 +174,7 @@ struct ProfileEdit {
       Row() {
         Text('‹ Back')
           .fontSize(16)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
         Text(this.profileId.length > 0 ? 'Edit profile' : 'Add profile')
           .fontSize(20)
@@ -244,7 +244,7 @@ struct ProfileEdit {
         Button('Show QR code')
           .width('100%')
           .height(48)
-          .backgroundColor('#9E9E9E')
+          .backgroundColor($r('app.color.button_neutral'))
           .margin({ bottom: 12 })
           .onClick(() => this.showQrCode())
       }
@@ -273,7 +273,7 @@ struct LabeledSelect {
     Row() {
       Text(this.label)
         .fontSize(14)
-        .fontColor('#9E9E9E')
+        .fontColor($r('app.color.text_secondary'))
         .layoutWeight(1)
       Select(this.options.map((option) => {
         return { value: option } as SelectOption;

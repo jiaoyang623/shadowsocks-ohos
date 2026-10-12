@@ -402,6 +402,13 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   Use `abilityContext()` from `model/AppContext.ets` (the real UIAbility
   context registered by `EntryAbility`); the deprecated `getContext(this)`
   returns a context that API 24 runtimes reject in data-kit calls.
+- Colours come from `$r('app.color.…')`, never from a literal, so that the dark
+  variant in `resources/dark/element/color.json` applies. The two literals left
+  in the app are the QR canvas's: a QR code has to stay dark on light whatever
+  the system theme is doing, or it stops scanning.
+- Anything the user reads while the app is dark is affected by the same rule
+  from the other side: a `Text` with no `fontColor` takes the theme's default,
+  so leaving one on a hardcoded light background makes it white on white.
 - The host-side unit-test runtime (`hvigorw test`) has no native util codecs —
   `util.Base64Helper`, `util.TextDecoder/TextEncoder` and
   `util.generateRandomUUID` are unavailable there. `Profile.ets` therefore
@@ -439,8 +446,9 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
 - No launcher shortcuts and no connect-at-boot. The platform exposes
   `BOOT_COMPLETED` and a `STATIC_SUBSCRIBER` extension type, but the ability
   class is not in the public SDK, so this needs a device experiment.
-- The UI is English only, and there is no dark theme: shadowsocks-android ships
-  13 locales and a DayNight theme.
+- The UI is English only: shadowsocks-android ships 13 locales. Colours are
+  resource references with a dark variant, so the app follows the system theme;
+  the strings are not extracted yet.
 - The connection notification shows the profile but not the live traffic
   Android puts in its own.
 - Starting the VPN normally requires the system consent app

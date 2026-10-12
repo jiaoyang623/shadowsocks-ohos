@@ -276,8 +276,8 @@ struct Index {
       title: `Deleted ${profile.name}`,
       message: 'Its password was only stored here.',
       buttons: [
-        { text: 'Undo', color: '#3F51B5' },
-        { text: 'OK', color: '#616161' },
+        { text: 'Undo', color: $r('app.color.accent') },
+        { text: 'OK', color: $r('app.color.text_body') },
       ],
     });
     if (answer.index === 0) {
@@ -713,12 +713,12 @@ struct Index {
     return entry === undefined ? null : entry;
   }
 
-  private latencyColor(id: string): string {
+  private latencyColor(id: string): ResourceColor {
     const entry = this.latencies.get(id);
     if (entry === undefined || entry.detail === 'pending') {
-      return '#9E9E9E';
+      return $r('app.color.text_secondary');
     }
-    return entry.ok ? '#4CAF50' : '#F44336';
+    return entry.ok ? $r('app.color.success') : $r('app.color.error');
   }
 
   private statusText(): string {
@@ -740,19 +740,19 @@ struct Index {
     }
   }
 
-  private statusColor(): string {
+  private statusColor(): ResourceColor {
     switch (this.phase) {
       case PHASE_CONNECTING:
       case PHASE_VERIFYING:
-        return '#3F51B5';
+        return $r('app.color.accent');
       case PHASE_CONNECTED:
-        return '#4CAF50';
+        return $r('app.color.success');
       case PHASE_PROBE_FAILED:
-        return '#FF9800';
+        return $r('app.color.warning');
       case PHASE_FAILED:
-        return '#F44336';
+        return $r('app.color.error');
       default:
-        return '#9E9E9E';
+        return $r('app.color.text_secondary');
     }
   }
 
@@ -768,7 +768,7 @@ struct Index {
         Row({ space: 6 }) {
           Text(`${profile.host}:${profile.remotePort}  ${profile.method}`)
             .fontSize(12)
-            .fontColor('#9E9E9E')
+            .fontColor($r('app.color.text_secondary'))
             .layoutWeight(1)
             .maxLines(1)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
@@ -786,17 +786,17 @@ struct Index {
       if (profile.id === this.currentId) {
         Text('✓')
           .fontSize(18)
-          .fontColor('#4CAF50')
+          .fontColor($r('app.color.success'))
           .margin({ right: 8 })
       }
       Text(this.measuringId === profile.id ? '…' : 'Test')
         .fontSize(14)
-        .fontColor('#3F51B5')
+        .fontColor($r('app.color.accent'))
         .margin({ right: 12 })
         .onClick(() => this.measureProfileLatency(profile))
       Text('Edit')
         .fontSize(14)
-        .fontColor('#3F51B5')
+        .fontColor($r('app.color.accent'))
         .margin({ right: 12 })
         .onClick(() => {
           router.pushUrl({
@@ -806,13 +806,13 @@ struct Index {
         })
       Text('✕')
         .fontSize(16)
-        .fontColor('#9E9E9E')
+        .fontColor($r('app.color.text_secondary'))
         .onClick(() => this.removeProfile(profile))
     }
     .width('100%')
     .padding(12)
     .borderRadius(8)
-    .backgroundColor(profile.id === this.currentId ? '#E8EAF6' : '#FFFFFF')
+    .backgroundColor(profile.id === this.currentId ? $r('app.color.surface_selected') : $r('app.color.surface'))
     .onClick(() => this.selectProfile(profile))
   }
 
@@ -852,14 +852,14 @@ struct Index {
           .layoutWeight(1)
         Text('⚙')
           .fontSize(22)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .margin({ right: 16 })
           .onClick(() => {
             router.pushUrl({ url: 'pages/Settings' });
           })
         Text('＋')
           .fontSize(28)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .bindMenu(this.AddMenu())
       }
       .width('100%')
@@ -904,17 +904,17 @@ struct Index {
           Text(`↑ ${formatRate(this.txRate)} (${formatBytes(this.txTotal)})   ` +
             `↓ ${formatRate(this.rxRate)} (${formatBytes(this.rxTotal)})`)
             .fontSize(13)
-            .fontColor('#4CAF50')
+            .fontColor($r('app.color.success'))
         }
         if (this.mbps > 0) {
           Text(`↓ ${formatMbps(this.mbps)}`)
             .fontSize(13)
-            .fontColor('#4CAF50')
+            .fontColor($r('app.color.success'))
         }
         Button(this.isUp() ? 'Disconnect' : 'Connect')
           .width('100%')
           .height(48)
-          .backgroundColor(this.isUp() ? '#F44336' : '#3F51B5')
+          .backgroundColor(this.isUp() ? $r('app.color.error') : $r('app.color.accent'))
           .onClick(() => {
             if (this.isUp()) {
               this.disconnect();
@@ -927,7 +927,7 @@ struct Index {
             .fontSize(14)
             .height(38)
             .layoutWeight(1)
-            .backgroundColor('#3F51B5')
+            .backgroundColor($r('app.color.accent'))
             .enabled(!this.probeRunning &&
               (this.phase === PHASE_CONNECTED || this.phase === PHASE_PROBE_FAILED))
             .onClick(() => this.runProbe(true))
@@ -935,7 +935,7 @@ struct Index {
             .fontSize(14)
             .height(38)
             .layoutWeight(1)
-            .backgroundColor('#3F51B5')
+            .backgroundColor($r('app.color.accent'))
             .enabled(!this.speedRunning &&
               (this.phase === PHASE_CONNECTED || this.phase === PHASE_PROBE_FAILED))
             .onClick(() => this.runSpeedTest())
@@ -947,7 +947,7 @@ struct Index {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F5F5')
+    .backgroundColor($r('app.color.background'))
   }
 }
 
@@ -968,10 +968,10 @@ struct ConfirmDialog {
         .fontWeight(FontWeight.Medium)
       Text(this.message)
         .fontSize(14)
-        .fontColor('#616161')
+        .fontColor($r('app.color.text_body'))
       Row({ space: 12 }) {
         Button('Cancel')
-          .backgroundColor('#9E9E9E')
+          .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
         Button(this.confirmLabel)
@@ -1008,7 +1008,7 @@ struct ImportDialog {
         .onChange((value) => this.url = value)
       Row({ space: 12 }) {
         Button('Cancel')
-          .backgroundColor('#9E9E9E')
+          .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
         Button('Import')

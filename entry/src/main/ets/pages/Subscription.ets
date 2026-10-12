@@ -113,7 +113,7 @@ struct SubscriptionPage {
       Row() {
         Text('‹ Back')
           .fontSize(16)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
         Text('Subscriptions')
           .fontSize(20)
@@ -122,7 +122,7 @@ struct SubscriptionPage {
           .textAlign(TextAlign.Center)
         Text('＋')
           .fontSize(24)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => this.addDialog.open())
       }
       .width('100%')
@@ -131,7 +131,7 @@ struct SubscriptionPage {
       if (this.subscriptions.length === 0) {
         Text('No subscriptions yet')
           .fontSize(14)
-          .fontColor('#9E9E9E')
+          .fontColor($r('app.color.text_secondary'))
           .margin({ top: 32 })
       }
 
@@ -149,7 +149,7 @@ struct SubscriptionPage {
                     `updated ${new Date(subscription.updatedAt).toLocaleDateString()}` :
                     'never updated'))
                   .fontSize(12)
-                  .fontColor('#9E9E9E')
+                  .fontColor($r('app.color.text_secondary'))
                   .layoutWeight(1)
                 if (this.updatingId === subscription.id) {
                   LoadingProgress()
@@ -159,13 +159,13 @@ struct SubscriptionPage {
                 } else {
                   Text('Update')
                     .fontSize(14)
-                    .fontColor('#3F51B5')
+                    .fontColor($r('app.color.accent'))
                     .margin({ right: 16 })
                     .onClick(() => this.update(subscription))
                 }
                 Text('Delete')
                   .fontSize(14)
-                  .fontColor('#F44336')
+                  .fontColor($r('app.color.error'))
                   .onClick(() => this.remove(subscription))
               }
               .width('100%')
@@ -174,7 +174,7 @@ struct SubscriptionPage {
             .width('100%')
             .padding(12)
             .borderRadius(8)
-            .backgroundColor('#FFFFFF')
+            .backgroundColor($r('app.color.surface'))
           }
         }, (subscription: Subscription) => subscription.id)
       }
@@ -184,7 +184,7 @@ struct SubscriptionPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F5F5')
+    .backgroundColor($r('app.color.background'))
   }
 }
 
@@ -204,7 +204,7 @@ struct AddSubscriptionDialog {
         .onChange((value) => this.url = value)
       Row({ space: 12 }) {
         Button('Cancel')
-          .backgroundColor('#9E9E9E')
+          .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
         Button('Add')

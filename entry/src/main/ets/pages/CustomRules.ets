@@ -110,7 +110,7 @@ struct CustomRulesPage {
       Row() {
         Text('‹ Back')
           .fontSize(16)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
         Text('Custom rules')
           .fontSize(20)
@@ -124,7 +124,7 @@ struct CustomRulesPage {
 
       Text('Destinations listed here go through the proxy. Profiles using the custom-rules route apply them.')
         .fontSize(13)
-        .fontColor('#616161')
+        .fontColor($r('app.color.text_body'))
 
       TextInput({ placeholder: 'example.com, 10.0.0.0/8, or a list URL', text: this.draft })
         .onChange((value) => this.draft = value)
@@ -145,7 +145,7 @@ struct CustomRulesPage {
       if (this.rows.length === 0) {
         Text('No rules yet.')
           .fontSize(14)
-          .fontColor('#9E9E9E')
+          .fontColor($r('app.color.text_secondary'))
           .margin({ top: 16 })
       } else {
         List({ space: 6 }) {
@@ -154,8 +154,8 @@ struct CustomRulesPage {
               Row() {
                 Text(this.kindLabel(row.kind))
                   .fontSize(11)
-                  .fontColor('#616161')
-                  .backgroundColor('#EEEEEE')
+                  .fontColor($r('app.color.text_body'))
+                  .backgroundColor($r('app.color.divider'))
                   .borderRadius(4)
                   .padding({ left: 6, right: 6, top: 2, bottom: 2 })
                   .margin({ right: 8 })
@@ -166,13 +166,13 @@ struct CustomRulesPage {
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                 Text('✕')
                   .fontSize(16)
-                  .fontColor('#9E9E9E')
+                  .fontColor($r('app.color.text_secondary'))
                   .onClick(() => this.change(removeRule(readUserRules(abilityContext()), row.value)))
               }
               .width('100%')
               .padding(12)
               .borderRadius(8)
-              .backgroundColor('#FFFFFF')
+              .backgroundColor($r('app.color.surface'))
             }
           })
         }
@@ -184,6 +184,6 @@ struct CustomRulesPage {
     .width('100%')
     .height('100%')
     .padding(16)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor($r('app.color.background'))
   }
 }

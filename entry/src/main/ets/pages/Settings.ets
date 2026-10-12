@@ -78,14 +78,14 @@ struct Settings {
     Column({ space: 4 }) {
       Text(label)
         .fontSize(13)
-        .fontColor('#616161')
+        .fontColor($r('app.color.text_body'))
         .width('100%')
       TextInput({ placeholder: hint, text: value })
         .fontSize(14)
         .onChange((text: string) => onEdit(text))
       Text(hint)
         .fontSize(11)
-        .fontColor('#9E9E9E')
+        .fontColor($r('app.color.text_secondary'))
         .width('100%')
     }
     .width('100%')
@@ -97,7 +97,7 @@ struct Settings {
       Row() {
         Text('‹ Back')
           .fontSize(16)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
         Text('Settings')
           .fontSize(20)
@@ -112,22 +112,22 @@ struct Settings {
       Column({ space: 8 }) {
         Text('Service mode')
           .fontSize(13)
-          .fontColor('#616161')
+          .fontColor($r('app.color.text_body'))
         Row({ space: 8 }) {
           Button('VPN')
             .layoutWeight(1)
-            .backgroundColor(this.serviceMode === MODE_VPN ? '#3F51B5' : '#9E9E9E')
+            .backgroundColor(this.serviceMode === MODE_VPN ? $r('app.color.accent') : $r('app.color.button_neutral'))
             .onClick(() => this.serviceMode = MODE_VPN)
           Button('Proxy')
             .layoutWeight(1)
-            .backgroundColor(this.serviceMode === MODE_PROXY ? '#3F51B5' : '#9E9E9E')
+            .backgroundColor(this.serviceMode === MODE_PROXY ? $r('app.color.accent') : $r('app.color.button_neutral'))
             .onClick(() => this.serviceMode = MODE_PROXY)
         }
         .width('100%')
         if (this.serviceMode === MODE_PROXY) {
           Text('A local SOCKS5 listener, without taking over the device. Point apps at it. These settings apply the next time you connect.')
             .fontSize(12)
-            .fontColor('#616161')
+            .fontColor($r('app.color.text_body'))
           TextInput({ placeholder: `SOCKS5 port (${DEFAULT_PROXY_PORT})`, text: this.proxyPort })
             .type(InputType.Number)
             .onChange((value) => this.proxyPort = value)
@@ -142,14 +142,14 @@ struct Settings {
           if (this.shareOverLan) {
             Text('The listener has no authentication, so anyone who can reach this device can use the tunnel.')
               .fontSize(12)
-              .fontColor('#D32F2F')
+              .fontColor($r('app.color.error_strong'))
           }
         }
       }
       .width('100%')
       .padding(12)
       .borderRadius(8)
-      .backgroundColor('#FFFFFF')
+      .backgroundColor($r('app.color.surface'))
 
       this.Field('Connection test URL',
         'Must return 2xx; used to confirm traffic really reaches the internet '
@@ -171,13 +171,13 @@ struct Settings {
             router.pushUrl({ url: 'pages/CustomRules' });
           })
         Button('About')
-          .backgroundColor('#9E9E9E')
+          .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => {
             router.pushUrl({ url: 'pages/About' });
           })
         Button('Reset to defaults')
-          .backgroundColor('#9E9E9E')
+          .backgroundColor($r('app.color.button_neutral'))
           .layoutWeight(1)
           .onClick(() => {
             this.probeUrl = DEFAULT_PROBE_URL;
@@ -192,6 +192,6 @@ struct Settings {
     .width('100%')
     .height('100%')
     .padding(16)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor($r('app.color.background'))
   }
 }

@@ -67,7 +67,7 @@ struct AboutPage {
     Row() {
       Text(label)
         .fontSize(14)
-        .fontColor('#616161')
+        .fontColor($r('app.color.text_body'))
         .layoutWeight(1)
       Text(value)
         .fontSize(14)
@@ -81,7 +81,7 @@ struct AboutPage {
       Row() {
         Text('‹ Back')
           .fontSize(16)
-          .fontColor('#3F51B5')
+          .fontColor($r('app.color.accent'))
           .onClick(() => router.back())
         Text('About')
           .fontSize(20)
@@ -101,17 +101,17 @@ struct AboutPage {
       .width('100%')
       .padding(12)
       .borderRadius(8)
-      .backgroundColor('#FFFFFF')
+      .backgroundColor($r('app.color.surface'))
 
       Text('A client for HarmonyOS NEXT, built on the same Rust core as the Android client. It is free software: you may redistribute and modify it under the terms of the GNU General Public License, version 3 or later, as published by the Free Software Foundation.')
         .fontSize(13)
-        .fontColor('#616161')
+        .fontColor($r('app.color.text_body'))
 
       Blank()
     }
     .width('100%')
     .height('100%')
     .padding(16)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor($r('app.color.background'))
   }
 }
