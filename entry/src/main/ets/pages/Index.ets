@@ -26,6 +26,8 @@ import { ProfileStore } from '../model/ProfileStore';
 import { applyImport, exportProfiles, parseProfilesText } from '../model/ProfilesFile';
 import { EXPORT_FILE_NAME, pickTextFile, readClipboard, saveTextFile, writeClipboard } from '../model/Transfer';
 import { abilityContext, takePendingImport } from '../model/AppContext';
+import { MODE_PROXY } from '../model/Diagnostics';
+import { ProxyService } from '../model/ProxyService';
 import { formatBytes, formatRate, TrafficStats, TrafficStatsStore } from '../model/TrafficStats';
 import { grantVpnAuthorization } from './VpnGrant';
 import {
@@ -105,6 +107,11 @@ struct Index {
   private lastDeletedIndex: number = -1;
   /** Index a drag started from, so the drop knows what to move. */
   private dragFrom: number = -1;
+  /**
+   * Set while proxy mode is serving from this process. The VPN extension is not
+   * involved in that mode, so its status file says nothing about it.
+   */
+  @State proxyUp: boolean = false;
   private importDialog: CustomDialogController = new CustomDialogController({
     builder: ImportDialog({
       onConfirm: (text: string) => this.importFromText(text, 'the text'),
@@ -378,7 +385,7 @@ struct Index {
 
   /** True while an extension is believed to exist, so the button reads Disconnect. */
   private isUp(): boolean {
-    return this.phase === PHASE_CONNECTING || this.phase === PHASE_VERIFYING ||
+    return this.proxyUp || this.phase === PHASE_CONNECTING || this.phase === PHASE_VERIFYING ||
       this.phase === PHASE_CONNECTED || this.phase === PHASE_PROBE_FAILED;
   }
 
@@ -386,6 +393,10 @@ struct Index {
     const profile = this.currentProfile();
     if (profile === null || profile.host.length === 0 || profile.password.length === 0) {
       promptAction.showToast({ message: 'Please add and select a profile first' });
+      return;
+    }
+    if ((this.settings?.serviceMode ?? '') === MODE_PROXY) {
+      await this.connectProxy(profile);
       return;
     }
     // Enter the connecting phase *before* awaiting: starting the extension can
@@ -430,9 +441,46 @@ struct Index {
     // Deliberately no `phase = CONNECTED` here — the health poll takes over.
   }
 
+  /**
+   * Proxy mode: the core serves SOCKS5 in this process and nothing is routed.
+   * There is no consent dialog and no separate process, so this is the whole of
+   * it — and the status is this page's own state rather than the extension's
+   * file, since the extension is not involved.
+   */
+  private async connectProxy(profile: Profile): Promise<void> {
+    const settings = this.settings ?? await SettingsStore.load(abilityContext());
+    this.phase = PHASE_CONNECTING;
+    this.failReason = '';
+    this.probeSeq += 1;
+    try {
+      await ProxyService.start(abilityContext(), profile, settings.proxyPort, settings.shareOverLan);
+      this.proxyUp = true;
+      const host = settings.shareOverLan ? 'this device' : '127.0.0.1';
+      this.phase = PHASE_CONNECTED;
+      this.runningSince = Date.now();
+      promptAction.showToast({
+        message: `Proxy on ${host}:${settings.proxyPort}`,
+      });
+    } catch (e) {
+      const err = e as BusinessError;
+      this.phase = PHASE_FAILED;
+      this.failReason = `Could not start the proxy: ${err.message ?? String(e)}`;
+      this.proxyUp = false;
+    }
+  }
+
   private async disconnect(): Promise<void> {
     // abandon any probe still in flight so its verdict cannot land afterwards
     this.probeSeq += 1;
+    if (this.proxyUp) {
+      await ProxyService.stop(abilityContext());
+      this.proxyUp = false;
+      this.phase = PHASE_IDLE;
+      this.failReason = '';
+      this.runningSince = 0;
+      this.stopHealthPolling();
+      return;
+    }
     try {
       await vpnExtension.stopVpnExtensionAbility(VPN_ABILITY);
     } catch (e) {

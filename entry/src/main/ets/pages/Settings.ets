@@ -21,7 +21,7 @@ import { promptAction, router } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { abilityContext } from '../model/AppContext';
-import { AppSettings, DEFAULT_PROBE_URL, DEFAULT_SPEED_URL } from '../model/Diagnostics';
+import { AppSettings, DEFAULT_PROBE_URL, DEFAULT_PROXY_PORT, DEFAULT_SPEED_URL, MODE_PROXY, MODE_VPN } from '../model/Diagnostics';
 import { SettingsStore } from '../model/Settings';
 
 const TAG = 'Settings';
@@ -38,19 +38,29 @@ const TAG = 'Settings';
 struct Settings {
   @State probeUrl: string = '';
   @State speedTestUrl: string = '';
+  @State serviceMode: string = MODE_VPN;
+  @State proxyPort: string = `${DEFAULT_PROXY_PORT}`;
+  @State shareOverLan: boolean = false;
 
   aboutToAppear(): void {
     SettingsStore.load(abilityContext()).then((settings: AppSettings) => {
       this.probeUrl = settings.probeUrl;
       this.speedTestUrl = settings.speedTestUrl;
+      this.serviceMode = settings.serviceMode;
+      this.proxyPort = `${settings.proxyPort}`;
+      this.shareOverLan = settings.shareOverLan;
     });
   }
 
   private async save(): Promise<void> {
+    const port = Number.parseInt(this.proxyPort, 10);
     const settings: AppSettings = {
       // a blank field means "use the default", not "probe nothing"
       probeUrl: this.probeUrl.trim().length > 0 ? this.probeUrl.trim() : DEFAULT_PROBE_URL,
       speedTestUrl: this.speedTestUrl.trim().length > 0 ? this.speedTestUrl.trim() : DEFAULT_SPEED_URL,
+      serviceMode: this.serviceMode,
+      proxyPort: Number.isNaN(port) || port <= 0 || port > 65535 ? DEFAULT_PROXY_PORT : port,
+      shareOverLan: this.shareOverLan,
     };
     try {
       await SettingsStore.save(abilityContext(), settings);
@@ -98,6 +108,48 @@ struct Settings {
       }
       .width('100%')
       .padding({ top: 8, bottom: 8 })
+
+      Column({ space: 8 }) {
+        Text('Service mode')
+          .fontSize(13)
+          .fontColor('#616161')
+        Row({ space: 8 }) {
+          Button('VPN')
+            .layoutWeight(1)
+            .backgroundColor(this.serviceMode === MODE_VPN ? '#3F51B5' : '#9E9E9E')
+            .onClick(() => this.serviceMode = MODE_VPN)
+          Button('Proxy')
+            .layoutWeight(1)
+            .backgroundColor(this.serviceMode === MODE_PROXY ? '#3F51B5' : '#9E9E9E')
+            .onClick(() => this.serviceMode = MODE_PROXY)
+        }
+        .width('100%')
+        if (this.serviceMode === MODE_PROXY) {
+          Text('A local SOCKS5 listener, without taking over the device. Point apps at it. These settings apply the next time you connect.')
+            .fontSize(12)
+            .fontColor('#616161')
+          TextInput({ placeholder: `SOCKS5 port (${DEFAULT_PROXY_PORT})`, text: this.proxyPort })
+            .type(InputType.Number)
+            .onChange((value) => this.proxyPort = value)
+          Row() {
+            Text('Allow other devices on the network')
+              .fontSize(14)
+              .layoutWeight(1)
+            Toggle({ type: ToggleType.Switch, isOn: this.shareOverLan })
+              .onChange((on: boolean) => this.shareOverLan = on)
+          }
+          .width('100%')
+          if (this.shareOverLan) {
+            Text('The listener has no authentication, so anyone who can reach this device can use the tunnel.')
+              .fontSize(12)
+              .fontColor('#D32F2F')
+          }
+        }
+      }
+      .width('100%')
+      .padding(12)
+      .borderRadius(8)
+      .backgroundColor('#FFFFFF')
 
       this.Field('Connection test URL',
         'Must return 2xx; used to confirm traffic really reaches the internet '

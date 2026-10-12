@@ -89,16 +89,40 @@ export const DEFAULT_PROBE_URL: string = 'http://connectivitycheck.gstatic.com/g
  */
 export const DEFAULT_SPEED_URL: string = 'https://speed.cloudflare.com/__down?bytes=10000000';
 
-/** The two endpoint settings the user can override. */
+/**
+ * How the tunnel is applied, mirroring shadowsocks-android's service modes.
+ *
+ * `vpn` takes over the device through the VPN extension. `proxy` runs the core
+ * as a local SOCKS5 listener and lets apps be pointed at it, which is the only
+ * option on a device where the VPN consent is refused, and what "share over
+ * LAN" needs: with the listener on all interfaces, other devices can use it.
+ * Android's transparent proxy has no equivalent here and is not offered.
+ */
+export const MODE_VPN: string = 'vpn';
+export const MODE_PROXY: string = 'proxy';
+
+/** Default local SOCKS5 port for proxy mode, the same one Android uses. */
+export const DEFAULT_PROXY_PORT: number = 1080;
+
+/** The endpoint settings the user can override, and how the tunnel is applied. */
 export interface AppSettings {
   probeUrl: string;
   speedTestUrl: string;
+  /** One of MODE_VPN or MODE_PROXY. */
+  serviceMode: string;
+  /** Local SOCKS5 port for proxy mode. */
+  proxyPort: number;
+  /** Bind proxy mode's listener on all interfaces rather than loopback only. */
+  shareOverLan: boolean;
 }
 
 /** The on-disk shape, with every field optional so a partial file still loads. */
 export interface AppSettingsJson {
   probeUrl?: string;
   speedTestUrl?: string;
+  serviceMode?: string;
+  proxyPort?: number;
+  shareOverLan?: boolean;
 }
 
 /**
@@ -110,6 +134,9 @@ export function settingsFromJson(parsed: AppSettingsJson | null): AppSettings {
   const settings: AppSettings = {
     probeUrl: DEFAULT_PROBE_URL,
     speedTestUrl: DEFAULT_SPEED_URL,
+    serviceMode: MODE_VPN,
+    proxyPort: DEFAULT_PROXY_PORT,
+    shareOverLan: false,
   };
   if (parsed === null) {
     return settings;
@@ -122,6 +149,14 @@ export function settingsFromJson(parsed: AppSettingsJson | null): AppSettings {
   if (speed !== undefined && speed.length > 0) {
     settings.speedTestUrl = speed;
   }
+  if (parsed.serviceMode === MODE_PROXY) {
+    settings.serviceMode = MODE_PROXY;
+  }
+  const port = parsed.proxyPort;
+  if (port !== undefined && port > 0 && port <= 65535) {
+    settings.proxyPort = port;
+  }
+  settings.shareOverLan = parsed.shareOverLan === true;
   return settings;
 }
 

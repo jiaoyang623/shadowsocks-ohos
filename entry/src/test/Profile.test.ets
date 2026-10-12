@@ -200,6 +200,23 @@ export default function profileTest() {
       expect(fallback['locals'][1]['local_dns_address']).assertEqual('1.1.1.1');
     });
 
+    it('builds a proxy config that binds where it was told', 0, () => {
+      const profile = new Profile();
+      profile.host = 'example.com';
+      profile.password = 'pw';
+
+      const local: object = JSON.parse(profile.toLocalConfig(1081, false)) as object;
+      expect(local['locals'][0]['protocol']).assertEqual('socks');
+      expect(local['locals'][0]['local_address']).assertEqual('127.0.0.1');
+      expect(local['locals'][0]['local_port']).assertEqual(1081);
+      // the sandbox cannot read /etc/resolv.conf, so the resolver is named
+      expect(local['dns']).assertEqual('google');
+
+      // sharing binds every interface, which is the point of it
+      const shared: object = JSON.parse(profile.toLocalConfig(1081, true)) as object;
+      expect(shared['locals'][0]['local_address']).assertEqual('0.0.0.0');
+    });
+
     it('injects acl path for bypass routes', 0, () => {
       const profile = new Profile();
       profile.host = 'example.com';

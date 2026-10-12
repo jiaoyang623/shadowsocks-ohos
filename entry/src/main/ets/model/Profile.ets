@@ -363,13 +363,22 @@ export class Profile {
     return { host: host.replace('[', '').replace(']', ''), port: port };
   }
 
-  /** JSON config for the native sslocal core with a local SOCKS5 service. */
-  toLocalConfig(): string {
+  /**
+   * JSON config for the native sslocal core with a local SOCKS5 service — the
+   * proxy mode config, where nothing is routed and a client is pointed at the
+   * listener instead.
+   *
+   * `shareOverLan` binds every interface rather than loopback, which lets other
+   * devices on the network use the tunnel. That is a deliberate exposure: the
+   * listener has no authentication, exactly as shadowsocks-android's has none.
+   */
+  toLocalConfig(port: number = 0, shareOverLan: boolean = false): string {
+    const localPort = port > 0 ? port : this.localPort;
     const config: Record<string, Object> = {
       'locals': [Object({
         'protocol': 'socks',
-        'local_address': this.localAddress,
-        'local_port': this.localPort,
+        'local_address': shareOverLan ? '0.0.0.0' : this.localAddress,
+        'local_port': localPort,
       })],
       'server': this.host,
       'server_port': this.remotePort,
@@ -380,6 +389,10 @@ export class Profile {
       config['plugin'] = this.plugin;
       config['plugin_opts'] = this.pluginOpts;
     }
+    // Name the upstream resolver explicitly, as the tun config does: the
+    // default is the system resolver, which means reading /etc/resolv.conf —
+    // denied in the app sandbox, and fatal rather than a warning.
+    config['dns'] = 'google';
     return JSON.stringify(config);
   }
 

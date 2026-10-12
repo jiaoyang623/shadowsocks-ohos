@@ -52,6 +52,11 @@
       },
       {
         "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      {
+        // proxy mode runs the core in this process, which the platform freezes
+        // in the background without a continuous task
+        "name": "ohos.permission.KEEP_BACKGROUND_RUNNING"
       }
     ]
   }
