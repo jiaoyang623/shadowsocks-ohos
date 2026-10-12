@@ -113,6 +113,12 @@ struct Settings {
         })
 
       Row({ space: 12 }) {
+        Button('About')
+          .backgroundColor('#9E9E9E')
+          .layoutWeight(1)
+          .onClick(() => {
+            router.pushUrl({ url: 'pages/About' });
+          })
         Button('Reset to defaults')
           .backgroundColor('#9E9E9E')
           .layoutWeight(1)

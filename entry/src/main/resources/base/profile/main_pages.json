@@ -3,6 +3,7 @@
     "pages/Index",
     "pages/ProfileEdit",
     "pages/Subscription",
-    "pages/Settings"
+    "pages/Settings",
+    "pages/About"
   ]
 }

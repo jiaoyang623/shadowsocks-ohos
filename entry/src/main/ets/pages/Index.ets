@@ -94,6 +94,15 @@ struct Index {
   /** Bumped to abandon a probe whose result is no longer wanted. */
   private probeSeq: number = 0;
   private settings: AppSettings | null = null;
+  /** Filter text for the list; empty shows everything. */
+  @State search: string = '';
+  /**
+   * The profile the last delete removed, and where it was. Deleting is easy to
+   * do by accident and the profile holds a password that is not recoverable
+   * from anywhere else, so the removal is offered back until the next action.
+   */
+  private lastDeleted: Profile | null = null;
+  private lastDeletedIndex: number = -1;
   private importDialog: CustomDialogController = new CustomDialogController({
     builder: ImportDialog({
       onConfirm: (text: string) => this.importFromText(text, 'the text'),
@@ -151,6 +160,16 @@ struct Index {
     if (this.phase === PHASE_IDLE || this.phase === PHASE_FAILED) {
       this.resumeStatus();
     }
+  }
+
+  /** The profiles to render: the stored ones, less the search filter. */
+  private shown(): Profile[] {
+    const needle = this.search.trim().toLowerCase();
+    if (needle.length === 0) {
+      return this.profiles;
+    }
+    return this.profiles.filter((p) => p.name.toLowerCase().includes(needle) ||
+      p.host.toLowerCase().includes(needle));
   }
 
   private async reload(): Promise<void> {
@@ -213,10 +232,46 @@ struct Index {
   }
 
   private async removeProfile(profile: Profile): Promise<void> {
+    const index = this.profiles.findIndex((p) => p.id === profile.id);
     try {
       await ProfileStore.remove(abilityContext(), profile.id);
+      this.lastDeleted = profile;
+      this.lastDeletedIndex = index;
     } catch (e) {
       this.reportFailure('Delete profile', e as Object);
+      return;
+    }
+    await this.reload();
+    // the profile is gone from the list, so the undo has to be offered here
+    const answer = await promptAction.showDialog({
+      title: `Deleted ${profile.name}`,
+      message: 'Its password was only stored here.',
+      buttons: [
+        { text: 'Undo', color: '#3F51B5' },
+        { text: 'OK', color: '#616161' },
+      ],
+    });
+    if (answer.index === 0) {
+      await this.undoDelete();
+    }
+  }
+
+  /** Puts the last deleted profile back where it was. */
+  private async undoDelete(): Promise<void> {
+    const profile = this.lastDeleted;
+    if (profile === null) {
+      return;
+    }
+    const index = this.lastDeletedIndex;
+    this.lastDeleted = null;
+    this.lastDeletedIndex = -1;
+    try {
+      const context = abilityContext();
+      const stored = await ProfileStore.getAll(context);
+      stored.splice(index >= 0 && index <= stored.length ? index : stored.length, 0, profile);
+      await ProfileStore.saveAll(context, stored);
+    } catch (e) {
+      this.reportFailure('Undo delete', e as Object);
     }
     await this.reload();
   }
@@ -740,9 +795,16 @@ struct Index {
       .width('100%')
       .padding({ left: 16, right: 16, top: 16, bottom: 8 })
 
+      // the filter, hidden while there is nothing to filter
+      if (this.profiles.length > 1) {
+        TextInput({ placeholder: 'Search profiles', text: this.search })
+          .onChange((value) => this.search = value)
+          .margin({ left: 16, right: 16, bottom: 8 })
+      }
+
       // profile list
       List({ space: 8 }) {
-        ForEach(this.profiles, (profile: Profile) => {
+        ForEach(this.shown(), (profile: Profile) => {
           ListItem() {
             this.ProfileItem(profile)
           }
