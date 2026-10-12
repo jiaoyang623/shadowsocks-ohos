@@ -54,6 +54,12 @@ const TUN_PREFIX_LENGTH = 30;
  * advertising 1360 to the client keeps both directions inside the path MTU.
  */
 const TUN_MTU = 1400;
+/**
+ * Port the core's own DNS resolver listens on. It cannot be 53: binding a
+ * privileged port is refused (EACCES), so the resolver listens high and the
+ * VPN's DNS address carries the port to match.
+ */
+const DNS_PORT = 5353;
 
 /** Loopback ports probed (in order) for the traffic-stat report endpoint. */
 const STAT_PORTS: number[] = [65080, 65081, 65082, 65083, 65084];
@@ -138,7 +144,12 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         hasGateway: false,
         isDefaultRoute: true,
       }],
-      dnsAddresses: ['1.1.1.1'],
+      // The core answers DNS on the tun's own address (see toTunConfig); point
+      // clients there instead of at a public resolver, whose queries would be
+      // relayed as UDP and dropped by a server without UDP relay. The port
+      // matters: the resolver cannot bind 53 (a privileged port, refused with
+      // EACCES), so it listens high and the address has to carry the port.
+      dnsAddresses: [`${TUN_ADDRESS}:${DNS_PORT}`],
       trustedApplications: [],
       blockedApplications: [],
       mtu: TUN_MTU,

@@ -302,21 +302,42 @@ export class Profile {
    */
   toTunConfig(aclPath: string = '', tunAddress: string = ''): string {
     const local: Record<string, Object> = { 'protocol': 'tun' };
+    const locals: Object[] = [local];
     if (tunAddress.length > 0) {
-      // The core's tun serving loop asks the device for its address and netmask
-      // and refuses to start if either is missing. On OpenHarmony the device
-      // can only answer from the config — the fd carries no interface name to
-      // query — so the caller must state them. See
-      // native/sslocal-ffi/vendor/tun/PATCH.md.
+      // The core's tun stack relays client DNS as plain UDP through the
+      // tunnel, which only works if the server relays UDP — and many do not.
+      // When it does not, every lookup silently times out and the device looks
+      // offline while TCP still tunnels fine. So let the core answer DNS
+      // itself: this binds a resolver on the tun's own address, which apps are
+      // pointed at, and it resolves upstream through the proxy *over TCP*.
       local['tun_interface_address'] = tunAddress;
+      const dnsLocal: Record<string, Object> = {
+        'protocol': 'dns',
+        'local_address': tunAddress.split('/')[0],
+        'local_port': 5353,
+        // Both are required: DnsBuilder treats a missing `local_dns_addr` as a
+        // programming error and panics, which takes the whole local server
+        // down before the tun ever serves.
+        'local_dns_address': '1.1.1.1',
+        'local_dns_port': 53,
+        'remote_dns_address': '1.1.1.1',
+        'remote_dns_port': 53,
+      };
+      locals.push(dnsLocal);
     }
     const config: Record<string, Object> = {
-      'locals': [local],
+      'locals': locals,
       'server': this.host,
       'server_port': this.remotePort,
       'password': this.password,
       'method': this.method,
       'mode': 'tcp_and_udp',
+      // Name the upstream resolver explicitly. The default is the system
+      // resolver, and loading it means reading /etc/resolv.conf — which the app
+      // sandbox denies, and with a `dns` local enabled that turns into a fatal
+      // `sslocal exited with error: Permission denied (os error 13)` instead of
+      // the harmless warning it is otherwise.
+      'dns': 'google',
     };
     if (this.plugin.length > 0) {
       config['plugin'] = this.plugin;
