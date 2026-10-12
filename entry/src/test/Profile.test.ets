@@ -186,6 +186,20 @@ export default function profileTest() {
       expect(Profile.parseDnsAddress('  dns.google  ').host).assertEqual('dns.google');
     });
 
+    it('resolves direct names with the resolver the network gave', 0, () => {
+      const profile = new Profile();
+      profile.host = 'example.com';
+      profile.password = 'pw';
+
+      const config: object = JSON.parse(profile.toTunConfig('', '172.19.0.1/30', '192.168.1.1')) as object;
+      expect(config['locals'][1]['local_dns_address']).assertEqual('192.168.1.1');
+
+      // with nothing from the platform it falls back to a public resolver,
+      // which is what an ACL-less route uses anyway
+      const fallback: object = JSON.parse(profile.toTunConfig('', '172.19.0.1/30')) as object;
+      expect(fallback['locals'][1]['local_dns_address']).assertEqual('1.1.1.1');
+    });
+
     it('injects acl path for bypass routes', 0, () => {
       const profile = new Profile();
       profile.host = 'example.com';

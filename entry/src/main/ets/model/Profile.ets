@@ -396,8 +396,12 @@ export class Profile {
    * When the profile's route is not `all`, `aclPath` must point at the
    * deployed ACL file for that route (see Routes.ets); it is injected as the
    * core's top-level `acl` field.
+   *
+   * `localDns` is the resolver for names the route sends directly (see
+   * Network.ets). It only matters when an ACL is deployed, since without one
+   * every name takes the remote resolver.
    */
-  toTunConfig(aclPath: string = '', tunAddress: string = ''): string {
+  toTunConfig(aclPath: string = '', tunAddress: string = '', localDns: string = ''): string {
     const local: Record<string, Object> = { 'protocol': 'tun' };
     const locals: Object[] = [local];
     if (tunAddress.length > 0) {
@@ -419,7 +423,9 @@ export class Profile {
         // options and panics without them, which takes the whole local server
         // down before the tun ever serves. With no ACL deployed the local one
         // is never consulted — every name goes to the remote resolver.
-        'local_dns_address': LOCAL_DNS_ADDRESS,
+        // the network's own resolver when one was found, since a fixed public
+        // resolver is the kind of address a network can block
+        'local_dns_address': localDns.length > 0 ? localDns : LOCAL_DNS_ADDRESS,
         'local_dns_port': 53,
         'remote_dns_address': remoteDns.host,
         'remote_dns_port': remoteDns.port,

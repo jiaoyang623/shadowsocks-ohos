@@ -26,6 +26,7 @@ import sslocal from 'libsslocal.so';
 import { ProfileStore } from '../model/ProfileStore';
 import { aclFileForRoute, ROUTE_ALL } from '../model/Routes';
 import { cachedAcl, refreshAcl } from '../model/AclSync';
+import { localDnsServer } from '../model/Network';
 import { TrafficStatsStore } from '../model/TrafficStats';
 import { VpnStatusStore } from '../model/VpnStatus';
 
@@ -206,7 +207,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       // and netmask before its packet loop and aborts without them, and on
       // OpenHarmony the device cannot report them from the fd alone.
       const tunAddress = `${TUN_ADDRESS}/${TUN_PREFIX_LENGTH}`;
-      const code = sslocal.startTunFd(profile.toTunConfig(aclPath, tunAddress), tunFd);
+      const code = sslocal.startTunFd(profile.toTunConfig(aclPath, tunAddress, localDnsServer()), tunFd);
       if (code !== 0) {
         // read lastError() in the same statement as the failing call: the
         // native side only guarantees the message until the next call
