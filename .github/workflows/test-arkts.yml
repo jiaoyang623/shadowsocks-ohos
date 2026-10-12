@@ -1,0 +1,35 @@
+name: ArkTS model tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  model:
+    name: model-layer specs on the host
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The specs' own runner drives the DevEco previewer, and its Linux build
+      # cannot execute them: it prints nothing and exits 0 (see AGENTS.md). This
+      # compiles the same spec files with the TypeScript compiler and runs them
+      # on node, so the model layer gets a real check here rather than none.
+      - name: TypeScript compiler
+        run: npm install --global typescript@5
+
+      - run: ./test-arkts-host.sh

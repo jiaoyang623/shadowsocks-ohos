@@ -109,6 +109,10 @@ ci/
   r2-env.sh                   sourced helper: derives S3 credentials for that
                               bucket from R2_API_TOKEN + R2_ENDPOINT
 test-e2e-host.sh              host-side verification entry point (see Testing)
+test-arkts-host.sh            runs the model-layer ArkTS specs on the host with
+                              node (see Testing)
+tools/arkts-host/             the shims that makes that possible: hypium, the
+                              @kit stand-ins, and the runner entry point
 ```
 
 Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
@@ -265,6 +269,9 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   - `test-cross.yml` — `./test-e2e-host.sh cross` (with `mlugg/setup-zig`).
   - `test-tun.yml` — `./test-e2e-host.sh tun` with `TUN_E2E_REQUIRED=1`, so a
     missing `/dev/net/tun` fails the job instead of skipping quietly.
+  - `test-arkts.yml` — `./test-arkts-host.sh`, the model-layer specs. It needs
+    node and `tsc` from npm, and no HarmonyOS SDK, which is why it can run here
+    at all.
 
   All four gate every push and pull request. Shared setup — the sibling
   `shadowsocks-rust` checkout (this crate path-depends on it), the Rust
@@ -303,6 +310,14 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   body parsing. Run from DevEco Studio or headless:
   `hvigorw test --mode module -p module=entry -p product=default`
   (failures show up as `Error in <test name>` lines).
+- **`./test-arkts-host.sh`** — those same spec files, on the host, in about a
+  second. `hvigorw test` drives the SDK previewer, and its Linux build cannot
+  execute the specs: it prints nothing and exits 0, so on Linux the specs
+  otherwise run nowhere outside DevEco Studio. This compiles `model/` and the
+  specs with the TypeScript compiler (from the DevEco tools, or `TSC=`) and runs
+  them on node, with `tools/arkts-host` standing in for `@ohos/hypium` and the
+  `@kit.*` modules. Only what needs no native API can run there, which is the
+  parsing, serialisation and arithmetic the model layer is made of.
 - **On-device tests** — `entry/src/ohosTest`, run from DevEco Studio or
   headless via **`ci/hos-emulator-e2e.sh`** (`HOS_TOOLS=<command-line-tools>
   HOS_IMAGES=~/Library/Huawei/Sdk ci/hos-emulator-e2e.sh`), which builds and

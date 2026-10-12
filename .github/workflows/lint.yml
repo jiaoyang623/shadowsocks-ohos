@@ -47,4 +47,4 @@ jobs:
       # -S warning: which info-level checks exist varies with the shellcheck
       # version in the runner image, so an image bump must not turn CI red on
       # its own.
-      - run: shellcheck -S warning test-e2e-host.sh native/*.sh ci/*.sh
+      - run: shellcheck -S warning test-e2e-host.sh test-arkts-host.sh native/*.sh ci/*.sh
