@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@ohos/hypium';
-import { Profile, STATUS_ACTIVE, STATUS_USER_CONFIGURED } from '../main/ets/model/Profile';
+import { Profile, STATUS_ACTIVE, STATUS_USER_CONFIGURED, nextUserOrder } from '../main/ets/model/Profile';
 import { ProfileStore } from '../main/ets/model/ProfileStore';
 
 export default function profileStoreTest() {
@@ -41,9 +41,9 @@ export default function profileStoreTest() {
       const first = new Profile();
       const later = new Profile();
       later.userOrder = 4;
-      expect(ProfileStore.nextOrder([])).assertEqual(1);
-      expect(ProfileStore.nextOrder([first])).assertEqual(1);
-      expect(ProfileStore.nextOrder([first, later])).assertEqual(5);
+      expect(nextUserOrder([])).assertEqual(1);
+      expect(nextUserOrder([first])).assertEqual(1);
+      expect(nextUserOrder([first, later])).assertEqual(5);
     });
   });
 }

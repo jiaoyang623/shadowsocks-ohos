@@ -87,6 +87,17 @@ export function newProfileId(): string {
   return out;
 }
 
+/** One past the highest sort key in use, so a new profile lands at the end. */
+export function nextUserOrder(profiles: Profile[]): number {
+  let highest = 0;
+  for (const profile of profiles) {
+    if (profile.userOrder > highest) {
+      highest = profile.userOrder;
+    }
+  }
+  return highest + 1;
+}
+
 /**
  * A shadowsocks server profile, parseable from SIP002 `ss://` URLs and
  * serializable into the JSON config consumed by the native sslocal core.

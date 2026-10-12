@@ -19,7 +19,7 @@
 
 import { common } from '@kit.AbilityKit';
 import { JsonStore } from './JsonStore';
-import { DEFAULT_REMOTE_DNS, Profile, STATUS_USER_CONFIGURED } from './Profile';
+import { DEFAULT_REMOTE_DNS, Profile, STATUS_USER_CONFIGURED, nextUserOrder } from './Profile';
 import { ROUTE_ALL } from './Routes';
 
 const STORE_PROFILES = 'profiles';
@@ -86,22 +86,11 @@ export class ProfileStore {
       profiles[index] = profile;
     } else {
       if (profile.userOrder <= 0) {
-        profile.userOrder = ProfileStore.nextOrder(profiles);
+        profile.userOrder = nextUserOrder(profiles);
       }
       profiles.push(profile);
     }
     await ProfileStore.saveAll(context, profiles);
-  }
-
-  /** One past the highest key in use, so a new profile lands at the end. */
-  static nextOrder(profiles: Profile[]): number {
-    let highest = 0;
-    for (const profile of profiles) {
-      if (profile.userOrder > highest) {
-        highest = profile.userOrder;
-      }
-    }
-    return highest + 1;
   }
 
   /**

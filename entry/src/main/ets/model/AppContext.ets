@@ -33,6 +33,28 @@ export function setAbilityContext(context: common.UIAbilityContext): void {
   AppStorage.setOrCreate(KEY, context);
 }
 
+const IMPORT_KEY = 'pending_import_uri';
+
+/**
+ * A profile link the ability was launched with, waiting for the page to take
+ * it. It is kept here because the link arrives with the want, which can be
+ * before the page exists (a cold start) or while it is already showing (a link
+ * opened from a browser).
+ */
+export function setPendingImport(uri: string): void {
+  AppStorage.setOrCreate(IMPORT_KEY, uri);
+}
+
+/** Takes the pending link, if any, and clears it so it is handled once. */
+export function takePendingImport(): string {
+  const uri = AppStorage.get(IMPORT_KEY) as string | undefined;
+  if (uri === undefined || uri.length === 0) {
+    return '';
+  }
+  AppStorage.setOrCreate(IMPORT_KEY, '');
+  return uri;
+}
+
 export function abilityContext(): common.UIAbilityContext {
   const context = AppStorage.get(KEY) as common.UIAbilityContext | undefined;
   if (context !== undefined) {

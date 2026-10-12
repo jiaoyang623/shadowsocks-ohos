@@ -25,6 +25,12 @@
           {
             "entities": ["entity.system.home"],
             "actions": ["action.system.home"]
+          },
+          {
+            // Answers ss:// links, so a profile a provider hands out as a link
+            // or a QR code can be opened straight into the app.
+            "actions": ["ohos.want.action.viewData"],
+            "uris": [{ "scheme": "ss" }]
           }
         ]
       }

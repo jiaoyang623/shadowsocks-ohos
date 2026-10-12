@@ -20,14 +20,29 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { setAbilityContext } from '../model/AppContext';
+import { setAbilityContext, setPendingImport } from '../model/AppContext';
 
 const TAG = 'EntryAbility';
+
+/** Handles either way the ability is entered: fresh, or already running. */
+function takeImportUri(want: Want): void {
+  const uri = want.uri;
+  if (uri !== undefined && uri.startsWith('ss://')) {
+    hilog.info(0x0000, TAG, 'received a profile link');
+    setPendingImport(uri);
+  }
+}
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, TAG, 'onCreate');
     setAbilityContext(this.context);
+    takeImportUri(want);
+  }
+
+  onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    // the ability is already up: a link opened from a browser arrives here
+    takeImportUri(want);
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {

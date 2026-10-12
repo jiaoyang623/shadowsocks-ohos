@@ -23,7 +23,9 @@ import { promptAction, router } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { Profile } from '../model/Profile';
 import { ProfileStore } from '../model/ProfileStore';
-import { abilityContext } from '../model/AppContext';
+import { applyImport, exportProfiles, parseProfilesText } from '../model/ProfilesFile';
+import { EXPORT_FILE_NAME, pickTextFile, readClipboard, saveTextFile, writeClipboard } from '../model/Transfer';
+import { abilityContext, takePendingImport } from '../model/AppContext';
 import { formatBytes, formatRate, TrafficStats, TrafficStatsStore } from '../model/TrafficStats';
 import { grantVpnAuthorization } from './VpnGrant';
 import {
@@ -94,14 +96,42 @@ struct Index {
   private settings: AppSettings | null = null;
   private importDialog: CustomDialogController = new CustomDialogController({
     builder: ImportDialog({
-      onConfirm: (url: string) => this.importFromUrl(url),
+      onConfirm: (text: string) => this.importFromText(text, 'the text'),
+    }),
+    autoCancel: true,
+  });
+  // Replacing throws away every profile that is not in the file, so it asks
+  // first. Importing does not, which is why only this one is confirmed.
+  private replaceDialog: CustomDialogController = new CustomDialogController({
+    builder: ConfirmDialog({
+      title: 'Replace all profiles?',
+      message: 'Every profile will be replaced by the ones in the file. Profiles with the same server keep their counters.',
+      confirmLabel: 'Replace',
+      onConfirm: () => this.importFromFile(true),
     }),
     autoCancel: true,
   });
 
+  /**
+   * A profile link the app was launched with. The page is already on screen by
+   * the time a link opened from elsewhere arrives, so the value is watched
+   * rather than read once.
+   */
+  @StorageLink('pending_import_uri') @Watch('onPendingImport') pendingImport: string = '';
+
   aboutToAppear(): void {
     this.reload();
     this.resumeStatus();
+    // a cold start carries the link in the want, before this page existed
+    this.onPendingImport();
+  }
+
+  private onPendingImport(): void {
+    const uri = takePendingImport();
+    if (uri.length === 0) {
+      return;
+    }
+    this.importFromText(uri, 'the link');
   }
 
   aboutToDisappear(): void {
@@ -190,18 +220,82 @@ struct Index {
     await this.reload();
   }
 
-  private importFromUrl(url: string): void {
-    const profile = Profile.parseUrl(url);
-    if (profile === null) {
-      promptAction.showToast({ message: 'Invalid ss:// URL' });
+  /**
+   * Imports whatever the text holds: an exported file, a SIP008 document, a
+   * list of `ss://` URLs, or a base64 blob of them. Appending rather than
+   * replacing, which is what Android's own import does.
+   */
+  private async importText(text: string, source: string, replace: boolean = false): Promise<void> {
+    const imported = parseProfilesText(text);
+    if (imported.length === 0) {
+      promptAction.showToast({ message: `Nothing to import from ${source}` });
       return;
     }
-    profile.ensureId();
-    ProfileStore.upsert(abilityContext(), profile).then(async () => {
-      await ProfileStore.setCurrentId(abilityContext(), profile.id);
-      await this.reload();
-      promptAction.showToast({ message: `Imported ${profile.name}` });
-    }).catch((e: Object) => this.reportFailure('Import', e));
+    const context = abilityContext();
+    const existing = await ProfileStore.getAll(context);
+    const profiles = applyImport(existing, imported, replace);
+    await ProfileStore.saveAll(context, profiles);
+    if ((await ProfileStore.getCurrentId(context)).length === 0 && profiles.length > 0) {
+      await ProfileStore.setCurrentId(context, profiles[0].id);
+    }
+    await this.reload();
+    const verb = replace ? 'Replaced with' : 'Imported';
+    promptAction.showToast({ message: `${verb} ${imported.length} profile(s)` });
+  }
+
+  private async importFromText(text: string, source: string): Promise<void> {
+    try {
+      await this.importText(text, source);
+    } catch (e) {
+      this.reportFailure('Import', e as Object);
+    }
+  }
+
+  private async importFromFile(replace: boolean): Promise<void> {
+    try {
+      const text = await pickTextFile(abilityContext());
+      if (text.length === 0) {
+        return; // the user cancelled
+      }
+      await this.importText(text, 'the file', replace);
+    } catch (e) {
+      this.reportFailure('Import', e as Object);
+    }
+  }
+
+  private async importFromClipboard(): Promise<void> {
+    try {
+      const text = await readClipboard();
+      if (text.trim().length === 0) {
+        promptAction.showToast({ message: 'The clipboard is empty' });
+        return;
+      }
+      await this.importText(text, 'the clipboard');
+    } catch (e) {
+      this.reportFailure('Import', e as Object);
+    }
+  }
+
+  private async exportToFile(): Promise<void> {
+    try {
+      const text = exportProfiles(this.profiles);
+      const uri = await saveTextFile(abilityContext(), EXPORT_FILE_NAME, text);
+      if (uri.length === 0) {
+        return; // the user cancelled
+      }
+      promptAction.showToast({ message: `Exported ${this.profiles.length} profile(s)` });
+    } catch (e) {
+      this.reportFailure('Export', e as Object);
+    }
+  }
+
+  private async copyToClipboard(): Promise<void> {
+    try {
+      await writeClipboard(exportProfiles(this.profiles));
+      promptAction.showToast({ message: `Copied ${this.profiles.length} profile(s)` });
+    } catch (e) {
+      this.reportFailure('Copy', e as Object);
+    }
   }
 
   /** True while an extension is believed to exist, so the button reads Disconnect. */
@@ -605,6 +699,16 @@ struct Index {
         })
       MenuItem({ content: 'Import ss:// URL' })
         .onClick(() => this.importDialog.open())
+      MenuItem({ content: 'Paste from clipboard' })
+        .onClick(() => this.importFromClipboard())
+      MenuItem({ content: 'Import from file' })
+        .onClick(() => this.importFromFile(false))
+      MenuItem({ content: 'Replace from file' })
+        .onClick(() => this.replaceDialog.open())
+      MenuItem({ content: 'Export to file' })
+        .onClick(() => this.exportToFile())
+      MenuItem({ content: 'Copy to clipboard' })
+        .onClick(() => this.copyToClipboard())
       MenuItem({ content: 'Subscriptions' })
         .onClick(() => {
           router.pushUrl({ url: 'pages/Subscription' });
@@ -702,6 +806,42 @@ struct Index {
     .width('100%')
     .height('100%')
     .backgroundColor('#F5F5F5')
+  }
+}
+
+/** Confirmation for an action that cannot be undone. */
+@CustomDialog
+struct ConfirmDialog {
+  controller: CustomDialogController;
+  title: string = '';
+  message: string = '';
+  confirmLabel: string = 'OK';
+  onConfirm: () => void = () => {
+  };
+
+  build() {
+    Column({ space: 12 }) {
+      Text(this.title)
+        .fontSize(18)
+        .fontWeight(FontWeight.Medium)
+      Text(this.message)
+        .fontSize(14)
+        .fontColor('#616161')
+      Row({ space: 12 }) {
+        Button('Cancel')
+          .backgroundColor('#9E9E9E')
+          .layoutWeight(1)
+          .onClick(() => this.controller.close())
+        Button(this.confirmLabel)
+          .layoutWeight(1)
+          .onClick(() => {
+            this.onConfirm();
+            this.controller.close();
+          })
+      }
+      .width('100%')
+    }
+    .padding(20)
   }
 }
 
