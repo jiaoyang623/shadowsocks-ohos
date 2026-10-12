@@ -154,7 +154,8 @@ struct Index {
   }
 
   private async reload(): Promise<void> {
-    this.profiles = await ProfileStore.getAll(abilityContext());
+    // what a subscription no longer lists is kept but not shown
+    this.profiles = ProfileStore.visible(await ProfileStore.getAll(abilityContext()));
     this.currentId = await ProfileStore.getCurrentId(abilityContext());
     this.settings = await SettingsStore.load(abilityContext());
   }

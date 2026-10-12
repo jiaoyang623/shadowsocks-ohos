@@ -19,7 +19,7 @@
 
 import { common } from '@kit.AbilityKit';
 import { JsonStore } from './JsonStore';
-import { DEFAULT_REMOTE_DNS, Profile, STATUS_USER_CONFIGURED, nextUserOrder } from './Profile';
+import { DEFAULT_REMOTE_DNS, Profile, STATUS_OBSOLETE, STATUS_USER_CONFIGURED, nextUserOrder } from './Profile';
 import { ROUTE_ALL } from './Routes';
 
 const STORE_PROFILES = 'profiles';
@@ -94,6 +94,17 @@ export class ProfileStore {
   }
 
   /**
+   * The profiles to show: a subscription no longer lists an obsolete one, so it
+   * is kept for a possible return but not offered.
+   *
+   * Filtering here rather than in `getAll` is deliberate: `getAll` is the
+   * storage view, and writing back what it returned must not drop anything.
+   */
+  static visible(profiles: Profile[]): Profile[] {
+    return profiles.filter((p) => p.subscriptionStatus !== STATUS_OBSOLETE);
+  }
+
+  /**
    * Moves the profile at `from` to `to` in the display order, then rewrites
    * every key. Renumbering rather than swapping keeps the keys agreeing with
    * the list the user sees, which is the only thing they order.
@@ -137,20 +148,17 @@ export class ProfileStore {
   }
 
   /**
-   * Atomically replaces every profile owned by `subscriptionId` with the
-   * freshly-fetched list (used by subscription updates). Returns the new
-   * full profile list.
+   * Drops every profile a subscription owns, for when its URL is deleted: what
+   * a subscription brought in leaves with it, or the list fills with profiles
+   * nothing can update or remove.
    */
-  static async replaceSubscription(context: common.Context, subscriptionId: string,
-    fresh: Profile[]): Promise<Profile[]> {
-    const manual = (await ProfileStore.getAll(context)).filter((p) => p.subscriptionId !== subscriptionId);
-    const profiles = manual.concat(fresh);
-    await ProfileStore.saveAll(context, profiles);
-    const current = await ProfileStore.getCurrent(context);
-    if (current === null && profiles.length > 0) {
-      await ProfileStore.setCurrentId(context, profiles[0].id);
+  static async removeSubscriptionProfiles(context: common.Context, subscriptionId: string): Promise<void> {
+    const kept = (await ProfileStore.getAll(context)).filter((p) => p.subscriptionId !== subscriptionId);
+    await ProfileStore.saveAll(context, kept);
+    const currentId = await ProfileStore.getCurrentId(context);
+    if (currentId.length > 0 && kept.find((p) => p.id === currentId) === undefined) {
+      await ProfileStore.setCurrentId(context, kept.length > 0 ? kept[0].id : '');
     }
-    return profiles;
   }
 
   static async getCurrentId(context: common.Context): Promise<string> {

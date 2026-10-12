@@ -22,6 +22,7 @@ import { ProfileStore } from '../model/ProfileStore';
 import { abilityContext } from '../model/AppContext';
 import {
   fetchSubscription,
+  mergeSubscription,
   Subscription,
   SubscriptionStore,
 } from '../model/Subscription';
@@ -85,7 +86,9 @@ struct SubscriptionPage {
       if (profiles.length === 0) {
         promptAction.showToast({ message: 'No profiles found in subscription' });
       } else {
-        await ProfileStore.replaceSubscription(abilityContext(), subscription.id, profiles);
+        const context = abilityContext();
+        const merged = mergeSubscription(await ProfileStore.getAll(context), profiles, subscription.id);
+        await ProfileStore.saveAll(context, merged);
         subscription.updatedAt = Date.now();
         await SubscriptionStore.upsert(abilityContext(), subscription);
         promptAction.showToast({ message: `Updated: ${profiles.length} profiles` });
@@ -100,7 +103,7 @@ struct SubscriptionPage {
 
   private async remove(subscription: Subscription): Promise<void> {
     // drop the subscription and every profile it owns
-    await ProfileStore.replaceSubscription(abilityContext(), subscription.id, []);
+    await ProfileStore.removeSubscriptionProfiles(abilityContext(), subscription.id);
     await SubscriptionStore.remove(abilityContext(), subscription.id);
     await this.reload();
   }

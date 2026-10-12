@@ -20,7 +20,8 @@
 import { http } from '@kit.NetworkKit';
 import { common } from '@kit.AbilityKit';
 import { JsonStore } from './JsonStore';
-import { newProfileId, Profile } from './Profile';
+import { STATUS_ACTIVE, STATUS_OBSOLETE, STATUS_USER_CONFIGURED, newProfileId, nextUserOrder, Profile } from './Profile';
+import { addressKey } from './ProfilesFile';
 
 const STORE_SUBSCRIPTIONS = 'subscriptions';
 
@@ -165,6 +166,87 @@ function parseSip008(text: string, subscriptionId: string): Profile[] {
     profiles.push(profile);
   }
   return profiles;
+}
+
+/**
+ * Folds a subscription's freshly-fetched profiles into the stored list, the way
+ * shadowsocks-android's `createProfilesFromSubscription` does.
+ *
+ * A profile is the same profile when its name and its address match, which is
+ * why Android warns that names matter: renaming a server in a subscription
+ * makes a new profile here and leaves the old one behind as obsolete.
+ *
+ * The states are what make an update survivable. A profile this subscription
+ * listed before and lists again keeps its id, its counters and its place in the
+ * list; one it no longer lists becomes obsolete and stays visible, so a server
+ * that disappears from a provider and comes back is not lost in between. What
+ * a re-listed profile takes from the new copy is its transport — password,
+ * method, plugin — and not its route or resolver, which are the user's.
+ *
+ * A profile that is not this subscription's is left exactly as it is: one the
+ * user configured by hand, or one belonging to another subscription.
+ */
+export function mergeSubscription(existing: Profile[], fresh: Profile[],
+  subscriptionId: string): Profile[] {
+  const result: Profile[] = [];
+  const mine: Profile[] = [];
+
+  for (const profile of existing) {
+    const isMine = profile.subscriptionStatus !== STATUS_USER_CONFIGURED &&
+      profile.subscriptionId === subscriptionId;
+    if (!isMine) {
+      // another subscription's, or the user's own: untouched
+      result.push(profile);
+      continue;
+    }
+    // duplicates within one subscription: the first one wins, as in Android
+    let duplicate = false;
+    for (const kept of mine) {
+      if (kept.name === profile.name && addressKey(kept) === addressKey(profile)) {
+        duplicate = true;
+        break;
+      }
+    }
+    if (duplicate) {
+      continue;
+    }
+    // still listed or not is decided below; until then it is obsolete
+    if (profile.subscriptionStatus === STATUS_ACTIVE) {
+      profile.subscriptionStatus = STATUS_OBSOLETE;
+    }
+    mine.push(profile);
+    result.push(profile);
+  }
+
+  for (const incoming of fresh) {
+    let matched: Profile | null = null;
+    for (const candidate of mine) {
+      if (candidate.name === incoming.name && addressKey(candidate) === addressKey(incoming)) {
+        matched = candidate;
+        break;
+      }
+    }
+    if (matched !== null) {
+      if (matched.subscriptionStatus === STATUS_OBSOLETE) {
+        matched.password = incoming.password;
+        matched.method = incoming.method;
+        matched.plugin = incoming.plugin;
+        matched.pluginOpts = incoming.pluginOpts;
+        matched.subscriptionStatus = STATUS_ACTIVE;
+      }
+      // an already-active match is a duplicate inside the new list itself, and
+      // the copy already kept is left alone
+      continue;
+    }
+    const created = incoming;
+    created.subscriptionId = subscriptionId;
+    created.subscriptionStatus = STATUS_ACTIVE;
+    created.ensureId();
+    created.userOrder = nextUserOrder(result);
+    result.push(created);
+  }
+
+  return result;
 }
 
 /**
