@@ -78,6 +78,15 @@ dependency, so the file grows by ~90 entries (rocksdb, bson, h3, bindgen and
 friends) that nothing here ever builds. It costs a few hundred lines of lock
 file and nothing at build or download time.
 
+Membership reaches `cargo fmt` too. `cargo fmt --all -- --check` in `lint.yml`
+formats every member, so it formats this crate — and this crate is formatted
+with settings that live at the root of the shadowsocks-rust checkout rather
+than in the crate, most visibly `max_width = 120`. Judged by rustfmt's defaults
+instead, upstream disagrees with itself in ~2300 hunks. `rustfmt.toml` here is
+a copy of those settings and is refreshed with everything else, so the vendored
+tree is checked against the rules it was written to. It is the one file in the
+directory that the patch does not create.
+
 ## Keeping this honest
 
 - Nothing here is HarmonyOS-specific and the patch is meant to be offered
@@ -86,6 +95,19 @@ file and nothing at build or download time.
 - When the pin in `.github/actions/rust-core/action.yml` moves, run
   `native/vendor-shadowsocks-service.sh`; if the patch no longer applies, rebase
   it against the new `crates/shadowsocks-service` and regenerate.
+- To regenerate the patch after editing the vendored tree, copy the crate from
+  the checkout to `a/` and the vendored tree to `b/` in a temporary directory,
+  delete `b/rustfmt.toml` (it is not part of the change), and from that
+  directory run
+
+      git diff --no-index --no-prefix a b | sed 's|^diff --git b/|diff --git a/|'
+
+  The two directory names and `--no-prefix` are what make the paths come out as
+  the `a/src/...` / `b/src/...` that `git apply` expects; the `sed` is because
+  git names both sides after `b` for a file that exists only there. Then run
+  the refresh script: it re-derives the directory from the checkout and the new
+  patch, so a `git status` that shows nothing afterwards is the proof that the
+  two agree.
 - The vendored crate must stay in step with the sibling checkout's
   `shadowsocks` crate: the patch only repoints that dependency, it does not pin
   a version of it.

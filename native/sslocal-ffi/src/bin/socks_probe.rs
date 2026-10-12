@@ -49,7 +49,9 @@ fn main() {
         let message = if error.is_null() {
             String::new()
         } else {
-            unsafe { CStr::from_ptr(error) }.to_string_lossy().into_owned()
+            unsafe { CStr::from_ptr(error) }
+                .to_string_lossy()
+                .into_owned()
         };
         eprintln!("sslocal_start failed: {code} {message}");
         std::process::exit(1);

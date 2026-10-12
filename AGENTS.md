@@ -81,7 +81,11 @@ native/
     vendor/tun/               vendored `tun` 0.7.22 (see its PATCH.md)
     vendor/shadowsocks-service/       vendored shadowsocks-service, patched so
                               the tun answers DNS itself; everything here is
-                              replaced wholesale by the script below
+                              replaced wholesale by the script below, except
+                              rustfmt.toml — upstream's own formatting settings,
+                              which the run must carry because the crate is now
+                              a workspace member and `cargo fmt --all` reaches
+                              it, judged otherwise by rustfmt's defaults
     vendor/shadowsocks-service.patch  the local change, reapplied on refresh
     vendor/shadowsocks-service.PATCH.md  why it exists, and how to rebase it
   vendor-shadowsocks-service.sh  re-copy the vendored crate from the pinned
@@ -248,7 +252,9 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
 - **CI** — one workflow per surface, so a failure names what broke instead of
   pointing at one big job:
   - `lint.yml` — rustfmt, clippy (`--no-deps`; the path-dependency would
-    otherwise be linted too) and shellcheck over every script.
+    otherwise be linted too) and shellcheck over every script. `cargo fmt
+    --all` formats the vendored crates as well, which is why each carries the
+    rustfmt.toml it was formatted with.
   - `test-core.yml` — `./test-e2e-host.sh tests`.
   - `test-cross.yml` — `./test-e2e-host.sh cross` (with `mlugg/setup-zig`).
   - `test-tun.yml` — `./test-e2e-host.sh tun` with `TUN_E2E_REQUIRED=1`, so a

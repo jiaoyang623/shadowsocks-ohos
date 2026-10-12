@@ -36,9 +36,9 @@ use std::ffi::{CStr, CString};
 #[cfg(feature = "local-flow-stat")]
 use std::net::SocketAddr;
 use std::os::raw::{c_char, c_int};
-use std::sync::Once;
-use std::sync::Mutex;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Mutex;
+use std::sync::Once;
 
 use shadowsocks_service::config::{Config, ConfigType};
 use tokio::runtime::Runtime;

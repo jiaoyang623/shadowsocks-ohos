@@ -40,6 +40,12 @@ if [[ ! -s "$PATCH" ]]; then
     exit 1
 fi
 
+if [[ ! -f "$CORE_ROOT/rustfmt.toml" ]]; then
+    echo "no rustfmt.toml at $CORE_ROOT" >&2
+    echo "the requested pin predates the file this copy expects; check the checkout" >&2
+    exit 1
+fi
+
 EXPECTED=$(grep -c '^diff --git' "$PATCH")
 
 # The copy is patched somewhere outside any repository on purpose. Inside one,
@@ -52,6 +58,13 @@ trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$WORK/shadowsocks-service"
 cp -a "$SOURCE/." "$WORK/shadowsocks-service/"
 
+# The crate is formatted with settings that live at the root of the checkout
+# rather than in the crate, so a copy of the crate alone is formatted by
+# whatever config it happens to find — none, in CI, where `cargo fmt --all --
+# --check` would then try to reflow the whole of upstream. Ship the settings
+# with the crate. This is the one file here that the patch does not touch.
+cp "$CORE_ROOT/rustfmt.toml" "$WORK/shadowsocks-service/rustfmt.toml"
+
 (
     cd "$WORK/shadowsocks-service"
     git apply --check "$PATCH"
@@ -61,10 +74,12 @@ cp -a "$SOURCE/." "$WORK/shadowsocks-service/"
 # Trust the count, not the exit status: a patch that silently patches nothing
 # is the failure this script exists to rule out. `git diff --no-index` exits 1
 # whenever there is a difference, which is always here, so its status has to be
-# swallowed before `set -e` sees it.
+# swallowed before `set -e` sees it. One more than the patch's file count,
+# because of the rustfmt.toml copied above.
 ACTUAL=$(git diff --no-index --numstat "$SOURCE" "$WORK/shadowsocks-service" | wc -l | tr -d ' ' || true)
-if [[ "$ACTUAL" -ne "$EXPECTED" ]]; then
-    echo "error: the patch changed $ACTUAL file(s), expected $EXPECTED" >&2
+WANT=$((EXPECTED + 1))
+if [[ "$ACTUAL" -ne "$WANT" ]]; then
+    echo "error: the result differs from the checkout in $ACTUAL file(s), expected $WANT ($EXPECTED patched + rustfmt.toml)" >&2
     exit 1
 fi
 
@@ -72,4 +87,4 @@ rm -rf "$VENDOR_DIR"
 mkdir -p "$(dirname "$VENDOR_DIR")"
 mv "$WORK/shadowsocks-service" "$VENDOR_DIR"
 
-echo "vendored $SOURCE -> $VENDOR_DIR ($ACTUAL file(s) from the patch)"
+echo "vendored $SOURCE -> $VENDOR_DIR ($EXPECTED file(s) from the patch + rustfmt.toml)"

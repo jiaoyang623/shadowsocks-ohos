@@ -1,5 +1,5 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index 50352d7..7bedee8 100644
+index 50352d7..e46a013 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
 @@ -196,7 +196,10 @@ serde = { version = "1.0", features = ["derive"] }
@@ -7,7 +7,7 @@ index 50352d7..7bedee8 100644
  bson = { version = "2.13.0", optional = true }
  
 -shadowsocks = { version = "1.23.1", path = "../shadowsocks", default-features = false }
-+# Vendored copy: see vendor/shadowsocks-service/PATCH.md. The rest of the
++# Vendored copy: see vendor/shadowsocks-service.PATCH.md. The rest of the
 +# upstream workspace stays in the sibling checkout that the CI action and
 +# AGENTS.md describe, so this path points back out of the repository.
 +shadowsocks = { version = "1.23.1", path = "../../../../../core/src/main/rust/shadowsocks-rust/crates/shadowsocks", default-features = false }
@@ -259,7 +259,7 @@ index cacce89..8e65b64 100644
                      }
 diff --git a/src/local/tun/dns.rs b/src/local/tun/dns.rs
 new file mode 100644
-index 0000000..8084abf
+index 0000000..6d4e908
 --- /dev/null
 +++ b/src/local/tun/dns.rs
 @@ -0,0 +1,341 @@
@@ -451,8 +451,8 @@ index 0000000..8084abf
 +fn build_udp_reply(src: SocketAddr, dst: SocketAddr, payload: &[u8]) -> io::Result<BytesMut> {
 +    match (dst, src) {
 +        (SocketAddr::V4(server), SocketAddr::V4(client)) => {
-+            let builder = PacketBuilder::ipv4(server.ip().octets(), client.ip().octets(), 20)
-+                .udp(server.port(), client.port());
++            let builder =
++                PacketBuilder::ipv4(server.ip().octets(), client.ip().octets(), 20).udp(server.port(), client.port());
 +
 +            let packet = BytesMut::with_capacity(builder.size(payload.len()));
 +            let mut packet_writer = packet.writer();
@@ -463,8 +463,8 @@ index 0000000..8084abf
 +            Ok(packet_writer.into_inner())
 +        }
 +        (SocketAddr::V6(server), SocketAddr::V6(client)) => {
-+            let builder = PacketBuilder::ipv6(server.ip().octets(), client.ip().octets(), 20)
-+                .udp(server.port(), client.port());
++            let builder =
++                PacketBuilder::ipv6(server.ip().octets(), client.ip().octets(), 20).udp(server.port(), client.port());
 +
 +            let packet = BytesMut::with_capacity(builder.size(payload.len()));
 +            let mut packet_writer = packet.writer();

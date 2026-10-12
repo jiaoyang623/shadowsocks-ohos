@@ -50,7 +50,7 @@ libc = "0.2"
 # Vendored, not the sibling checkout's copy: the HarmonyOS client needs the tun
 # to answer DNS itself, and that lives inside this crate (local/tun). The
 # sibling checkout still supplies `shadowsocks`; see
-# vendor/shadowsocks-service/PATCH.md and native/vendor-shadowsocks-service.sh.
+# vendor/shadowsocks-service.PATCH.md and native/vendor-shadowsocks-service.sh.
 shadowsocks-service = { path = "vendor/shadowsocks-service", default-features = false, features = [
     "local",
     "server",

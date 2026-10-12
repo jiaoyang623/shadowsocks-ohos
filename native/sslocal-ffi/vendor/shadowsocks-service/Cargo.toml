@@ -196,7 +196,7 @@ serde = { version = "1.0", features = ["derive"] }
 json5 = "0.4"
 bson = { version = "2.13.0", optional = true }
 
-# Vendored copy: see vendor/shadowsocks-service/PATCH.md. The rest of the
+# Vendored copy: see vendor/shadowsocks-service.PATCH.md. The rest of the
 # upstream workspace stays in the sibling checkout that the CI action and
 # AGENTS.md describe, so this path points back out of the repository.
 shadowsocks = { version = "1.23.1", path = "../../../../../core/src/main/rust/shadowsocks-rust/crates/shadowsocks", default-features = false }

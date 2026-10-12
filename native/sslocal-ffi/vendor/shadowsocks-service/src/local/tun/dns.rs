@@ -186,8 +186,8 @@ async fn query_udp(gateway: SocketAddr, query: &[u8]) -> io::Result<BytesMut> {
 fn build_udp_reply(src: SocketAddr, dst: SocketAddr, payload: &[u8]) -> io::Result<BytesMut> {
     match (dst, src) {
         (SocketAddr::V4(server), SocketAddr::V4(client)) => {
-            let builder = PacketBuilder::ipv4(server.ip().octets(), client.ip().octets(), 20)
-                .udp(server.port(), client.port());
+            let builder =
+                PacketBuilder::ipv4(server.ip().octets(), client.ip().octets(), 20).udp(server.port(), client.port());
 
             let packet = BytesMut::with_capacity(builder.size(payload.len()));
             let mut packet_writer = packet.writer();
@@ -198,8 +198,8 @@ fn build_udp_reply(src: SocketAddr, dst: SocketAddr, payload: &[u8]) -> io::Resu
             Ok(packet_writer.into_inner())
         }
         (SocketAddr::V6(server), SocketAddr::V6(client)) => {
-            let builder = PacketBuilder::ipv6(server.ip().octets(), client.ip().octets(), 20)
-                .udp(server.port(), client.port());
+            let builder =
+                PacketBuilder::ipv6(server.ip().octets(), client.ip().octets(), 20).udp(server.port(), client.port());
 
             let packet = BytesMut::with_capacity(builder.size(payload.len()));
             let mut packet_writer = packet.writer();
