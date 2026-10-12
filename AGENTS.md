@@ -32,13 +32,25 @@ entry/                        main (and only) HAP module
                               permissions: INTERNET, GET_NETWORK_INFO
     ets/entryability/         EntryAbility.ets — UIAbility entry; registers the
                               ability context in AppStorage (see AppContext.ets)
-    ets/pages/                Index.ets (profile list + connect + stats bar),
+    ets/pages/                Index.ets (profile list + connect + stats bar,
+                              with search, drag-to-reorder and undoable delete),
                               ProfileEdit.ets (profile form, method/route/plugin
-                              pickers), Subscription.ets (subscription management),
-                              VpnGrant.ts (undocumented updateVpnAuthorizedState
-                              shim for the emulator's missing consent app)
+                              pickers, remote resolver), Subscription.ets
+                              (subscription management), CustomRules.ets (the
+                              rules for the custom-rules route), Settings.ets,
+                              About.ets, VpnGrant.ts (undocumented
+                              updateVpnAuthorizedState shim for the emulator's
+                              missing consent app)
     ets/model/                Profile.ets (SIP002 ss:// parsing, config
-                              serialization), ProfileStore.ets (multi-profile
+                              serialization), ProfilesFile.ets (import and
+                              export, in the shapes shadowsocks-android uses),
+                              Transfer.ets (document picker and clipboard),
+                              Acl.ets / AclSync.ets / CustomRules.ets (ACL
+                              parsing, imported lists, the user's own rules),
+                              ConnectionNotification.ets (the ongoing
+                              notification and its disconnect action),
+                              Network.ets (the platform's resolver),
+                              ProfileStore.ets (multi-profile
                               list + selection), Subscription.ets (subscription
                               fetch/parse: base64 ss:// lists and SIP008 JSON),
                               Routes.ets (policy-route constants ↔ ACL files),
@@ -392,8 +404,21 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   rejected (external plugin processes cannot be spawned on HarmonyOS). UDP
   does not pass through plugins (neither plugin supports UDP upstream either);
   with a plugin active, UDP associations time out.
-- No `custom-rules` route (shadowsocks-android's user-edited ACL); only the
-  six preset routes.
+- The custom-rules editor has no multi-select, cut, paste or swipe gestures;
+  rules are added one at a time and removed one at a time.
+- No proxy-only mode and no "share over LAN": the core runs inside the VPN
+  extension, and `AppServiceExtensionAbility`, which would host it without a
+  tunnel, is unverified here.
+- No QR code display or scanning. Generating one is portable but has no oracle
+  to verify an encoder against; scanning needs a barcode decoder the SDK does
+  not ship.
+- No launcher shortcuts and no connect-at-boot. The platform exposes
+  `BOOT_COMPLETED` and a `STATIC_SUBSCRIBER` extension type, but the ability
+  class is not in the public SDK, so this needs a device experiment.
+- The UI is English only, and there is no dark theme: shadowsocks-android ships
+  13 locales and a DayNight theme.
+- The connection notification shows the profile but not the live traffic
+  Android puts in its own.
 - Starting the VPN normally requires the system consent app
   `com.huawei.hmos.vpndialog`, which is **absent from the public OpenHarmony
   emulator image**. Working around it requires writing the settingsdata
