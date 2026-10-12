@@ -243,10 +243,16 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
      its `local-tun` code compile at all.
   2. `cargo check --target aarch64-unknown-linux-ohos` (real OHOS SDK clang if
      `OHOS_NDK_HOME` is set, else the zig cc shim).
-  3. Tun packet-routing e2e (`native/tun-e2e-linux.sh`): a real TCP flow into
-     a tun device, asserted to round-trip through the tunnel. Needs Linux,
-     `/dev/net/tun` and CAP_NET_ADMIN — run as root, or as any user with
-     passwordless sudo (the script escalates itself); on macOS run it via
+  3. Tun packet-routing e2e (`native/tun-e2e-linux.sh`): real packets into a
+     real tun device — a TCP flow asserted to round-trip through the tunnel,
+     then a DNS query to an unroutable address (TEST-NET-3) asserted to be
+     answered by the configured gateway over both UDP and TCP. A control run
+     starts the core without a gateway and requires the same query to go
+     unanswered, having first checked that the query's route still leads into
+     the tun: a tunnel that merely relays UDP looks the same from the client's
+     side until the answer fails to arrive. Needs Linux, `/dev/net/tun` and
+     CAP_NET_ADMIN — run as root, or as any user with passwordless sudo (the
+     script escalates itself); on macOS run it via
      `native/run-tun-e2e-docker.sh` (Docker + cargo-zigbuild), which builds
      the helper for the host architecture so the container runs it natively.
 - **CI** — one workflow per surface, so a failure names what broke instead of

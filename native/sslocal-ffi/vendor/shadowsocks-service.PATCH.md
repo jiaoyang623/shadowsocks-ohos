@@ -124,6 +124,12 @@ directory that the patch does not create.
 - `cargo test --workspace --lib local::tun::dns` — interception decision, reply
   construction, a real round trip through a UDP gateway, and the no-gateway and
   no-answer paths.
+- `./test-e2e-host.sh tun` — real packets through a real tun device. A query
+  addressed to an unroutable address (TEST-NET-3, so only the gateway can
+  answer it) comes back over UDP *and* over TCP, which is the relay path a
+  truncated answer falls back to. A control run starts the core without a
+  gateway and requires that query to go unanswered — and checks the route into
+  the tun first, so the control cannot pass because the packet never left.
 - On a Huawei Pura X (HarmonyOS 7.0.0.109): the core logs `shadowsocks dns TCP
   listening on 127.0.0.1:5453`, the browser's own resolver is answered — the
   core logs `DNS lookup A www.google.com.` and then `lh3.google.com`,

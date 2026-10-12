@@ -11,8 +11,10 @@
 #          core (shadowsocks-service + FFI) compiles for OpenHarmony. Uses the
 #          real OHOS SDK clang when OHOS_NDK_HOME is set, otherwise falls back
 #          to a zig-based compile-only shim for the C bits (blake3).
-#   tun    a real TCP flow into a tun device, asserted to round-trip through
-#          the tunnel. Needs Linux, /dev/net/tun and CAP_NET_ADMIN.
+#   tun    real packets into a real tun device: a TCP flow through the tunnel,
+#          and a DNS query answered by the tun's DNS gateway (with a control
+#          run that must leave it unanswered when no gateway is configured).
+#          Needs Linux, /dev/net/tun and CAP_NET_ADMIN.
 #
 # Usage:
 #   ./test-e2e-host.sh              # all three
