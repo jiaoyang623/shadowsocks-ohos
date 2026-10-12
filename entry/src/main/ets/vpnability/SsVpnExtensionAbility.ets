@@ -29,7 +29,7 @@ import { cachedAcl, refreshAcl } from '../model/AclSync';
 import { localDnsServer } from '../model/Network';
 import { composeCustomRules, readUserRules } from '../model/CustomRules';
 import { clear as clearNotification, showConnected } from '../model/ConnectionNotification';
-import { TrafficStatsStore } from '../model/TrafficStats';
+import { TrafficStatsStore, formatRate } from '../model/TrafficStats';
 import { VpnStatusStore } from '../model/VpnStatus';
 
 const TAG = 'SsVpnExtension';
@@ -76,6 +76,12 @@ const DNS_ADDRESS = '172.19.0.2';
 const STAT_PORTS: number[] = [65080, 65081, 65082, 65083, 65084];
 /** Stat samples reach us every ~500 ms; persist at most one per second. */
 const STAT_SAVE_INTERVAL_MS = 1000;
+/**
+ * How often the notification's traffic line is rewritten. The core reports
+ * twice a second and the saved sample follows it; a notification that changed
+ * that fast would be unreadable.
+ */
+const NOTIFICATION_INTERVAL_MS = 2000;
 /** How long after a successful start to check the core is still alive. */
 const CORE_LIVENESS_DELAY_MS = 3000;
 
@@ -134,6 +140,13 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   private failed: boolean = false;
   /** Profile the running session belongs to, for its traffic counters. */
   private runningProfileId: string = '';
+  /** Profile name, as the notification shows it. */
+  private runningProfileName: string = '';
+  /** Previous sample, for the rate the notification shows. */
+  private lastSampleTx: number = -1;
+  private lastSampleRx: number = -1;
+  private lastSampleAt: number = 0;
+  private lastNotificationAt: number = 0;
 
   async onCreate(want: Want): Promise<void> {
     hilog.info(0x0000, TAG, 'onCreate, core version %{public}s', sslocal.version());
@@ -225,6 +238,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
       } else {
         hilog.info(0x0000, TAG, 'shadowsocks tun routing started');
         this.runningProfileId = profile.id;
+        this.runningProfileName = profile.name;
         await VpnStatusStore.markRunning(this.context, profile.id, profile.name);
         // the tunnel outlives this app's window, so the way out of it has to
         // outlive the window too
@@ -474,6 +488,32 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   }
 
   /**
+   * Keeps the notification's traffic line current.
+   *
+   * The counters are cumulative, so a rate needs two samples and the time
+   * between them. Updates are throttled well below the core's report rate: a
+   * notification that rewrote itself twice a second would be noise, and the
+   * platform would rather not be asked.
+   */
+  private updateNotification(tx: number, rx: number, now: number): void {
+    const elapsed = now - this.lastSampleAt;
+    const hadPrevious = this.lastSampleTx >= 0 && elapsed > 0;
+    const up = hadPrevious ? (tx - this.lastSampleTx) * 1000 / elapsed : 0;
+    const down = hadPrevious ? (rx - this.lastSampleRx) * 1000 / elapsed : 0;
+    this.lastSampleTx = tx;
+    this.lastSampleRx = rx;
+    this.lastSampleAt = now;
+
+    if (!hadPrevious || now - this.lastNotificationAt < NOTIFICATION_INTERVAL_MS) {
+      return;
+    }
+    this.lastNotificationAt = now;
+    showConnected(this.runningProfileName, `${formatRate(up)} up, ${formatRate(down)} down`)
+      .catch(() => {
+      });
+  }
+
+  /**
    * Handles one flow-stat report. The core opens a **new** connection for
    * every 500 ms sample and closes it after the 16-byte write, so each
    * connection is dropped from the tracking list as soon as it ends —
@@ -507,6 +547,7 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         TrafficStatsStore.save(this.context, tx, rx).catch(() => {
         });
       }
+      this.updateNotification(tx, rx, now);
     });
   }
 }

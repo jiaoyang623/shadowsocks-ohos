@@ -37,16 +37,14 @@ const ENTRY_ABILITY = 'EntryAbility';
 export const ACTION_DISCONNECT = 'com.xbt.project.disconnect';
 
 /**
- * An ongoing notification while the tunnel is up, with a way out of it.
- *
- * The tunnel outlives the app's window, so a user who has left the app has no
- * way back to the disconnect button without this. shadowsocks-android shows the
- * same thing, with the live traffic in it; the counters are not carried here
- * yet, which the app's own traffic bar still shows.
+ * The button's action, built once and kept. Rebuilding it on every traffic
+ * update would allocate a want agent per second for no reason.
  */
-export async function showConnected(profileName: string): Promise<void> {
-  try {
-    const agent: WantAgent = await wantAgent.getWantAgent({
+let cachedAgent: WantAgent | undefined = undefined;
+
+async function disconnectAgent(): Promise<WantAgent> {
+  if (cachedAgent === undefined) {
+    cachedAgent = await wantAgent.getWantAgent({
       wants: [{
         bundleName: BUNDLE,
         abilityName: ENTRY_ABILITY,
@@ -56,7 +54,20 @@ export async function showConnected(profileName: string): Promise<void> {
       requestCode: 0,
       actionFlags: [wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG],
     });
+  }
+  return cachedAgent;
+}
 
+/**
+ * An ongoing notification while the tunnel is up, with a way out of it.
+ *
+ * The tunnel outlives the app's window, so a user who has left the app has no
+ * way back to the disconnect button without this. `detail` carries the live
+ * traffic, as shadowsocks-android's notification does; calling again with the
+ * same profile and a new detail is how that line is kept current.
+ */
+export async function showConnected(profileName: string, detail: string = ''): Promise<void> {
+  try {
     const request: notificationManager.NotificationRequest = {
       id: NOTIFICATION_ID,
       content: {
@@ -64,16 +75,18 @@ export async function showConnected(profileName: string): Promise<void> {
         normal: {
           title: 'Shadowsocks',
           text: profileName.length > 0 ? `Connected to ${profileName}` : 'Connected',
+          additionalText: detail,
         },
       },
       // no slotType: the field is typed as the pre-9 `notification.SlotType`,
       // a different enum from `notificationManager.SlotType` even though the
       // values match, and leaving it out uses the app's default slot
       isOngoing: true,
-      actionButtons: [{ title: 'Disconnect', wantAgent: agent }],
+      actionButtons: [{ title: 'Disconnect', wantAgent: await disconnectAgent() }],
     };
+    // publishing again with the same id replaces what is there, which is how
+    // the traffic line is kept up to date
     await notificationManager.publish(request);
-    hilog.info(0x0000, TAG, 'connection notification published');
   } catch (e) {
     // the notification is a convenience: a user who has turned notifications
     // off, or a platform that refuses them, must not stop the tunnel working
