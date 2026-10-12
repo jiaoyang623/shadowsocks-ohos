@@ -103,6 +103,8 @@ struct Index {
    */
   private lastDeleted: Profile | null = null;
   private lastDeletedIndex: number = -1;
+  /** Index a drag started from, so the drop knows what to move. */
+  private dragFrom: number = -1;
   private importDialog: CustomDialogController = new CustomDialogController({
     builder: ImportDialog({
       onConfirm: (text: string) => this.importFromText(text, 'the text'),
@@ -170,6 +172,26 @@ struct Index {
     }
     return this.profiles.filter((p) => p.name.toLowerCase().includes(needle) ||
       p.host.toLowerCase().includes(needle));
+  }
+
+  /**
+   * Moves a dragged profile, which is the order the store keeps and the list
+   * shows. Dragging is refused while a filter is on: the indices the list
+   * reports are then positions in the filtered view, and moving by them would
+   * put the profile somewhere the user did not point at.
+   */
+  private async dropProfile(insertIndex: number): Promise<void> {
+    const from = this.dragFrom;
+    this.dragFrom = -1;
+    if (from < 0 || this.search.trim().length > 0 || from === insertIndex) {
+      return;
+    }
+    try {
+      await ProfileStore.move(abilityContext(), from, insertIndex);
+    } catch (e) {
+      this.reportFailure('Reorder', e as Object);
+    }
+    await this.reload();
   }
 
   private async reload(): Promise<void> {
@@ -813,6 +835,15 @@ struct Index {
       .width('100%')
       .layoutWeight(1)
       .padding({ left: 16, right: 16 })
+      // long-press an entry to drag it; the order is kept in the store
+      .onItemDragStart((event: ItemDragInfo, itemIndex: number) => {
+        this.dragFrom = itemIndex;
+      })
+      .onItemDrop((event: ItemDragInfo, itemIndex: number, insertIndex: number, isSuccess: boolean) => {
+        if (isSuccess) {
+          this.dropProfile(insertIndex);
+        }
+      })
 
       // status + stats bar
       Column({ space: 4 }) {
