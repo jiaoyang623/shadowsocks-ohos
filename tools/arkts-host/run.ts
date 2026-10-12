@@ -4,7 +4,7 @@
  * same suite entry the device runner uses.
  */
 import testsuite from './test/List.test';
-import { report } from './hypium';
+import { report, run } from './hypium';
 
 testsuite();
-report();
+run().then(report);

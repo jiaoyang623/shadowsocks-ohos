@@ -20,6 +20,15 @@ type Body = () => void;
 declare const process: { exitCode?: number };
 declare const console: { log(...args: unknown[]): void; error(...args: unknown[]): void };
 
+interface Spec {
+  suite: string;
+  name: string;
+  body: Body;
+}
+
+// Collected first and run afterwards: a spec may be async, and running them in
+// one place is what makes awaiting one possible.
+const specs: Spec[] = [];
 let suite = '';
 let passed = 0;
 let failed = 0;
@@ -33,13 +42,20 @@ export function describe(name: string, body: Body): void {
 }
 
 export function it(name: string, _level: number, body: Body): void {
-  try {
-    body();
-    passed++;
-  } catch (error) {
-    failed++;
-    const message = error instanceof Error ? error.message : String(error);
-    failures.push(`${suite} > ${name}\n    ${message}`);
+  specs.push({ suite: suite, name: name, body: body });
+}
+
+/** Runs every spec collected by the suite, awaiting the ones that are async. */
+export async function run(): Promise<void> {
+  for (const spec of specs) {
+    try {
+      await spec.body();
+      passed++;
+    } catch (error) {
+      failed++;
+      const message = error instanceof Error ? error.message : String(error);
+      failures.push(`${spec.suite} > ${spec.name}\n    ${message}`);
+    }
   }
 }
 

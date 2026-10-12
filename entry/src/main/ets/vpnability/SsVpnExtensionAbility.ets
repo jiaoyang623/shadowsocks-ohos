@@ -25,6 +25,7 @@ import { fileIo as fs } from '@kit.CoreFileKit';
 import sslocal from 'libsslocal.so';
 import { ProfileStore } from '../model/ProfileStore';
 import { aclFileForRoute, ROUTE_ALL } from '../model/Routes';
+import { cachedAcl, refreshAcl } from '../model/AclSync';
 import { TrafficStatsStore } from '../model/TrafficStats';
 import { VpnStatusStore } from '../model/VpnStatus';
 
@@ -106,6 +107,15 @@ const CORE_LIVENESS_DELAY_MS = 3000;
  * older runtimes the API is absent — we log a warning and the tunnel will
  * loop unless the server is reachable through a more specific route.
  */
+/** The text of a rawfile, which arrives as bytes. */
+function bufferToText(bytes: Uint8Array): string {
+  let out = '';
+  for (let i = 0; i < bytes.length; i++) {
+    out += String.fromCharCode(bytes[i]);
+  }
+  return out;
+}
+
 export default class SsVpnExtensionAbility extends VpnExtensionAbility {
   private connection: vpnExtension.VpnConnection | null = null;
   private statServer: socket.TCPSocketServer | null = null;
@@ -305,7 +315,8 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
 
   /**
    * Deploys the ACL file for `route` from rawfile resources into the app
-   * files dir and returns its path, or '' when the route needs no ACL.
+   * files dir and returns its path, or '' when the route needs no ACL. While
+   * doing that it refreshes whatever the file imports, for the next start.
    */
   private async deployAcl(route: string): Promise<string> {
     if (route === ROUTE_ALL) {
@@ -324,16 +335,33 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         // directory already exists
       }
       const dest = `${dir}/${file}`;
-      const content = await this.context.resourceManager.getRawFileContent(`acl/${file}`);
+      const raw = await this.context.resourceManager.getRawFileContent(`acl/${file}`);
+      const rawText = bufferToText(raw);
+
+      // A refreshed copy from an earlier start is used when there is one; the
+      // list it came from may have moved on, but a start must not wait on the
+      // network for that, so the refresh below is for the next one.
+      const cached = await cachedAcl(this.context, file);
+      const deployed = cached.length > 0 ? cached : rawText;
+
       const fd = fs.openSync(dest,
         fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC);
       try {
-        fs.writeSync(fd.fd,
-          content.buffer.slice(content.byteOffset, content.byteOffset + content.byteLength));
+        fs.writeSync(fd.fd, deployed);
       } finally {
         fs.closeSync(fd);
       }
-      hilog.info(0x0000, TAG, 'ACL deployed: %{public}s', dest);
+      hilog.info(0x0000, TAG, 'ACL deployed: %{public}s (%{public}s)',
+        dest, cached.length > 0 ? 'refreshed copy' : 'shipped copy');
+
+      // deliberately not awaited: connecting does not depend on it
+      refreshAcl(this.context, file, rawText).then((written: boolean) => {
+        if (written) {
+          hilog.info(0x0000, TAG, 'ACL refreshed for the next start: %{public}s', file);
+        }
+      }).catch((e: Object) => {
+        hilog.warn(0x0000, TAG, 'ACL refresh failed: %{public}s', JSON.stringify(e));
+      });
       return dest;
     } catch (e) {
       hilog.error(0x0000, TAG, 'failed to deploy ACL for %{public}s: %{public}s',
