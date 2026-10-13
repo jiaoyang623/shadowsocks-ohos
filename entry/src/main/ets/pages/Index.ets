@@ -974,7 +974,8 @@ struct Index {
         Button(this.isUp() ? $r('app.string.index_disconnect') : $r('app.string.index_connect'))
           .width('100%')
           .height(48)
-          .backgroundColor(this.isUp() ? $r('app.color.error') : $r('app.color.accent'))
+          .backgroundColor(this.isUp() ? $r('app.color.error_container') : $r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => {
             if (this.isUp()) {
               this.disconnect();
@@ -987,7 +988,8 @@ struct Index {
             .fontSize(14)
             .height(38)
             .layoutWeight(1)
-            .backgroundColor($r('app.color.accent'))
+            .backgroundColor($r('app.color.accent_container'))
+            .fontColor($r('app.color.on_container'))
             .enabled(!this.probeRunning &&
               (this.phase === PHASE_CONNECTED || this.phase === PHASE_PROBE_FAILED))
             .onClick(() => this.runProbe(true))
@@ -995,7 +997,8 @@ struct Index {
             .fontSize(14)
             .height(38)
             .layoutWeight(1)
-            .backgroundColor($r('app.color.accent'))
+            .backgroundColor($r('app.color.accent_container'))
+            .fontColor($r('app.color.on_container'))
             .enabled(!this.speedRunning &&
               (this.phase === PHASE_CONNECTED || this.phase === PHASE_PROBE_FAILED))
             .onClick(() => this.runSpeedTest())
@@ -1032,10 +1035,13 @@ struct ConfirmDialog {
       Row({ space: 12 }) {
         Button($r('app.string.common_cancel'))
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
         Button(this.confirmLabel)
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => {
             this.onConfirm();
             this.controller.close();
@@ -1069,10 +1075,13 @@ struct ImportDialog {
       Row({ space: 12 }) {
         Button($r('app.string.common_cancel'))
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
         Button($r('app.string.common_import'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => {
             this.onConfirm(this.url);
             this.controller.close();

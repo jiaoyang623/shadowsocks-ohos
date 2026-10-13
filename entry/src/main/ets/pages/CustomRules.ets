@@ -198,21 +198,25 @@ struct CustomRulesPage {
         Button($r('app.string.custom_rules_select_all'))
           .layoutWeight(1)
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .onClick(() => this.selected = this.rows.map((row) => row.value))
         Button($r('app.string.common_copy'))
           .layoutWeight(1)
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .onClick(() => this.copySelected())
         Button($r('app.string.custom_rules_cut'))
           .layoutWeight(1)
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .onClick(async () => {
             await this.copySelected();
             await this.remove(this.selected);
           })
         Button($r('app.string.common_delete'))
           .layoutWeight(1)
-          .backgroundColor($r('app.color.error'))
+          .backgroundColor($r('app.color.error_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => this.remove(this.selected))
       }
       .width('100%')
@@ -228,8 +232,8 @@ struct CustomRulesPage {
   SwipeDelete(row: RuleRow) {
     Text($r('app.string.common_delete'))
       .fontSize(14)
-      .fontColor('#FFFFFF')
-      .backgroundColor($r('app.color.error'))
+      .fontColor($r('app.color.on_container'))
+      .backgroundColor($r('app.color.error_container'))
       .padding({ left: 20, right: 20, top: 12, bottom: 12 })
       .borderRadius(8)
       .onClick(() => this.remove([row.value]))
@@ -262,12 +266,18 @@ struct CustomRulesPage {
       Row({ space: 8 }) {
         Button($r('app.string.custom_rules_kind_domain'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => this.add(RULE_KIND_DOMAIN))
         Button($r('app.string.custom_rules_kind_subnet'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => this.add(RULE_KIND_SUBNET))
         Button($r('app.string.custom_rules_kind_url'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => this.add(RULE_KIND_URL))
       }
       .width('100%')
@@ -275,6 +285,7 @@ struct CustomRulesPage {
       Button($r('app.string.custom_rules_import_clipboard'))
         .width('100%')
         .backgroundColor($r('app.color.button_neutral'))
+        .fontColor($r('app.color.on_neutral'))
         .onClick(() => this.importFromClipboard())
 
       if (this.selected.length > 0) {

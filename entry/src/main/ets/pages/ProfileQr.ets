@@ -163,6 +163,8 @@ struct ProfileQr {
         .copyOption(CopyOptions.LocalDevice)
 
       Button($r('app.string.qr_copy_url'))
+        .backgroundColor($r('app.color.accent_container'))
+        .fontColor($r('app.color.on_container'))
         .onClick(() => this.copyUrl())
 
       Text($r('app.string.qr_explainer'))

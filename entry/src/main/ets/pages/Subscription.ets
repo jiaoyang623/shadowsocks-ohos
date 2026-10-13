@@ -206,10 +206,13 @@ struct AddSubscriptionDialog {
       Row({ space: 12 }) {
         Button($r('app.string.common_cancel'))
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .layoutWeight(1)
           .onClick(() => this.controller.close())
         Button($r('app.string.common_add'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => {
             this.onConfirm(this.url);
             this.controller.close();

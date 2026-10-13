@@ -245,6 +245,7 @@ struct ProfileEdit {
           .width('100%')
           .height(48)
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .margin({ bottom: 12 })
           .onClick(() => this.showQrCode())
       }
@@ -252,6 +253,8 @@ struct ProfileEdit {
       Button($r('app.string.common_save'))
         .width('100%')
         .height(48)
+        .backgroundColor($r('app.color.accent_container'))
+        .fontColor($r('app.color.on_container'))
         .margin({ bottom: 24 })
         .onClick(() => this.save())
     }

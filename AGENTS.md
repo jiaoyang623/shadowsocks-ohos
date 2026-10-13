@@ -52,7 +52,9 @@ entry/                        main (and only) HAP module
                               user's own rules), QrCode.ets (a QR encoder that
                               reproduces zxing's output) with its generated
                               QrTables.ets, ConnectionNotification.ets (the
-                              ongoing notification and its disconnect action),
+                              ongoing notification, its disconnect action, and
+                              the notification permission the app must ask for
+                              before any of it can be published),
                               Network.ets (the platform's resolver),
                               ProfileStore.ets (multi-profile
                               list + selection), Subscription.ets (subscription
@@ -409,6 +411,17 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   variant in `resources/dark/element/color.json` applies. The two literals left
   in the app are the QR canvas's: a QR code has to stay dark on light whatever
   the system theme is doing, or it stops scanning.
+- A colour token means one thing. The tokens without a suffix are for text and
+  icons on the page or on a surface, and the ones ending in `_container` are
+  fills, paired with `on_container` or `on_neutral` for the text on them. A
+  button takes `accent_container` for its main action and `error_container`
+  for a destructive one. Do not put `accent` or `error` on a `backgroundColor`:
+  they are the light-on-dark readings, so as a fill in the dark theme they come
+  out pastel — a pale button on a black page.
+- Every `Button` carries its own `backgroundColor` and `fontColor`. The
+  framework picks both when they are absent, and its choice does not follow
+  these tokens, so a button left to the default looks like nothing else on the
+  page.
 - Anything the user reads while the app is dark is affected by the same rule
   from the other side: a `Text` with no `fontColor` takes the theme's default,
   so leaving one on a hardcoded light background makes it white on white.
@@ -432,6 +445,12 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   SOCKS config in `entry/src/main/ets/model/Profile.ets`, their unit tests in
   `entry/src/test/`, and the parsing in the Rust core
   (`Config::load_from_str(text, ConfigType::Local)`).
+- Publishing the connection notification needs the notification permission,
+  and a fresh install has it off. Every publish fails with code 110004 until
+  the app asks, so both connect paths call
+  `ensureEnabled(abilityContext())` from `model/ConnectionNotification.ets`
+  first. The request raises the system dialog once; a second call while the
+  user has declined returns without one.
 
 ## Security considerations
 

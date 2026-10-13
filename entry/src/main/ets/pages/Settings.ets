@@ -116,11 +116,21 @@ struct Settings {
         Row({ space: 8 }) {
           Button($r('app.string.settings_vpn'))
             .layoutWeight(1)
-            .backgroundColor(this.serviceMode === MODE_VPN ? $r('app.color.accent') : $r('app.color.button_neutral'))
+            .backgroundColor(this.serviceMode === MODE_VPN
+              ? $r('app.color.accent_container')
+              : $r('app.color.button_neutral'))
+            .fontColor(this.serviceMode === MODE_VPN
+              ? $r('app.color.on_container')
+              : $r('app.color.on_neutral'))
             .onClick(() => this.serviceMode = MODE_VPN)
           Button($r('app.string.settings_proxy'))
             .layoutWeight(1)
-            .backgroundColor(this.serviceMode === MODE_PROXY ? $r('app.color.accent') : $r('app.color.button_neutral'))
+            .backgroundColor(this.serviceMode === MODE_PROXY
+              ? $r('app.color.accent_container')
+              : $r('app.color.button_neutral'))
+            .fontColor(this.serviceMode === MODE_PROXY
+              ? $r('app.color.on_container')
+              : $r('app.color.on_neutral'))
             .onClick(() => this.serviceMode = MODE_PROXY)
         }
         .width('100%')
@@ -166,17 +176,21 @@ struct Settings {
       Row({ space: 12 }) {
         Button($r('app.string.settings_custom_rules'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .onClick(() => {
             router.pushUrl({ url: 'pages/CustomRules' });
           })
         Button($r('app.string.about_about'))
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .layoutWeight(1)
           .onClick(() => {
             router.pushUrl({ url: 'pages/About' });
           })
         Button($r('app.string.settings_reset_to_defaults'))
           .backgroundColor($r('app.color.button_neutral'))
+          .fontColor($r('app.color.on_neutral'))
           .layoutWeight(1)
           .onClick(() => {
             this.probeUrl = DEFAULT_PROBE_URL;
@@ -184,6 +198,8 @@ struct Settings {
           })
         Button($r('app.string.common_save'))
           .layoutWeight(1)
+          .backgroundColor($r('app.color.accent_container'))
+          .fontColor($r('app.color.on_container'))
           .onClick(() => this.save())
       }
       .width('100%')
