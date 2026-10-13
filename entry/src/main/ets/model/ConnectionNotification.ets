@@ -113,6 +113,30 @@ function resolve(context: common.Context, value: ResourceStr): string {
     : context.resourceManager.getStringSync(value.id);
 }
 
+/**
+ * Asks for leave to show notifications, once, before the tunnel starts.
+ *
+ * A freshly installed app has them switched off, and the platform drops every
+ * publish without a word. That would leave the notification — which is the only
+ * way back to the disconnect button once the app's window is gone — silently
+ * absent, and the log would carry the whole story to nobody.
+ *
+ * The answer decides nothing here. A user who refuses still gets the tunnel;
+ * they simply have to open the app to stop it.
+ */
+export async function ensureEnabled(context: common.UIAbilityContext): Promise<void> {
+  try {
+    if (await notificationManager.isNotificationEnabled()) {
+      return;
+    }
+    await notificationManager.requestEnableNotification(context);
+  } catch (e) {
+    // the request is refused when the user has already answered it, and asking
+    // twice is not an error worth reporting
+    hilog.info(0x0000, TAG, 'notifications are not enabled');
+  }
+}
+
 /** Takes the notification away, whether or not one was published. */
 export async function clear(): Promise<void> {
   try {

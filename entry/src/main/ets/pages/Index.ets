@@ -31,6 +31,7 @@ import { ALL_ROUTES } from '../model/Routes';
 import { ProxyService } from '../model/ProxyService';
 import { formatBytes, formatRate, TrafficStats, TrafficStatsStore } from '../model/TrafficStats';
 import { grantVpnAuthorization } from './VpnGrant';
+import { ensureEnabled } from '../model/ConnectionNotification';
 import {
   AppSettings, CONNECT_TIMEOUT_MS, formatLatency, formatMbps, formatRtt, interpretProbe, isStale,
   LatencyEntry, PHASE_CONNECTED, PHASE_CONNECTING, PHASE_FAILED, PHASE_IDLE, PHASE_PROBE_FAILED,
@@ -462,6 +463,9 @@ struct Index {
     const ret = grantVpnAuthorization(VPN_ABILITY.bundleName ?? '');
     hilog.info(0x0000, TAG, 'updateVpnAuthorizedState ret %{public}d', ret);
     try {
+      // asked for before the tunnel starts, so that the notification the
+      // tunnel is reached through is actually published
+      await ensureEnabled(abilityContext());
       await vpnExtension.startVpnExtensionAbility(VPN_ABILITY);
     } catch (e) {
       hilog.warn(0x0000, TAG, 'vpn start rejected (%{public}s), retrying after self-grant',
@@ -495,6 +499,7 @@ struct Index {
     this.failReason = '';
     this.probeSeq += 1;
     try {
+      await ensureEnabled(abilityContext());
       await ProxyService.start(abilityContext(), profile, settings.proxyPort, settings.shareOverLan);
       this.proxyUp = true;
       const host = settings.shareOverLan

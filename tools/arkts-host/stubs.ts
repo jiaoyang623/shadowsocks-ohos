@@ -14,6 +14,7 @@
  */
 export namespace common {
   export type Context = any;
+  export type UIAbilityContext = any;
 }
 
 /**
