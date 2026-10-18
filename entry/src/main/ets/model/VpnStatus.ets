@@ -88,7 +88,16 @@ export class VpnStatusStore {
     await VpnStatusStore.mark(context, VPN_STATE_FAILED, profileId, profileName, reason, detail);
   }
 
+  /**
+   * Records a clean stop. The profile that ran is carried over rather than
+   * blanked: whoever stops the tunnel settles the session's traffic counters
+   * afterwards, and this file is the only place the id still exists once the
+   * extension's process is gone.
+   */
   static async markStopped(context: common.Context): Promise<void> {
-    await VpnStatusStore.mark(context, VPN_STATE_STOPPED, '', '', '', '');
+    const previous = await VpnStatusStore.load(context);
+    await VpnStatusStore.mark(context, VPN_STATE_STOPPED,
+      previous !== null ? previous.profileId : '',
+      previous !== null ? previous.profileName : '', '', '');
   }
 }

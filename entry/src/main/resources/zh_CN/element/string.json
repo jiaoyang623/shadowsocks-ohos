@@ -599,6 +599,26 @@
     {
       "name": "remote_dns",
       "value": "远程 DNS（默认 %s）"
+    },
+    {
+      "name": "index_add_link_profile",
+      "value": "要添加链接里的档案吗？"
+    },
+    {
+      "name": "profile_edit_unsaved_title",
+      "value": "有未保存的改动"
+    },
+    {
+      "name": "profile_edit_unsaved_message",
+      "value": "离开前要保存这些改动吗？"
+    },
+    {
+      "name": "profile_edit_discard",
+      "value": "丢弃"
+    },
+    {
+      "name": "profile_edit_subscription_readonly",
+      "value": "这个档案来自订阅。订阅更新会重写它的服务器字段，所以这里只读。"
     }
   ]
 }

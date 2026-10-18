@@ -94,6 +94,33 @@ export class ProfileStore {
   }
 
   /**
+   * Android's `ensureNotEmpty`: an empty list gets one blank profile, so the
+   * screen always has something to select and the edit form always has a
+   * target. A user who deletes the last profile gets it back, which is also
+   * what Android does.
+   *
+   * Seeding writes the whole list, so an empty read is not enough to act on:
+   * `getAll` also returns an empty array when the file cannot be read, and
+   * overwriting then would destroy every profile it holds. The file has to be
+   * absent, or parse to an empty array, before anything is written.
+   */
+  static async ensureNotEmpty(context: common.Context): Promise<void> {
+    const profiles = await ProfileStore.getAll(context);
+    if (profiles.length > 0) {
+      return;
+    }
+    if (JsonStore.exists(context, STORE_PROFILES)) {
+      const raw = (await JsonStore.read(context, STORE_PROFILES)).trim();
+      if (raw !== '[]') {
+        return;
+      }
+    }
+    const profile = new Profile();
+    await ProfileStore.upsert(context, profile);
+    await ProfileStore.setCurrentId(context, profile.id);
+  }
+
+  /**
    * The profiles to show: a subscription no longer lists an obsolete one, so it
    * is kept for a possible return but not offered.
    *

@@ -36,13 +36,15 @@ import {
   AppSettings, CONNECT_TIMEOUT_MS, formatLatency, formatMbps, formatRtt, interpretProbe, isStale,
   LatencyEntry, PHASE_CONNECTED, PHASE_CONNECTING, PHASE_FAILED, PHASE_IDLE, PHASE_PROBE_FAILED,
   PHASE_VERIFYING, PROBE_OK, routeProxiesByDefault, STATS_SETTLE_MS, STATS_STALE_MS,
-  summarizeStatus, VpnStatus, VPN_STATE_FAILED, VPN_STATE_RUNNING, VPN_STATE_STOPPED,
+  summarizeStatus, VpnStatus, VPN_STATE_FAILED, VPN_STATE_RUNNING, VPN_STATE_STARTING,
+  VPN_STATE_STOPPED,
 } from '../model/Diagnostics';
 import { VpnStatusStore } from '../model/VpnStatus';
 import { PROBE_TIMEOUT_MS, probeThroughTunnel } from '../model/ConnectivityProbe';
 import { LATENCY_TIMEOUT_MS, measureLatency } from '../model/Latency';
 import { measureThroughput, SPEED_TIMEOUT_MS } from '../model/Throughput';
 import { SettingsStore } from '../model/Settings';
+import { settleSessionTraffic } from '../model/SessionTraffic';
 
 const TAG = 'Index';
 
@@ -172,7 +174,51 @@ struct Index {
     if (uri.length === 0) {
       return;
     }
-    this.importFromText(uri, $r('app.string.index_source_link'));
+    // A link from a browser adds an unasked-for profile, so it is confirmed
+    // first, as Android's UrlImportActivity does. On a cold start this runs
+    // from aboutToAppear, before the page can raise a dialog, so the question
+    // waits for the next tick.
+    setTimeout(() => {
+      this.confirmLinkImport(uri);
+    }, 0);
+  }
+
+  private async confirmLinkImport(uri: string): Promise<void> {
+    const imported = parseProfilesText(uri);
+    if (imported.length === 0) {
+      promptAction.showToast({
+        message: $r('app.string.index_nothing_to_import', this.text($r('app.string.index_source_link'))),
+      });
+      return;
+    }
+    const names = imported
+      .map((p) => p.name.length > 0 ? p.name : `${p.host}:${p.remotePort}`)
+      .join('\n');
+    try {
+      // the promise overload does not survive the ArkTS checker when the
+      // module is imported through @kit.ArkUI, so the callback form is wrapped
+      const answer = await new Promise<promptAction.ShowDialogSuccessResponse>((resolve, reject) => {
+        promptAction.showDialog({
+          title: $r('app.string.index_add_link_profile'),
+          message: names,
+          buttons: [
+            { text: $r('app.string.common_cancel'), color: $r('app.color.text_body') },
+            { text: $r('app.string.common_add'), color: $r('app.color.accent') },
+          ],
+        }, (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+      if (answer.index === 1) {
+        await this.importFromText(uri, $r('app.string.index_source_link'));
+      }
+    } catch (e) {
+      this.reportFailure($r('app.string.index_op_import'), e as Object);
+    }
   }
 
   aboutToDisappear(): void {
@@ -225,10 +271,14 @@ struct Index {
   }
 
   private async reload(): Promise<void> {
+    const context = abilityContext();
+    // an empty list is repopulated with one blank profile, as Android does, so
+    // that the list and the connect button always have something to act on
+    await ProfileStore.ensureNotEmpty(context);
     // what a subscription no longer lists is kept but not shown
-    this.profiles = ProfileStore.visible(await ProfileStore.getAll(abilityContext()));
-    this.currentId = await ProfileStore.getCurrentId(abilityContext());
-    this.settings = await SettingsStore.load(abilityContext());
+    this.profiles = ProfileStore.visible(await ProfileStore.getAll(context));
+    this.currentId = await ProfileStore.getCurrentId(context);
+    this.settings = await SettingsStore.load(context);
   }
 
   /**
@@ -290,12 +340,73 @@ struct Index {
   }
 
   private async selectProfile(profile: Profile): Promise<void> {
+    const wasUp = this.isUp();
     this.currentId = profile.id;
     try {
       await ProfileStore.setCurrentId(abilityContext(), profile.id);
     } catch (e) {
       this.reportFailure($r('app.string.index_op_select_profile'), e as Object);
+      return;
     }
+    if (wasUp) {
+      await this.reloadTunnel();
+    }
+  }
+
+  /**
+   * Points a running tunnel at the profile that is now selected. The core reads
+   * the profile once, when it starts, so leaving it running keeps the old
+   * server. Android reloads its service on the same gesture for the same
+   * reason.
+   */
+  private async reloadTunnel(): Promise<void> {
+    const profile = this.currentProfile();
+    if (profile === null) {
+      return;
+    }
+    if (this.proxyUp) {
+      // the core owns the profile for this process; stop it and start again
+      await ProxyService.stop(abilityContext());
+      this.proxyUp = false;
+      await this.connectProxy(profile);
+      return;
+    }
+    this.probeSeq += 1;
+    try {
+      await vpnExtension.stopVpnExtensionAbility(VPN_ABILITY);
+    } catch (e) {
+      // an extension that is already gone is no obstacle to starting it again
+      hilog.info(0x0000, TAG, 'vpn stop before reload: %{public}s', JSON.stringify(e));
+    }
+    // The core is single-instance and the old extension tears it down in its
+    // own onDestroy, which outlives the stop call. Start only after the status
+    // file says the old one is gone, or the new start finds ALREADY_RUNNING.
+    await this.waitForVpnStopped(5000);
+    // before the next start clears the sample; the counters belong to the
+    // profile the user has just left
+    await settleSessionTraffic(abilityContext());
+    this.phase = PHASE_CONNECTING;
+    this.failReason = '';
+    this.probeRttMs = 0;
+    this.mbps = 0;
+    this.probeSeq += 1;
+    this.connectingSince = Date.now();
+    this.startHealthPolling();
+    await this.startVpn();
+  }
+
+  /** Waits until the extension no longer reports starting or running. */
+  private async waitForVpnStopped(timeoutMs: number): Promise<void> {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const status = await VpnStatusStore.load(abilityContext());
+      if (status === null ||
+        (status.state !== VPN_STATE_STARTING && status.state !== VPN_STATE_RUNNING)) {
+        return;
+      }
+      await new Promise<void>((resolve) => setTimeout(resolve, 100));
+    }
+    hilog.warn(0x0000, TAG, 'the old tunnel did not report stopped in %{public}d ms', timeoutMs);
   }
 
   private async removeProfile(profile: Profile): Promise<void> {
@@ -452,7 +563,11 @@ struct Index {
     this.probeSeq += 1;
     this.connectingSince = Date.now();
     this.startHealthPolling();
+    await this.startVpn();
+  }
 
+  /** Starts the extension, with the emulator's self-grant and one retry. */
+  private async startVpn(): Promise<void> {
     // The public emulator image ships no system consent app
     // (com.huawei.hmos.vpndialog), so startVpnExtensionAbility cannot obtain
     // authorization the usual way there. Grant it up front through the
@@ -528,6 +643,12 @@ struct Index {
       this.failReason = '';
       this.runningSince = 0;
       this.stopHealthPolling();
+      this.txTotal = 0;
+      this.rxTotal = 0;
+      this.txRate = 0;
+      this.rxRate = 0;
+      this.lastStats = null;
+      await this.reload();
       return;
     }
     try {
@@ -546,6 +667,17 @@ struct Index {
       this.runningSince = 0;
       this.stopHealthPolling();
     }
+    // the extension's own teardown is cut off by the platform, so the session's
+    // counters are written here, then the list re-read to pick them up
+    await settleSessionTraffic(abilityContext());
+    // the session is over: its sample is gone, and what the list now shows
+    // includes that traffic, so adding the live total would count it twice
+    this.txTotal = 0;
+    this.rxTotal = 0;
+    this.txRate = 0;
+    this.rxRate = 0;
+    this.lastStats = null;
+    await this.reload();
   }
 
   private startHealthPolling(): void {
@@ -776,6 +908,19 @@ struct Index {
     return entry.ok ? $r('app.color.success') : $r('app.color.error');
   }
 
+  /**
+   * Bytes the profile has carried. The store keeps the total up to the last
+   * teardown; the live session is added for the profile it belongs to, which is
+   * what makes the row move while the tunnel is up.
+   */
+  private profileTx(profile: Profile): number {
+    return profile.tx + (profile.id === this.currentId ? this.txTotal : 0);
+  }
+
+  private profileRx(profile: Profile): number {
+    return profile.rx + (profile.id === this.currentId ? this.rxTotal : 0);
+  }
+
   private statusText(): ResourceStr {
     switch (this.phase) {
       case PHASE_CONNECTING:
@@ -814,66 +959,6 @@ struct Index {
       default:
         return $r('app.color.text_secondary');
     }
-  }
-
-  @Builder
-  ProfileItem(profile: Profile) {
-    Row() {
-      Column({ space: 4 }) {
-        Text(profile.name)
-          .fontSize(16)
-          .fontWeight(FontWeight.Medium)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-        Row({ space: 6 }) {
-          Text(`${profile.host}:${profile.remotePort}  ${profile.method}`)
-            .fontSize(12)
-            .fontColor($r('app.color.text_secondary'))
-            .layoutWeight(1)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-          if (this.latencyFor(profile.id) !== null) {
-            Text(formatLatency(this.latencyFor(profile.id)))
-              .fontSize(12)
-              .fontColor(this.latencyColor(profile.id))
-          }
-        }
-        .width('100%')
-      }
-      .alignItems(HorizontalAlign.Start)
-      .layoutWeight(1)
-
-      if (profile.id === this.currentId) {
-        Text('✓')
-          .fontSize(18)
-          .fontColor($r('app.color.success'))
-          .margin({ right: 8 })
-      }
-      Text(this.measuringId === profile.id ? '…' : $r('app.string.common_test'))
-        .fontSize(14)
-        .fontColor($r('app.color.accent'))
-        .margin({ right: 12 })
-        .onClick(() => this.measureProfileLatency(profile))
-      Text($r('app.string.common_edit'))
-        .fontSize(14)
-        .fontColor($r('app.color.accent'))
-        .margin({ right: 12 })
-        .onClick(() => {
-          router.pushUrl({
-            url: 'pages/ProfileEdit',
-            params: { id: profile.id } as EditParams,
-          });
-        })
-      Text('✕')
-        .fontSize(16)
-        .fontColor($r('app.color.text_secondary'))
-        .onClick(() => this.removeProfile(profile))
-    }
-    .width('100%')
-    .padding(12)
-    .borderRadius(8)
-    .backgroundColor(profile.id === this.currentId ? $r('app.color.surface_selected') : $r('app.color.surface'))
-    .onClick(() => this.selectProfile(profile))
   }
 
   @Builder
@@ -936,9 +1021,31 @@ struct Index {
       List({ space: 8 }) {
         ForEach(this.shown(), (profile: Profile) => {
           ListItem() {
-            this.ProfileItem(profile)
+            ProfileRow({
+              profile: profile,
+              selected: profile.id === this.currentId,
+              hasLatency: this.latencyFor(profile.id) !== null,
+              latencyText: formatLatency(this.latencyFor(profile.id)),
+              latencyColor: this.latencyColor(profile.id),
+              measuring: this.measuringId === profile.id,
+              tx: this.profileTx(profile),
+              rx: this.profileRx(profile),
+              onSelect: () => this.selectProfile(profile),
+              onTest: () => this.measureProfileLatency(profile),
+              onEdit: () => {
+                router.pushUrl({
+                  url: 'pages/ProfileEdit',
+                  params: { id: profile.id } as EditParams,
+                });
+              },
+              onDelete: () => this.removeProfile(profile),
+            })
           }
-        }, (profile: Profile) => profile.id)
+        // The key carries everything the row shows. ForEach reuses a cached
+        // item when its key is unchanged and does not re-run the item builder,
+        // so a key of the id alone would freeze the traffic and latency at the
+        // values they had when the row was first drawn.
+        }, (profile: Profile) => `${profile.id}|${this.profileTx(profile)}|${this.profileRx(profile)}|${formatLatency(this.latencyFor(profile.id))}|${this.measuringId === profile.id}`)
       }
       .width('100%')
       .layoutWeight(1)
@@ -1011,6 +1118,93 @@ struct Index {
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.background'))
+  }
+}
+
+/**
+ * One row of the profile list.
+ *
+ * A component rather than an inline builder so that the latency and traffic
+ * values refresh while the page is live: ForEach caches an item by its key and
+ * does not re-run the item builder for it, so only an explicit @Prop input
+ * makes the framework redraw the numbers when the state behind them changes.
+ */
+@Component
+struct ProfileRow {
+  @Prop profile: Profile = new Profile();
+  @Prop selected: boolean = false;
+  @Prop hasLatency: boolean = false;
+  @Prop latencyText: string = '';
+  @Prop latencyColor: ResourceColor = $r('app.color.text_secondary');
+  @Prop measuring: boolean = false;
+  @Prop tx: number = 0;
+  @Prop rx: number = 0;
+  onSelect: () => void = () => {
+  };
+  onTest: () => void = () => {
+  };
+  onEdit: () => void = () => {
+  };
+  onDelete: () => void = () => {
+  };
+
+  build() {
+    Row() {
+      Column({ space: 4 }) {
+        Text(this.profile.name)
+          .fontSize(16)
+          .fontWeight(FontWeight.Medium)
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+        Row({ space: 6 }) {
+          Text(`${this.profile.host}:${this.profile.remotePort}  ${this.profile.method}`)
+            .fontSize(12)
+            .fontColor($r('app.color.text_secondary'))
+            .layoutWeight(1)
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+          if (this.hasLatency) {
+            Text(this.latencyText)
+              .fontSize(12)
+              .fontColor(this.latencyColor)
+          }
+        }
+        .width('100%')
+        if (this.tx + this.rx > 0) {
+          Text(`↑ ${formatBytes(this.tx)}  ↓ ${formatBytes(this.rx)}`)
+            .fontSize(11)
+            .fontColor($r('app.color.text_secondary'))
+        }
+      }
+      .alignItems(HorizontalAlign.Start)
+      .layoutWeight(1)
+
+      if (this.selected) {
+        Text('✓')
+          .fontSize(18)
+          .fontColor($r('app.color.success'))
+          .margin({ right: 8 })
+      }
+      Text(this.measuring ? '…' : $r('app.string.common_test'))
+        .fontSize(14)
+        .fontColor($r('app.color.accent'))
+        .margin({ right: 12 })
+        .onClick(() => this.onTest())
+      Text($r('app.string.common_edit'))
+        .fontSize(14)
+        .fontColor($r('app.color.accent'))
+        .margin({ right: 12 })
+        .onClick(() => this.onEdit())
+      Text('✕')
+        .fontSize(16)
+        .fontColor($r('app.color.text_secondary'))
+        .onClick(() => this.onDelete())
+    }
+    .width('100%')
+    .padding(12)
+    .borderRadius(8)
+    .backgroundColor(this.selected ? $r('app.color.surface_selected') : $r('app.color.surface'))
+    .onClick(() => this.onSelect())
   }
 }
 

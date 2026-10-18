@@ -138,8 +138,6 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
    * and could not tell a failed start from a user-initiated disconnect.
    */
   private failed: boolean = false;
-  /** Profile the running session belongs to, for its traffic counters. */
-  private runningProfileId: string = '';
   /** Profile name, as the notification shows it. */
   private runningProfileName: string = '';
   /** Previous sample, for the rate the notification shows. */
@@ -237,7 +235,6 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
         await this.teardown();
       } else {
         hilog.info(0x0000, TAG, 'shadowsocks tun routing started');
-        this.runningProfileId = profile.id;
         this.runningProfileName = profile.name;
         await VpnStatusStore.markRunning(this.context, profile.id, profile.name);
         // the tunnel outlives this app's window, so the way out of it has to
@@ -257,7 +254,9 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
 
   async onDestroy(): Promise<void> {
     hilog.info(0x0000, TAG, 'onDestroy');
-    // a failed start has already recorded why; a clean stop must not mask it
+    // First, because the platform tears this process down at the first await:
+    // anything later in this method may never run. A failure recorded by a
+    // start must not be overwritten with a clean stop.
     if (!this.failed) {
       await VpnStatusStore.markStopped(this.context);
     }
@@ -299,7 +298,6 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
     const coreError = sslocal.lastError() ?? '';
     hilog.info(0x0000, TAG, 'teardown: coreRunning=%{public}s lastError=%{public}s',
       coreRunning ? 'true' : 'false', coreError);
-    await this.persistTraffic();
     if (!coreRunning && coreError.length > 0 && !this.failed) {
       this.failed = true;
       await VpnStatusStore.markFailed(this.context, '', '',
@@ -336,34 +334,6 @@ export default class SsVpnExtensionAbility extends VpnExtensionAbility {
     // The *status* file is deliberately left alone here — see VpnStatusStore.
     // Clearing it would erase the failed/stopped/crashed distinction the UI
     // depends on. The traffic counters above are per-connection and do go.
-  }
-
-  /**
-   * Adds this session's counters to the profile it belonged to.
-   *
-   * The core reports counters cumulative since the session started, so the last
-   * sample is the whole session and there is nothing to subtract. It is done
-   * here, at teardown, rather than while running: the counters are per profile
-   * and a profile is only knowably the running one for as long as this ability
-   * lives. shadowsocks-android keeps the same numbers, in its profile database.
-   */
-  private async persistTraffic(): Promise<void> {
-    const profileId = this.runningProfileId;
-    if (profileId.length === 0) {
-      return;
-    }
-    try {
-      const stats = await TrafficStatsStore.load(this.context);
-      if (stats !== null && (stats.tx > 0 || stats.rx > 0)) {
-        await ProfileStore.addTraffic(this.context, profileId, stats.tx, stats.rx);
-        hilog.info(0x0000, TAG, 'profile counters updated: tx=%{public}d rx=%{public}d', stats.tx, stats.rx);
-      }
-      // the session is over, so the file the UI reads would otherwise show the
-      // last session's totals as if they were this one's
-      await TrafficStatsStore.clear(this.context);
-    } catch (e) {
-      hilog.warn(0x0000, TAG, 'could not record the session traffic');
-    }
   }
 
   /**

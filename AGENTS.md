@@ -61,6 +61,8 @@ entry/                        main (and only) HAP module
                               fetch/parse: base64 ss:// lists and SIP008 JSON),
                               Routes.ets (policy-route constants ↔ ACL files),
                               TrafficStats.ets (cross-process stats bridge),
+                              SessionTraffic.ets (adds a finished session's
+                              counters to the profile that ran it),
                               JsonStore.ets (JSON-file persistence), AppContext.ets
     ets/vpnability/           SsVpnExtensionAbility.ets — VpnExtensionAbility
                               that drives the native core in tun mode; deploys
@@ -194,7 +196,18 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
   (`TCPSocketServer`, first free port from 65080 up) via
   `sslocal.setStatAddress` and persists each sample through
   `TrafficStatsStore`; the UI process polls it once a second and computes
-  rates from consecutive samples.
+  rates from consecutive samples, and shows them on the status bar and on each
+  profile row.
+- **Session accounting and profile switches**: the core reads the profile once,
+  when it starts, so tapping another profile while the tunnel is up stops the
+  extension, waits for its status to say `stopped`, and starts it again —
+  otherwise traffic keeps leaving through the old server. The counters are
+  settled by the process that stops the tunnel (`model/SessionTraffic.ets`),
+  not by the extension: the platform kills the extension process at the first
+  `await` in `onDestroy`, so a teardown that reads the sample never finishes.
+  The status file keeps the profile id through `stopped` for exactly this
+  reason, and the sample is cleared after it is added so a session cannot be
+  counted twice.
 - **Server-connection bypass**: `VpnConnection.protectProcessNet()` (API 22+)
   keeps every socket the VPN-extension process creates (the native core
   included) outside the tunnel. On API < 22 there is no per-socket hook; the
@@ -407,6 +420,11 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   Use `abilityContext()` from `model/AppContext.ets` (the real UIAbility
   context registered by `EntryAbility`); the deprecated `getContext(this)`
   returns a context that API 24 runtimes reject in data-kit calls.
+- A `ForEach` whose items are plain objects does not re-run its item builder
+  when state read inside it changes: it reuses the cached child for an
+  unchanged key. A row that shows live numbers therefore has to put those
+  numbers in its key (`Index.ets` `ProfileRow`), or it freezes at the values
+  it was first drawn with.
 - Colours come from `$r('app.color.…')`, never from a literal, so that the dark
   variant in `resources/dark/element/color.json` applies. The two literals left
   in the app are the QR canvas's: a QR code has to stay dark on light whatever
@@ -491,8 +509,6 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   carries the platform's own message, in the platform's language.
 - shadowsocks-android ships 13 locales; this has English and Chinese, and
   adding a third is a file under `resources/`.
-- The connection notification shows the profile but not the live traffic
-  Android puts in its own.
 - Starting the VPN normally requires the system consent app
   `com.huawei.hmos.vpndialog`, which is **absent from the public OpenHarmony
   emulator image**. Working around it requires writing the settingsdata
@@ -503,8 +519,6 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   write never reaches the queried store). The full VPN flow (tun routing,
   stats, ACL) is verified working on the 6.1.1 emulator with the grant rows
   present. Background and recipes: `docs/hos-emulator-vpn.md`.
-- The UI's connected state is local to the page: it does not survive an app
-  restart (no VPN-state query is wired up yet).
 - API < 22 runtimes lack `protectProcessNet`; see the bypass note above.
 - HarmonyOS 2–4 devices run Android APKs and are out of scope (covered by the
   main project's `freedom` flavor).

@@ -17,13 +17,14 @@
  *                                                                             *
  *******************************************************************************/
 
-import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
+import { AbilityConstant, UIAbility, Want, common } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { vpnExtension } from '@kit.NetworkKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { setAbilityContext, setPendingImport } from '../model/AppContext';
 import { ACTION_DISCONNECT } from '../model/ConnectionNotification';
+import { settleSessionTraffic } from '../model/SessionTraffic';
 
 const TAG = 'EntryAbility';
 
@@ -48,11 +49,14 @@ const VPN_ABILITY: Want = {
  * ability rather than the extension because a notification's action can only
  * bring up an ability, and an ability is what can stop the extension.
  */
-function handleAction(want: Want): void {
+async function handleAction(want: Want, context: common.UIAbilityContext): Promise<void> {
   if (want.action !== ACTION_DISCONNECT) {
     return;
   }
   hilog.info(0x0000, TAG, 'disconnect requested from the notification');
+  // the extension's own teardown is cut off by the platform, so the session's
+  // counters are written here before the process that sampled them goes away
+  await settleSessionTraffic(context);
   vpnExtension.stopVpnExtensionAbility(VPN_ABILITY).catch((e: BusinessError) => {
     hilog.warn(0x0000, TAG, 'could not stop the VPN extension: %{public}s', e.message ?? '');
   });
@@ -62,14 +66,14 @@ export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, TAG, 'onCreate');
     setAbilityContext(this.context);
-    handleAction(want);
+    handleAction(want, this.context);
     takeImportUri(want);
   }
 
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     // the ability is already up: a link from a browser, or the notification's
     // button, arrives here
-    handleAction(want);
+    handleAction(want, this.context);
     takeImportUri(want);
   }
 

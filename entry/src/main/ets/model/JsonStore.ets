@@ -36,6 +36,21 @@ export class JsonStore {
     return `${context.filesDir}/store/${name}.json`;
   }
 
+  /**
+   * Whether the file is present. `read` returns '' both for an absent file and
+   * for one it failed to open, so a caller that seeds an empty store must ask
+   * this first: overwriting a file it merely could not read would destroy the
+   * records it holds.
+   */
+  static exists(context: common.Context, name: string): boolean {
+    try {
+      fs.accessSync(JsonStore.pathFor(context, name));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   static async read(context: common.Context, name: string): Promise<string> {
     try {
       const path = JsonStore.pathFor(context, name);

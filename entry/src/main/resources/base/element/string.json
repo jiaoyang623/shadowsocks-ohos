@@ -599,6 +599,26 @@
     {
       "name": "remote_dns",
       "value": "Remote DNS (default %s)"
+    },
+    {
+      "name": "index_add_link_profile",
+      "value": "Add the profile in this link?"
+    },
+    {
+      "name": "profile_edit_unsaved_title",
+      "value": "Unsaved changes"
+    },
+    {
+      "name": "profile_edit_unsaved_message",
+      "value": "Save the changes before leaving?"
+    },
+    {
+      "name": "profile_edit_discard",
+      "value": "Discard"
+    },
+    {
+      "name": "profile_edit_subscription_readonly",
+      "value": "This profile comes from a subscription. An update rewrites its server fields, so they are read-only here."
     }
   ]
 }
