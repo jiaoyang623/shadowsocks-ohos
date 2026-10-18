@@ -20,7 +20,7 @@
 import { promptAction, router } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { DEFAULT_REMOTE_DNS, Profile } from '../model/Profile';
+import { DEFAULT_REMOTE_DNS, Profile, STATUS_ACTIVE } from '../model/Profile';
 import { ProfileStore } from '../model/ProfileStore';
 import { abilityContext } from '../model/AppContext';
 import { ALL_ROUTES, ROUTE_ALL } from '../model/Routes';
@@ -71,34 +71,107 @@ struct ProfileEdit {
    * next subscription update would then re-add it as a duplicate.
    */
   private editedProfile: Profile | null = null;
+  /**
+   * A profile a subscription owns is read-only here, as in Android: an update
+   * rewrites its server fields, so an edit made here would be lost without a
+   * word at the next refresh.
+   */
+  @State readOnly: boolean = false;
+  /** The form as it was loaded, to tell whether the user changed anything. */
+  private initialForm: string = '';
 
   aboutToAppear(): void {
     const params = router.getParams() as EditParams | null;
     const id = params?.id ?? '';
-    if (id.length > 0) {
-      this.profileId = id;
-      ProfileStore.getAll(abilityContext()).then((profiles) => {
-        const profile = profiles.find((p) => p.id === id);
-        if (profile !== undefined) {
-          this.editedProfile = profile;
-          this.name = profile.name;
-          this.host = profile.host;
-          this.remotePort = profile.remotePort.toString();
-          this.password = profile.password;
-          const methodIndex = METHODS.indexOf(profile.method);
-          this.methodIndex = methodIndex >= 0 ? methodIndex : -1;
-          this.methodCustom = methodIndex >= 0 ? '' : profile.method;
-          this.routeIndex = Math.max(0, ALL_ROUTES.indexOf(profile.route));
-          if (profile.plugin.length > 0 && PLUGINS.indexOf(profile.plugin) < 0) {
-            // keep an imported non-preset plugin visible instead of dropping it
-            this.pluginOptions = PLUGINS.concat([profile.plugin]);
-          }
-          this.pluginIndex = Math.max(0, this.pluginOptions.indexOf(profile.plugin));
-          this.pluginOpts = profile.pluginOpts;
-          this.remoteDns = profile.remoteDns;
-        }
-      });
+    if (id.length === 0) {
+      // a new profile starts from the defaults on screen
+      this.initialForm = this.formSnapshot();
+      return;
     }
+    this.profileId = id;
+    ProfileStore.getAll(abilityContext()).then((profiles) => {
+      const profile = profiles.find((p) => p.id === id);
+      if (profile !== undefined) {
+        this.editedProfile = profile;
+        this.name = profile.name;
+        this.host = profile.host;
+        this.remotePort = profile.remotePort.toString();
+        this.password = profile.password;
+        const methodIndex = METHODS.indexOf(profile.method);
+        this.methodIndex = methodIndex >= 0 ? methodIndex : -1;
+        this.methodCustom = methodIndex >= 0 ? '' : profile.method;
+        this.routeIndex = Math.max(0, ALL_ROUTES.indexOf(profile.route));
+        if (profile.plugin.length > 0 && PLUGINS.indexOf(profile.plugin) < 0) {
+          // keep an imported non-preset plugin visible instead of dropping it
+          this.pluginOptions = PLUGINS.concat([profile.plugin]);
+        }
+        this.pluginIndex = Math.max(0, this.pluginOptions.indexOf(profile.plugin));
+        this.pluginOpts = profile.pluginOpts;
+        this.remoteDns = profile.remoteDns;
+        this.readOnly = profile.subscriptionId.length > 0 &&
+          profile.subscriptionStatus === STATUS_ACTIVE;
+        this.initialForm = this.formSnapshot();
+      }
+    });
+  }
+
+  /** Every value the form can change, as one string to compare against. */
+  private formSnapshot(): string {
+    return [this.name, this.host, this.remotePort, this.password,
+      this.selectedMethod(), this.routeIndex.toString(), this.pluginIndex.toString(),
+      this.pluginOpts, this.remoteDns].join('\u0001');
+  }
+
+  private isDirty(): boolean {
+    return this.formSnapshot() !== this.initialForm;
+  }
+
+  /**
+   * Leaving throws the form away, so anything typed is confirmed first, as
+   * Android's unsaved-changes dialog does. Also used by the back arrow, which
+   * would otherwise bypass `onBackPress`.
+   */
+  private async confirmLeave(): Promise<void> {
+    if (!this.isDirty()) {
+      router.back();
+      return;
+    }
+    try {
+      // the promise overload does not survive the ArkTS checker when the
+      // module is imported through @kit.ArkUI, so the callback form is wrapped
+      const answer = await new Promise<promptAction.ShowDialogSuccessResponse>((resolve, reject) => {
+        promptAction.showDialog({
+          title: $r('app.string.profile_edit_unsaved_title'),
+          message: $r('app.string.profile_edit_unsaved_message'),
+          buttons: [
+            { text: $r('app.string.common_cancel'), color: $r('app.color.text_body') },
+            { text: $r('app.string.profile_edit_discard'), color: $r('app.color.error') },
+            { text: $r('app.string.common_save'), color: $r('app.color.accent') },
+          ],
+        }, (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+      if (answer.index === 1) {
+        router.back();
+      } else if (answer.index === 2) {
+        await this.save();
+      }
+    } catch (e) {
+      // the dialog was dismissed; stay on the form
+    }
+  }
+
+  onBackPress(): boolean {
+    if (!this.isDirty()) {
+      return false;
+    }
+    this.confirmLeave();
+    return true;
   }
 
   private selectedMethod(): string {
@@ -175,7 +248,7 @@ struct ProfileEdit {
         Text($r('app.string.common_back'))
           .fontSize(16)
           .fontColor($r('app.color.accent'))
-          .onClick(() => router.back())
+          .onClick(() => this.confirmLeave())
         Text(this.profileId.length > 0 ? $r('app.string.profile_edit_edit_profile') : $r('app.string.profile_edit_add_profile'))
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
@@ -186,14 +259,24 @@ struct ProfileEdit {
       .width('100%')
       .padding({ top: 8, bottom: 8 })
 
+      if (this.readOnly) {
+        Text($r('app.string.profile_edit_subscription_readonly'))
+          .fontSize(12)
+          .fontColor($r('app.color.text_secondary'))
+      }
+
       TextInput({ placeholder: $r('app.string.profile_edit_profile_name'), text: this.name })
+        .enabled(!this.readOnly)
         .onChange((value) => this.name = value)
       TextInput({ placeholder: $r('app.string.profile_edit_server_host'), text: this.host })
+        .enabled(!this.readOnly)
         .onChange((value) => this.host = value)
       TextInput({ placeholder: $r('app.string.profile_edit_server_port'), text: this.remotePort })
+        .enabled(!this.readOnly)
         .type(InputType.Number)
         .onChange((value) => this.remotePort = value)
       TextInput({ placeholder: $r('app.string.profile_edit_password'), text: this.password })
+        .enabled(!this.readOnly)
         .type(InputType.Password)
         .onChange((value) => this.password = value)
 
@@ -201,12 +284,14 @@ struct ProfileEdit {
         label: $r('app.string.profile_edit_encryption_method'),
         options: [...METHODS, $r('app.string.profile_edit_custom')],
         selected: this.methodIndex >= 0 ? this.methodIndex : METHODS.length,
+        interactive: !this.readOnly,
         onSelect: (index: number) => {
           this.methodIndex = index < METHODS.length ? index : -1;
         },
       })
       if (this.methodIndex < 0) {
         TextInput({ placeholder: $r('app.string.profile_edit_method_custom'), text: this.methodCustom })
+          .enabled(!this.readOnly)
           .onChange((value) => this.methodCustom = value)
       }
 
@@ -226,6 +311,7 @@ struct ProfileEdit {
         label: $r('app.string.profile_edit_plugin'),
         options: this.pluginOptions,
         selected: this.pluginIndex,
+        interactive: !this.readOnly,
         onSelect: (index: number) => {
           this.pluginIndex = index;
         },
@@ -235,6 +321,7 @@ struct ProfileEdit {
           placeholder: PLUGIN_OPTS_HINTS[this.pluginIndex] || $r('app.string.profile_edit_plugin_options'),
           text: this.pluginOpts,
         })
+          .enabled(!this.readOnly)
           .onChange((value) => this.pluginOpts = value)
       }
 
@@ -269,6 +356,7 @@ struct LabeledSelect {
   label: ResourceStr = '';
   options: ResourceStr[] = [];
   selected: number = 0;
+  interactive: boolean = true;
   onSelect: (index: number) => void = () => {
   };
 
@@ -283,6 +371,7 @@ struct LabeledSelect {
       }))
         .selected(this.selected)
         .value(this.options[this.selected] ?? '')
+        .enabled(this.interactive)
         .onSelect((index: number) => this.onSelect(index))
     }
     .width('100%')
