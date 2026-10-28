@@ -1,0 +1,2380 @@
+{
+  "unit": "U07",
+  "title": "Per-app proxy, Apps VPN mode",
+  "sources_read": [
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/AppManager.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_apps.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_apps_item.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/menu/app_manager_menu.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/AndroidManifest.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/res/values/strings.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/res/values/arrays.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/AndroidManifest.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/xml/pref_profile.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/Core.kt",
+    "/opt/git/github/shadowsocks-android/.github/doc-json.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfilesFile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+    "/opt/harmony/sdk/sdk/default/openharmony/ets/api/@ohos.net.vpnExtension.d.ts",
+    "/opt/harmony/sdk/sdk/default/openharmony/ets/api/@ohos.bundle.bundleManager.d.ts"
+  ],
+  "controls": [
+    {
+      "id": "C-U07-001",
+      "type": "screen",
+      "label": "Apps VPN mode",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always when the activity is launched",
+      "enabled_when": "always",
+      "action": "Shows the per-app proxy configuration for the profile being edited",
+      "navigates_to": "",
+      "source": "mobile/src/main/AndroidManifest.xml:48"
+    },
+    {
+      "id": "C-U07-002",
+      "type": "button",
+      "label": "Navigate up",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Closes the screen and returns to the profile editor",
+      "navigates_to": "U03 Profile editor",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:233"
+    },
+    {
+      "id": "C-U07-003",
+      "type": "button",
+      "label": "More options",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the overflow menu",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:10"
+    },
+    {
+      "id": "C-U07-004",
+      "type": "input",
+      "label": "Search",
+      "android_id": "search",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Filters the app list when the query text changes",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:20"
+    },
+    {
+      "id": "C-U07-005",
+      "type": "button",
+      "label": "Clear query",
+      "android_id": "",
+      "parent": "C-U07-004",
+      "visible_when": "the query is not empty",
+      "enabled_when": "always",
+      "action": "Clears the query and shows every app",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:20"
+    },
+    {
+      "id": "C-U07-006",
+      "type": "text",
+      "label": "Mode",
+      "android_id": "tv_mode",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:37"
+    },
+    {
+      "id": "C-U07-007",
+      "type": "checkbox",
+      "label": "Off",
+      "android_id": "btn_off",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Turns Apps VPN mode off for the profile and closes the screen",
+      "navigates_to": "U03 Profile editor",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:59"
+    },
+    {
+      "id": "C-U07-008",
+      "type": "checkbox",
+      "label": "On",
+      "android_id": "btn_on",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Clears the bypass flag, so only the selected apps are proxied",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:66"
+    },
+    {
+      "id": "C-U07-009",
+      "type": "checkbox",
+      "label": "Bypass",
+      "android_id": "btn_bypass",
+      "parent": "C-U07-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Sets the bypass flag, so the selected apps skip the VPN",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:73"
+    },
+    {
+      "id": "C-U07-011",
+      "type": "image",
+      "label": "Loading spinner",
+      "android_id": "loading",
+      "parent": "C-U07-001",
+      "visible_when": "the installed-app scan is running",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:89"
+    },
+    {
+      "id": "C-U07-012",
+      "type": "list",
+      "label": "Installed apps",
+      "android_id": "list",
+      "parent": "C-U07-001",
+      "visible_when": "the first installed-app scan has finished",
+      "enabled_when": "always",
+      "action": "Scrolls; each row is tapped individually",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:93"
+    },
+    {
+      "id": "C-U07-013",
+      "type": "image",
+      "label": "Fast scroll handle",
+      "android_id": "",
+      "parent": "C-U07-012",
+      "visible_when": "the list is visible and longer than the screen",
+      "enabled_when": "always",
+      "action": "Drags the list; a popup shows the first letter of the app at the position",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:260"
+    },
+    {
+      "id": "C-U07-014",
+      "type": "row",
+      "label": "App row",
+      "android_id": "linearLayout",
+      "parent": "C-U07-012",
+      "visible_when": "the app matches the current query",
+      "enabled_when": "always",
+      "action": "Toggles the app's selection in the per-app list",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps_item.xml:6"
+    },
+    {
+      "id": "C-U07-015",
+      "type": "image",
+      "label": "App icon",
+      "android_id": "itemicon",
+      "parent": "C-U07-014",
+      "visible_when": "always",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps_item.xml:13"
+    },
+    {
+      "id": "C-U07-016",
+      "type": "text",
+      "label": "App label",
+      "android_id": "title",
+      "parent": "C-U07-014",
+      "visible_when": "always",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps_item.xml:27"
+    },
+    {
+      "id": "C-U07-017",
+      "type": "text",
+      "label": "package name (uid)",
+      "android_id": "desc",
+      "parent": "C-U07-014",
+      "visible_when": "always",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps_item.xml:42"
+    },
+    {
+      "id": "C-U07-018",
+      "type": "switch",
+      "label": "Selected",
+      "android_id": "itemcheck",
+      "parent": "C-U07-014",
+      "visible_when": "always",
+      "enabled_when": "always, but the switch rejects taps and focus because clickable and focusable are false and the row handles taps",
+      "action": "Shows whether the app is in the stored per-app list",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_apps_item.xml:58"
+    },
+    {
+      "id": "C-U07-019",
+      "type": "menu_item",
+      "label": "Apply Settings to All Profiles",
+      "android_id": "action_apply_all",
+      "parent": "C-U07-001",
+      "visible_when": "the overflow menu is open",
+      "enabled_when": "always",
+      "action": "Copies the package list and bypass flag to every profile",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/app_manager_menu.xml:4"
+    },
+    {
+      "id": "C-U07-020",
+      "type": "menu_item",
+      "label": "Export to Clipboard",
+      "android_id": "action_export_clipboard",
+      "parent": "C-U07-001",
+      "visible_when": "shown as a toolbar action when the toolbar has room, otherwise inside the overflow menu",
+      "enabled_when": "always",
+      "action": "Writes the bypass flag, a newline, and the package list to the clipboard",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/app_manager_menu.xml:9"
+    },
+    {
+      "id": "C-U07-021",
+      "type": "menu_item",
+      "label": "Import from Clipboard",
+      "android_id": "action_import_clipboard",
+      "parent": "C-U07-001",
+      "visible_when": "shown as a toolbar action when the toolbar has room, otherwise inside the overflow menu",
+      "enabled_when": "always",
+      "action": "Reads the clipboard and applies the mode flag and package list",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/app_manager_menu.xml:15"
+    },
+    {
+      "id": "C-U07-022",
+      "type": "snackbar",
+      "label": "Apply Settings to All Profiles",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "the apply action reads every profile",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:288"
+    },
+    {
+      "id": "C-U07-023",
+      "type": "snackbar",
+      "label": "Successfully export!",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "the clipboard write succeeds",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:294"
+    },
+    {
+      "id": "C-U07-024",
+      "type": "snackbar",
+      "label": "Failed to export.",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "the clipboard write fails or the profile list is unreadable",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:296"
+    },
+    {
+      "id": "C-U07-025",
+      "type": "snackbar",
+      "label": "Successfully import!",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "the clipboard text holds a mode line and is applied",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:310"
+    },
+    {
+      "id": "C-U07-026",
+      "type": "snackbar",
+      "label": "Failed to import.",
+      "android_id": "",
+      "parent": "C-U07-001",
+      "visible_when": "the clipboard text is null, empty, or cannot be applied",
+      "enabled_when": "never",
+      "action": "none",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:316"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UG-01",
+      "statement": "Tapping an app row toggles that app between selected and not selected.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:127",
+      "examples": [
+        {
+          "given": "an app row that is not selected",
+          "when": "the user taps the row",
+          "then": "the switch turns on and the package joins the stored list",
+          "polarity": "positive"
+        },
+        {
+          "given": "an app row that is selected",
+          "when": "the user taps the row",
+          "then": "the switch turns off and the package leaves the stored list",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-02",
+      "statement": "The stored list holds newline-joined package names for every selected app.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:129",
+      "examples": [
+        {
+          "given": "app A is selected",
+          "when": "the user selects app B",
+          "then": "the stored text is com.example.a, a newline, then com.example.b",
+          "polarity": "positive"
+        },
+        {
+          "given": "only app A is selected",
+          "when": "the user deselects app A",
+          "then": "the stored text becomes an empty string",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-03",
+      "statement": "Selection uses the app UID, so packages that share a UID change together.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:207",
+      "examples": [
+        {
+          "given": "two packages share one UID",
+          "when": "the user taps one of their rows",
+          "then": "both rows show the same state and both package names are stored",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the stored package list holds com.example.a, and the app has UID 10123",
+          "when": "the screen opens",
+          "then": "the row for com.example.a shows its switch on, because UID 10123 joins the selection",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-04",
+      "statement": "Opening the screen sets Apps VPN mode on and sets the shared dirty flag when the stored flag was off; the profile editor never delivers that state, because it rejects turning the entry switch off.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:235",
+      "examples": [
+        {
+          "given": "a profile whose stored Apps VPN mode flag is off",
+          "when": "the screen starts",
+          "then": "Apps VPN mode becomes on and the shared dirty flag is set",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile with Apps VPN mode on",
+          "when": "the user opens the screen",
+          "then": "the flag stays on and opening does not set the dirty flag",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-05",
+      "statement": "The Mode group offers three exclusive choices: Off, On, and Bypass.",
+      "kind": "interaction",
+      "source": "mobile/src/main/res/layout/layout_apps.xml:47",
+      "examples": [
+        {
+          "given": "the screen is open with On checked",
+          "when": "the user taps Bypass",
+          "then": "Bypass is the only checked choice",
+          "polarity": "positive"
+        },
+        {
+          "given": "the screen is open with On checked",
+          "when": "the user taps On again",
+          "then": "On stays checked and no other choice is checked",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-06",
+      "statement": "Choosing Off turns Apps VPN mode off for the profile, closes the screen, and leaves the bypass flag and the stored package list unchanged.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:245",
+      "examples": [
+        {
+          "given": "the screen is open in Bypass mode",
+          "when": "the user taps Off",
+          "then": "Apps VPN mode becomes off and the screen closes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the screen is open in Bypass mode with app A selected",
+          "when": "the user taps Off and opens the screen again",
+          "then": "Apps VPN mode is on again, Bypass is still checked, and app A is still selected",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-07",
+      "statement": "Choosing On clears the bypass flag and keeps the selected app list.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:249",
+      "examples": [
+        {
+          "given": "Bypass is checked and app A is selected",
+          "when": "the user taps On",
+          "then": "bypass becomes false and app A stays selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "Bypass is checked and the stored package list is empty",
+          "when": "the user taps On",
+          "then": "bypass becomes false and the stored package list stays empty",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-08",
+      "statement": "Choosing Bypass sets the bypass flag and keeps the selected app list.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:250",
+      "examples": [
+        {
+          "given": "On is checked and app A is selected",
+          "when": "the user taps Bypass",
+          "then": "bypass becomes true and app A stays selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "On is checked and the stored package list is empty",
+          "when": "the user taps Bypass",
+          "then": "bypass becomes true and the stored package list stays empty",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-09",
+      "statement": "The screen starts on On when the bypass flag is false, otherwise on Bypass.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:241",
+      "examples": [
+        {
+          "given": "the stored bypass flag is false",
+          "when": "the screen opens",
+          "then": "On is checked",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored bypass flag is true",
+          "when": "the screen opens",
+          "then": "Bypass is checked",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-10",
+      "statement": "The scan lists installed packages and packages retained after uninstall, and keeps the ones that request the INTERNET permission plus the android package.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:86",
+      "examples": [
+        {
+          "given": "an installed app that does not request the INTERNET permission",
+          "when": "the list loads",
+          "then": "the app is absent",
+          "polarity": "negative"
+        },
+        {
+          "given": "the android system package",
+          "when": "the list loads",
+          "then": "the android package is present",
+          "polarity": "positive"
+        },
+        {
+          "given": "a package that keeps its data after uninstall and requests the INTERNET permission",
+          "when": "the list loads",
+          "then": "the retained package is present",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-11",
+      "statement": "The client package never appears in the app list.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:90",
+      "examples": [
+        {
+          "given": "the Shadowsocks client is installed",
+          "when": "the list loads",
+          "then": "no row shows the client package",
+          "polarity": "negative"
+        },
+        {
+          "given": "com.example.browser and the client package are installed, and com.example.browser requests the INTERNET permission",
+          "when": "the list loads",
+          "then": "com.example.browser has a row and the client package has none",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-12",
+      "statement": "Each row shows the app icon, the label, and the package name with UID.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:115",
+      "examples": [
+        {
+          "given": "app com.example.a with UID 10123",
+          "when": "the row is bound",
+          "then": "the description reads com.example.a (10123)",
+          "polarity": "positive"
+        },
+        {
+          "given": "an app with UID 10123 that is not selected",
+          "when": "the row is bound",
+          "then": "the icon, the label, and com.example.a (10123) show, and only the switch is off",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-13",
+      "statement": "Selected apps sort before unselected apps, then by label, on each load.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:143",
+      "examples": [
+        {
+          "given": "app Zebra is selected and app Alpha is not",
+          "when": "the list loads",
+          "then": "Zebra comes before Alpha",
+          "polarity": "positive"
+        },
+        {
+          "given": "apps Zebra and Alpha are both selected",
+          "when": "the list loads",
+          "then": "Alpha comes before Zebra",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-14",
+      "statement": "A row toggle refreshes the switches only, so the visible order stays fixed.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:132",
+      "examples": [
+        {
+          "given": "a list sorted with selected apps first",
+          "when": "the user taps a row",
+          "then": "every switch refreshes and the row order does not change",
+          "polarity": "positive"
+        },
+        {
+          "given": "the first row is selected and the list is sorted with selected apps first",
+          "when": "the user taps the first row",
+          "then": "the row stays first even though a fresh load would sort it among the unselected apps",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-15",
+      "statement": "Search keeps rows whose label or package name contains the query, ignoring case.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:162",
+      "examples": [
+        {
+          "given": "an app labelled Camera",
+          "when": "the query is cam",
+          "then": "the Camera row stays",
+          "polarity": "positive"
+        },
+        {
+          "given": "an app labelled Camera",
+          "when": "the query is mail",
+          "then": "the Camera row hides",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-16",
+      "statement": "Search also keeps a row when the query matches part of its UID.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:165",
+      "examples": [
+        {
+          "given": "an app with UID 10123",
+          "when": "the query is 012",
+          "then": "the row stays",
+          "polarity": "boundary"
+        },
+        {
+          "given": "an app with UID 10123",
+          "when": "the query is 10123",
+          "then": "the row stays",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-17",
+      "statement": "An empty query lists every app, and the clear button restores the full list.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:162",
+      "examples": [
+        {
+          "given": "a query hides most rows",
+          "when": "the user clears the query",
+          "then": "every app returns",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the app list has loaded",
+          "when": "the search query is empty",
+          "then": "the list shows every app",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-18",
+      "statement": "Package installs and removals clear the cache and reload the list.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:78",
+      "examples": [
+        {
+          "given": "the list is shown",
+          "when": "a package is installed or removed",
+          "then": "the cached list clears and the scan runs again",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list is shown",
+          "when": "an app that does not request the INTERNET permission is installed",
+          "then": "the cache clears and the scan runs again, and the new app stays out of the list",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-19",
+      "statement": "A per-app change stays in the shared draft until a profile write stores it; a profile save and Apply Settings to All Profiles both write it, and the second needs no editor save.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:212",
+      "examples": [
+        {
+          "given": "the user selects an app and returns to the editor without saving",
+          "when": "the profile is read again",
+          "then": "the profile keeps its old per-app values",
+          "polarity": "negative"
+        },
+        {
+          "given": "the user selects an app and saves the profile",
+          "when": "the profile is read again",
+          "then": "the selection is stored with the profile",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user selects an app and taps Apply Settings to All Profiles",
+          "when": "each profile is read again",
+          "then": "every profile stores the list and the bypass flag without an editor save",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-20",
+      "statement": "Apply Settings to All Profiles copies the package list and bypass flag to every profile.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:281",
+      "examples": [
+        {
+          "given": "two profiles and one selected app",
+          "when": "the user taps Apply Settings to All Profiles",
+          "then": "both profiles store the list and the bypass flag",
+          "polarity": "positive"
+        },
+        {
+          "given": "the profile list cannot be read",
+          "when": "the user taps Apply Settings to All Profiles",
+          "then": "no profile is written and Failed to export. shows",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-21",
+      "statement": "Apply Settings to All Profiles leaves each profile's Apps VPN mode flag unchanged.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:283",
+      "examples": [
+        {
+          "given": "a profile with Apps VPN mode off",
+          "when": "Apply Settings to All Profiles runs",
+          "then": "that profile still has Apps VPN mode off",
+          "polarity": "negative"
+        },
+        {
+          "given": "a profile with Apps VPN mode on",
+          "when": "Apply Settings to All Profiles runs",
+          "then": "that profile still has Apps VPN mode on and receives the copied package list and bypass flag",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-22",
+      "statement": "Export writes the bypass flag, a newline, and the package list to the clipboard.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:293",
+      "examples": [
+        {
+          "given": "bypass is true and app A is selected",
+          "when": "the user exports",
+          "then": "the clipboard holds true, a newline, then com.example.a",
+          "polarity": "positive"
+        },
+        {
+          "given": "bypass is false and the stored package list is empty",
+          "when": "the user exports",
+          "then": "the clipboard holds false and a newline, with no package name",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-23",
+      "statement": "Import reads the first line as the bypass flag and the rest as package names.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:302",
+      "examples": [
+        {
+          "given": "the clipboard holds true then two package names on separate lines",
+          "when": "the user imports",
+          "then": "bypass becomes true and both packages are selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "the clipboard holds false then com.example.a on the next line",
+          "when": "the user imports",
+          "then": "bypass becomes false and com.example.a is selected",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-24",
+      "statement": "Import without a newline treats the whole text as the flag and clears the list.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:304",
+      "examples": [
+        {
+          "given": "the clipboard holds only true",
+          "when": "the user imports",
+          "then": "bypass becomes true and the stored package list becomes empty",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the clipboard holds only false",
+          "when": "the user imports",
+          "then": "bypass becomes false, On is checked, and the stored package list becomes empty",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-25",
+      "statement": "Import reports failure and changes nothing when the clipboard is empty.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:300",
+      "examples": [
+        {
+          "given": "the clipboard is empty",
+          "when": "the user imports",
+          "then": "Failed to import. shows and no mode or selection changes",
+          "polarity": "negative"
+        },
+        {
+          "given": "the clipboard holds true, a newline, then com.example.a",
+          "when": "the user imports",
+          "then": "bypass becomes true, com.example.a is selected, and Successfully import! shows",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-26",
+      "statement": "A VPN start in On mode with a non-empty list allows only the selected packages, so the other apps stay outside the tunnel.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:176",
+      "examples": [
+        {
+          "given": "Apps VPN mode on, bypass off, and packages A and B selected",
+          "when": "the VPN starts",
+          "then": "A and B are allowed applications and other apps stay outside the tunnel",
+          "polarity": "positive"
+        },
+        {
+          "given": "Apps VPN mode on, bypass off, and only A selected",
+          "when": "unselected app C sends traffic",
+          "then": "the traffic of C leaves outside the VPN and is not blocked",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-27",
+      "statement": "A VPN start in Bypass mode disallows the selected packages and the client package.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:175",
+      "examples": [
+        {
+          "given": "Apps VPN mode on, bypass on, and packages A and B selected",
+          "when": "the VPN starts",
+          "then": "A, B, and the client package are disallowed applications",
+          "polarity": "positive"
+        },
+        {
+          "given": "Apps VPN mode on, bypass on, and the stored list names only the client package",
+          "when": "the VPN starts",
+          "then": "the client package is disallowed and the VPN adds no other disallowed app",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-28",
+      "statement": "A package that is not installed is skipped at VPN start, and the others still apply.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:177",
+      "examples": [
+        {
+          "given": "the stored list names an uninstalled package",
+          "when": "the VPN starts",
+          "then": "the package is logged and skipped, and the other packages apply",
+          "polarity": "negative"
+        },
+        {
+          "given": "Apps VPN mode on, bypass off, and the stored list names installed packages com.example.a and com.example.b",
+          "when": "the VPN starts",
+          "then": "the builder adds both packages as allowed applications and skips none",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-29",
+      "statement": "An empty list adds no allowed package, so in On mode the VPN applies to every app; in Bypass mode only the client package is disallowed, so every other app is proxied.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:171",
+      "examples": [
+        {
+          "given": "Apps VPN mode on, bypass off, and no package selected",
+          "when": "the VPN starts",
+          "then": "the builder adds no allowed application and every app uses the VPN",
+          "polarity": "boundary"
+        },
+        {
+          "given": "Apps VPN mode on, bypass on, and no package selected",
+          "when": "the VPN starts",
+          "then": "only the client package is disallowed, so every other app uses the VPN",
+          "polarity": "boundary"
+        },
+        {
+          "given": "Apps VPN mode on, bypass on, and no package selected",
+          "when": "another installed app sends traffic",
+          "then": "the traffic goes through the VPN, because the client package is the only disallowed application",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-30",
+      "statement": "The spinner shows until the app scan finishes, then the list fades in.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:219",
+      "examples": [
+        {
+          "given": "the screen opens",
+          "when": "the package scan runs",
+          "then": "the spinner shows and the list stays hidden",
+          "polarity": "positive"
+        },
+        {
+          "given": "a reload starts",
+          "when": "the reload is cancelled before the scan finishes",
+          "then": "the spinner stays and the list stays hidden until the next load finishes",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-31",
+      "statement": "The dirty flag is one shared DataStore boolean: a mode, selection, or import change sets it, opening a profile in the editor clears it when Profile.serialize runs, and a save does not clear it.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:351",
+      "examples": [
+        {
+          "given": "a clean draft",
+          "when": "the user changes the mode or a selection",
+          "then": "the shared dirty flag becomes true",
+          "polarity": "positive"
+        },
+        {
+          "given": "a dirty draft",
+          "when": "the user opens a profile in the profile editor",
+          "then": "Profile.serialize writes the stored values into the draft and clears the flag",
+          "polarity": "positive"
+        },
+        {
+          "given": "a dirty draft",
+          "when": "the user saves the profile",
+          "then": "the flag stays true until a profile is opened again",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-33",
+      "statement": "Profile JSON always carries proxy_apps; the object holds enabled, and it holds bypass and android_list only when enabled is true.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:321",
+      "examples": [
+        {
+          "given": "a profile with Apps VPN mode on and one package",
+          "when": "the profile is exported to JSON",
+          "then": "proxy_apps holds enabled true, bypass, and android_list",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile with Apps VPN mode off",
+          "when": "the profile is exported to JSON",
+          "then": "proxy_apps holds only enabled false",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-35",
+      "statement": "Apply Settings uses Ctrl+Shift+A, Export uses Ctrl+C, and Import uses Ctrl+V.",
+      "kind": "interaction",
+      "source": "mobile/src/main/res/menu/app_manager_menu.xml:6",
+      "examples": [
+        {
+          "given": "a hardware keyboard and the menu open",
+          "when": "the user presses Ctrl+Shift+A",
+          "then": "Apply Settings to All Profiles runs",
+          "polarity": "positive"
+        },
+        {
+          "given": "a hardware keyboard and the menu open",
+          "when": "the user presses Ctrl+C",
+          "then": "Export to Clipboard runs",
+          "polarity": "positive"
+        },
+        {
+          "given": "a hardware keyboard and the menu open",
+          "when": "the user presses Ctrl+V",
+          "then": "Import from Clipboard runs",
+          "polarity": "positive"
+        },
+        {
+          "given": "a hardware keyboard and the screen is open",
+          "when": "the user presses Ctrl+X",
+          "then": "none of Apply Settings to All Profiles, Export to Clipboard, or Import from Clipboard runs",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UG-36",
+      "statement": "The menu key toggles the overflow menu.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:325",
+      "examples": [
+        {
+          "given": "the screen is open",
+          "when": "the user presses the menu key",
+          "then": "the overflow menu opens, or closes when it is open",
+          "polarity": "positive"
+        },
+        {
+          "given": "the screen is open and the overflow menu is closed",
+          "when": "the user presses the Z key",
+          "then": "the overflow menu stays closed",
+          "polarity": "negative"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "Apps VPN mode setting for the edited profile",
+      "states": ["off", "on", "bypass"],
+      "transitions": [
+        {
+          "from": "off",
+          "to": "on",
+          "event": "the user opens the Apps VPN mode screen while the bypass flag is false",
+          "producer": "AppManager.onCreate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:235"
+        },
+        {
+          "from": "off",
+          "to": "bypass",
+          "event": "the user opens the Apps VPN mode screen while the bypass flag is true",
+          "producer": "AppManager.onCreate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:235"
+        },
+        {
+          "from": "on",
+          "to": "bypass",
+          "event": "the user taps Bypass",
+          "producer": "AppManager bypassGroup listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:250"
+        },
+        {
+          "from": "bypass",
+          "to": "on",
+          "event": "the user taps On",
+          "producer": "AppManager bypassGroup listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:249"
+        },
+        {
+          "from": "on",
+          "to": "bypass",
+          "event": "an import reads true on the first line",
+          "producer": "AppManager import handler",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:307"
+        },
+        {
+          "from": "bypass",
+          "to": "on",
+          "event": "an import reads a first line other than true",
+          "producer": "AppManager import handler",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:307"
+        },
+        {
+          "from": "on",
+          "to": "off",
+          "event": "the user taps Off; the bypass flag and the stored package list stay",
+          "producer": "AppManager bypassGroup listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:245"
+        },
+        {
+          "from": "bypass",
+          "to": "off",
+          "event": "the user taps Off; the bypass flag and the stored package list stay",
+          "producer": "AppManager bypassGroup listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:245"
+        }
+      ]
+    },
+    {
+      "object": "app list load",
+      "states": ["loading", "shown"],
+      "transitions": [
+        {
+          "from": "loading",
+          "to": "shown",
+          "event": "the installed-app scan finishes and the adapter publishes",
+          "producer": "AppManager.loadApps",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:216"
+        },
+        {
+          "from": "shown",
+          "to": "loading",
+          "event": "a package is installed or removed",
+          "producer": "package change receiver",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:78"
+        },
+        {
+          "from": "shown",
+          "to": "loading",
+          "event": "the activity is recreated, for example after a rotation",
+          "producer": "AppManager.onCreate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:269"
+        }
+      ]
+    },
+    {
+      "object": "app selection",
+      "states": ["unselected", "selected"],
+      "transitions": [
+        {
+          "from": "unselected",
+          "to": "selected",
+          "event": "the user taps the app row",
+          "producer": "AppViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:128"
+        },
+        {
+          "from": "selected",
+          "to": "unselected",
+          "event": "the user taps the app row again",
+          "producer": "AppViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:128"
+        },
+        {
+          "from": "unselected",
+          "to": "selected",
+          "event": "an import names the package",
+          "producer": "AppManager.initProxiedUids",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:311"
+        },
+        {
+          "from": "selected",
+          "to": "unselected",
+          "event": "an import replaces the stored list without this package",
+          "producer": "AppManager.initProxiedUids",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:311"
+        },
+        {
+          "from": "unselected",
+          "to": "selected",
+          "event": "the screen opens and the stored package list names the package",
+          "producer": "AppManager.initProxiedUids",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:254"
+        },
+        {
+          "from": "selected",
+          "to": "unselected",
+          "event": "the screen opens again and the stored list no longer names the package",
+          "producer": "AppManager.initProxiedUids",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:254"
+        },
+        {
+          "from": "unselected",
+          "to": "selected",
+          "event": "a package is installed with a UID that the selection map still marks, because a reload does not re-run initProxiedUids",
+          "producer": "AppManager.loadApps",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:78"
+        }
+      ]
+    },
+    {
+      "object": "profile dirty flag",
+      "states": ["clean", "dirty"],
+      "transitions": [
+        {
+          "from": "clean",
+          "to": "dirty",
+          "event": "the user changes the mode or a selection",
+          "producer": "AppManager bypassGroup listener and AppViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:130"
+        },
+        {
+          "from": "clean",
+          "to": "dirty",
+          "event": "an import applies a list",
+          "producer": "AppManager import handler",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:309"
+        },
+        {
+          "from": "dirty",
+          "to": "clean",
+          "event": "the user opens the profile in the editor, which serializes it and clears the flag",
+          "producer": "Profile.serialize",
+          "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:351"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U07-01",
+      "name": "Open Apps VPN mode and select apps",
+      "steps": [
+        {
+          "label": "User: taps the Apps VPN mode switch in the profile editor",
+          "type": "start",
+          "next": "Decision: the service mode is VPN",
+          "exception": false
+        },
+        {
+          "label": "Decision: the service mode is VPN",
+          "type": "decision",
+          "next": "Yes: AppManager opens / No: the switch is disabled and the flow ends",
+          "exception": false
+        },
+        {
+          "label": "Yes: AppManager opens",
+          "type": "step",
+          "next": "Decision: Apps VPN mode was off",
+          "exception": false
+        },
+        {
+          "label": "No: the switch is disabled and the flow ends",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "Decision: Apps VPN mode was off",
+          "type": "decision",
+          "next": "Yes: the screen turns it on and sets the shared dirty flag / No: the screen keeps the stored values",
+          "exception": false
+        },
+        {
+          "label": "Yes: the screen turns it on and sets the shared dirty flag",
+          "type": "step",
+          "next": "System: scans installed packages",
+          "exception": false
+        },
+        {
+          "label": "No: the screen keeps the stored values",
+          "type": "step",
+          "next": "System: scans installed packages",
+          "exception": false
+        },
+        {
+          "label": "System: scans installed packages",
+          "type": "step",
+          "next": "System: shows the app list",
+          "exception": false
+        },
+        {
+          "label": "System: shows the app list",
+          "type": "step",
+          "next": "User: taps an app row",
+          "exception": false
+        },
+        {
+          "label": "User: taps an app row",
+          "type": "step",
+          "next": "Decision: the app was selected",
+          "exception": false
+        },
+        {
+          "label": "Decision: the app was selected",
+          "type": "decision",
+          "next": "Yes: the switch turns off and the package leaves the list / No: the switch turns on and the package joins the list",
+          "exception": false
+        },
+        {
+          "label": "Yes: the switch turns off and the package leaves the list",
+          "type": "step",
+          "next": "User: leaves the screen",
+          "exception": false
+        },
+        {
+          "label": "No: the switch turns on and the package joins the list",
+          "type": "step",
+          "next": "User: leaves the screen",
+          "exception": false
+        },
+        {
+          "label": "User: leaves the screen",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The entry switch is disabled in proxy and transproxy service modes",
+        "A cancelled reload leaves the spinner in place until the next load finishes",
+        "The editor switch sets Apps VPN mode before the screen starts, so the off branch is not reachable from the editor"
+      ]
+    },
+    {
+      "id": "F-U07-02",
+      "name": "Change the per-app mode",
+      "steps": [
+        {
+          "label": "User: taps one choice in the Mode group",
+          "type": "start",
+          "next": "Decision: the choice is Off",
+          "exception": false
+        },
+        {
+          "label": "Decision: the choice is Off",
+          "type": "decision",
+          "next": "Yes: the screen closes with Apps VPN mode off / No: the screen stays open",
+          "exception": false
+        },
+        {
+          "label": "Yes: the screen closes with Apps VPN mode off",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: the screen stays open",
+          "type": "step",
+          "next": "Decision: the choice is Bypass",
+          "exception": false
+        },
+        {
+          "label": "Decision: the choice is Bypass",
+          "type": "decision",
+          "next": "Yes: the bypass flag becomes true / No: the bypass flag becomes false",
+          "exception": false
+        },
+        {
+          "label": "Yes: the bypass flag becomes true",
+          "type": "step",
+          "next": "System: keeps the selected app list",
+          "exception": false
+        },
+        {
+          "label": "No: the bypass flag becomes false",
+          "type": "step",
+          "next": "System: keeps the selected app list",
+          "exception": false
+        },
+        {
+          "label": "System: keeps the selected app list",
+          "type": "step",
+          "next": "System: sets the shared dirty flag",
+          "exception": false
+        },
+        {
+          "label": "System: sets the shared dirty flag",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "F-U07-03",
+      "name": "Filter the app list",
+      "steps": [
+        {
+          "label": "User: focuses the search field",
+          "type": "start",
+          "next": "User: types a query",
+          "exception": false
+        },
+        {
+          "label": "User: types a query",
+          "type": "step",
+          "next": "Decision: a row matches the query",
+          "exception": false
+        },
+        {
+          "label": "Decision: a row matches the query",
+          "type": "decision",
+          "next": "Yes: the row stays / No: the row is hidden",
+          "exception": false
+        },
+        {
+          "label": "Yes: the row stays",
+          "type": "step",
+          "next": "User: clears the query",
+          "exception": false
+        },
+        {
+          "label": "No: the row is hidden",
+          "type": "step",
+          "next": "User: clears the query",
+          "exception": false
+        },
+        {
+          "label": "User: clears the query",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The keyboard search action does nothing, because onQueryTextSubmit returns false"
+      ]
+    },
+    {
+      "id": "F-U07-04",
+      "name": "Apply per-app settings to every profile",
+      "steps": [
+        {
+          "label": "User: opens the overflow menu",
+          "type": "start",
+          "next": "User: taps Apply Settings to All Profiles",
+          "exception": false
+        },
+        {
+          "label": "User: taps Apply Settings to All Profiles",
+          "type": "step",
+          "next": "Decision: the profile list is readable",
+          "exception": false
+        },
+        {
+          "label": "Decision: the profile list is readable",
+          "type": "decision",
+          "next": "Yes: every profile receives the list and bypass flag / No: a failure snackbar appears",
+          "exception": false
+        },
+        {
+          "label": "Yes: every profile receives the list and bypass flag",
+          "type": "step",
+          "next": "Decision: every profile update matches one row",
+          "exception": false
+        },
+        {
+          "label": "Decision: every profile update matches one row",
+          "type": "decision",
+          "next": "Yes: updates the direct-boot copy if direct boot is enabled / No: the write throws after the earlier profiles were stored",
+          "exception": false
+        },
+        {
+          "label": "Yes: updates the direct-boot copy if direct boot is enabled",
+          "type": "step",
+          "next": "System: shows Apply Settings to All Profiles",
+          "exception": false
+        },
+        {
+          "label": "System: shows Apply Settings to All Profiles",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: the write throws after the earlier profiles were stored",
+          "type": "step",
+          "next": "System: shows no snackbar",
+          "exception": true
+        },
+        {
+          "label": "System: shows no snackbar",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "No: a failure snackbar appears",
+          "type": "step",
+          "next": "System: shows Failed to export.",
+          "exception": true
+        },
+        {
+          "label": "System: shows Failed to export.",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The failure path reuses the export error text",
+        "A profile update checks the row count, so a failed update throws after the earlier profiles were written",
+        "A thrown update leaves the profile list partially written and shows no snackbar"
+      ]
+    },
+    {
+      "id": "F-U07-05",
+      "name": "Export per-app settings to the clipboard",
+      "steps": [
+        {
+          "label": "User: taps Export to Clipboard",
+          "type": "start",
+          "next": "App: writes the bypass flag, a newline, and the package list",
+          "exception": false
+        },
+        {
+          "label": "App: writes the bypass flag, a newline, and the package list",
+          "type": "step",
+          "next": "Decision: the clipboard write succeeds",
+          "exception": false
+        },
+        {
+          "label": "Decision: the clipboard write succeeds",
+          "type": "decision",
+          "next": "Yes: shows Successfully export! / No: shows Failed to export.",
+          "exception": false
+        },
+        {
+          "label": "Yes: shows Successfully export!",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: shows Failed to export.",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "A RuntimeException from the clipboard service becomes the failure snackbar"
+      ]
+    },
+    {
+      "id": "F-U07-06",
+      "name": "Import per-app settings from the clipboard",
+      "steps": [
+        {
+          "label": "User: taps Import from Clipboard",
+          "type": "start",
+          "next": "App: reads the first clipboard item",
+          "exception": false
+        },
+        {
+          "label": "App: reads the first clipboard item",
+          "type": "step",
+          "next": "Decision: the text is null or empty",
+          "exception": false
+        },
+        {
+          "label": "Decision: the text is null or empty",
+          "type": "decision",
+          "next": "Yes: shows Failed to import. / No: splits the text",
+          "exception": false
+        },
+        {
+          "label": "Yes: shows Failed to import.",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "No: splits the text",
+          "type": "step",
+          "next": "Decision: the text contains a newline",
+          "exception": false
+        },
+        {
+          "label": "Decision: the text contains a newline",
+          "type": "decision",
+          "next": "Yes: the first line is the flag and the rest are packages / No: the whole text is the flag and the list becomes empty",
+          "exception": false
+        },
+        {
+          "label": "Yes: the first line is the flag and the rest are packages",
+          "type": "step",
+          "next": "App: checks Bypass or On",
+          "exception": false
+        },
+        {
+          "label": "No: the whole text is the flag and the list becomes empty",
+          "type": "step",
+          "next": "App: checks Bypass or On",
+          "exception": false
+        },
+        {
+          "label": "App: checks Bypass or On",
+          "type": "step",
+          "next": "App: stores the package list and sets the shared dirty flag",
+          "exception": false
+        },
+        {
+          "label": "App: stores the package list and sets the shared dirty flag",
+          "type": "step",
+          "next": "System: shows Successfully import!",
+          "exception": false
+        },
+        {
+          "label": "System: shows Successfully import!",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "Android 10 and later return no clipboard text when the app lacks window focus",
+        "A first line other than true reads as false and selects On"
+      ]
+    },
+    {
+      "id": "F-U07-07",
+      "name": "Start the VPN with per-app rules",
+      "steps": [
+        {
+          "label": "User: connects the profile",
+          "type": "start",
+          "next": "System: requests VPN consent",
+          "exception": false
+        },
+        {
+          "label": "System: requests VPN consent",
+          "type": "step",
+          "next": "Decision: Apps VPN mode is on",
+          "exception": false
+        },
+        {
+          "label": "Decision: Apps VPN mode is on",
+          "type": "decision",
+          "next": "Yes: reads the package list / No: excludes only the client package",
+          "exception": false
+        },
+        {
+          "label": "No: excludes only the client package",
+          "type": "step",
+          "next": "System: establishes the tunnel",
+          "exception": false
+        },
+        {
+          "label": "Yes: reads the package list",
+          "type": "step",
+          "next": "Decision: bypass mode is on",
+          "exception": false
+        },
+        {
+          "label": "Decision: bypass mode is on",
+          "type": "decision",
+          "next": "Yes: disallows each package / No: allows each package",
+          "exception": false
+        },
+        {
+          "label": "Yes: disallows each package",
+          "type": "step",
+          "next": "Decision: the package is the client package",
+          "exception": false
+        },
+        {
+          "label": "No: allows each package",
+          "type": "step",
+          "next": "Decision: the package is the client package",
+          "exception": false
+        },
+        {
+          "label": "Decision: the package is the client package",
+          "type": "decision",
+          "next": "Yes: skips the client package / No: checks whether the package is installed",
+          "exception": false
+        },
+        {
+          "label": "Yes: skips the client package",
+          "type": "step",
+          "next": "App: keeps the client package outside the tunnel",
+          "exception": false
+        },
+        {
+          "label": "No: checks whether the package is installed",
+          "type": "step",
+          "next": "Decision: the package is installed",
+          "exception": false
+        },
+        {
+          "label": "Decision: the package is installed",
+          "type": "decision",
+          "next": "Yes: adds the package to the VPN builder / No: skips the package",
+          "exception": false
+        },
+        {
+          "label": "Yes: adds the package to the VPN builder",
+          "type": "step",
+          "next": "App: keeps the client package outside the tunnel",
+          "exception": false
+        },
+        {
+          "label": "No: skips the package",
+          "type": "step",
+          "next": "App: keeps the client package outside the tunnel",
+          "exception": false
+        },
+        {
+          "label": "App: keeps the client package outside the tunnel",
+          "type": "step",
+          "next": "System: establishes the tunnel",
+          "exception": false
+        },
+        {
+          "label": "System: establishes the tunnel",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "An uninstalled package raises NameNotFoundException and is logged",
+        "The package list and the bypass flag are read once at VPN start, so edits made while the VPN runs reach the tunnel only after a reconnect",
+        "establish returns null and the start fails with the reboot message"
+      ]
+    },
+    {
+      "id": "F-U07-08",
+      "name": "Turn Apps VPN mode off and leave the screen",
+      "steps": [
+        {
+          "label": "User: taps Off",
+          "type": "start",
+          "next": "App: turns Apps VPN mode off and sets the shared dirty flag",
+          "exception": false
+        },
+        {
+          "label": "App: turns Apps VPN mode off and sets the shared dirty flag",
+          "type": "step",
+          "next": "App: finishes the screen",
+          "exception": false
+        },
+        {
+          "label": "App: finishes the screen",
+          "type": "step",
+          "next": "Decision: the user saves the profile",
+          "exception": false
+        },
+        {
+          "label": "Decision: the user saves the profile",
+          "type": "decision",
+          "next": "Yes: the profile stores the off state / No: the profile keeps its old state",
+          "exception": false
+        },
+        {
+          "label": "Yes: the profile stores the off state",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: the profile keeps its old state",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The profile editor shows its unsaved-changes dialog because the dirty flag is set"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U07-01",
+      "title": "Opening Apps VPN mode turns it on for the edited profile",
+      "preconditions": [
+        "A profile with Apps VPN mode off is open in the profile editor",
+        "The service mode is VPN",
+        "The stored package list for the profile is empty"
+      ],
+      "steps": [
+        "Tap the Apps VPN mode switch",
+        "Observe the Mode group",
+        "Wait for the app list to appear"
+      ],
+      "expected": [
+        "The Apps VPN mode screen opens and Apps VPN mode becomes on for the profile",
+        "On is checked and the shared dirty flag is set",
+        "Every app row starts unselected"
+      ],
+      "control_path": "C-U07-001",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:235"
+    },
+    {
+      "id": "TC-U07-02",
+      "title": "On and Bypass switch modes without losing the selected apps",
+      "preconditions": [
+        "The Apps VPN mode screen is open",
+        "Bypass is checked and app A is selected"
+      ],
+      "steps": [
+        "Tap On",
+        "Tap Bypass"
+      ],
+      "expected": [
+        "On becomes checked, bypass becomes false, and app A stays selected",
+        "Bypass becomes checked, bypass becomes true, and app A stays selected"
+      ],
+      "control_path": "C-U07-001 > C-U07-008 > C-U07-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:242"
+    },
+    {
+      "id": "TC-U07-03",
+      "title": "Off closes the screen and opening it again turns the mode back on",
+      "preconditions": [
+        "The Apps VPN mode screen is open",
+        "Bypass is checked"
+      ],
+      "steps": [
+        "Tap Off",
+        "Open Apps VPN mode for the same profile again",
+        "Tap On, then tap Bypass, then return with Navigate up",
+        "Save the profile in the editor"
+      ],
+      "expected": [
+        "Apps VPN mode becomes off and the screen closes to the profile editor",
+        "The screen opens with Bypass checked and Apps VPN mode forced on",
+        "On clears the bypass flag, Bypass sets it again, and each tap sets the shared dirty flag",
+        "The profile stores Apps VPN mode on with bypass true"
+      ],
+      "control_path": "C-U07-001 > C-U07-007",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:245"
+    },
+    {
+      "id": "TC-U07-04",
+      "title": "The spinner gives way to rows with icon, label, and package with UID",
+      "preconditions": [
+        "At least one installed app requests the INTERNET permission",
+        "The stored package list for the profile is empty"
+      ],
+      "steps": [
+        "Open the Apps VPN mode screen",
+        "Observe the screen before the scan ends",
+        "Observe the screen after the scan ends",
+        "Select one app, type a search query, and rotate the device while the list is shown"
+      ],
+      "expected": [
+        "The spinner shows and the list stays hidden",
+        "The list fades in when the scan finishes",
+        "A row shows the app icon, its label, and packageName (uid) with an unchecked switch",
+        "The screen reloads, the spinner shows again, and the list returns with the same row selected and the query still in the search field"
+      ],
+      "control_path": "C-U07-001 > C-U07-011 > C-U07-012 > C-U07-014 > C-U07-018",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:215"
+    },
+    {
+      "id": "TC-U07-05",
+      "title": "Tapping an unselected row selects the app",
+      "preconditions": [
+        "The app list is shown",
+        "No app is selected"
+      ],
+      "steps": [
+        "Tap an app row",
+        "Observe the row switch",
+        "Inspect the stored package list"
+      ],
+      "expected": [
+        "The app becomes selected",
+        "The switch turns on",
+        "The package name joins the newline-separated list and the shared dirty flag is set"
+      ],
+      "control_path": "C-U07-001 > C-U07-012 > C-U07-014 > C-U07-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:127"
+    },
+    {
+      "id": "TC-U07-06",
+      "title": "Tapping a selected row removes the app",
+      "preconditions": [
+        "The app list is shown",
+        "App A is selected"
+      ],
+      "steps": [
+        "Tap the app A row",
+        "Observe the row switch",
+        "Inspect the stored package list"
+      ],
+      "expected": [
+        "The app becomes unselected",
+        "The switch turns off",
+        "The package name leaves the stored list and the shared dirty flag is set"
+      ],
+      "control_path": "C-U07-001 > C-U07-012 > C-U07-014 > C-U07-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:128"
+    },
+    {
+      "id": "TC-U07-07",
+      "title": "Search matches labels, packages, and UIDs, and clearing restores every row",
+      "preconditions": [
+        "Several apps are listed"
+      ],
+      "steps": [
+        "Type part of one app label",
+        "Replace the query with part of a package name",
+        "Replace the query with digits from a UID",
+        "Clear the query with the search close icon"
+      ],
+      "expected": [
+        "Every row that matches the text in its label, package name, or UID stays, and rows that match none of the three hide",
+        "A row that matches the package name stays even when its label does not contain the text",
+        "A row that matches the UID stays even when the label and the package name do not contain the digits",
+        "Every app returns"
+      ],
+      "control_path": "C-U07-001 > C-U07-004 > C-U07-005 > C-U07-014",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:162"
+    },
+    {
+      "id": "TC-U07-08",
+      "title": "INTERNET apps, retained packages, and android appear, never the client",
+      "preconditions": [
+        "An installed app does not request the INTERNET permission",
+        "A package that keeps its data after uninstall requests the INTERNET permission",
+        "The device has the android system package"
+      ],
+      "steps": [
+        "Open the app list",
+        "Look for the installed app without the INTERNET permission",
+        "Look for the retained package, the android package, and the client package"
+      ],
+      "expected": [
+        "The list shows apps and the spinner is gone",
+        "The app without the INTERNET permission is absent",
+        "The retained package and the android package are present, and the Shadowsocks client package is absent"
+      ],
+      "control_path": "C-U07-001 > C-U07-012 > C-U07-014 > C-U07-017",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:86"
+    },
+    {
+      "id": "TC-U07-09",
+      "title": "Installing or removing a package reloads the list",
+      "preconditions": [
+        "The app list is shown"
+      ],
+      "steps": [
+        "Install an app that requests the INTERNET permission while the screen is open",
+        "Watch the screen while the reload runs",
+        "Check the list after the reload"
+      ],
+      "expected": [
+        "The package receiver clears the cached package list",
+        "The spinner shows again",
+        "The new app appears in the list, and the stored package list keeps every old name",
+        "A new app that reuses a marked UID shows selected even though its name is not stored"
+      ],
+      "control_path": "C-U07-001 > C-U07-012 > C-U07-011",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:78"
+    },
+    {
+      "id": "TC-U07-10",
+      "title": "Apply Settings to All Profiles copies the list and bypass flag only",
+      "preconditions": [
+        "Two profiles exist",
+        "App A is selected and Bypass is checked"
+      ],
+      "steps": [
+        "Open the overflow menu",
+        "Tap Apply Settings to All Profiles",
+        "Read the snackbar",
+        "Inspect both profile rows in the database"
+      ],
+      "expected": [
+        "The overflow menu shows only Apply Settings to All Profiles, because Export to Clipboard and Import from Clipboard are toolbar actions when there is room",
+        "The apply action writes both profiles",
+        "A snackbar says Apply Settings to All Profiles",
+        "Both profiles hold app A and bypass true, and neither Apps VPN mode flag changed"
+      ],
+      "control_path": "C-U07-001 > C-U07-003 > C-U07-019 > C-U07-022",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:278"
+    },
+    {
+      "id": "TC-U07-11",
+      "title": "Export writes the mode flag and the package list",
+      "preconditions": [
+        "App A is selected",
+        "Bypass is checked"
+      ],
+      "steps": [
+        "Tap Export to Clipboard",
+        "Read the clipboard",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The export action runs",
+        "The clipboard holds true, a newline, then com.example.a",
+        "A snackbar says Successfully export!"
+      ],
+      "control_path": "C-U07-001 > C-U07-020 > C-U07-023",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:293"
+    },
+    {
+      "id": "TC-U07-12",
+      "title": "A refused clipboard write reports failure",
+      "preconditions": [
+        "The platform rejects the clipboard write"
+      ],
+      "steps": [
+        "Tap Export to Clipboard",
+        "Read the clipboard",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The export action runs and the clipboard write raises an error",
+        "No text is written to the clipboard",
+        "A snackbar says Failed to export."
+      ],
+      "control_path": "C-U07-001 > C-U07-020 > C-U07-024",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:296"
+    },
+    {
+      "id": "TC-U07-13",
+      "title": "Import applies the mode flag and package list from the clipboard",
+      "preconditions": [
+        "The clipboard holds true, a newline, then com.example.a, com.example.b, and an uninstalled package"
+      ],
+      "steps": [
+        "Tap Import from Clipboard",
+        "Check the Mode group",
+        "Check the installed app rows",
+        "Inspect the stored package list",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The import action runs",
+        "Bypass becomes checked",
+        "The installed packages show selected switches",
+        "The stored list holds all three package names, and initProxiedUids skips the uninstalled one",
+        "A snackbar says Successfully import!"
+      ],
+      "control_path": "C-U07-001 > C-U07-021 > C-U07-025",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:299"
+    },
+    {
+      "id": "TC-U07-14",
+      "title": "Import of an empty clipboard changes nothing",
+      "preconditions": [
+        "The clipboard is empty"
+      ],
+      "steps": [
+        "Tap Import from Clipboard",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The import action runs and finds no text",
+        "No mode or selection changes and a snackbar says Failed to import."
+      ],
+      "control_path": "C-U07-001 > C-U07-021 > C-U07-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:301"
+    },
+    {
+      "id": "TC-U07-15",
+      "title": "Import without a newline clears the package list",
+      "preconditions": [
+        "The clipboard holds the single line true"
+      ],
+      "steps": [
+        "Tap Import from Clipboard",
+        "Check the Mode group",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The import action runs and finds no newline",
+        "Bypass becomes checked because true reads as true, and the stored package list becomes empty",
+        "A snackbar says Successfully import!"
+      ],
+      "control_path": "C-U07-001 > C-U07-021 > C-U07-025",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:304"
+    },
+    {
+      "id": "TC-U07-16",
+      "title": "A VPN start in On mode allows only the selected packages",
+      "preconditions": [
+        "A profile has Apps VPN mode on, bypass off, and packages A and B selected",
+        "The VPN consent is granted"
+      ],
+      "steps": [
+        "Connect the profile",
+        "Send traffic from app A",
+        "Send traffic from unselected app C"
+      ],
+      "expected": [
+        "The VPN builder adds A and B as allowed applications",
+        "The traffic from A enters the tunnel",
+        "The traffic from C does not enter the tunnel"
+      ],
+      "control_path": "C-U07-001 > C-U07-012 > C-U07-018",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:176"
+    },
+    {
+      "id": "TC-U07-17",
+      "title": "An empty allowed list leaves every app inside the VPN",
+      "preconditions": [
+        "A profile has Apps VPN mode on, bypass off, and no app selected",
+        "The VPN consent is granted"
+      ],
+      "steps": [
+        "Connect the profile",
+        "Inspect the allowed application list of the running VPN"
+      ],
+      "expected": [
+        "The VPN starts and the VPN builder adds no allowed application",
+        "Android applies the VPN to every app"
+      ],
+      "control_path": "C-U07-001 > C-U07-012",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:171"
+    },
+    {
+      "id": "TC-U07-18",
+      "title": "A VPN start in Bypass mode disallows selected and client packages",
+      "preconditions": [
+        "A profile has Apps VPN mode on and Bypass checked",
+        "The stored list holds package A and an uninstalled package Z",
+        "The VPN consent is granted"
+      ],
+      "steps": [
+        "Connect the profile",
+        "Inspect the disallowed application list of the running VPN",
+        "Read the log for the uninstalled package",
+        "Confirm the tunnel status"
+      ],
+      "expected": [
+        "The VPN starts",
+        "Package A and the client package are in the disallowed list",
+        "Package Z raises NameNotFoundException, is logged, and is skipped",
+        "The VPN runs with the remaining lists"
+      ],
+      "control_path": "C-U07-001 > C-U07-012 > C-U07-009",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:175"
+    },
+    {
+      "id": "TC-U07-19",
+      "title": "Per-app edits stay in the shared draft until the editor saves them",
+      "preconditions": [
+        "A profile has Apps VPN mode off",
+        "The stored package list is empty"
+      ],
+      "steps": [
+        "Open the profile in the editor",
+        "Open Apps VPN mode, select app A, and return with Navigate up",
+        "Press back in the editor and choose No in the unsaved-changes dialog",
+        "Reopen the profile and check the per-app settings",
+        "Open Apps VPN mode again, select app A, return, press back, and choose Yes",
+        "Reopen the profile and open Apps VPN mode"
+      ],
+      "expected": [
+        "The editor stores the profile values as temporary edit state and clears the dirty mark",
+        "The editor shows Apps VPN mode on and the per-app selection is held in temporary storage",
+        "The editor closes without writing the profile",
+        "The stored profile still has Apps VPN mode off and an empty package list",
+        "The save copies the temporary values into the profile",
+        "Apps VPN mode is on and app A is selected"
+      ],
+      "control_path": "C-U07-001 > C-U07-002",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:212"
+    },
+    {
+      "id": "TC-U07-20",
+      "title": "Profile JSON always carries proxy_apps, with bypass and android_list only when enabled",
+      "preconditions": [
+        "One profile has Apps VPN mode on, bypass true, and app A selected",
+        "One profile has Apps VPN mode off"
+      ],
+      "steps": [
+        "Take a profile with Apps VPN mode on, bypass true, and app A selected",
+        "Take a profile with Apps VPN mode off",
+        "Serialize both profiles with Profile.toJson, as the profile list export does (U02 Export to file...)",
+        "Read the proxy_apps object of each profile"
+      ],
+      "expected": [
+        "The serialization runs",
+        "Both profiles carry a proxy_apps object",
+        "The first profile has proxy_apps with enabled true, bypass true, and android_list holding com.example.a, and the second profile has proxy_apps with enabled false only"
+      ],
+      "control_path": "C-U07-001",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:321"
+    },
+    {
+      "id": "TC-U07-21",
+      "title": "Off from On closes the screen and keeps the stored bypass flag and list",
+      "preconditions": [
+        "The Apps VPN mode screen is open",
+        "On is checked and app A is selected"
+      ],
+      "steps": [
+        "Tap Off",
+        "Open Apps VPN mode for the same profile again"
+      ],
+      "expected": [
+        "Apps VPN mode becomes off and the screen closes to the profile editor",
+        "The screen opens with On checked again, and app A is still selected"
+      ],
+      "control_path": "C-U07-001 > C-U07-007",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:245"
+    },
+    {
+      "id": "TC-U07-22",
+      "title": "Import of a first line other than true selects On and replaces the selection",
+      "preconditions": [
+        "The Apps VPN mode screen is open with Bypass checked",
+        "App A is selected",
+        "The clipboard holds false, a newline, then com.example.b and com.example.c"
+      ],
+      "steps": [
+        "Tap Import from Clipboard",
+        "Check the Mode group",
+        "Check the app rows",
+        "Inspect the stored package list",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The import action runs",
+        "On becomes checked because false is not true",
+        "App A is no longer selected, and apps B and C are selected",
+        "The stored list holds com.example.b and com.example.c",
+        "A snackbar says Successfully import!"
+      ],
+      "control_path": "C-U07-001 > C-U07-021 > C-U07-025",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:307"
+    },
+    {
+      "id": "TC-U07-23",
+      "title": "Apply Settings reports failure when the profile list is unreadable",
+      "preconditions": [
+        "The Apps VPN mode screen is open",
+        "ProfileManager.getAllProfiles returns null"
+      ],
+      "steps": [
+        "Open the overflow menu",
+        "Tap Apply Settings to All Profiles",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The apply action reads no profile and writes nothing",
+        "A snackbar says Failed to export."
+      ],
+      "control_path": "C-U07-001 > C-U07-003 > C-U07-019 > C-U07-024",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:289"
+    },
+    {
+      "id": "TC-U07-24",
+      "title": "A failed profile update in Apply Settings throws after the earlier writes",
+      "preconditions": [
+        "The profile list holds two profiles",
+        "The second profile update matches no row"
+      ],
+      "steps": [
+        "Tap Apply Settings to All Profiles",
+        "Inspect both profiles and the screen"
+      ],
+      "expected": [
+        "The first profile stores the list and the bypass flag",
+        "The second update fails its row-count check and throws IllegalStateException",
+        "The exception is uncaught, no snackbar appears, and the earlier write stays"
+      ],
+      "control_path": "C-U07-001 > C-U07-003 > C-U07-019",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:97"
+    },
+    {
+      "id": "TC-U07-25",
+      "title": "The keyboard search action leaves the filtered list as it is",
+      "preconditions": [
+        "The app list is shown",
+        "A query hides some rows"
+      ],
+      "steps": [
+        "Press the keyboard search action",
+        "Observe the list"
+      ],
+      "expected": [
+        "The submit action is declined and no search runs",
+        "The list keeps the same filtered rows and the query stays"
+      ],
+      "control_path": "C-U07-001 > C-U07-004 > C-U07-012",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:264"
+    },
+    {
+      "id": "TC-U07-26",
+      "title": "Import reports failure when the platform returns no clipboard text",
+      "preconditions": [
+        "The Apps VPN mode screen is open",
+        "The app lacks window focus, so the platform returns no clipboard text"
+      ],
+      "steps": [
+        "Tap Import from Clipboard",
+        "Read the snackbar",
+        "Check the Mode group and the app rows"
+      ],
+      "expected": [
+        "The import finds no text",
+        "A snackbar says Failed to import.",
+        "The mode and the selection do not change"
+      ],
+      "control_path": "C-U07-001 > C-U07-021 > C-U07-026",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:300"
+    },
+    {
+      "id": "TC-U07-27",
+      "title": "A VPN start fails with the reboot message when establish returns null",
+      "preconditions": [
+        "A profile has Apps VPN mode on and the VPN consent is granted",
+        "The platform returns null from VpnService.Builder.establish"
+      ],
+      "steps": [
+        "Connect the profile",
+        "Read the service error"
+      ],
+      "expected": [
+        "NullConnectionException is thrown",
+        "The service reports Failed to start VPN service. You might need to reboot your device."
+      ],
+      "control_path": "C-U07-001",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:207"
+    },
+    {
+      "id": "TC-U07-28",
+      "title": "A cancelled app scan leaves the spinner in place",
+      "preconditions": [
+        "The app list is shown"
+      ],
+      "steps": [
+        "Trigger a reload with a package change",
+        "Cancel the load before the scan finishes, for example by recreating the activity",
+        "Observe the screen after the cancelled load and after the next load"
+      ],
+      "expected": [
+        "The spinner shows and the list stays hidden",
+        "The cancelled load leaves the spinner in place",
+        "The next load finishes and the list fades in"
+      ],
+      "control_path": "C-U07-001 > C-U07-011",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:218"
+    }
+  ],
+  "parity_summary": {
+    "implemented": 21,
+    "partial": 2,
+    "missing": 0,
+    "android_only": 5
+  },
+  "notes": "All listed files exist. The screen is declared at mobile/src/main/AndroidManifest.xml:48. The core manifest declares the VPN service that applies the lists (core/src/main/AndroidManifest.xml:41). The entry control is the profile editor's Apps VPN mode SwitchPreference (mobile/src/main/res/xml/pref_profile.xml:54). That control belongs to U03, so it is not repeated here. It is enabled only in VPN service mode (ProfileConfigFragment.kt:139) and starts AppManager on any change (ProfileConfigFragment.kt:140). The three Mode choices are radio buttons in one exclusive RadioGroup, recorded as checkbox controls because the schema has no radio type. The app:tooltipText attribute on Bypass (layout_apps.xml:79) is inert: AppCompatRadioButton never reads it, so no tooltip control or rule is recorded. Opening the screen forces Apps VPN mode on when the stored flag was off, but the editor never delivers that state: the entry listener returns newValue, so AndroidX rejects turning the switch off and the flag is already true when the screen starts. The dirty mark comes from makeDirt (ProfileConfigFragment.kt:142). The dirty flag is one shared DataStore boolean, a save does not clear it, and opening a profile in the editor clears it through Profile.serialize. Off leaves the bypass flag and the stored list untouched, which is why a later open can show Bypass checked and stored rows selected. Apply Settings to All Profiles writes individual and bypass into every profile row through ProfileManager.updateProfile, with no editor save. Each update is check(update == 1), so a failed row throws after the earlier rows were written and no snackbar appears. Import also moves the mode through bypassGroup.check. Selection is keyed by UID, so packages that share a UID toggle together, and a row tap refreshes switches without re-sorting the visible list. The reload after a package change re-reads the app list but does not re-run initProxiedUids, so a removed package stays in the stored list and a new package that reuses a marked UID shows selected. The scan uses GET_PERMISSIONS with MATCH_UNINSTALLED_PACKAGES, so packages retained after uninstall are listed. The android package has no HarmonyOS counterpart. An empty list in On mode adds no allowed application, so every app uses the VPN; in Bypass mode only the client package is disallowed. HarmonyOS parity: Profile.ets and ProfileStore.ets carry the three per-app fields. ProfilesFile.ets reads and writes proxy_apps, with android_list as a JSON array. pages/AppPicker.ets hosts the mode group, the search, the rows, the manual add field, and the loading state. model/PerApp.ets holds the draft and the rules. model/AppCatalog.ets resolves a stored bundle name. SsVpnExtensionAbility.ets sets trustedApplications in On mode and blockedApplications in Bypass mode. It keeps the client bundle out of the trusted list and puts it first in the blocked list. It skips a stored name that is not installed and logs the name. The host specs cover the computed lists and the page rules. Device E2E has not run. Enumeration, retained packages, the android package, the INTERNET filter, UIDs, icons, resolved labels, and package-change events remain platform limits. TC-U07-04 and TC-U07-07 are partial for the icon, label, and UID parts. TC-U07-08, TC-U07-09, TC-U07-24, TC-U07-26, and TC-U07-27 are android-only."
+}

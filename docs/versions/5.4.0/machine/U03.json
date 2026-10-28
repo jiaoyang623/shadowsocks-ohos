@@ -1,0 +1,3029 @@
+{
+  "unit": "U03",
+  "title": "Profile editor and UDP fallback",
+  "sources_read": [
+    "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt",
+    "mobile/src/main/res/layout/layout_profile_config.xml",
+    "mobile/src/main/res/layout/preference_dialog_password.xml",
+    "mobile/src/main/res/layout/layout_udp_fallback.xml",
+    "mobile/src/main/res/xml/pref_profile.xml",
+    "mobile/src/main/res/menu/profile_config_menu.xml",
+    "mobile/src/main/res/values/arrays.xml",
+    "mobile/src/main/AndroidManifest.xml",
+    "core/src/main/res/values/arrays.xml",
+    "core/src/main/res/values/strings.xml",
+    "core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt",
+    "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt",
+    "core/src/main/java/com/github/shadowsocks/preference/RoomPreferenceDataStore.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt",
+    "core/src/main/java/com/github/shadowsocks/Core.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/PluginConfiguration.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/Plugin.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/NoPlugin.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/NativePlugin.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/ResolvedPlugin.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/PluginOptions.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/PluginContract.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/fragment/AlertDialogFragment.kt",
+    "plugin/src/main/res/values/strings.xml",
+    "plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt",
+    "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/AppManager.kt",
+    "mobile/src/main/res/layout/icon_list_item_2.xml",
+    "mobile/src/main/res/layout/layout_apps.xml",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfilesFile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Routes.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+    "/tmp/pref121/androidx/preference/PreferenceDialogFragmentCompat.java",
+    "/tmp/pref121/androidx/preference/EditTextPreferenceDialogFragmentCompat.java",
+    "/tmp/pref121/androidx/preference/PreferenceFragmentCompat.java",
+    "/tmp/pref121/aar/res/layout/preference_recyclerview.xml"
+  ],
+  "controls": [
+    {
+      "id": "C-U03-001",
+      "type": "screen",
+      "label": "Profile config",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the toolbar and the preference list for one profile. The activity closes at once when the intent profile id is neither -1 nor the stored editing id.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:111"
+    },
+    {
+      "id": "C-U03-002",
+      "type": "button",
+      "label": "Close (X icon)",
+      "android_id": "",
+      "parent": "C-U03-055",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Toolbar home-as-up with the ic_navigation_close icon. Calls onSupportNavigateUp, which finishes the editor directly and does not run the unsaved-changes guard.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:61"
+    },
+    {
+      "id": "C-U03-003",
+      "type": "list",
+      "label": "Settings list",
+      "android_id": "recycler_view",
+      "parent": "C-U03-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Scrollable preference list that holds the profile fields in three categories. It is the RecyclerView that PreferenceFragmentCompat inflates inside the android:id/content FragmentContainerView; its own id is androidx.preference.R.id.recycler_view.",
+      "navigates_to": "",
+      "source": "/tmp/pref121/aar/res/layout/preference_recyclerview.xml:20"
+    },
+    {
+      "id": "C-U03-004",
+      "type": "menu_item",
+      "label": "Remove",
+      "android_id": "action_delete",
+      "parent": "C-U03-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the delete confirmation dialog. Keyboard shortcut d.",
+      "navigates_to": "C-U03-026",
+      "source": "mobile/src/main/res/menu/profile_config_menu.xml:4"
+    },
+    {
+      "id": "C-U03-005",
+      "type": "menu_item",
+      "label": "Apply",
+      "android_id": "action_apply",
+      "parent": "C-U03-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Saves the draft into the profile row and closes the editor. Keyboard shortcut s.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/profile_config_menu.xml:9"
+    },
+    {
+      "id": "C-U03-006",
+      "type": "preference",
+      "label": "Profile Name",
+      "android_id": "profileName",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens the text dialog for the profile name. The summary shows the stored name.",
+      "navigates_to": "C-U03-035",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:5"
+    },
+    {
+      "id": "C-U03-007",
+      "type": "text",
+      "label": "Server Settings",
+      "android_id": "",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Category header for the transport fields.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:11"
+    },
+    {
+      "id": "C-U03-008",
+      "type": "preference",
+      "label": "Server",
+      "android_id": "proxy",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens the text dialog for the server host. The summary shows the stored host.",
+      "navigates_to": "C-U03-035",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:14"
+    },
+    {
+      "id": "C-U03-009",
+      "type": "preference",
+      "label": "Remote Port",
+      "android_id": "remotePortNum",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens a numeric text dialog capped at five digits. The summary shows the stored port.",
+      "navigates_to": "C-U03-035",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:19"
+    },
+    {
+      "id": "C-U03-010",
+      "type": "preference",
+      "label": "Password",
+      "android_id": "sitekey",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens the custom password dialog. The summary shows one bullet per password character.",
+      "navigates_to": "C-U03-029",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:24"
+    },
+    {
+      "id": "C-U03-011",
+      "type": "preference",
+      "label": "Encrypt Method",
+      "android_id": "encMethod",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens a single-choice menu with 22 method labels. The summary shows the selected label.",
+      "navigates_to": "C-U03-039",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:29"
+    },
+    {
+      "id": "C-U03-012",
+      "type": "text",
+      "label": "Feature Settings",
+      "android_id": "",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Category header for the routing and feature fields.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:39"
+    },
+    {
+      "id": "C-U03-013",
+      "type": "preference",
+      "label": "Route",
+      "android_id": "route",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens a single-choice menu with seven routes. The summary shows the selected route label.",
+      "navigates_to": "C-U03-040",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:42"
+    },
+    {
+      "id": "C-U03-014",
+      "type": "switch",
+      "label": "IPv6 Route",
+      "android_id": "isIpv6",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the service mode is VPN",
+      "action": "Toggles the profile ipv6 flag. The summary reads Redirect IPv6 traffic to remote.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:49"
+    },
+    {
+      "id": "C-U03-015",
+      "type": "switch",
+      "label": "Apps VPN mode",
+      "android_id": "isProxyApps",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the service mode is VPN",
+      "action": "Starts the Apps VPN mode screen on every change and marks the draft dirty when it turns on. The summary reads Configure VPN mode for selected apps.",
+      "navigates_to": "U07",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:54"
+    },
+    {
+      "id": "C-U03-016",
+      "type": "switch",
+      "label": "Metered Hint",
+      "android_id": "metered",
+      "parent": "C-U03-003",
+      "visible_when": "the system API level is 28 or higher",
+      "enabled_when": "the service mode is VPN",
+      "action": "Toggles the profile metered flag. The summary reads Hint system to treat VPN as metered.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:59"
+    },
+    {
+      "id": "C-U03-017",
+      "type": "preference",
+      "label": "Remote DNS",
+      "android_id": "remoteDns",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the text dialog for the remote resolver. The summary shows the stored value.",
+      "navigates_to": "C-U03-035",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:64"
+    },
+    {
+      "id": "C-U03-018",
+      "type": "text",
+      "label": "Plugin",
+      "android_id": "",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Category header for the plugin and UDP fallback fields.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:72"
+    },
+    {
+      "id": "C-U03-019",
+      "type": "preference",
+      "label": "Plugin",
+      "android_id": "plugin",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens the plugin chooser. The summary shows the selected plugin label or the unknown-plugin text.",
+      "navigates_to": "U08",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:75"
+    },
+    {
+      "id": "C-U03-020",
+      "type": "preference",
+      "label": "Configure…",
+      "android_id": "plugin.configure",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the selected plugin entry exists and is not Disabled, and the profile subscription status is not Active",
+      "action": "Opens the plugin's own configuration activity, or the built-in options editor when the plugin has none. The summary shows the options text.",
+      "navigates_to": "U08",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:80"
+    },
+    {
+      "id": "C-U03-021",
+      "type": "preference",
+      "label": "UDP Fallback",
+      "android_id": "udpFallback",
+      "parent": "C-U03-003",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens the UDP Fallback screen. The summary shows the fallback profile's formatted name, which is the name or host:port when the name is empty, or Disabled.",
+      "navigates_to": "C-U03-050",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:86"
+    },
+    {
+      "id": "C-U03-022",
+      "type": "dialog",
+      "label": "Changes not saved. Do you want to save?",
+      "android_id": "",
+      "parent": "C-U03-001",
+      "visible_when": "the system back is pressed while the draft is dirty",
+      "enabled_when": "always",
+      "action": "Asks whether to save the draft before leaving.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:41"
+    },
+    {
+      "id": "C-U03-023",
+      "type": "button",
+      "label": "Yes",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U03-022",
+      "visible_when": "the unsaved-changes dialog is open",
+      "enabled_when": "always",
+      "action": "Reports BUTTON_POSITIVE, which saves the draft and closes the editor.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:42"
+    },
+    {
+      "id": "C-U03-024",
+      "type": "button",
+      "label": "No",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U03-022",
+      "visible_when": "the unsaved-changes dialog is open",
+      "enabled_when": "always",
+      "action": "Reports BUTTON_NEGATIVE, which closes the editor and keeps the stored profile unchanged.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:43"
+    },
+    {
+      "id": "C-U03-025",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android.R.id.button3",
+      "parent": "C-U03-022",
+      "visible_when": "the unsaved-changes dialog is open",
+      "enabled_when": "always",
+      "action": "Dismisses the dialog with no listener, so the editor stays open.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:44"
+    },
+    {
+      "id": "C-U03-026",
+      "type": "dialog",
+      "label": "Are you sure you want to remove this profile?",
+      "android_id": "",
+      "parent": "C-U03-001",
+      "visible_when": "the Remove menu item is tapped",
+      "enabled_when": "always",
+      "action": "Asks whether to delete the edited profile.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:85"
+    },
+    {
+      "id": "C-U03-027",
+      "type": "button",
+      "label": "Yes",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U03-026",
+      "visible_when": "the delete dialog is open",
+      "enabled_when": "always",
+      "action": "Deletes the profile row and closes the editor.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:86"
+    },
+    {
+      "id": "C-U03-028",
+      "type": "button",
+      "label": "No",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U03-026",
+      "visible_when": "the delete dialog is open",
+      "enabled_when": "always",
+      "action": "Dismisses the dialog with no listener, so nothing is deleted.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:90"
+    },
+    {
+      "id": "C-U03-029",
+      "type": "dialog",
+      "label": "Password",
+      "android_id": "",
+      "parent": "C-U03-001",
+      "visible_when": "the Password row is tapped",
+      "enabled_when": "always",
+      "action": "Edits the password in a masked, monospace field with a reveal toggle.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:25"
+    },
+    {
+      "id": "C-U03-030",
+      "type": "text",
+      "label": "Dialog message",
+      "android_id": "android:id/message",
+      "parent": "C-U03-029",
+      "visible_when": "never; the framework sets android:id/message to GONE because the preference sets no dialog message",
+      "enabled_when": "always",
+      "action": "Message line above the field. It is hidden, not empty: the layout contains the view and PreferenceDialogFragmentCompat hides it when no dialog message is set.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/preference_dialog_password.xml:15"
+    },
+    {
+      "id": "C-U03-031",
+      "type": "input",
+      "label": "Password",
+      "android_id": "android:id/edit",
+      "parent": "C-U03-029",
+      "visible_when": "the password dialog is open",
+      "enabled_when": "always",
+      "action": "Single-line password field in monospace, prefilled with the stored password.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/preference_dialog_password.xml:35"
+    },
+    {
+      "id": "C-U03-032",
+      "type": "button",
+      "label": "Show password",
+      "android_id": "",
+      "parent": "C-U03-029",
+      "visible_when": "the password dialog is open",
+      "enabled_when": "always",
+      "action": "TextInputLayout end icon that reveals or masks the typed password.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/preference_dialog_password.xml:34"
+    },
+    {
+      "id": "C-U03-033",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U03-029",
+      "visible_when": "the password dialog is open",
+      "enabled_when": "always",
+      "action": "Writes the typed password into the draft store.",
+      "navigates_to": "",
+      "source": "/tmp/pref121/androidx/preference/EditTextPreferenceDialogFragmentCompat.java:145"
+    },
+    {
+      "id": "C-U03-034",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U03-029",
+      "visible_when": "the password dialog is open",
+      "enabled_when": "always",
+      "action": "Closes the dialog and keeps the stored password.",
+      "navigates_to": "",
+      "source": "/tmp/pref121/androidx/preference/PreferenceDialogFragmentCompat.java:148"
+    },
+    {
+      "id": "C-U03-035",
+      "type": "dialog",
+      "label": "Edit text",
+      "android_id": "",
+      "parent": "C-U03-001",
+      "visible_when": "a text preference row is tapped: Profile Name, Server, Remote Port, or Remote DNS",
+      "enabled_when": "always",
+      "action": "Standard single-field edit dialog titled with the preference name. Remote Port uses the numeric five-digit filter. Configure… does not use this dialog.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:134"
+    },
+    {
+      "id": "C-U03-036",
+      "type": "input",
+      "label": "Text value",
+      "android_id": "android:id/edit",
+      "parent": "C-U03-035",
+      "visible_when": "the edit dialog is open",
+      "enabled_when": "always",
+      "action": "Holds the current value, prefilled with the cursor at the end. Remote Port accepts digits only and stops at five characters.",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:39"
+    },
+    {
+      "id": "C-U03-037",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U03-035",
+      "visible_when": "the edit dialog is open",
+      "enabled_when": "always",
+      "action": "Writes the typed text into the draft store.",
+      "navigates_to": "",
+      "source": "/tmp/pref121/androidx/preference/EditTextPreferenceDialogFragmentCompat.java:145"
+    },
+    {
+      "id": "C-U03-038",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U03-035",
+      "visible_when": "the edit dialog is open",
+      "enabled_when": "always",
+      "action": "Closes the dialog and keeps the stored value.",
+      "navigates_to": "",
+      "source": "/tmp/pref121/androidx/preference/PreferenceDialogFragmentCompat.java:148"
+    },
+    {
+      "id": "C-U03-039",
+      "type": "dialog",
+      "label": "Encrypt Method",
+      "android_id": "",
+      "parent": "C-U03-001",
+      "visible_when": "the Encrypt Method row is tapped",
+      "enabled_when": "always",
+      "action": "Single-choice menu of 22 entries from NONE to CAMELLIA-256-CFB; the chosen value is stored.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:29"
+    },
+    {
+      "id": "C-U03-040",
+      "type": "dialog",
+      "label": "Route",
+      "android_id": "",
+      "parent": "C-U03-001",
+      "visible_when": "the Route row is tapped",
+      "enabled_when": "always",
+      "action": "Single-choice menu: All, Bypass LAN, Bypass mainland China, Bypass LAN & mainland China, GFW List, China List, Custom rules.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:42"
+    },
+    {
+      "id": "C-U03-050",
+      "type": "screen",
+      "label": "UDP Fallback",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "a profile is being edited",
+      "enabled_when": "always",
+      "action": "Lists the fallback choices. The activity closes at once when the private store holds no editing id.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:84"
+    },
+    {
+      "id": "C-U03-051",
+      "type": "button",
+      "label": "Close (X icon)",
+      "android_id": "",
+      "parent": "C-U03-057",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Finishes the chooser and returns to the editor.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:94"
+    },
+    {
+      "id": "C-U03-052",
+      "type": "list",
+      "label": "Fallback profiles",
+      "android_id": "list",
+      "parent": "C-U03-050",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Single-choice list. It scrolls to the current fallback entry when one is set.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_udp_fallback.xml:8"
+    },
+    {
+      "id": "C-U03-053",
+      "type": "row",
+      "label": "Disabled",
+      "android_id": "android.R.id.text1",
+      "parent": "C-U03-052",
+      "visible_when": "always; it is the first row",
+      "enabled_when": "always",
+      "action": "Clears the fallback: stores null, marks the draft dirty, and finishes the chooser. It is checked when no fallback is set, and the tap still writes null and marks the draft dirty when it is already checked.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59"
+    },
+    {
+      "id": "C-U03-054",
+      "type": "row",
+      "label": "Profile name or address",
+      "android_id": "android.R.id.text1",
+      "parent": "C-U03-052",
+      "visible_when": "the profile subscription status is not Obsolete, it is not the edited profile, and its plugin selection is empty",
+      "enabled_when": "always",
+      "action": "Shows the profile's formatted name, which is its name or host:port when the name is empty. Stores this profile id as the fallback, marks the draft dirty, and finishes the chooser. It is checked when it is the current fallback.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:67"
+    },
+    {
+      "id": "C-U03-055",
+      "type": "row",
+      "label": "Toolbar",
+      "android_id": "toolbar",
+      "parent": "C-U03-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "MaterialToolbar included from toolbar_light_dark.xml. Shows the editor title and the close navigation icon, and hosts the Remove and Apply menu items.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_profile_config.xml:6"
+    },
+    {
+      "id": "C-U03-056",
+      "type": "text",
+      "label": "Profile config",
+      "android_id": "",
+      "parent": "C-U03-055",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the activity label Profile config as the toolbar title.",
+      "navigates_to": "",
+      "source": "mobile/src/main/AndroidManifest.xml:44"
+    },
+    {
+      "id": "C-U03-057",
+      "type": "row",
+      "label": "Toolbar",
+      "android_id": "toolbar",
+      "parent": "C-U03-050",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "MaterialToolbar included from toolbar_light_dark.xml. Shows the chooser title and the close navigation icon.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_udp_fallback.xml:7"
+    },
+    {
+      "id": "C-U03-058",
+      "type": "text",
+      "label": "UDP Fallback",
+      "android_id": "",
+      "parent": "C-U03-057",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the title UDP Fallback that the activity sets on the toolbar.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:92"
+    },
+    {
+      "id": "C-U03-059",
+      "type": "image",
+      "label": "<profile name icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-006",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_social_emoji_symbols drawable that the Profile Name row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:7"
+    },
+    {
+      "id": "C-U03-060",
+      "type": "image",
+      "label": "<server icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-008",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_hardware_router drawable that the Server row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:16"
+    },
+    {
+      "id": "C-U03-061",
+      "type": "image",
+      "label": "<remote port icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-009",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_maps_directions_boat drawable that the Remote Port row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:21"
+    },
+    {
+      "id": "C-U03-062",
+      "type": "image",
+      "label": "<password icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-010",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_settings_password drawable that the Password row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:27"
+    },
+    {
+      "id": "C-U03-063",
+      "type": "image",
+      "label": "<encrypt method icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-011",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_notification_enhanced_encryption drawable that the Encrypt Method row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:31"
+    },
+    {
+      "id": "C-U03-064",
+      "type": "image",
+      "label": "<route icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-013",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_maps_directions drawable that the Route row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:44"
+    },
+    {
+      "id": "C-U03-065",
+      "type": "image",
+      "label": "<IPv6 route icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-014",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_image_looks_6 drawable that the IPv6 Route row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:51"
+    },
+    {
+      "id": "C-U03-066",
+      "type": "image",
+      "label": "<Apps VPN mode icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-015",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_navigation_apps drawable that the Apps VPN mode row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:56"
+    },
+    {
+      "id": "C-U03-067",
+      "type": "image",
+      "label": "<metered hint icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-016",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_device_data_usage drawable that the Metered Hint row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:61"
+    },
+    {
+      "id": "C-U03-068",
+      "type": "image",
+      "label": "<remote DNS icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-017",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_action_dns drawable that the Remote DNS row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:66"
+    },
+    {
+      "id": "C-U03-069",
+      "type": "image",
+      "label": "<configure icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-020",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_action_settings drawable that the Configure… row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:82"
+    },
+    {
+      "id": "C-U03-070",
+      "type": "image",
+      "label": "<UDP fallback icon>",
+      "android_id": "android.R.id.icon",
+      "parent": "C-U03-021",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static ic_maps_360 drawable that the UDP Fallback row declares.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:88"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UC-01",
+      "statement": "The profile list serializes the profile into the private draft store before it starts the editor.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:330",
+      "examples": [
+        {
+          "given": "a profile row with name, host, and plugin values",
+          "when": "the user taps its edit control",
+          "then": "Profile.serialize writes every field into DataStore.privateStore and sets editingId",
+          "polarity": "positive"
+        },
+        {
+          "given": "an Active subscription profile row",
+          "when": "the user taps its subscription control",
+          "then": "ProfilesFragment reloads the row and startConfig calls Profile.serialize before the editor starts",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-02",
+      "statement": "The editor closes at once when the intent profile id is neither -1 nor the stored editing id.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:111",
+      "examples": [
+        {
+          "given": "the private store holds editing id 3",
+          "when": "the activity receives profile id 5",
+          "then": "the activity finishes before any preference is shown",
+          "polarity": "negative"
+        },
+        {
+          "given": "the private store holds editing id 3",
+          "when": "the activity receives profile id 3",
+          "then": "the form shows",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-03",
+      "statement": "Every draft field except Apps VPN mode marks the draft dirty when its value changes.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:250",
+      "examples": [
+        {
+          "given": "a freshly opened editor",
+          "when": "the user confirms a new Route value",
+          "then": "DataStore.dirty becomes true and the back handler enables itself",
+          "polarity": "positive"
+        },
+        {
+          "given": "a freshly opened editor",
+          "when": "the per-app list changes the Apps VPN mode key",
+          "then": "the store listener does not mark the draft dirty",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-04",
+      "statement": "The draft stays in the private store until Apply copies it into the profile row.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:212",
+      "examples": [
+        {
+          "given": "the user changed the server name",
+          "when": "the editor is still open",
+          "then": "the database row keeps the old server name",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user changed the server name",
+          "when": "the user presses back and taps No",
+          "then": "the editor finishes without saveAndExit, so the profile row keeps the old server name",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-05",
+      "statement": "Apply deserializes the draft into the profile row, refreshes the list row, and closes the editor.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:126",
+      "examples": [
+        {
+          "given": "the draft holds a new host",
+          "when": "the user taps Apply",
+          "then": "ProfileManager.updateProfile writes the row, deepRefreshId repaints it, and the activity finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "ProfilesFragment.instance is null",
+          "when": "the user taps Apply",
+          "then": "ProfileManager.updateProfile writes the row and the activity finishes, but deepRefreshId does not run",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-06",
+      "statement": "Saving copies every draft field into the profile row, including route, IPv6, metered, per-app list, plugin, and fallback.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:354",
+      "examples": [
+        {
+          "given": "the draft has IPv6 on and fallback id 7",
+          "when": "the user taps Apply",
+          "then": "the stored profile has ipv6 true and udpFallback 7",
+          "polarity": "positive"
+        },
+        {
+          "given": "the private store holds no draft key",
+          "when": "deserialize runs for a profile with id 0",
+          "then": "the fields take empty values and remotePort becomes 8388, so the code defaults for host, password, and method are not used",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-07",
+      "statement": "Saving trims spaces from the host and replaces a port outside 1 through 65535 with 8388.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:361",
+      "examples": [
+        {
+          "given": "the draft host is '  example.org  ' and the port is 0",
+          "when": "the user taps Apply",
+          "then": "the stored host is example.org and the stored port is 8388",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the draft port is 65535",
+          "when": "the user taps Apply",
+          "then": "the stored port is 65535",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-08",
+      "statement": "The Password row summary shows one bullet for each stored password character.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:78",
+      "examples": [
+        {
+          "given": "the stored password is abcdef",
+          "when": "the editor list is drawn",
+          "then": "the Password summary reads six bullets",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored password is empty",
+          "when": "the editor list is drawn",
+          "then": "the Password summary is empty and shows no bullet",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-09",
+      "statement": "The Remote Port dialog starts with the stored port and the cursor at the end, accepts digits only, and stops at five characters.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:37",
+      "examples": [
+        {
+          "given": "the Remote Port dialog is open with 8388 prefilled and the cursor at the end",
+          "when": "the user types 8",
+          "then": "the field holds 83888 and the cursor stays at the end",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Remote Port dialog is open and the field is empty",
+          "when": "the user types 123456",
+          "then": "the field holds 12345",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the Remote Port dialog is open with 8388 prefilled and the cursor at the end",
+          "when": "the user types 12ab34",
+          "then": "the field holds 83881, because the letters are dropped and the length filter stops the input at five characters",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-10",
+      "statement": "The Encrypt Method menu lists 22 entries and stores the lowercase value of the chosen entry.",
+      "kind": "interaction",
+      "source": "core/src/main/res/values/arrays.xml:3",
+      "examples": [
+        {
+          "given": "the Encrypt Method dialog is open",
+          "when": "the user picks AES-256-GCM",
+          "then": "the draft method becomes aes-256-gcm",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Encrypt Method dialog is open",
+          "when": "the user picks CAMELLIA-256-CFB, the 22nd entry",
+          "then": "the draft method becomes camellia-256-cfb",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-11",
+      "statement": "The Route menu lists seven routes and stores the route token, including custom-rules.",
+      "kind": "interaction",
+      "source": "mobile/src/main/res/values/arrays.xml:3",
+      "examples": [
+        {
+          "given": "the Route dialog is open",
+          "when": "the user picks GFW List",
+          "then": "the draft route becomes gfwlist",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Route dialog is open",
+          "when": "the user picks Custom rules",
+          "then": "the draft route becomes custom-rules",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-12",
+      "statement": "IPv6 Route is enabled only when the service mode is VPN.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:137",
+      "examples": [
+        {
+          "given": "the service mode is Proxy only",
+          "when": "the editor opens",
+          "then": "the IPv6 Route switch is disabled",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service mode is VPN",
+          "when": "the editor opens",
+          "then": "the IPv6 Route switch is enabled",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-13",
+      "statement": "Apps VPN mode is enabled only when the service mode is VPN.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:139",
+      "examples": [
+        {
+          "given": "the service mode is VPN",
+          "when": "the editor opens",
+          "then": "the Apps VPN mode switch is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service mode is Transproxy",
+          "when": "the editor opens",
+          "then": "the Apps VPN mode switch is disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-14",
+      "statement": "Changing Apps VPN mode opens the app list screen on every change and marks the draft dirty only when it turns on. When it turns off, AppManager.onCreate sets proxyApps back to true and marks the draft dirty.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:140",
+      "examples": [
+        {
+          "given": "Apps VPN mode is off",
+          "when": "the user turns it on",
+          "then": "the AppManager screen opens and the draft becomes dirty",
+          "polarity": "positive"
+        },
+        {
+          "given": "Apps VPN mode is on",
+          "when": "the user turns it off",
+          "then": "the AppManager screen opens; this listener does not mark the draft dirty, but AppManager.onCreate sets proxyApps true and marks it dirty",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-15",
+      "statement": "Metered Hint exists only on API 28 and later, and is enabled only in VPN mode.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:145",
+      "examples": [
+        {
+          "given": "the device runs API 28 and the service mode is VPN",
+          "when": "the editor opens",
+          "then": "the Metered Hint row is visible and enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device runs API 27",
+          "when": "the editor opens",
+          "then": "the Metered Hint row is removed from the list",
+          "polarity": "negative"
+        },
+        {
+          "given": "the device runs API 28 and the service mode is Proxy only",
+          "when": "the editor opens",
+          "then": "the row is visible but disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-16",
+      "statement": "A profile whose subscription status is Active disables name, host, port, password, method, plugin, plugin options, and fallback.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:158",
+      "examples": [
+        {
+          "given": "the profile comes from an active subscription",
+          "when": "the editor opens",
+          "then": "the eight transport and plugin rows are disabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the profile comes from an active subscription, the service mode is VPN, and the device runs API 28 or higher",
+          "when": "the editor opens",
+          "then": "Route, Remote DNS, IPv6 Route, Apps VPN mode, and Metered Hint stay enabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-17",
+      "statement": "Choosing a plugin stores its id and options, updates the summary with the plugin's display label, enables Configure…, and marks the draft dirty.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:173",
+      "examples": [
+        {
+          "given": "the plugin is Disabled",
+          "when": "the user picks obfs-local",
+          "then": "the summary shows the plugin package's display label, Configure… becomes enabled, and the draft is dirty",
+          "polarity": "positive"
+        },
+        {
+          "given": "the plugin is obfs-local",
+          "when": "the user picks Disabled",
+          "then": "the stored plugin selection has the empty id, the Plugin summary reads Disabled, Configure… becomes disabled, and the draft is dirty",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-18",
+      "statement": "Configure… is enabled only when the stored plugin id resolves to an entry other than Disabled.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201",
+      "examples": [
+        {
+          "given": "the stored plugin id resolves to the installed obfs-local plugin",
+          "when": "the editor opens",
+          "then": "Configure… is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the plugin id is empty, which is Disabled",
+          "when": "the editor opens",
+          "then": "Configure… is disabled",
+          "polarity": "negative"
+        },
+        {
+          "given": "the plugin id is unknown to the device",
+          "when": "the editor opens",
+          "then": "Configure… is disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-19",
+      "statement": "Choosing a plugin that is not trusted shows the untrusted-plugin warning snackbar.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:185",
+      "examples": [
+        {
+          "given": "an installed plugin is signed by a key in the trusted list",
+          "when": "the user selects it",
+          "then": "the plugin row shows the selected label and no warning snackbar shows",
+          "polarity": "positive"
+        },
+        {
+          "given": "an installed plugin is signed by an unknown key",
+          "when": "the user selects it",
+          "then": "the warning snackbar shows for the long duration",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-20",
+      "statement": "Configure… opens the plugin configuration activity when one resolves, and the built-in options editor otherwise.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:260",
+      "examples": [
+        {
+          "given": "the selected plugin declares an ACTION_CONFIGURE activity",
+          "when": "the user taps Configure…",
+          "then": "that activity opens with the current options",
+          "polarity": "positive"
+        },
+        {
+          "given": "the selected plugin declares no configuration activity",
+          "when": "the user taps Configure…",
+          "then": "the built-in options dialog opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-21",
+      "statement": "Options text that contains a control character is rejected with a snackbar and the old options stay.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:238",
+      "examples": [
+        {
+          "given": "the stored options are obfs=http",
+          "when": "the user confirms obfs=tls, which has no control character",
+          "then": "the options are stored as obfs=tls, the draft becomes dirty, and the dialog accepts the change",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored options are obfs=http",
+          "when": "the user confirms options that contain a control character",
+          "then": "the snackbar shows No control characters allowed and the stored options stay obfs=http",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-22",
+      "statement": "The options dialog shows the ? button only when the plugin resolves a help activity.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:50",
+      "examples": [
+        {
+          "given": "the plugin handles ACTION_HELP",
+          "when": "the options dialog opens",
+          "then": "the neutral ? button is present",
+          "polarity": "positive"
+        },
+        {
+          "given": "the plugin handles no help action",
+          "when": "the options dialog opens",
+          "then": "the dialog has only OK and Cancel",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-23",
+      "statement": "The ? button opens plugin help and shows the returned message in a dialog titled ?.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:76",
+      "examples": [
+        {
+          "given": "the plugin help activity returns RESULT_OK with a message",
+          "when": "the user taps ?",
+          "then": "a dialog titled ? shows that message",
+          "polarity": "positive"
+        },
+        {
+          "given": "the plugin help activity closes with RESULT_CANCELED",
+          "when": "the result arrives",
+          "then": "the result is not RESULT_OK, so no dialog appears",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-24",
+      "statement": "The Plugin row summary shows the selected plugin label, or Unknown plugin and the id when the id is unknown.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:33",
+      "examples": [
+        {
+          "given": "the stored plugin id is obfs-local and its plugin package is installed",
+          "when": "the editor opens",
+          "then": "the Plugin row summary shows the plugin's own label",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored plugin id is not installed",
+          "when": "the editor opens",
+          "then": "the summary reads Unknown plugin <id>",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-25",
+      "statement": "The plugin list is rebuilt when a package is installed or removed.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:224",
+      "examples": [
+        {
+          "given": "the editor is open with the plugin list loaded and obfs-local not installed",
+          "when": "the user installs the obfs-local plugin package",
+          "then": "initPlugins runs again and the Plugin dialog lists obfs-local",
+          "polarity": "positive"
+        },
+        {
+          "given": "the editor is open with a plugin selected",
+          "when": "the plugin package is uninstalled",
+          "then": "initPlugins runs again and the summary changes to Unknown plugin",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-26",
+      "statement": "The UDP Fallback row summary shows the fallback profile's formatted name, which is the name or host:port when the name is empty, or Disabled when none is set.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:233",
+      "examples": [
+        {
+          "given": "the profile has fallback id 7 and profile 7 is named Backup",
+          "when": "the editor resumes",
+          "then": "the summary reads Backup",
+          "polarity": "positive"
+        },
+        {
+          "given": "the profile has fallback id 7, profile 7 has no name, and its host is backup.example with port 8388",
+          "when": "the editor resumes",
+          "then": "the summary reads backup.example:8388",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the profile has no fallback id",
+          "when": "the editor resumes",
+          "then": "the summary reads Disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-27",
+      "statement": "The fallback chooser lists every profile whose subscription status is not Obsolete, except the profile being edited and every profile whose plugin selection is not empty.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:67",
+      "examples": [
+        {
+          "given": "profile 7 is Active, is not the profile being edited, and has no plugin",
+          "when": "the chooser opens",
+          "then": "profile 7 has a row",
+          "polarity": "positive"
+        },
+        {
+          "given": "profile 5 is being edited and profile 6 uses obfs-local",
+          "when": "the chooser opens",
+          "then": "neither profile 5 nor profile 6 has a row",
+          "polarity": "negative"
+        },
+        {
+          "given": "profile 3 has subscription status Obsolete and profile 4 has status Active",
+          "when": "the chooser opens",
+          "then": "profile 3 has no row and profile 4 has one",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-28",
+      "statement": "The fallback chooser starts with a Disabled row that clears the fallback.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59",
+      "examples": [
+        {
+          "given": "the fallback is profile 7",
+          "when": "the user taps Disabled",
+          "then": "DataStore.udpFallback becomes null and the chooser finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "no fallback is set and the Disabled row is checked",
+          "when": "the user taps the Disabled row",
+          "then": "DataStore.udpFallback is set to null again, DataStore.dirty becomes true, and the chooser finishes",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-29",
+      "statement": "Tapping a fallback row stores its id, marks the draft dirty, and closes the chooser.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59",
+      "examples": [
+        {
+          "given": "the chooser lists profile 8",
+          "when": "the user taps that row",
+          "then": "DataStore.udpFallback becomes 8, DataStore.dirty becomes true, and the chooser finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the fallback is profile 8 and its row is checked",
+          "when": "the user taps that row again",
+          "then": "DataStore.udpFallback is set to 8 again, DataStore.dirty becomes true, and the chooser finishes",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-30",
+      "statement": "The fallback chooser scrolls to the current fallback entry when one is set.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:100",
+      "examples": [
+        {
+          "given": "the fallback is the fourth visible profile",
+          "when": "the chooser opens",
+          "then": "the list scrolls to its row",
+          "polarity": "positive"
+        },
+        {
+          "given": "no fallback is set",
+          "when": "the chooser opens",
+          "then": "the null check skips scrollToPosition, so the list starts at the Disabled row",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-31",
+      "statement": "The fallback chooser closes at once when the private store holds no editing id.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:84",
+      "examples": [
+        {
+          "given": "a profile is open in the editor, so the private store holds its editing id",
+          "when": "the chooser starts",
+          "then": "the activity stays open and draws the fallback list",
+          "polarity": "positive"
+        },
+        {
+          "given": "the private store has no editing id",
+          "when": "the chooser activity starts",
+          "then": "it finishes before the list is drawn",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-32",
+      "statement": "The Remove menu item asks for confirmation, deletes the profile row, and closes the editor.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:83",
+      "examples": [
+        {
+          "given": "the editor shows profile 9",
+          "when": "the user taps Remove and then Yes",
+          "then": "the row is deleted and the editor finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the delete dialog is open",
+          "when": "the user taps No",
+          "then": "nothing is deleted and the editor stays",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-33",
+      "statement": "Back with a dirty draft asks whether to save; Yes saves, No discards, and Cancel stays.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:189",
+      "examples": [
+        {
+          "given": "the draft is dirty",
+          "when": "the user presses back and then Yes",
+          "then": "the draft is saved and the editor closes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the draft is dirty",
+          "when": "the user presses back and then No",
+          "then": "the editor closes and the stored profile is unchanged",
+          "polarity": "negative"
+        },
+        {
+          "given": "the draft is dirty",
+          "when": "the user presses back and then Cancel",
+          "then": "the dialog closes and the editor stays open",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-34",
+      "statement": "The back handler is enabled only while the draft is dirty.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:48",
+      "examples": [
+        {
+          "given": "a freshly opened editor",
+          "when": "the user changes a field and then presses back",
+          "then": "the unsaved changes dialog shows",
+          "polarity": "positive"
+        },
+        {
+          "given": "a freshly opened editor with no change",
+          "when": "the user presses back",
+          "then": "the editor closes with no dialog",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-35",
+      "statement": "The close icon finishes the editor immediately and ignores unsaved changes.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:71",
+      "examples": [
+        {
+          "given": "a freshly opened editor with no change",
+          "when": "the user taps the toolbar close icon",
+          "then": "the editor finishes at once and no dialog appears",
+          "polarity": "positive"
+        },
+        {
+          "given": "the draft is dirty",
+          "when": "the user taps the toolbar close icon",
+          "then": "the editor finishes and no dialog appears",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-36",
+      "statement": "A profile added from Add Profile is written to the database before the editor opens.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:428",
+      "examples": [
+        {
+          "given": "the profile list is open",
+          "when": "the user picks Add Profile and then Manual Settings",
+          "then": "ProfileManager.createProfile inserts a row before startConfig opens the editor with that row id",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user picks Add Profile and then Manual Settings",
+          "when": "the editor opens",
+          "then": "a default profile row already exists, and leaving with No keeps it",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-37",
+      "statement": "A new profile form starts from the code defaults for the transport fields: host example.shadowsocks.org, port 8388, password u1rRWTssNv0p, and method aes-256-cfb. R-UC-41 replaces the feature settings when a current profile exists.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:430",
+      "examples": [
+        {
+          "given": "no current profile is selected",
+          "when": "the user adds a manual profile",
+          "then": "Server shows example.shadowsocks.org, Remote Port shows 8388, Encrypt Method shows AES-256-CFB, and Route shows All",
+          "polarity": "positive"
+        },
+        {
+          "given": "the current profile has route gfwlist and IPv6 on",
+          "when": "the user taps Add Profile and then Manual Settings",
+          "then": "the new profile row has route gfwlist and ipv6 true, while Server shows example.shadowsocks.org and Encrypt Method shows AES-256-CFB",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-38",
+      "statement": "Saving the selected profile or its UDP fallback also updates Direct Boot storage when direct boot is enabled.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:218",
+      "examples": [
+        {
+          "given": "the edited profile is the selected profile and direct boot is enabled",
+          "when": "the user taps Apply",
+          "then": "DirectBoot.update rewrites the device profile file",
+          "polarity": "positive"
+        },
+        {
+          "given": "the edited profile is the UDP fallback of the selected profile and direct boot is disabled",
+          "when": "the user taps Apply",
+          "then": "the row is written but DirectBoot.update does not run",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-39",
+      "statement": "The editor title is Profile config.",
+      "kind": "display",
+      "source": "mobile/src/main/AndroidManifest.xml:44",
+      "examples": [
+        {
+          "given": "the editor is open",
+          "when": "the toolbar is drawn",
+          "then": "it shows Profile config",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-40",
+      "statement": "The editor and the fallback chooser share the private draft store, so a fallback choice survives until Apply.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:373",
+      "examples": [
+        {
+          "given": "the user picked fallback 7 and returned to the editor",
+          "when": "the user taps Apply",
+          "then": "the stored profile has udpFallback 7",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored profile has fallback 7",
+          "when": "the user picks Disabled in the chooser and then taps Apply",
+          "then": "deserialize sets udpFallback to null and the profile row has no fallback",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UC-41",
+      "statement": "Add Profile creates the new profile as a default Profile() and then copies route, IPv6, metered, per-app list, bypass, individual, and UDP DNS from the current profile before the editor opens.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:430",
+      "examples": [
+        {
+          "given": "the current profile has route gfwlist and IPv6 on",
+          "when": "the user taps Add Profile and then Manual Settings",
+          "then": "the new profile row has route gfwlist and ipv6 true before the editor draws",
+          "polarity": "positive"
+        },
+        {
+          "given": "no current profile is selected",
+          "when": "the user adds a manual profile",
+          "then": "the copy is skipped and the new profile keeps route all and IPv6 off",
+          "polarity": "boundary"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "profile editor draft",
+      "states": [
+        "clean",
+        "dirty"
+      ],
+      "transitions": [
+        {
+          "from": "clean",
+          "to": "dirty",
+          "event": "the user changes any draft field except Apps VPN mode",
+          "producer": "ProfileConfigFragment.makeDirt",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:102"
+        },
+        {
+          "from": "clean",
+          "to": "dirty",
+          "event": "the user turns Apps VPN mode on or picks a plugin",
+          "producer": "ProfileConfigFragment.onViewCreated plugin result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:181"
+        },
+        {
+          "from": "clean",
+          "to": "dirty",
+          "event": "the user turns Apps VPN mode off, so AppManager.onCreate sets proxyApps true and marks the draft dirty",
+          "producer": "AppManager.onCreate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/AppManager.kt:235"
+        },
+        {
+          "from": "dirty",
+          "to": "clean",
+          "event": "the profile list opens the next editor and Profile.serialize removes Key.dirty",
+          "producer": "Profile.serialize called by ProfilesFragment.startConfig",
+          "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:351"
+        }
+      ]
+    },
+    {
+      "object": "plugin selection",
+      "states": [
+        "disabled",
+        "enabled"
+      ],
+      "transitions": [
+        {
+          "from": "disabled",
+          "to": "enabled",
+          "event": "the user picks a plugin other than Disabled",
+          "producer": "ProfileConfigFragment plugin result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:173"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the user picks Disabled",
+          "producer": "ProfileConfigFragment plugin result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:183"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the plugin package is removed while the editor is open, so initPlugins runs and the selected entry becomes null",
+          "producer": "ProfileConfigFragment.onAttach package change receiver and initPlugins",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:224"
+        }
+      ]
+    },
+    {
+      "object": "UDP fallback selection",
+      "states": [
+        "disabled",
+        "profile"
+      ],
+      "transitions": [
+        {
+          "from": "disabled",
+          "to": "profile",
+          "event": "the user taps a profile row",
+          "producer": "UdpFallbackProfileActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59"
+        },
+        {
+          "from": "profile",
+          "to": "profile",
+          "event": "the user taps a profile row, including the row that is already checked",
+          "producer": "UdpFallbackProfileActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59"
+        },
+        {
+          "from": "profile",
+          "to": "disabled",
+          "event": "the user taps the Disabled row",
+          "producer": "UdpFallbackProfileActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59"
+        },
+        {
+          "from": "disabled",
+          "to": "disabled",
+          "event": "the user taps the Disabled row while no fallback is set, which writes null again and marks the draft dirty",
+          "producer": "UdpFallbackProfileActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59"
+        }
+      ]
+    },
+    {
+      "object": "profile editability",
+      "states": [
+        "editable",
+        "read-only",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "editable",
+          "to": "read-only",
+          "event": "the editor opens a profile whose subscription status is Active",
+          "producer": "ProfileConfigFragment.onCreatePreferences",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:158"
+        },
+        {
+          "from": "editable",
+          "to": "closed",
+          "event": "the user leaves the editor",
+          "producer": "ProfileConfigActivity.onSupportNavigateUp and saveAndExit",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:72"
+        },
+        {
+          "from": "read-only",
+          "to": "closed",
+          "event": "the user leaves the editor with the transport rows untouched",
+          "producer": "ProfileConfigActivity.onSupportNavigateUp and saveAndExit",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:72"
+        }
+      ]
+    },
+    {
+      "object": "VPN-only preference availability",
+      "states": [
+        "enabled",
+        "disabled"
+      ],
+      "transitions": [
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the editor is opened again while the service mode is Proxy only or Transproxy",
+          "producer": "ProfileConfigFragment.onCreatePreferences",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:137"
+        },
+        {
+          "from": "disabled",
+          "to": "enabled",
+          "event": "the editor is opened again while the service mode is VPN",
+          "producer": "ProfileConfigFragment.onCreatePreferences",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:139"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U03-01",
+      "name": "Open a profile in the editor",
+      "steps": [
+        {
+          "label": "start: the user taps the edit control on a profile row",
+          "type": "start",
+          "next": "system: ProfilesFragment.startConfig calls profile.serialize and starts the activity with the profile id",
+          "exception": false
+        },
+        {
+          "label": "system: ProfilesFragment.startConfig calls profile.serialize and starts the activity with the profile id",
+          "type": "step",
+          "next": "decision: does the intent carry a profile id other than -1 and other than the stored editing id? yes → the editor finishes, no → the form shows",
+          "exception": false
+        },
+        {
+          "label": "decision: does the intent carry a profile id other than -1 and other than the stored editing id? yes → the editor finishes, no → the form shows",
+          "type": "decision",
+          "next": "no -> system: the form shows the draft values in three categories | yes -> end: the activity finishes before drawing the form",
+          "exception": false
+        },
+        {
+          "label": "system: the form shows the draft values in three categories",
+          "type": "step",
+          "next": "system: IPv6 Route and Apps VPN mode are enabled only in VPN mode, and an Active subscription disables the transport rows",
+          "exception": false
+        },
+        {
+          "label": "system: IPv6 Route and Apps VPN mode are enabled only in VPN mode, and an Active subscription disables the transport rows",
+          "type": "step",
+          "next": "end: the editor waits for input",
+          "exception": false
+        },
+        {
+          "label": "end: the editor waits for input",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the activity finishes before drawing the form",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The intent carries a profile id that is not -1 and differs from the stored editing id, so the activity finishes at once.",
+        "A profile row deleted after the list drew it makes the edit control throw on ProfileManager.getProfile(item.id)!! before startConfig runs, and the subscription control returns early; the editor never opens on a stale row."
+      ]
+    },
+    {
+      "id": "F-U03-02",
+      "name": "Apply the edited profile",
+      "steps": [
+        {
+          "label": "start: the user changes one or more fields",
+          "type": "start",
+          "next": "system: each change writes the private draft store and marks the draft dirty",
+          "exception": false
+        },
+        {
+          "label": "system: each change writes the private draft store and marks the draft dirty",
+          "type": "step",
+          "next": "decision: the user taps Apply or presses back and taps Yes? yes → saveAndExit runs, no → the editor closes without saving",
+          "exception": false
+        },
+        {
+          "label": "decision: the user taps Apply or presses back and taps Yes? yes → saveAndExit runs, no → the editor closes without saving",
+          "type": "decision",
+          "next": "yes -> system: Profile.deserialize reads the draft, trims the host, and normalizes the port | no -> end: the editor closes and the stored profile is unchanged",
+          "exception": false
+        },
+        {
+          "label": "system: Profile.deserialize reads the draft, trims the host, and normalizes the port",
+          "type": "step",
+          "next": "system: ProfileManager.updateProfile writes the row and the list row refreshes",
+          "exception": false
+        },
+        {
+          "label": "system: ProfileManager.updateProfile writes the row and the list row refreshes",
+          "type": "step",
+          "next": "decision: the profile is the selected profile or its UDP fallback, and direct boot is enabled? yes → DirectBoot.update, no → finish",
+          "exception": false
+        },
+        {
+          "label": "decision: the profile is the selected profile or its UDP fallback, and direct boot is enabled? yes → DirectBoot.update, no → finish",
+          "type": "decision",
+          "next": "yes -> system: DirectBoot.update rewrites the device profile | no -> end: the editor closes and the list shows the saved values",
+          "exception": false
+        },
+        {
+          "label": "system: DirectBoot.update rewrites the device profile",
+          "type": "step",
+          "next": "end: the editor closes and the list shows the saved values",
+          "exception": false
+        },
+        {
+          "label": "end: the editor closes and the list shows the saved values",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the editor closes and the stored profile is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "ProfileManager.updateProfile uses check on the update count, so a row deleted meanwhile throws IllegalStateException.",
+        "Profile.deserialize uses check on the id, so an editing id mismatch throws IllegalStateException."
+      ]
+    },
+    {
+      "id": "F-U03-03",
+      "name": "Leave with unsaved changes",
+      "steps": [
+        {
+          "label": "start: the user presses system back",
+          "type": "start",
+          "next": "decision: is the draft dirty? yes → the unsaved dialog shows, no → the editor closes with no dialog",
+          "exception": false
+        },
+        {
+          "label": "decision: is the draft dirty? yes → the unsaved dialog shows, no → the editor closes with no dialog",
+          "type": "decision",
+          "next": "yes -> system: the unsaved dialog shows Yes, No, and Cancel | no -> end: the editor closes with no dialog",
+          "exception": false
+        },
+        {
+          "label": "system: the unsaved dialog shows Yes, No, and Cancel",
+          "type": "step",
+          "next": "decision: which button does the user tap? yes → save and close, no → the other buttons",
+          "exception": false
+        },
+        {
+          "label": "decision: which button does the user tap? yes → save and close, no → the other buttons",
+          "type": "decision",
+          "next": "yes -> system: Yes runs saveAndExit and writes the draft | no -> decision: does the user tap No? yes → close and discard, no → stay",
+          "exception": false
+        },
+        {
+          "label": "system: Yes runs saveAndExit and writes the draft",
+          "type": "step",
+          "next": "end: the editor closes with the draft saved",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user tap No? yes → close and discard, no → stay",
+          "type": "decision",
+          "next": "yes -> end: the editor closes and the stored profile is unchanged | no -> end: the dialog closes and the dirty draft stays open",
+          "exception": false
+        },
+        {
+          "label": "end: the editor closes with the draft saved",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the editor closes and the stored profile is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the dialog closes and the dirty draft stays open",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the editor closes with no dialog",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "Dismissing the dialog or tapping outside reports RESULT_CANCELED, which matches neither button, so the editor stays.",
+        "The close icon bypasses this flow and finishes the editor without asking."
+      ]
+    },
+    {
+      "id": "F-U03-04",
+      "name": "Remove the profile from the editor",
+      "steps": [
+        {
+          "label": "start: the user taps Remove in the toolbar",
+          "type": "start",
+          "next": "system: the delete confirmation dialog shows Yes and No",
+          "exception": false
+        },
+        {
+          "label": "system: the delete confirmation dialog shows Yes and No",
+          "type": "step",
+          "next": "decision: which button does the user tap? yes → delete the row, no → keep the editor",
+          "exception": false
+        },
+        {
+          "label": "decision: which button does the user tap? yes → delete the row, no → keep the editor",
+          "type": "decision",
+          "next": "yes -> system: ProfileManager.delProfile deletes the row and clears Direct Boot storage when the profile is the selected profile or its UDP fallback | no -> end: the dialog closes and the editor stays open",
+          "exception": false
+        },
+        {
+          "label": "system: ProfileManager.delProfile deletes the row and clears Direct Boot storage when the profile is the selected profile or its UDP fallback",
+          "type": "step",
+          "next": "end: the editor closes and the list no longer shows the profile",
+          "exception": false
+        },
+        {
+          "label": "end: the editor closes and the list no longer shows the profile",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the dialog closes and the editor stays open",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "delProfile uses check on the delete count, so deleting an already-deleted row throws IllegalStateException."
+      ]
+    },
+    {
+      "id": "F-U03-05",
+      "name": "Choose the encryption method",
+      "steps": [
+        {
+          "label": "start: the user taps the Encrypt Method row",
+          "type": "start",
+          "next": "system: the menu lists the 22 method labels and marks the current one",
+          "exception": false
+        },
+        {
+          "label": "system: the menu lists the 22 method labels and marks the current one",
+          "type": "step",
+          "next": "decision: does the user pick an entry? yes → store its value, no → keep the stored method",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user pick an entry? yes → store its value, no → keep the stored method",
+          "type": "decision",
+          "next": "system: the draft method becomes the lowercase entry value and the summary shows the label",
+          "exception": false
+        },
+        {
+          "label": "system: the draft method becomes the lowercase entry value and the summary shows the label",
+          "type": "step",
+          "next": "end: the draft is dirty and the dialog closes",
+          "exception": false
+        },
+        {
+          "label": "end: the draft is dirty and the dialog closes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The stored method is not in the list, so no entry is marked and the summary shows no label."
+      ]
+    },
+    {
+      "id": "F-U03-06",
+      "name": "Choose the route",
+      "steps": [
+        {
+          "label": "start: the user taps the Route row",
+          "type": "start",
+          "next": "system: the menu lists All, Bypass LAN, Bypass mainland China, Bypass LAN & mainland China, GFW List, China List, and Custom rules",
+          "exception": false
+        },
+        {
+          "label": "system: the menu lists All, Bypass LAN, Bypass mainland China, Bypass LAN & mainland China, GFW List, China List, and Custom rules",
+          "type": "step",
+          "next": "decision: does the user pick an entry? yes → store the route token, no → keep the stored route",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user pick an entry? yes → store the route token, no → keep the stored route",
+          "type": "decision",
+          "next": "system: the draft route becomes the chosen token and the summary shows its label",
+          "exception": false
+        },
+        {
+          "label": "system: the draft route becomes the chosen token and the summary shows its label",
+          "type": "step",
+          "next": "end: the draft is dirty and the dialog closes",
+          "exception": false
+        },
+        {
+          "label": "end: the draft is dirty and the dialog closes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "F-U03-07",
+      "name": "Select and configure a plugin",
+      "steps": [
+        {
+          "label": "start: the user taps the Plugin row",
+          "type": "start",
+          "next": "system: the bottom sheet lists Disabled and every installed plugin",
+          "exception": false
+        },
+        {
+          "label": "system: the bottom sheet lists Disabled and every installed plugin",
+          "type": "step",
+          "next": "decision: does the user pick a different entry? yes → store the choice, no → nothing changes",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user pick a different entry? yes → store the choice, no → nothing changes",
+          "type": "decision",
+          "next": "system: the fragment stores the plugin id and options, updates the summary, and sets Configure… state",
+          "exception": false
+        },
+        {
+          "label": "system: the fragment stores the plugin id and options, updates the summary, and sets Configure… state",
+          "type": "step",
+          "next": "decision: is the plugin untrusted? yes → show the warning snackbar, no → continue",
+          "exception": false
+        },
+        {
+          "label": "decision: is the plugin untrusted? yes → show the warning snackbar, no → continue",
+          "type": "decision",
+          "next": "decision: does the user tap Configure…? yes → the options path runs, no → the plugin selection stands",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user tap Configure…? yes → the options path runs, no → the plugin selection stands",
+          "type": "decision",
+          "next": "yes -> decision: does the plugin resolve a configuration activity? yes → launch it, no → open the built-in options dialog | no -> end: the plugin and its options are stored in the draft",
+          "exception": false
+        },
+        {
+          "label": "decision: does the plugin resolve a configuration activity? yes → launch it, no → open the built-in options dialog",
+          "type": "decision",
+          "next": "yes -> system: the plugin configuration activity returns a result | no -> system: the built-in options dialog collects the text",
+          "exception": false
+        },
+        {
+          "label": "system: the plugin configuration activity returns a result",
+          "type": "step",
+          "next": "decision: does the activity return RESULT_FALLBACK? yes → open the built-in options dialog, no → the activity finished with another result",
+          "exception": false
+        },
+        {
+          "label": "decision: does the activity return RESULT_FALLBACK? yes → open the built-in options dialog, no → the activity finished with another result",
+          "type": "decision",
+          "next": "yes -> system: the built-in options dialog collects the text | no -> decision: does the activity return RESULT_OK? yes → parse the returned options, no → the options stay unchanged",
+          "exception": false
+        },
+        {
+          "label": "decision: does the activity return RESULT_OK? yes → parse the returned options, no → the options stay unchanged",
+          "type": "decision",
+          "next": "yes -> decision: do the options parse? yes → store them and mark the draft dirty, no → the snackbar shows the error | no -> end: the options stay unchanged after a canceled activity",
+          "exception": false
+        },
+        {
+          "label": "system: the built-in options dialog collects the text",
+          "type": "step",
+          "next": "decision: do the options parse? yes → store them and mark the draft dirty, no → the snackbar shows the error",
+          "exception": false
+        },
+        {
+          "label": "decision: do the options parse? yes → store them and mark the draft dirty, no → the snackbar shows the error",
+          "type": "decision",
+          "next": "yes -> end: the plugin and its options are stored in the draft | no -> end: the options stay unchanged after the error snackbar",
+          "exception": false
+        },
+        {
+          "label": "end: the plugin and its options are stored in the draft",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the options stay unchanged after the error snackbar",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "end: the options stay unchanged after a canceled activity",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The options text holds a control character, so PluginOptions throws and onPreferenceChange returns false.",
+        "The plugin package disappears while the editor is open, so the summary becomes Unknown plugin and Configure… disables."
+      ]
+    },
+    {
+      "id": "F-U03-08",
+      "name": "Choose a UDP fallback profile",
+      "steps": [
+        {
+          "label": "start: the user taps the UDP Fallback row",
+          "type": "start",
+          "next": "decision: is a profile being edited? yes → the chooser opens, no → the chooser finishes at once",
+          "exception": false
+        },
+        {
+          "label": "decision: is a profile being edited? yes → the chooser opens, no → the chooser finishes at once",
+          "type": "decision",
+          "next": "yes -> system: the chooser lists Disabled first, then non-obsolete profiles except the edited one and profiles with a plugin | no -> end: the chooser finishes before it draws the list",
+          "exception": false
+        },
+        {
+          "label": "system: the chooser lists Disabled first, then non-obsolete profiles except the edited one and profiles with a plugin",
+          "type": "step",
+          "next": "decision: does the user tap the Disabled row or a profile row? yes → store the choice, no → close and store nothing",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user tap the Disabled row or a profile row? yes → store the choice, no → close and store nothing",
+          "type": "decision",
+          "next": "yes -> system: DataStore.udpFallback changes, DataStore.dirty becomes true, and the chooser finishes | no -> end: the chooser closes and no draft value changes",
+          "exception": false
+        },
+        {
+          "label": "system: DataStore.udpFallback changes, DataStore.dirty becomes true, and the chooser finishes",
+          "type": "step",
+          "next": "system: the editor resumes and refreshes the UDP Fallback summary",
+          "exception": false
+        },
+        {
+          "label": "system: the editor resumes and refreshes the UDP Fallback summary",
+          "type": "step",
+          "next": "end: the summary shows the chosen profile's formatted name or Disabled",
+          "exception": false
+        },
+        {
+          "label": "end: the summary shows the chosen profile's formatted name or Disabled",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the chooser finishes before it draws the list",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the chooser closes and no draft value changes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The private store holds no editing id, so the chooser activity finishes before it draws the list.",
+        "The chosen fallback profile is deleted later, so the summary shows Disabled on the next resume, but DataStore.udpFallback keeps the dangling id and Profile.deserialize copies it into the saved profile."
+      ]
+    },
+    {
+      "id": "F-U03-09",
+      "name": "Open Apps VPN mode from the editor",
+      "steps": [
+        {
+          "label": "start: the user changes the Apps VPN mode switch",
+          "type": "start",
+          "next": "decision: is the service mode VPN? yes → the listener runs, no → the switch is disabled and the tap does nothing",
+          "exception": false
+        },
+        {
+          "label": "decision: is the service mode VPN? yes → the listener runs, no → the switch is disabled and the tap does nothing",
+          "type": "decision",
+          "next": "system: the AppManager screen starts and sets proxyApps true when it was false",
+          "exception": false
+        },
+        {
+          "label": "system: the AppManager screen starts and sets proxyApps true when it was false",
+          "type": "step",
+          "next": "decision: is the new value true? yes → mark the draft dirty, no → AppManager.onCreate sets proxyApps true and marks the draft dirty",
+          "exception": false
+        },
+        {
+          "label": "decision: is the new value true? yes → mark the draft dirty, no → AppManager.onCreate sets proxyApps true and marks the draft dirty",
+          "type": "decision",
+          "next": "system: the user picks apps, leaves the screen, and the editor resumes",
+          "exception": false
+        },
+        {
+          "label": "system: the user picks apps, leaves the screen, and the editor resumes",
+          "type": "step",
+          "next": "system: onResume copies DataStore.proxyApps into the switch",
+          "exception": false
+        },
+        {
+          "label": "system: onResume copies DataStore.proxyApps into the switch",
+          "type": "step",
+          "next": "end: the switch is on and the draft is dirty",
+          "exception": false
+        },
+        {
+          "label": "end: the switch is on and the draft is dirty",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service mode is Proxy only or Transproxy, so the switch is disabled and no screen opens."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U03-01",
+      "title": "Apply saves the edited fields into the profile row and closes the editor",
+      "preconditions": [
+        "Profile 3 exists with name Alpha, host a.example, port 8388, method aes-256-cfb, and route all.",
+        "The service is stopped."
+      ],
+      "steps": [
+        "Tap the edit control of profile 3.",
+        "Tap the Server row and type b.example.",
+        "Tap OK.",
+        "Tap Apply."
+      ],
+      "expected": [
+        "The editor shows Alpha, a.example, 8388, aes-256-cfb, and All.",
+        "The Server summary shows b.example and the draft becomes dirty.",
+        "The dialog closes.",
+        "The editor closes, and the profile row shows b.example with the new host persisted."
+      ],
+      "control_path": "C-U03-001 > C-U03-008 > C-U03-035 > C-U03-037 > C-U03-005",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:212"
+    },
+    {
+      "id": "TC-U03-02",
+      "title": "A manually added profile starts from the code defaults and copies the current profile's feature settings",
+      "preconditions": [
+        "Profile 2 is the selected profile, with route GFW List and IPv6 Route on.",
+        "The service mode is VPN.",
+        "The service is stopped."
+      ],
+      "steps": [
+        "Open the Add Profile menu.",
+        "Tap Manual Settings.",
+        "Read the form rows."
+      ],
+      "expected": [
+        "The menu closes.",
+        "A new profile row is written to the database and the editor opens.",
+        "Server shows example.shadowsocks.org, Remote Port shows 8388, Password shows bullets, and Encrypt Method shows AES-256-CFB; Route shows GFW List and IPv6 Route is on, copied from profile 2; UDP Fallback shows Disabled."
+      ],
+      "control_path": "C-U03-001 > C-U03-008 > C-U03-009 > C-U03-010 > C-U03-011 > C-U03-013 > C-U03-014 > C-U03-021",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:428",
+      "rules": [
+        "R-UC-36",
+        "R-UC-37",
+        "R-UC-41"
+      ]
+    },
+    {
+      "id": "TC-U03-03",
+      "title": "Back with a dirty draft and Yes saves before leaving",
+      "preconditions": [
+        "Profile 4 is open in the editor.",
+        "The draft is clean."
+      ],
+      "steps": [
+        "Tap the Profile Name row and type Renamed.",
+        "Tap OK.",
+        "Press system back.",
+        "Tap Yes."
+      ],
+      "expected": [
+        "The dialog closes with the new name in the draft.",
+        "The draft becomes dirty.",
+        "The unsaved-changes dialog appears.",
+        "The editor closes and profile 4 keeps the name Renamed."
+      ],
+      "control_path": "C-U03-001 > C-U03-006 > C-U03-035 > C-U03-022 > C-U03-023",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:192"
+    },
+    {
+      "id": "TC-U03-04",
+      "title": "Back with a dirty draft and No discards the draft",
+      "preconditions": [
+        "Profile 4 is open in the editor.",
+        "Profile 4 has route all."
+      ],
+      "steps": [
+        "Change the Route to GFW List.",
+        "Press system back.",
+        "Tap No."
+      ],
+      "expected": [
+        "The Route summary shows GFW List and the draft is dirty.",
+        "The unsaved-changes dialog appears.",
+        "The editor closes and the stored route stays all."
+      ],
+      "control_path": "C-U03-001 > C-U03-013 > C-U03-040 > C-U03-022 > C-U03-024",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:193"
+    },
+    {
+      "id": "TC-U03-05",
+      "title": "Cancel in the unsaved-changes dialog keeps the editor open",
+      "preconditions": [
+        "The editor is open and the draft is dirty."
+      ],
+      "steps": [
+        "Press system back.",
+        "Tap Cancel."
+      ],
+      "expected": [
+        "The unsaved-changes dialog appears.",
+        "The dialog closes and the editor still shows the dirty draft; a second back press shows the dialog again."
+      ],
+      "control_path": "C-U03-001 > C-U03-022 > C-U03-025",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:44"
+    },
+    {
+      "id": "TC-U03-06",
+      "title": "Back with a clean draft closes the editor with no dialog",
+      "preconditions": [
+        "The editor is open and nothing was changed."
+      ],
+      "steps": [
+        "Press system back."
+      ],
+      "expected": [
+        "The editor closes at once and no dialog appears."
+      ],
+      "control_path": "C-U03-001",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:48"
+    },
+    {
+      "id": "TC-U03-07",
+      "title": "The toolbar close icon discards a dirty draft without asking",
+      "preconditions": [
+        "Profile 4 is open in the editor and the draft is dirty."
+      ],
+      "steps": [
+        "Tap the toolbar close icon."
+      ],
+      "expected": [
+        "The editor finishes immediately with no unsaved-changes dialog, and profile 4 keeps its stored values."
+      ],
+      "control_path": "C-U03-001 > C-U03-002",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:71"
+    },
+    {
+      "id": "TC-U03-08",
+      "title": "Remove asks for confirmation and Yes deletes the profile",
+      "preconditions": [
+        "Profile 9 is open in the editor.",
+        "The profile list shows nine profiles."
+      ],
+      "steps": [
+        "Tap Remove in the toolbar.",
+        "Read the dialog title.",
+        "Tap Yes."
+      ],
+      "expected": [
+        "The confirmation dialog appears.",
+        "The title reads Are you sure you want to remove this profile?",
+        "The profile row is deleted and the editor closes; the list shows eight profiles."
+      ],
+      "control_path": "C-U03-001 > C-U03-004 > C-U03-026 > C-U03-027",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:83"
+    },
+    {
+      "id": "TC-U03-09",
+      "title": "A subscription-active profile locks the transport rows",
+      "preconditions": [
+        "Profile 2 has subscription status Active and was created from a subscription.",
+        "The service mode is VPN."
+      ],
+      "steps": [
+        "Open profile 2 in the editor.",
+        "Tap the Server row.",
+        "Tap the Route row and pick China List.",
+        "Tap Apply."
+      ],
+      "expected": [
+        "Name, Server, Remote Port, Password, Encrypt Method, Plugin, Configure…, and UDP Fallback are disabled.",
+        "The Server row does not respond.",
+        "The Route row opens and stores china-list.",
+        "The editor closes and profile 2 keeps china-list while its transport fields are unchanged."
+      ],
+      "control_path": "C-U03-001 > C-U03-008 > C-U03-013 > C-U03-040 > C-U03-005",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:158"
+    },
+    {
+      "id": "TC-U03-10",
+      "title": "IPv6 Route is disabled when the service mode is not VPN",
+      "preconditions": [
+        "The global service mode is Proxy only.",
+        "A profile is open in the editor."
+      ],
+      "steps": [
+        "Look at the IPv6 Route row.",
+        "Tap the switch.",
+        "Change the service mode to VPN and reopen the editor.",
+        "Tap the switch."
+      ],
+      "expected": [
+        "The switch is disabled.",
+        "The tap has no effect and the flag stays off.",
+        "The editor reopens with the switch enabled.",
+        "The switch turns on and the draft becomes dirty."
+      ],
+      "control_path": "C-U03-001 > C-U03-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:137"
+    },
+    {
+      "id": "TC-U03-11",
+      "title": "Apps VPN mode opens the app list and marks the draft dirty only when it turns on",
+      "preconditions": [
+        "The service mode is VPN.",
+        "The profile has Apps VPN mode off."
+      ],
+      "steps": [
+        "Tap the Apps VPN mode switch.",
+        "Leave the app list screen without changes.",
+        "Tap the switch again to turn it off.",
+        "Leave the app list screen without changes."
+      ],
+      "expected": [
+        "The AppManager screen opens and the draft becomes dirty.",
+        "The editor resumes with the switch on, reflecting DataStore.proxyApps.",
+        "The AppManager screen opens again; this listener does not mark the draft dirty, but AppManager.onCreate sets proxyApps back to true and marks it dirty.",
+        "The editor resumes with the switch on and the draft dirty."
+      ],
+      "control_path": "C-U03-001 > C-U03-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:140"
+    },
+    {
+      "id": "TC-U03-12",
+      "title": "The Remote Port dialog filters to five digits and the saved port is normalized",
+      "preconditions": [
+        "A profile is open in the editor with port 8388."
+      ],
+      "steps": [
+        "Tap the Remote Port row.",
+        "Select all and delete the prefilled 8388 so the field is empty.",
+        "Type 12ab34.",
+        "Type 56 so the field would hold six characters.",
+        "Tap OK.",
+        "Reopen the dialog, clear the field, type 70000, tap OK, and tap Apply."
+      ],
+      "expected": [
+        "A numeric edit dialog opens with the stored port 8388 and the cursor at the end of the field.",
+        "The field is empty.",
+        "The letters are ignored and the field holds 1234.",
+        "The field stops at five characters: the 5 is accepted and the 6 is refused, so the field holds 12345.",
+        "The draft port becomes 12345 and the summary shows it.",
+        "The saved profile has port 8388, because 70000 is outside 1 through 65535."
+      ],
+      "control_path": "C-U03-001 > C-U03-009 > C-U03-035 > C-U03-036 > C-U03-005",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:39",
+      "rules": [
+        "R-UC-07",
+        "R-UC-09"
+      ]
+    },
+    {
+      "id": "TC-U03-13",
+      "title": "The Encrypt Method menu stores the chosen method value",
+      "preconditions": [
+        "A profile is open with method aes-256-cfb."
+      ],
+      "steps": [
+        "Tap the Encrypt Method row.",
+        "Read the entry list.",
+        "Tap AES-256-GCM."
+      ],
+      "expected": [
+        "A single-choice menu opens and marks AES-256-CFB.",
+        "The menu lists 22 entries from NONE to CAMELLIA-256-CFB.",
+        "The menu closes, the summary shows AES-256-GCM, and the draft method becomes aes-256-gcm."
+      ],
+      "control_path": "C-U03-001 > C-U03-011 > C-U03-039",
+      "parity": "partial",
+      "source": "core/src/main/res/values/arrays.xml:3"
+    },
+    {
+      "id": "TC-U03-14",
+      "title": "The Route menu stores the chosen route token",
+      "preconditions": [
+        "A profile is open with route all."
+      ],
+      "steps": [
+        "Tap the Route row.",
+        "Tap China List."
+      ],
+      "expected": [
+        "The menu lists seven entries and marks All.",
+        "The menu closes, the summary shows China List, and the draft route becomes china-list."
+      ],
+      "control_path": "C-U03-001 > C-U03-013 > C-U03-040",
+      "parity": "implemented",
+      "source": "mobile/src/main/res/values/arrays.xml:12"
+    },
+    {
+      "id": "TC-U03-15",
+      "title": "Selecting a plugin enables Configure… and loads its options",
+      "preconditions": [
+        "The editor is open with Plugin Disabled.",
+        "The device has the obfs-local plugin installed."
+      ],
+      "steps": [
+        "Tap the Plugin row.",
+        "Tap the obfs-local row.",
+        "Read the summary and the Configure… row.",
+        "Tap the Plugin row again and tap Disabled."
+      ],
+      "expected": [
+        "The bottom sheet lists Disabled first, then the installed plugins.",
+        "The sheet closes.",
+        "The Plugin summary shows the plugin package's display label, Configure… is enabled, its summary shows the loaded options, and the draft is dirty.",
+        "The summary returns to Disabled, Configure… becomes disabled again, and the stored plugin id is empty."
+      ],
+      "control_path": "C-U03-001 > C-U03-019 > C-U03-020",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:173"
+    },
+    {
+      "id": "TC-U03-16",
+      "title": "Plugin options with a control character are rejected with a snackbar",
+      "preconditions": [
+        "The editor is open with obfs-local selected and options obfs=http."
+      ],
+      "steps": [
+        "Tap Configure….",
+        "In the options dialog type obfs=http;host=a\u0007b.",
+        "Tap OK."
+      ],
+      "expected": [
+        "The built-in options dialog opens when the plugin provides no configuration activity.",
+        "The text is accepted into the field.",
+        "A snackbar shows No control characters allowed, and the stored options stay obfs=http."
+      ],
+      "control_path": "C-U03-001 > C-U03-020",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:245"
+    },
+    {
+      "id": "TC-U03-17",
+      "title": "An untrusted plugin shows the warning snackbar",
+      "preconditions": [
+        "A plugin package is installed whose signing key is not in the trusted set.",
+        "The editor is open."
+      ],
+      "steps": [
+        "Tap the Plugin row.",
+        "Tap the untrusted plugin row."
+      ],
+      "expected": [
+        "The bottom sheet lists the plugin.",
+        "The sheet closes and the snackbar reads Warning: This plugin does not seem to come from a known trusted source."
+      ],
+      "control_path": "C-U03-001 > C-U03-019",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:185"
+    },
+    {
+      "id": "TC-U03-18",
+      "title": "The fallback chooser omits the edited profile and every plugin profile",
+      "preconditions": [
+        "Profile 5 is open in the editor.",
+        "Profile 6 uses obfs-local.",
+        "Profiles 7 and 8 are plain non-obsolete profiles."
+      ],
+      "steps": [
+        "Tap the UDP Fallback row.",
+        "Read the list."
+      ],
+      "expected": [
+        "The chooser opens.",
+        "The rows are Disabled, then only profiles 7 and 8; profiles 5 and 6 have no row."
+      ],
+      "control_path": "C-U03-001 > C-U03-021 > C-U03-050 > C-U03-052",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:67"
+    },
+    {
+      "id": "TC-U03-19",
+      "title": "Choosing a fallback profile stores its id and the summary follows",
+      "preconditions": [
+        "The editor is open with UDP Fallback Disabled.",
+        "Profiles 7 and 8 are eligible."
+      ],
+      "steps": [
+        "Tap the UDP Fallback row.",
+        "Tap the profile 7 row.",
+        "Read the UDP Fallback summary.",
+        "Tap the UDP Fallback row again and tap the profile 8 row.",
+        "Tap the UDP Fallback row again and tap Disabled.",
+        "Tap the UDP Fallback row again and tap Disabled once more.",
+        "Apply."
+      ],
+      "expected": [
+        "The chooser opens with Disabled checked.",
+        "The chooser finishes.",
+        "The summary shows profile 7's formatted name and the draft is dirty.",
+        "The summary changes to profile 8's formatted name, so the selection moves between profiles.",
+        "The summary returns to Disabled, because the Disabled row stores null.",
+        "The chooser finishes again; tapping the row that is already checked still writes null and marks the draft dirty, and the summary stays Disabled.",
+        "The saved profile has udpFallback null, and it stays null after the intermediate choices."
+      ],
+      "control_path": "C-U03-001 > C-U03-021 > C-U03-050 > C-U03-054 > C-U03-053 > C-U03-005",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:59",
+      "rules": [
+        "R-UC-06",
+        "R-UC-40"
+      ]
+    },
+    {
+      "id": "TC-U03-20",
+      "title": "A launch with a stale profile id closes the editor before it draws",
+      "preconditions": [
+        "The private store holds editing id 3."
+      ],
+      "steps": [
+        "Start ProfileConfigActivity with EXTRA_PROFILE_ID 5.",
+        "Observe the activity stack."
+      ],
+      "expected": [
+        "The activity starts with profile id 5 while the private store holds editing id 3.",
+        "The activity finishes during preference creation and no preference list appears."
+      ],
+      "control_path": "C-U03-001",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:111"
+    },
+    {
+      "id": "TC-U03-21",
+      "title": "Apply trims the spaces around the host",
+      "preconditions": [
+        "Profile 3 is open in the editor with host a.example and port 8388."
+      ],
+      "steps": [
+        "Tap the Server row, select all, and type '  example.org  '.",
+        "Tap OK.",
+        "Tap Apply.",
+        "Read the profile row in the list."
+      ],
+      "expected": [
+        "The dialog closes and the Server summary shows the typed text with its spaces.",
+        "The draft becomes dirty.",
+        "The editor closes.",
+        "The profile row shows example.org, trimmed of the leading and trailing spaces."
+      ],
+      "control_path": "C-U03-001 > C-U03-008 > C-U03-035 > C-U03-037 > C-U03-005",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:360",
+      "rules": [
+        "R-UC-07"
+      ]
+    },
+    {
+      "id": "TC-U03-22",
+      "title": "The editor toolbar shows Profile config",
+      "preconditions": [
+        "Profile 3 is open in the editor."
+      ],
+      "steps": [
+        "Read the toolbar title."
+      ],
+      "expected": [
+        "The toolbar title reads Profile config."
+      ],
+      "control_path": "C-U03-001 > C-U03-055 > C-U03-056",
+      "parity": "implemented",
+      "source": "mobile/src/main/AndroidManifest.xml:44",
+      "rules": [
+        "R-UC-39"
+      ]
+    },
+    {
+      "id": "TC-U03-23",
+      "title": "The fallback chooser closes when no editing id is stored",
+      "preconditions": [
+        "The private draft store holds no editing id."
+      ],
+      "steps": [
+        "Start UdpFallbackProfileActivity."
+      ],
+      "expected": [
+        "The activity starts.",
+        "It finishes during onCreate and draws no list."
+      ],
+      "control_path": "C-U03-050",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:84",
+      "rules": [
+        "R-UC-31"
+      ]
+    },
+    {
+      "id": "TC-U03-24",
+      "title": "Closing the fallback chooser stores nothing",
+      "preconditions": [
+        "Profile 3 is open in the editor with UDP Fallback Disabled and a clean draft.",
+        "Profiles 7 and 8 are eligible."
+      ],
+      "steps": [
+        "Tap the UDP Fallback row.",
+        "Tap the close icon.",
+        "Tap the UDP Fallback row again.",
+        "Press system back."
+      ],
+      "expected": [
+        "The chooser opens with Disabled checked.",
+        "The chooser closes, the editor shows UDP Fallback Disabled, and the draft stays clean.",
+        "The chooser opens again.",
+        "The chooser closes with no stored value and the summary stays Disabled."
+      ],
+      "control_path": "C-U03-001 > C-U03-021 > C-U03-050 > C-U03-051",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt:94"
+    },
+    {
+      "id": "TC-U03-25",
+      "title": "An uninstalled plugin id shows Unknown plugin and disables Configure…",
+      "preconditions": [
+        "The editor is open on a profile whose plugin id is obfs-local, but no installed plugin package has that id.",
+        "The profile subscription status is not Active."
+      ],
+      "steps": [
+        "Read the Plugin row summary.",
+        "Read the Configure… row."
+      ],
+      "expected": [
+        "The summary reads Unknown plugin obfs-local, using the plugin_unknown format.",
+        "Configure… is disabled."
+      ],
+      "control_path": "C-U03-001 > C-U03-019 > C-U03-020",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:33",
+      "rules": [
+        "R-UC-18",
+        "R-UC-24"
+      ]
+    },
+    {
+      "id": "TC-U03-26",
+      "title": "The ? button opens the plugin help and shows its message",
+      "preconditions": [
+        "The editor is open with a plugin selected that resolves an ACTION_HELP activity and declares no configuration activity.",
+        "The profile subscription status is not Active."
+      ],
+      "steps": [
+        "Tap Configure….",
+        "Read the options dialog buttons.",
+        "Tap ?.",
+        "Read the alert."
+      ],
+      "expected": [
+        "The built-in options dialog opens.",
+        "The dialog shows the ? button together with OK and Cancel.",
+        "The plugin help activity opens with the current options.",
+        "On RESULT_OK the alert titled ? shows the returned help message."
+      ],
+      "control_path": "C-U03-001 > C-U03-020",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:50",
+      "rules": [
+        "R-UC-22",
+        "R-UC-23"
+      ]
+    },
+    {
+      "id": "TC-U03-27",
+      "title": "Remove and No keeps the profile",
+      "preconditions": [
+        "Profile 9 is open in the editor."
+      ],
+      "steps": [
+        "Tap Remove in the toolbar.",
+        "Tap No."
+      ],
+      "expected": [
+        "The confirmation dialog appears.",
+        "The dialog closes, the editor stays open, and profile 9 is still in the list."
+      ],
+      "control_path": "C-U03-001 > C-U03-004 > C-U03-026 > C-U03-028",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:90",
+      "rules": [
+        "R-UC-32"
+      ]
+    },
+    {
+      "id": "TC-U03-28",
+      "title": "Dismissing the unsaved-changes dialog keeps the editor open",
+      "preconditions": [
+        "The editor is open and the draft is dirty."
+      ],
+      "steps": [
+        "Press system back.",
+        "Dismiss the dialog with an outside tap."
+      ],
+      "expected": [
+        "The unsaved-changes dialog appears.",
+        "The dialog closes and the editor stays open with the dirty draft."
+      ],
+      "control_path": "C-U03-001 > C-U03-022",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:44",
+      "rules": [
+        "R-UC-33"
+      ]
+    },
+    {
+      "id": "TC-U03-29",
+      "title": "The password dialog stores a new password on OK, keeps it on Cancel, and shows one bullet per character",
+      "preconditions": [
+        "Profile 3 is open in the editor with password abcdef."
+      ],
+      "steps": [
+        "Read the Password summary.",
+        "Tap the Password row, clear the field, type ghijkl, and tap OK.",
+        "Read the Password summary.",
+        "Tap the Password row, type xyz at the end, and tap Cancel.",
+        "Tap the Password row again and tap the show-password end icon."
+      ],
+      "expected": [
+        "The summary shows six bullets.",
+        "The dialog closes.",
+        "The summary shows six bullets, one for each character of ghijkl.",
+        "The dialog closes and the summary still shows six bullets, because Cancel kept the stored password.",
+        "The password field shows ghijkl in clear text while the icon is on, and it masks the text again when the icon is tapped once more."
+      ],
+      "control_path": "C-U03-001 > C-U03-010 > C-U03-029 > C-U03-030 > C-U03-031 > C-U03-032 > C-U03-033 > C-U03-034",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:78",
+      "rules": [
+        "R-UC-08"
+      ]
+    },
+    {
+      "id": "TC-U03-30",
+      "title": "Uninstalling the selected plugin disables Configure… and shows Unknown plugin",
+      "preconditions": [
+        "The editor is open with the obfs-local plugin selected and Configure… enabled.",
+        "The draft is clean."
+      ],
+      "steps": [
+        "Uninstall the obfs-local package while the editor stays open.",
+        "Read the Plugin summary and Configure…."
+      ],
+      "expected": [
+        "The package-change receiver runs initPlugins again.",
+        "The summary reads Unknown plugin obfs-local and Configure… becomes disabled; the draft stays clean."
+      ],
+      "control_path": "C-U03-001 > C-U03-019 > C-U03-020",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:224",
+      "rules": [
+        "R-UC-25"
+      ]
+    },
+    {
+      "id": "TC-U03-31",
+      "title": "The profile list serializes the tapped profile into the private draft store before it starts the editor",
+      "preconditions": [
+        "Profile 3 exists with name Alpha, host a.example, port 8388, method aes-256-cfb, and route all.",
+        "Profile 5 exists with name Beta, host b.example, port 8389, method aes-128-gcm, and route bypass-lan.",
+        "The service is stopped."
+      ],
+      "steps": [
+        "Tap the edit control of profile 3.",
+        "Press system back with no changes.",
+        "Tap the edit control of profile 5.",
+        "Read the Profile Name, Server, Remote Port, and Route rows."
+      ],
+      "expected": [
+        "The editor opens for profile 3 and shows Alpha, a.example, 8388, and All.",
+        "The editor closes at once with no unsaved-changes dialog.",
+        "The editor opens for profile 5. The earlier session on profile 3 does not block the editor. The list wrote profile 5 into the private draft store before the start.",
+        "The Profile Name summary shows Beta and the Server summary shows b.example. The Remote Port summary shows 8389 and the Route summary shows Bypass LAN."
+      ],
+      "control_path": "C-U03-001 > C-U03-006 > C-U03-008 > C-U03-009 > C-U03-013",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:330",
+      "rules": [
+        "R-UC-01"
+      ]
+    }
+  ],
+  "parity_summary": {
+    "implemented": 23,
+    "partial": 5,
+    "missing": 0,
+    "android_only": 3
+  },
+  "notes": "Every file in the unit list exists. Labels come from core/src/main/res/values/strings.xml and plugin/src/main/res/values/strings.xml, and the toolbar layout is plugin/src/main/res/layout/toolbar_light_dark.xml. The route arrays are in mobile/src/main/res/values/arrays.xml; the core arrays file holds enc_method_entry and enc_method_value. The OK and Cancel buttons of the text dialogs are the framework buttons of androidx.preference 1.2.1 (core/build.gradle.kts:101, gradle/libs.versions.toml:23), so the custom password layout replaces only the field area; the framework sources are the /tmp/pref121 entries in sources_read. The toolbar X calls onSupportNavigateUp and, with no parent activity declared, finishes at once, so it discards a dirty draft while system back asks; rule R-UC-35 records that asymmetry. The plugin chooser sheet, the plugin options editor, its ? help alert, the untrusted warning, and the options-error snackbar belong to U08; U03 records only the Plugin and Configure… rows that open them. The AppManager screen belongs to U07. The editor and the chooser both include toolbar_light_dark.xml, and each preference row carries the static icon that pref_profile.xml declares. The scrollable preference list is the RecyclerView that PreferenceFragmentCompat inflates with id recycler_view; android:id/content in layout_profile_config.xml is only the fragment container. Untrusted-plugin detection reads Android package signatures, which has no counterpart on HarmonyOS. HarmonyOS parity: ProfileEdit.ets implements the IPv6 switch (enabled only in VPN mode), the UDP fallback row, the Remove action with its confirmation dialog, the Profile config title, the close glyph that discards the draft, the five-digit numeric port field whose saved value normalizeRemotePort clamps to 1 through 65535, a load gate that closes the editor when the profile id does not resolve, newManualProfile for the manual add flow, and isSubscriptionLocked for Active subscription profiles. pages/UdpFallback.ets is the chooser: the Disabled row first, then eligibleFallbacks (not obsolete, not the edited profile, no plugin), scrolled to the current choice, with the choice handed back through AppStorage. model/UdpFallback.ets holds the eligibility, display, row-index, and handoff rules, and model/Diagnostics.ets holds ipv6SwitchEnabled. Limits: a manual profile starts with AES-256-GCM, not Android's AES-256-CFB, because the core runs AEAD ciphers only (TC-U03-02); the method menu holds six AEAD presets plus a custom field, not Android's 22 entries (TC-U03-13); the plugin rows use the built-in obfs-local and v2ray-plugin catalogue, with no installed-package discovery or package display label (TC-U03-15, TC-U03-25); the password is an inline masked field with the platform reveal control, not a row summary of one bullet per character (TC-U03-29). Apps VPN mode and the app picker belong to U07, so TC-U03-11 stays missing in this unit's tags. The plugin options editor and its validation, and the ? help, belong to U08, so TC-U03-16 and TC-U03-26 stay missing in this unit's tags. Plugin signatures and package install or removal have no HarmonyOS counterpart (TC-U03-17, TC-U03-30). udp_fallback is still neither imported nor exported by ProfilesFile.ets, and the core config has no fallback key, so the stored choice does not change the tunnel. Device E2E has not run."
+}

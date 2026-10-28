@@ -24,10 +24,12 @@
  * The I/O that feeds these functions lives in ConnectivityProbe/Latency/
  * Throughput, and the cross-process file they read lives in VpnStatus.
  *
- * `./Routes` is imported because it is itself dependency-free — it only holds
- * string constants.
+ * `./Routes` and `./Profile` are imported because they need no kit API. The
+ * rules that read a profile stay in this module, so the host runner can test
+ * them.
  */
 
+import { Profile } from './Profile';
 import {
   ROUTE_ALL, ROUTE_BYPASS_CHINA, ROUTE_BYPASS_LAN, ROUTE_BYPASS_LAN_CHINA,
 } from './Routes';
@@ -47,6 +49,8 @@ export const PHASE_PROBE_FAILED: string = 'probe-failed';
 export const PHASE_FAILED: string = 'failed';
 /** The extension says `running` but stopped refreshing its timestamp. */
 export const PHASE_LOST: string = 'lost';
+/** The tunnel is tearing down. No row accepts input. */
+export const PHASE_STOPPING: string = 'stopping';
 
 /* ---- probe verdicts ---- */
 export const PROBE_OK: string = 'ok';
@@ -104,25 +108,72 @@ export const MODE_PROXY: string = 'proxy';
 /** Default local SOCKS5 port for proxy mode, the same one Android uses. */
 export const DEFAULT_PROXY_PORT: number = 1080;
 
+/**
+ * Default port of the core's local DNS resolver in tun mode. The core binds it
+ * on loopback and answers the tun's port 53 through it. Android uses the same
+ * default.
+ */
+export const DEFAULT_LOCAL_DNS_PORT: number = 5450;
+
+/** The row summary of a port that has no stored value. */
+export const PORT_UNSET: string = 'not-set';
+
+/* ---- settings row keys, in display order ---- */
+export const SETTINGS_ROW_AUTO_CONNECT: string = 'auto-connect';
+export const SETTINGS_ROW_SERVICE_MODE: string = 'service-mode';
+export const SETTINGS_ROW_PROXY_PORT: string = 'proxy-port';
+export const SETTINGS_ROW_LOCAL_DNS_PORT: string = 'local-dns-port';
+
+/** The mode entries of the service mode menu, in the Android menu order. */
+export const SERVICE_MODE_CHOICES: string[] = [MODE_PROXY, MODE_VPN];
+
+/**
+ * The IPv6 switch applies to tun mode only. Proxy mode creates no tunnel, so
+ * the flag would have nothing to act on.
+ */
+export function ipv6SwitchEnabled(serviceMode: string): boolean {
+  return serviceMode === MODE_VPN;
+}
+
 /** The endpoint settings the user can override, and how the tunnel is applied. */
 export interface AppSettings {
   probeUrl: string;
   speedTestUrl: string;
-  /** One of MODE_VPN or MODE_PROXY. */
+  /** A stored mode value. A value other than MODE_VPN or MODE_PROXY is kept. */
   serviceMode: string;
-  /** Local SOCKS5 port for proxy mode. */
-  proxyPort: number;
+  /** The port text as the user typed it. '' means Not set. */
+  proxyPort: string;
+  /** The local DNS port text as the user typed it. '' means Not set. */
+  localDnsPort: string;
+  /** Stored for a future startup hook. No HarmonyOS hook exists yet. */
+  autoConnect: boolean;
   /** Bind proxy mode's listener on all interfaces rather than loopback only. */
   shareOverLan: boolean;
 }
 
-/** The on-disk shape, with every field optional so a partial file still loads. */
+/** The on-disk shape. A 5.3.5 file stores the two ports as numbers. */
 export interface AppSettingsJson {
   probeUrl?: string;
   speedTestUrl?: string;
   serviceMode?: string;
-  proxyPort?: number;
+  proxyPort?: string | number;
+  localDnsPort?: string | number;
+  autoConnect?: boolean;
   shareOverLan?: boolean;
+}
+
+/**
+ * The text form of a stored port value. Returns '' for a missing value and for
+ * a value that is neither a string nor a number. A number becomes decimal text.
+ */
+function portText(value: string | number | undefined): string {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return `${value}`;
+  }
+  return '';
 }
 
 /**
@@ -135,29 +186,140 @@ export function settingsFromJson(parsed: AppSettingsJson | null): AppSettings {
     probeUrl: DEFAULT_PROBE_URL,
     speedTestUrl: DEFAULT_SPEED_URL,
     serviceMode: MODE_VPN,
-    proxyPort: DEFAULT_PROXY_PORT,
+    proxyPort: `${DEFAULT_PROXY_PORT}`,
+    localDnsPort: `${DEFAULT_LOCAL_DNS_PORT}`,
+    autoConnect: false,
     shareOverLan: false,
   };
   if (parsed === null) {
     return settings;
   }
   const probe = parsed.probeUrl;
-  if (probe !== undefined && probe.length > 0) {
+  if (typeof probe === 'string' && probe.length > 0) {
     settings.probeUrl = probe;
   }
   const speed = parsed.speedTestUrl;
-  if (speed !== undefined && speed.length > 0) {
+  if (typeof speed === 'string' && speed.length > 0) {
     settings.speedTestUrl = speed;
   }
-  if (parsed.serviceMode === MODE_PROXY) {
-    settings.serviceMode = MODE_PROXY;
+  // A stored mode other than the two the app offers is kept. The summary shows
+  // Not set for it, and the main page starts VPN mode.
+  if (typeof parsed.serviceMode === 'string' && parsed.serviceMode.length > 0) {
+    settings.serviceMode = parsed.serviceMode;
   }
-  const port = parsed.proxyPort;
-  if (port !== undefined && port > 0 && port <= 65535) {
-    settings.proxyPort = port;
+  if (parsed.proxyPort !== undefined) {
+    settings.proxyPort = portText(parsed.proxyPort);
   }
+  if (parsed.localDnsPort !== undefined) {
+    settings.localDnsPort = portText(parsed.localDnsPort);
+  }
+  settings.autoConnect = parsed.autoConnect === true;
   settings.shareOverLan = parsed.shareOverLan === true;
   return settings;
+}
+
+/** The row keys the screen shows. The collapsed view shows Auto Connect only. */
+export function settingsRows(expanded: boolean): string[] {
+  if (!expanded) {
+    return [SETTINGS_ROW_AUTO_CONNECT];
+  }
+  return [
+    SETTINGS_ROW_AUTO_CONNECT,
+    SETTINGS_ROW_SERVICE_MODE,
+    SETTINGS_ROW_PROXY_PORT,
+    SETTINGS_ROW_LOCAL_DNS_PORT,
+  ];
+}
+
+/** The hidden row keys, in display order, for the Advanced summary. */
+export function advancedSummaryRows(): string[] {
+  return [SETTINGS_ROW_SERVICE_MODE, SETTINGS_ROW_PROXY_PORT, SETTINGS_ROW_LOCAL_DNS_PORT];
+}
+
+/** The menu entry that matches a stored mode. '' when no entry matches. */
+export function serviceModeEntry(serviceMode: string): string {
+  if (serviceMode === MODE_VPN) {
+    return MODE_VPN;
+  }
+  if (serviceMode === MODE_PROXY) {
+    return MODE_PROXY;
+  }
+  return '';
+}
+
+/** The row summary of a stored port text. */
+export function portSummary(text: string): string {
+  return text.length > 0 ? text : PORT_UNSET;
+}
+
+/** True when the text holds ASCII digits only. */
+function isDigitText(text: string): boolean {
+  if (text.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code < 48 || code > 57) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * The port a stored text means. Returns the fallback for an empty text, a text
+ * with a non-digit, a value below 1025, and a value above 65535.
+ */
+export function portNumber(text: string, fallback: number): number {
+  if (!isDigitText(text)) {
+    return fallback;
+  }
+  const value = Number.parseInt(text, 10);
+  if (Number.isNaN(value) || value < 1025 || value > 65535) {
+    return fallback;
+  }
+  return value;
+}
+
+/** The digits of a port input, at most five. */
+export function sanitizePortInput(text: string): string {
+  let out = '';
+  for (let i = 0; i < text.length; i++) {
+    if (out.length >= 5) {
+      break;
+    }
+    const code = text.charCodeAt(i);
+    if (code >= 48 && code <= 57) {
+      out += text.charAt(i);
+    }
+  }
+  return out;
+}
+
+/**
+ * Whether the stored file lacks a key the current shape needs. An absent file
+ * (null) always needs a seed. An empty stored port is a deliberate clear.
+ */
+export function settingsNeedSeed(parsed: AppSettingsJson | null): boolean {
+  if (parsed === null) {
+    return true;
+  }
+  return parsed.serviceMode === undefined || parsed.proxyPort === undefined ||
+    parsed.localDnsPort === undefined || parsed.autoConnect === undefined;
+}
+
+/** The store shape of a complete settings object. The ports stay text. */
+export function settingsJsonFrom(settings: AppSettings): AppSettingsJson {
+  const json: AppSettingsJson = {
+    probeUrl: settings.probeUrl,
+    speedTestUrl: settings.speedTestUrl,
+    serviceMode: settings.serviceMode,
+    proxyPort: settings.proxyPort,
+    localDnsPort: settings.localDnsPort,
+    autoConnect: settings.autoConnect,
+    shareOverLan: settings.shareOverLan,
+  };
+  return json;
 }
 
 /** Cross-process status of the VPN extension, written by the extension ability. */
@@ -222,6 +384,72 @@ export function summarizeStatus(status: VpnStatus | null): string {
 /** Whether a sample taken at `timestamp` has gone stale by `nowMs`. */
 export function isStale(timestamp: number, nowMs: number, staleMs: number): boolean {
   return (nowMs - timestamp) > staleMs;
+}
+
+/**
+ * Whether the service is stopped, for the settings rows that a live service
+ * locks. A recent status record or a live traffic sample means the tunnel is
+ * still up.
+ */
+export function isServiceStopped(status: VpnStatus | null, statsTimestamp: number,
+  nowMs: number, proxyUp: boolean): boolean {
+  if (proxyUp) {
+    return false;
+  }
+  if (status === null) {
+    return true;
+  }
+  if (status.state === VPN_STATE_STOPPED || status.state === VPN_STATE_FAILED) {
+    return true;
+  }
+  const statusRecent = !isStale(status.timestamp, nowMs, CONNECT_TIMEOUT_MS + STATS_STALE_MS);
+  const statsLive = statsTimestamp > 0 && !isStale(statsTimestamp, nowMs, STATS_STALE_MS);
+  return !(statusRecent || statsLive);
+}
+
+/** Whether a profile row accepts a tap or a drag. Every phase but STOPPING. */
+export function isEnabled(phase: string): boolean {
+  return phase !== PHASE_STOPPING;
+}
+
+/**
+ * The selected profile id and its UDP fallback id, when both have a profile.
+ * An absent selection falls back to the first profile, as ProfileStore does.
+ */
+export function activeProfileIds(profiles: Profile[], currentId: string): string[] {
+  if (profiles.length === 0) {
+    return [];
+  }
+  let selected: Profile = profiles[0];
+  for (let i = 0; i < profiles.length; i++) {
+    if (profiles[i].id === currentId) {
+      selected = profiles[i];
+      break;
+    }
+  }
+  const ids: string[] = [selected.id];
+  const fallbackId = selected.udpFallbackId;
+  if (fallbackId.length === 0 || fallbackId === selected.id) {
+    return ids;
+  }
+  for (let i = 0; i < profiles.length; i++) {
+    if (profiles[i].id === fallbackId) {
+      ids.push(fallbackId);
+      break;
+    }
+  }
+  return ids;
+}
+
+/**
+ * Whether the edit icon and the swipe are available. A profile that carries
+ * the live tunnel stays locked until the tunnel stops.
+ */
+export function isProfileEditable(phase: string, activeIds: string[], profileId: string): boolean {
+  if (phase === PHASE_IDLE || phase === PHASE_FAILED) {
+    return true;
+  }
+  return phase !== PHASE_STOPPING && activeIds.indexOf(profileId) < 0;
 }
 
 /**

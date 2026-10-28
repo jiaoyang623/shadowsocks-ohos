@@ -19,7 +19,10 @@
 
 import { common } from '@kit.AbilityKit';
 import { JsonStore } from './JsonStore';
-import { DEFAULT_REMOTE_DNS, Profile, STATUS_OBSOLETE, STATUS_USER_CONFIGURED, nextUserOrder } from './Profile';
+import {
+  DEFAULT_REMOTE_DNS, Profile, STATUS_ACTIVE, STATUS_OBSOLETE, STATUS_USER_CONFIGURED,
+  newManualProfile, nextUserOrder,
+} from './Profile';
 import { ROUTE_ALL } from './Routes';
 
 const STORE_PROFILES = 'profiles';
@@ -45,19 +48,59 @@ export class ProfileStore {
     profile.localPort = parsed.localPort ?? 1080;
     profile.plugin = parsed.plugin ?? '';
     profile.pluginOpts = parsed.pluginOpts ?? '';
+    // A record written before 5.4.0 has no plugin map. Its absence decides
+    // whether an empty options text is a choice or a missing configuration.
+    const storesPluginConfigs =
+      parsed.pluginConfigs !== null && parsed.pluginConfigs !== undefined;
+    profile.pluginConfigs = ProfileStore.copyPluginConfigs(parsed.pluginConfigs);
     profile.remoteDns = parsed.remoteDns ?? DEFAULT_REMOTE_DNS;
     profile.udpdns = parsed.udpdns ?? false;
     profile.ipv6 = parsed.ipv6 ?? false;
+    profile.metered = parsed.metered ?? false;
+    profile.proxyAppsEnabled = parsed.proxyAppsEnabled ?? false;
+    profile.proxyAppsBypass = parsed.proxyAppsBypass ?? false;
+    profile.proxyAppsList = parsed.proxyAppsList ?? '';
     profile.udpFallbackId = parsed.udpFallbackId ?? '';
-    profile.subscriptionStatus = parsed.subscriptionStatus ?? STATUS_USER_CONFIGURED;
+    // A 5.3.5 record has no status field. A record that names a subscription
+    // still belongs to it, so it stays active on upgrade. The first 5.4.0
+    // refresh can then update or obsolete it. An empty id stays user owned.
+    profile.subscriptionStatus = parsed.subscriptionStatus ??
+      (profile.subscriptionId.length > 0 ? STATUS_ACTIVE : STATUS_USER_CONFIGURED);
     profile.tx = parsed.tx ?? 0;
     profile.rx = parsed.rx ?? 0;
     profile.userOrder = parsed.userOrder ?? 0;
+    // An old record has no plugin map, so an empty options text there takes
+    // the catalogue default. A record with the map states its options, so an
+    // explicit empty text stays empty and round-trips.
+    profile.normalizePluginOptions(!storesPluginConfigs);
     return profile;
   }
 
-  static async getAll(context: common.Context): Promise<Profile[]> {
-    const raw = await JsonStore.read(context, STORE_PROFILES);
+  /**
+   * A copy of a stored plugin map. The copy keeps the load separate from the
+   * stored record. An entry that is not a string is dropped.
+   */
+  private static copyPluginConfigs(
+    source: Record<string, string> | null | undefined): Record<string, string> {
+    const target: Record<string, string> = {};
+    if (source === null || source === undefined) {
+      return target;
+    }
+    const entries = source as Record<string, Object>;
+    for (const key of Object.keys(entries)) {
+      const value = entries[key];
+      if (typeof value === 'string') {
+        target[key] = value;
+      }
+    }
+    return target;
+  }
+
+  /**
+   * The list from one stored text. An empty text gives an empty list. A JSON
+   * error gives null, so a caller can tell a corrupt file from an empty one.
+   */
+  private static parse(raw: string): Profile[] | null {
     if (raw.length === 0) {
       return [];
     }
@@ -67,10 +110,28 @@ export class ProfileStore {
       // The file order is not the display order: the user's is kept in
       // userOrder, and a stable sort leaves a file written before that field
       // existed in the order it was already in.
-      return profiles.sort((a, b) => a.userOrder - b.userOrder);
+      return ProfileStore.sorted(profiles);
     } catch (e) {
-      return [];
+      return null;
     }
+  }
+
+  static async getAll(context: common.Context): Promise<Profile[]> {
+    const raw = await JsonStore.read(context, STORE_PROFILES);
+    return ProfileStore.parse(raw) ?? [];
+  }
+
+  /**
+   * The stored list, or null when the file is present and cannot be read.
+   * `getAll` returns an empty list for an absent file and for a corrupt file
+   * alike. A caller that writes back what it read must tell the two apart.
+   */
+  static async getAllOrNull(context: common.Context): Promise<Profile[] | null> {
+    const raw = await JsonStore.read(context, STORE_PROFILES);
+    if (raw.length === 0) {
+      return JsonStore.exists(context, STORE_PROFILES) ? null : [];
+    }
+    return ProfileStore.parse(raw);
   }
 
   static async saveAll(context: common.Context, profiles: Profile[]): Promise<void> {
@@ -94,10 +155,10 @@ export class ProfileStore {
   }
 
   /**
-   * Android's `ensureNotEmpty`: an empty list gets one blank profile, so the
-   * screen always has something to select and the edit form always has a
-   * target. A user who deletes the last profile gets it back, which is also
-   * what Android does.
+   * Android's `ensureNotEmpty`: an empty list gets Android's default profile
+   * (an empty name and `example.shadowsocks.org:8388`) and it is selected, so
+   * a fresh install shows the same row Android does. A user who deletes the
+   * last profile gets it back, which is also what Android does.
    *
    * Seeding writes the whole list, so an empty read is not enough to act on:
    * `getAll` also returns an empty array when the file cannot be read, and
@@ -115,7 +176,7 @@ export class ProfileStore {
         return;
       }
     }
-    const profile = new Profile();
+    const profile = newManualProfile(null);
     await ProfileStore.upsert(context, profile);
     await ProfileStore.setCurrentId(context, profile.id);
   }
@@ -129,6 +190,38 @@ export class ProfileStore {
    */
   static visible(profiles: Profile[]): Profile[] {
     return profiles.filter((p) => p.subscriptionStatus !== STATUS_OBSOLETE);
+  }
+
+  /** A copy of the list in ascending userOrder. The stored order stays. */
+  static sorted(profiles: Profile[]): Profile[] {
+    const copy = profiles.slice();
+    copy.sort((a, b) => a.userOrder - b.userOrder);
+    return copy;
+  }
+
+  /**
+   * The rows to show. The search text filters by name and host, and the ids in
+   * `hiddenIds` stay hidden because their delete is not committed.
+   *
+   * An empty query keeps every profile. The compare ignores case.
+   */
+  static filter(profiles: Profile[], query: string, hiddenIds: string[] = []): Profile[] {
+    const needle = query.trim().toLowerCase();
+    return profiles.filter((p) => {
+      if (hiddenIds.indexOf(p.id) >= 0) {
+        return false;
+      }
+      if (needle.length === 0) {
+        return true;
+      }
+      return p.name.toLowerCase().indexOf(needle) >= 0
+        || p.host.toLowerCase().indexOf(needle) >= 0;
+    });
+  }
+
+  /** The row index of a profile id, or -1 when the id has no row. */
+  static indexOf(profiles: Profile[], id: string): number {
+    return profiles.findIndex((p) => p.id === id);
   }
 
   /**
@@ -170,22 +263,27 @@ export class ProfileStore {
     await ProfileStore.saveAll(context, profiles);
     const currentId = await ProfileStore.getCurrentId(context);
     if (currentId === id) {
-      await ProfileStore.setCurrentId(context, profiles.length > 0 ? profiles[0].id : '');
+      await ProfileStore.setCurrentId(context,
+        ProfileStore.currentIdAfterRemove(profiles, currentId, id));
     }
   }
 
   /**
-   * Drops every profile a subscription owns, for when its URL is deleted: what
-   * a subscription brought in leaves with it, or the list fills with profiles
-   * nothing can update or remove.
+   * The selection to keep after `removedId` leaves the list. A selection that
+   * names another profile stays. A selection that named the removed profile
+   * moves to the first visible row, or clears when the list holds no visible
+   * row. `visible()` hides an obsolete profile, so selecting one would leave
+   * the screen with no check mark while a start used it.
+   *
+   * The stored list is expected to be the one after the removal.
    */
-  static async removeSubscriptionProfiles(context: common.Context, subscriptionId: string): Promise<void> {
-    const kept = (await ProfileStore.getAll(context)).filter((p) => p.subscriptionId !== subscriptionId);
-    await ProfileStore.saveAll(context, kept);
-    const currentId = await ProfileStore.getCurrentId(context);
-    if (currentId.length > 0 && kept.find((p) => p.id === currentId) === undefined) {
-      await ProfileStore.setCurrentId(context, kept.length > 0 ? kept[0].id : '');
+  static currentIdAfterRemove(profiles: Profile[], currentId: string,
+    removedId: string): string {
+    if (currentId !== removedId) {
+      return currentId;
     }
+    const visible = ProfileStore.visible(profiles);
+    return visible.length > 0 ? visible[0].id : '';
   }
 
   static async getCurrentId(context: common.Context): Promise<string> {
@@ -196,13 +294,32 @@ export class ProfileStore {
     await JsonStore.write(context, STORE_CURRENT_ID, id);
   }
 
-  /** The selected profile, or null when none is configured. */
+  /**
+   * The selected profile, or null when the stored id names no visible profile.
+   * The first profile is not a substitute: a start with no selection stops
+   * with "Please select a profile" (R-UA-27).
+   */
   static async getCurrent(context: common.Context): Promise<Profile | null> {
     const profiles = await ProfileStore.getAll(context);
-    if (profiles.length === 0) {
+    const currentId = await ProfileStore.getCurrentId(context);
+    return ProfileStore.currentOf(profiles, currentId);
+  }
+
+  /**
+   * The profile the id names, or null when it names no visible row. A
+   * selection is valid only for a row the main screen shows: an obsolete
+   * profile stays in the store but `visible()` hides it, so selecting one
+   * would start a tunnel with no check mark on the list.
+   */
+  static currentOf(profiles: Profile[], currentId: string): Profile | null {
+    if (currentId.length === 0) {
       return null;
     }
-    const currentId = await ProfileStore.getCurrentId(context);
-    return profiles.find((p) => p.id === currentId) ?? profiles[0];
+    for (const profile of profiles) {
+      if (profile.id === currentId && profile.subscriptionStatus !== STATUS_OBSOLETE) {
+        return profile;
+      }
+    }
+    return null;
   }
 }

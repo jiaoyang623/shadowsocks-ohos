@@ -1,0 +1,9 @@
+{
+  "判定": "pending",
+  "退出码": 3,
+  "检查明细": "Awaiting the reviewer's review-decisions.json.",
+  "指纹": {
+    "brief": "7c9237396c89e00aae0aef6e60328c4917cb5ebeddbe2e365e58aa7496fd53f6",
+    "snapshot": "b36cda726ca9a8b8a8365151d0eaf528ffb4cf7a2912c6b4445663261b0686e7"
+  }
+}

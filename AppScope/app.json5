@@ -2,8 +2,8 @@
   "app": {
     "bundleName": "com.xbt.project",
     "vendor": "shadowsocks",
-    "versionCode": 5030550,
-    "versionName": "5.3.5",
+    "versionCode": 5040000,
+    "versionName": "5.4.0",
     "icon": "$media:app_icon",
     "label": "$string:app_name"
   }

@@ -1,0 +1,2013 @@
+{
+  "unit": "U10",
+  "title": "QR scanner and About",
+  "sources_read": [
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/meta.json",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/README.md",
+    "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt",
+    "mobile/src/main/res/layout/layout_scanner.xml",
+    "mobile/src/main/res/menu/scanner_menu.xml",
+    "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt",
+    "mobile/src/main/res/layout/layout_about.xml",
+    "mobile/src/main/res/raw/about.html",
+    "mobile/src/main/res/xml/shortcuts.xml",
+    "mobile/src/main/res/menu/profile_manager_menu.xml",
+    "mobile/src/main/res/menu/navigation_main.xml",
+    "mobile/src/main/AndroidManifest.xml",
+    "mobile/src/main/res/values/styles.xml",
+    "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/WindowInsetsListeners.kt",
+    "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt",
+    "plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "core/src/main/res/values/strings.xml",
+    "core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt",
+    "core/src/main/java/com/github/shadowsocks/widget/AutoCollapseTextView.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "buildSrc/src/main/kotlin/Helpers.kt",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfilesFile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/module.json5",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/zh_CN/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/profile/main_pages.json"
+  ],
+  "controls": [
+    {
+      "id": "C-U10-001",
+      "type": "screen",
+      "label": "Scan QR code",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Hosts the camera scanner and requests the camera permission when it is created",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_scanner.xml:2"
+    },
+    {
+      "id": "C-U10-002",
+      "type": "row",
+      "label": "Scan QR code (toolbar)",
+      "android_id": "toolbar",
+      "parent": "C-U10-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the activity title, the up affordance and the photo action",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_scanner.xml:7"
+    },
+    {
+      "id": "C-U10-003",
+      "type": "button",
+      "label": "Navigate up",
+      "android_id": "",
+      "parent": "C-U10-002",
+      "visible_when": "always",
+      "enabled_when": "not finished",
+      "action": "Finishes the scanner once through onSupportNavigateUp; recreates the parent task when the scanner is the task root",
+      "navigates_to": "U02",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:104"
+    },
+    {
+      "id": "C-U10-004",
+      "type": "text",
+      "label": "Scan QR code",
+      "android_id": "",
+      "parent": "C-U10-002",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Activity label shown as the toolbar title",
+      "navigates_to": "",
+      "source": "mobile/src/main/AndroidManifest.xml:67"
+    },
+    {
+      "id": "C-U10-005",
+      "type": "image",
+      "label": "Camera preview",
+      "android_id": "barcode",
+      "parent": "C-U10-001",
+      "visible_when": "a camera is bound to the lifecycle",
+      "enabled_when": "always",
+      "action": "Shows the live camera feed that the QR analyzer reads",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_scanner.xml:8"
+    },
+    {
+      "id": "C-U10-006",
+      "type": "menu_item",
+      "label": "Import from file…",
+      "android_id": "action_import_clipboard",
+      "parent": "C-U10-002",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the image picker for image/* with multiple selection; also has the alphabetic shortcut o",
+      "navigates_to": "C-U10-009",
+      "source": "mobile/src/main/res/menu/scanner_menu.xml:4"
+    },
+    {
+      "id": "C-U10-007",
+      "type": "dialog",
+      "label": "Camera permission prompt (system)",
+      "android_id": "",
+      "parent": "C-U10-001",
+      "visible_when": "the CAMERA permission is not granted when the scanner starts",
+      "enabled_when": "always",
+      "action": "System prompt that grants or denies the camera permission",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:106"
+    },
+    {
+      "id": "C-U10-008",
+      "type": "snackbar",
+      "label": "Camera permission is required for scanning QR code.",
+      "android_id": "",
+      "parent": "C-U10-001",
+      "visible_when": "the camera permission is denied",
+      "enabled_when": "always",
+      "action": "Short toast, then the image picker opens",
+      "navigates_to": "C-U10-009",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:147"
+    },
+    {
+      "id": "C-U10-009",
+      "type": "screen",
+      "label": "Image picker (system, image/*)",
+      "android_id": "",
+      "parent": "C-U10-001",
+      "visible_when": "the permission is denied, the camera bind fails, or Import from file… is tapped",
+      "enabled_when": "always",
+      "action": "Returns zero or more image URIs to the scanner",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:175"
+    },
+    {
+      "id": "C-U10-010",
+      "type": "snackbar",
+      "label": "Successfully import!",
+      "android_id": "",
+      "parent": "C-U10-001",
+      "visible_when": "a file import created at least one profile",
+      "enabled_when": "always",
+      "action": "Short toast shown after the scanner has closed",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:189"
+    },
+    {
+      "id": "C-U10-011",
+      "type": "snackbar",
+      "label": "Failed to import.",
+      "android_id": "",
+      "parent": "C-U10-001",
+      "visible_when": "a file import created no profile",
+      "enabled_when": "always",
+      "action": "Short toast shown after the scanner has closed",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:189"
+    },
+    {
+      "id": "C-U10-012",
+      "type": "snackbar",
+      "label": "Exception message (long toast)",
+      "android_id": "",
+      "parent": "C-U10-001",
+      "visible_when": "reading a chosen image throws",
+      "enabled_when": "always",
+      "action": "Long toast with the readable message of the exception",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:192"
+    },
+    {
+      "id": "C-U10-013",
+      "type": "screen",
+      "label": "About",
+      "android_id": "about_container",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the app version and the about.html text inside the main content area",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_about.xml:2"
+    },
+    {
+      "id": "C-U10-014",
+      "type": "row",
+      "label": "Shadowsocks 5.3.5-nightly (toolbar)",
+      "android_id": "toolbar",
+      "parent": "C-U10-013",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the About title and the drawer icon",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_about.xml:9"
+    },
+    {
+      "id": "C-U10-015",
+      "type": "button",
+      "label": "Open navigation drawer",
+      "android_id": "",
+      "parent": "C-U10-014",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the main navigation drawer",
+      "navigates_to": "U01",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:35"
+    },
+    {
+      "id": "C-U10-016",
+      "type": "text",
+      "label": "Shadowsocks 5.3.5-nightly",
+      "android_id": "",
+      "parent": "C-U10-014",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Toolbar title built from about_title and BuildConfig.VERSION_NAME",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:48"
+    },
+    {
+      "id": "C-U10-017",
+      "type": "row",
+      "label": "About scroll area",
+      "android_id": "",
+      "parent": "C-U10-013",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Scrolls the About body vertically and keeps a bottom padding for the navigation bar",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_about.xml:10"
+    },
+    {
+      "id": "C-U10-018",
+      "type": "text",
+      "label": "About body (about.html)",
+      "android_id": "tv_about",
+      "parent": "C-U10-017",
+      "visible_when": "the parsed text is not empty",
+      "enabled_when": "always",
+      "action": "Selectable text parsed from about.html with clickable link spans",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_about.xml:15"
+    },
+    {
+      "id": "C-U10-019",
+      "type": "text",
+      "label": "Shadowsocks (link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens http://shadowsocks.org in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:7"
+    },
+    {
+      "id": "C-U10-020",
+      "type": "text",
+      "label": "max.c.lv@gmail.com (link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens an email chooser for mailto:max.c.lv@gmail.com",
+      "navigates_to": "C-U10-031",
+      "source": "mobile/src/main/res/raw/about.html:8"
+    },
+    {
+      "id": "C-U10-021",
+      "type": "text",
+      "label": "contact-shadowsocks-android@mygod.be (link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens an email chooser for mailto:contact-shadowsocks-android@mygod.be",
+      "navigates_to": "C-U10-031",
+      "source": "mobile/src/main/res/raw/about.html:9"
+    },
+    {
+      "id": "C-U10-022",
+      "type": "text",
+      "label": "http://www.gnu.org/licenses/ (link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the GNU licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:19"
+    },
+    {
+      "id": "C-U10-023",
+      "type": "text",
+      "label": "APL 2.0 (redsocks link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the redsocks licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:22"
+    },
+    {
+      "id": "C-U10-024",
+      "type": "text",
+      "label": "BSD (libevent link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the libevent licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:23"
+    },
+    {
+      "id": "C-U10-025",
+      "type": "text",
+      "label": "BSD (tun2socks link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the tun2socks licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:24"
+    },
+    {
+      "id": "C-U10-026",
+      "type": "text",
+      "label": "MIT (shadowsocks-rust link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the shadowsocks-rust licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:25"
+    },
+    {
+      "id": "C-U10-027",
+      "type": "text",
+      "label": "ISC (libsodium link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the libsodium licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:26"
+    },
+    {
+      "id": "C-U10-028",
+      "type": "text",
+      "label": "OpenSSL License (link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the OpenSSL licence page in a Custom Tab",
+      "navigates_to": "C-U10-032",
+      "source": "mobile/src/main/res/raw/about.html:27"
+    },
+    {
+      "id": "C-U10-029",
+      "type": "text",
+      "label": "Other licenses (link)",
+      "android_id": "",
+      "parent": "C-U10-018",
+      "visible_when": "the About body is shown",
+      "enabled_when": "always",
+      "action": "Opens the Google Play OSS licences screen because the URL starts with #",
+      "navigates_to": "C-U10-030",
+      "source": "mobile/src/main/res/raw/about.html:28"
+    },
+    {
+      "id": "C-U10-030",
+      "type": "screen",
+      "label": "Open source licenses",
+      "android_id": "",
+      "parent": "C-U10-029",
+      "visible_when": "an About link whose URL starts with # is tapped",
+      "enabled_when": "always",
+      "action": "Google Play OSS licences list of the bundled libraries",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:57"
+    },
+    {
+      "id": "C-U10-031",
+      "type": "dialog",
+      "label": "Send email",
+      "android_id": "",
+      "parent": "C-U10-020",
+      "visible_when": "a mailto link is tapped",
+      "enabled_when": "always",
+      "action": "System chooser for ACTION_SENDTO with the mailto address",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:60"
+    },
+    {
+      "id": "C-U10-032",
+      "type": "screen",
+      "label": "Custom Tab browser",
+      "android_id": "",
+      "parent": "C-U10-019",
+      "visible_when": "an http or https link is tapped and a browser handles it",
+      "enabled_when": "always",
+      "action": "Opens the tapped URL",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:87"
+    },
+    {
+      "id": "C-U10-033",
+      "type": "snackbar",
+      "label": "URL (fallback snackbar)",
+      "android_id": "",
+      "parent": "C-U10-019",
+      "visible_when": "no activity handles the tapped URL",
+      "enabled_when": "always",
+      "action": "Shows the raw URL text in a snackbar",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:89"
+    },
+    {
+      "id": "C-U10-034",
+      "type": "shortcut",
+      "label": "Scan QR code",
+      "android_id": "scan",
+      "parent": "",
+      "visible_when": "always on the launcher",
+      "enabled_when": "always",
+      "action": "Launcher shortcut that starts ScannerActivity directly",
+      "navigates_to": "C-U10-001",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:11"
+    },
+    {
+      "id": "C-U10-035",
+      "type": "shortcut",
+      "label": "Toggle",
+      "android_id": "toggle",
+      "parent": "",
+      "visible_when": "always on the launcher",
+      "enabled_when": "always",
+      "action": "Launcher shortcut that starts QuickToggleShortcut in the :bg process; its behavior belongs to U11",
+      "navigates_to": "U11",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:3"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UJ-01",
+      "statement": "The scanner asks for the CAMERA permission each time the activity is created.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:106",
+      "examples": [
+        {
+          "given": "a fresh install with no camera grant",
+          "when": "the scanner opens",
+          "then": "the system camera permission prompt appears",
+          "polarity": "positive"
+        },
+        {
+          "given": "the camera permission is already granted",
+          "when": "the scanner opens",
+          "then": "the prompt does not appear and the camera binds",
+          "polarity": "positive"
+        },
+        {
+          "given": "a configuration change recreates the scanner activity",
+          "when": "the new activity instance is created",
+          "then": "the scanner requests the camera permission again",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-02",
+      "statement": "A granted permission binds the back camera, or the front camera when the device has no back camera.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:111",
+      "examples": [
+        {
+          "given": "the device has a back camera",
+          "when": "the permission is granted",
+          "then": "the back camera preview is bound",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device has only a front camera",
+          "when": "the permission is granted",
+          "then": "the front camera preview is bound",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-03",
+      "statement": "A denied camera permission shows the permission toast and then opens the image picker.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:147",
+      "examples": [
+        {
+          "given": "the system prompt is showing",
+          "when": "the user denies the camera permission",
+          "then": "the toast Camera permission is required for scanning QR code. shows and the picker opens",
+          "polarity": "negative"
+        },
+        {
+          "given": "the system camera permission prompt is showing",
+          "when": "the user allows the camera permission",
+          "then": "no permission toast shows, the image picker does not open, and the camera preview binds",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-04",
+      "statement": "A camera bind failure opens the image picker without showing the permission toast.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:122",
+      "examples": [
+        {
+          "given": "the camera permission is granted",
+          "when": "bindToLifecycle throws IllegalArgumentException",
+          "then": "the image picker opens and no toast appears",
+          "polarity": "negative"
+        },
+        {
+          "given": "the camera permission is granted and the camera is available",
+          "when": "bindToLifecycle returns a Camera",
+          "then": "the camera preview shows and the image picker does not open",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-05",
+      "statement": "The analyzer decodes QR codes only and keeps the latest frame.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:67",
+      "examples": [
+        {
+          "given": "a frame holds a barcode in another symbology",
+          "when": "the analyzer receives it",
+          "then": "no barcode value is produced",
+          "polarity": "negative"
+        },
+        {
+          "given": "frames arrive faster than they are analyzed",
+          "when": "a newer frame arrives",
+          "then": "the older frame is dropped",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-06",
+      "statement": "Each ss:// URL in the decoded text creates one new profile, in text order.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:139",
+      "examples": [
+        {
+          "given": "a code holds two ss:// URLs",
+          "when": "the frame is decoded",
+          "then": "two profiles are created in the order the URLs appear",
+          "polarity": "positive"
+        },
+        {
+          "given": "the decoded text holds the same ss:// URL on two lines",
+          "when": "the frame is decoded",
+          "then": "two profiles are created, one for each occurrence",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-07",
+      "statement": "A new profile copies route, IPv6, metered, proxy-app and UDP-DNS settings from the current profile.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:277",
+      "examples": [
+        {
+          "given": "the current profile uses route bypass-lan and IPv6 on",
+          "when": "a code is scanned",
+          "then": "the new profile has route bypass-lan and IPv6 on",
+          "polarity": "positive"
+        },
+        {
+          "given": "the current profile has host example.org and name Current",
+          "when": "a code for host example.com and name Scanned is decoded",
+          "then": "the new profile has host example.com and name Scanned",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-08",
+      "statement": "A malformed or unknown ss:// URL is skipped while other URLs in the same text still import.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:127",
+      "examples": [
+        {
+          "given": "the text holds one valid URL and one invalid base64 payload",
+          "when": "the text is parsed",
+          "then": "only the valid URL becomes a profile",
+          "polarity": "negative"
+        },
+        {
+          "given": "the text holds the valid URL ss://YWVzLTI1Ni1nY206cGFzcw@example.com:8388#Test",
+          "when": "the text is parsed",
+          "then": "the URL becomes one profile with host example.com and no URL is skipped",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-09",
+      "statement": "A scan that creates at least one profile clears the analyzer and closes the scanner.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:84",
+      "examples": [
+        {
+          "given": "the camera is analyzing frames",
+          "when": "a decoded code yields one profile",
+          "then": "the analyzer stops and the scanner navigates up",
+          "polarity": "positive"
+        },
+        {
+          "given": "a decoded code holds two ss:// URLs",
+          "when": "the frame is decoded",
+          "then": "both profiles are created and the scanner navigates up once",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-10",
+      "statement": "A scan that creates no profile leaves the scanner open and keeps analyzing.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:137",
+      "examples": [
+        {
+          "given": "the camera is analyzing frames",
+          "when": "a decoded code holds no usable ss:// URL",
+          "then": "no profile is created, no message shows, and scanning continues",
+          "polarity": "negative"
+        },
+        {
+          "given": "the camera is analyzing frames",
+          "when": "a decoded code holds one usable ss:// URL",
+          "then": "the profile is created, the analyzer clears, and the scanner navigates up",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-11",
+      "statement": "The scanner navigates up at most once per opening.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:168",
+      "examples": [
+        {
+          "given": "the scanner has already navigated up",
+          "when": "onSupportNavigateUp is called again",
+          "then": "the call returns false and nothing happens",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the scanner is open and has not navigated up",
+          "when": "onSupportNavigateUp is called",
+          "then": "the scanner is marked finished and the up navigation proceeds",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-12",
+      "statement": "The up action recreates the parent task when the scanner is the task root.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:166",
+      "examples": [
+        {
+          "given": "the scanner was started from the launcher shortcut as a task root",
+          "when": "the up action is used",
+          "then": "the parent task is recreated instead of the scanner just finishing",
+          "polarity": "positive"
+        },
+        {
+          "given": "the scanner was opened from the Add Profile menu and is not the task root",
+          "when": "the up action is used",
+          "then": "the scanner finishes without recreating a parent task",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-13",
+      "statement": "The menu item Import from file… opens a multi-image picker for image/*.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:175",
+      "examples": [
+        {
+          "given": "the scanner is open",
+          "when": "the user taps Import from file…",
+          "then": "the image picker opens and accepts several images",
+          "polarity": "positive"
+        },
+        {
+          "given": "the picker was opened from Import from file…",
+          "when": "the user cancels it without choosing an image",
+          "then": "no image is read and the scanner stays open",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-14",
+      "statement": "Cancelling the menu picker keeps the scanner open, while cancelling the fallback picker closes it.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:194",
+      "examples": [
+        {
+          "given": "the picker was opened from the menu",
+          "when": "the user cancels it",
+          "then": "the scanner stays open",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the picker opened because the permission was denied",
+          "when": "the user cancels it",
+          "then": "the scanner closes",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the picker was opened from the menu",
+          "when": "the user selects one image",
+          "then": "the scanner navigates up and the image import starts",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-15",
+      "statement": "A file import closes the scanner before it processes the chosen images.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:181",
+      "examples": [
+        {
+          "given": "the user chose two images",
+          "when": "the picker returns",
+          "then": "onSupportNavigateUp runs before either image is read",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user chooses one image",
+          "when": "the picker returns",
+          "then": "the scanner closes before the image is read",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-16",
+      "statement": "A file import creates a profile for each ss:// URL found in each chosen image.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:186",
+      "examples": [
+        {
+          "given": "one image holds a code with one URL",
+          "when": "the import runs",
+          "then": "one profile is created",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user chooses two images, the first holds two ss:// URLs and the second holds plain text",
+          "when": "the import runs",
+          "then": "two profiles are created from the first image and none from the second",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-17",
+      "statement": "A successful file import shows Successfully import!, and a failed one shows Failed to import.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:189",
+      "examples": [
+        {
+          "given": "at least one chosen image yielded a profile",
+          "when": "the import finishes",
+          "then": "the Successfully import! toast shows",
+          "polarity": "positive"
+        },
+        {
+          "given": "no chosen image yielded a profile",
+          "when": "the import finishes",
+          "then": "the Failed to import. toast shows",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-18",
+      "statement": "An exception during a file import shows the readable message in a long toast.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:191",
+      "examples": [
+        {
+          "given": "a chosen image cannot be read",
+          "when": "the import runs",
+          "then": "a long toast shows the readable exception message",
+          "polarity": "negative"
+        },
+        {
+          "given": "every chosen image can be read",
+          "when": "the import finishes",
+          "then": "no long exception toast shows and the short import result toast shows",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-19",
+      "statement": "The launcher shortcut Scan QR code starts the scanner directly.",
+      "kind": "interaction",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:11",
+      "examples": [
+        {
+          "given": "the app is installed and not running",
+          "when": "the user taps the Scan QR code shortcut",
+          "then": "ScannerActivity opens on the camera path",
+          "polarity": "positive"
+        },
+        {
+          "given": "the app is installed and the launcher shows both shortcuts",
+          "when": "the user taps the Scan QR code shortcut",
+          "then": "ScannerActivity starts and QuickToggleShortcut does not start",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-20",
+      "statement": "The scanner reports the scan shortcut as used on API 25 and later.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:100",
+      "examples": [
+        {
+          "given": "the device runs API 25 or later",
+          "when": "the scanner is created",
+          "then": "reportShortcutUsed is called with scan",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device runs API 24 or earlier",
+          "when": "the scanner is created",
+          "then": "the shortcut report is skipped",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-21",
+      "statement": "The About title is Shadowsocks followed by the app version name.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:48",
+      "examples": [
+        {
+          "given": "the version name is 5.3.5-nightly",
+          "when": "About opens",
+          "then": "the toolbar title is Shadowsocks 5.3.5-nightly",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-22",
+      "statement": "About renders about.html as HTML with a line break after each list item.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:51",
+      "examples": [
+        {
+          "given": "about.html holds a list of licences",
+          "when": "About opens",
+          "then": "each licence appears on its own line",
+          "polarity": "positive"
+        },
+        {
+          "given": "a list item holds a licence name and its link",
+          "when": "About opens",
+          "then": "the name and the link stay together",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-23",
+      "statement": "An About link whose URL starts with # opens the Google Play OSS licences screen.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:56",
+      "examples": [
+        {
+          "given": "the About body is shown",
+          "when": "the user taps Other licenses",
+          "then": "the OSS licences screen opens",
+          "polarity": "positive"
+        },
+        {
+          "given": "the About body is shown",
+          "when": "the user taps the Mygod Studio address",
+          "then": "the email chooser opens and the OSS licences screen does not open",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-24",
+      "statement": "An About mailto link opens an email chooser titled Send email.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:59",
+      "examples": [
+        {
+          "given": "the About body is shown",
+          "when": "the user taps the Mygod Studio address",
+          "then": "an email chooser titled Send email opens for that address",
+          "polarity": "positive"
+        },
+        {
+          "given": "the About body is shown",
+          "when": "the user taps Other licenses",
+          "then": "the OSS licences screen opens and no email chooser opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-25",
+      "statement": "Any other About link opens a Custom Tab, and a missing handler shows the URL in a snackbar.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:65",
+      "examples": [
+        {
+          "given": "a browser is installed",
+          "when": "the user taps the Shadowsocks link",
+          "then": "a Custom Tab opens http://shadowsocks.org",
+          "polarity": "positive"
+        },
+        {
+          "given": "no activity handles the URL",
+          "when": "the user taps the link",
+          "then": "a snackbar shows the raw URL",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-26",
+      "statement": "The About body is selectable text and hides itself when the text is empty.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/widget/AutoCollapseTextView.kt:34",
+      "examples": [
+        {
+          "given": "the About body is shown",
+          "when": "the text is set to empty",
+          "then": "the view becomes GONE",
+          "polarity": "boundary"
+        },
+        {
+          "given": "about.html parses to non-empty licence text",
+          "when": "the text is set on the About body",
+          "then": "the body stays visible and its text can be selected",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-27",
+      "statement": "The About toolbar navigation icon opens the navigation drawer.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:35",
+      "examples": [
+        {
+          "given": "About is displayed",
+          "when": "the user taps the toolbar navigation icon",
+          "then": "the drawer opens",
+          "polarity": "positive"
+        },
+        {
+          "given": "About is displayed",
+          "when": "the user taps the toolbar title",
+          "then": "the drawer does not open",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UJ-28",
+      "statement": "The About body keeps the navigation bar inset as bottom padding.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/WindowInsetsListeners.kt:44",
+      "examples": [
+        {
+          "given": "the device shows a navigation bar",
+          "when": "About is laid out",
+          "then": "the body gets bottom padding for the bar plus the list padding",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device reports a zero navigation bar inset, as with hardware navigation keys",
+          "when": "About is laid out",
+          "then": "the body gets only the list padding as bottom padding",
+          "polarity": "boundary"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "CAMERA permission of one ScannerActivity instance",
+      "states": [
+        "not_requested",
+        "granted",
+        "denied",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "not_requested",
+          "to": "granted",
+          "event": "the user allows the system prompt",
+          "producer": "requestCamera result callback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:108"
+        },
+        {
+          "from": "not_requested",
+          "to": "denied",
+          "event": "the user denies the system prompt",
+          "producer": "requestCamera result callback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:126"
+        },
+        {
+          "from": "granted",
+          "to": "closed",
+          "event": "the scanner finishes after a scan or on up",
+          "producer": "onSupportNavigateUp",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:169"
+        },
+        {
+          "from": "denied",
+          "to": "closed",
+          "event": "the scanner finishes after the fallback picker returns empty",
+          "producer": "importOrFinish with finish true",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:194"
+        },
+        {
+          "from": "closed",
+          "to": "not_requested",
+          "event": "a new scanner activity instance is created and asks again",
+          "producer": "ScannerActivity.onCreate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:106"
+        }
+      ]
+    },
+    {
+      "object": "ScannerActivity capture session",
+      "states": [
+        "permission_pending",
+        "previewing",
+        "importing",
+        "finished"
+      ],
+      "transitions": [
+        {
+          "from": "permission_pending",
+          "to": "previewing",
+          "event": "the permission is granted and bindToLifecycle succeeds",
+          "producer": "requestCamera result callback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:108"
+        },
+        {
+          "from": "permission_pending",
+          "to": "importing",
+          "event": "the permission is denied",
+          "producer": "permissionMissing then startImport",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:146"
+        },
+        {
+          "from": "permission_pending",
+          "to": "importing",
+          "event": "bindToLifecycle throws IllegalArgumentException",
+          "producer": "requestCamera result callback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:122"
+        },
+        {
+          "from": "previewing",
+          "to": "importing",
+          "event": "Import from file… is tapped",
+          "producer": "onOptionsItemSelected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:155"
+        },
+        {
+          "from": "previewing",
+          "to": "finished",
+          "event": "the decoded text yields at least one profile",
+          "producer": "analyze then onSupportNavigateUp",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:94"
+        },
+        {
+          "from": "previewing",
+          "to": "finished",
+          "event": "the up action or back is used",
+          "producer": "onSupportNavigateUp",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:169"
+        },
+        {
+          "from": "importing",
+          "to": "finished",
+          "event": "the picker returns at least one image URI",
+          "producer": "importOrFinish",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:181"
+        },
+        {
+          "from": "importing",
+          "to": "finished",
+          "event": "the fallback picker returns no image URI",
+          "producer": "importOrFinish with finish true",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:194"
+        },
+        {
+          "from": "importing",
+          "to": "previewing",
+          "event": "the menu picker returns no image URI",
+          "producer": "importOrFinish with finish false",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:194"
+        },
+        {
+          "from": "finished",
+          "to": "finished",
+          "event": "a second navigate-up request arrives",
+          "producer": "onSupportNavigateUp finished guard",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:169"
+        }
+      ]
+    },
+    {
+      "object": "ScannerActivity import batch",
+      "states": [
+        "idle",
+        "processing"
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "processing",
+          "event": "the picker returns at least one image URI",
+          "producer": "importOrFinish",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:181"
+        },
+        {
+          "from": "processing",
+          "to": "idle",
+          "event": "every image was tried and the result toast was reported",
+          "producer": "importOrFinish",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:189"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U10-01",
+      "name": "Scan a QR code and add its profiles",
+      "steps": [
+        {
+          "label": "start: the user opens Add Profile and taps Scan QR code",
+          "type": "start",
+          "next": "the scanner starts and requests the camera permission",
+          "exception": false
+        },
+        {
+          "label": "the scanner starts and requests the camera permission",
+          "type": "step",
+          "next": "decision: is the camera permission granted?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the camera permission granted?",
+          "type": "decision",
+          "next": "yes: the camera provider binds a preview and the analyzer",
+          "exception": false
+        },
+        {
+          "label": "yes: the camera provider binds a preview and the analyzer",
+          "type": "step",
+          "next": "the analyzer decodes QR codes from camera frames",
+          "exception": false
+        },
+        {
+          "label": "the analyzer decodes QR codes from camera frames",
+          "type": "step",
+          "next": "decision: does the decoded text hold at least one ss:// URL?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the decoded text hold at least one ss:// URL?",
+          "type": "decision",
+          "next": "yes: each URL becomes a profile and the scanner clears the analyzer",
+          "exception": false
+        },
+        {
+          "label": "yes: each URL becomes a profile and the scanner clears the analyzer",
+          "type": "step",
+          "next": "end: the scanner navigates up and the profile list shows the new profiles",
+          "exception": false
+        },
+        {
+          "label": "end: the scanner navigates up and the profile list shows the new profiles",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: no profile is created and the scanner keeps analyzing",
+          "type": "step",
+          "next": "the analyzer decodes QR codes from camera frames",
+          "exception": false
+        },
+        {
+          "label": "no: the permission toast shows and the image picker opens (F-U10-03)",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "no: the camera bind throws IllegalArgumentException and the image picker opens (F-U10-03)",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The camera permission is denied: the toast Camera permission is required for scanning QR code. shows and the image picker opens.",
+        "bindToLifecycle throws IllegalArgumentException: the image picker opens without a toast.",
+        "A decoded value is not a valid ss:// URL: it is skipped and scanning continues.",
+        "The user taps up before any code is decoded: the scanner closes with no profile."
+      ]
+    },
+    {
+      "id": "F-U10-02",
+      "name": "Import profiles from images with the scanner menu",
+      "steps": [
+        {
+          "label": "start: the user taps Import from file… in the scanner toolbar",
+          "type": "start",
+          "next": "the image picker opens for image/* with multiple selection",
+          "exception": false
+        },
+        {
+          "label": "the image picker opens for image/* with multiple selection",
+          "type": "step",
+          "next": "decision: did the user select at least one image?",
+          "exception": false
+        },
+        {
+          "label": "decision: did the user select at least one image?",
+          "type": "decision",
+          "next": "yes: the scanner navigates up and then decodes each image",
+          "exception": false
+        },
+        {
+          "label": "yes: the scanner navigates up and then decodes each image",
+          "type": "step",
+          "next": "decision: did any image yield at least one profile?",
+          "exception": false
+        },
+        {
+          "label": "decision: did any image yield at least one profile?",
+          "type": "decision",
+          "next": "yes: the Successfully import! toast shows",
+          "exception": false
+        },
+        {
+          "label": "yes: the Successfully import! toast shows",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the Failed to import. toast shows",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the picker returns nothing and the scanner stays open",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: an image read throws and a long toast shows the readable message",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The picker is cancelled: the scanner stays on the preview.",
+        "An image cannot be read: after every image is tried, the exception message shows in a long toast.",
+        "The scanner closes before the images are read, so the result toast appears on the profile list."
+      ]
+    },
+    {
+      "id": "F-U10-03",
+      "name": "Fall back to the image picker when the camera is unavailable",
+      "steps": [
+        {
+          "label": "start: the scanner starts and the camera permission is denied",
+          "type": "start",
+          "next": "the permission toast shows",
+          "exception": false
+        },
+        {
+          "label": "the permission toast shows",
+          "type": "step",
+          "next": "the fallback picker opens for image/* and closes the scanner when it returns empty",
+          "exception": false
+        },
+        {
+          "label": "the fallback picker opens for image/* and closes the scanner when it returns empty",
+          "type": "step",
+          "next": "decision: did the user select at least one image?",
+          "exception": false
+        },
+        {
+          "label": "decision: did the user select at least one image?",
+          "type": "decision",
+          "next": "yes: the import runs as in F-U10-02",
+          "exception": false
+        },
+        {
+          "label": "yes: the import runs as in F-U10-02",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the scanner closes without a toast",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the camera bind failed, so the picker opens without the permission toast",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The camera binds but throws IllegalArgumentException: the picker opens without a toast.",
+        "The user cancels the fallback picker: the scanner closes and no profile changes."
+      ]
+    },
+    {
+      "id": "F-U10-04",
+      "name": "Read About and follow a link",
+      "steps": [
+        {
+          "label": "start: the user opens the drawer and taps About",
+          "type": "start",
+          "next": "About replaces the content area and the drawer closes",
+          "exception": false
+        },
+        {
+          "label": "About replaces the content area and the drawer closes",
+          "type": "step",
+          "next": "the toolbar title becomes Shadowsocks plus the version and about.html is rendered",
+          "exception": false
+        },
+        {
+          "label": "the toolbar title becomes Shadowsocks plus the version and about.html is rendered",
+          "type": "step",
+          "next": "decision: does the tapped link start with #?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the tapped link start with #?",
+          "type": "decision",
+          "next": "yes: the Google Play OSS licences screen opens",
+          "exception": false
+        },
+        {
+          "label": "yes: the Google Play OSS licences screen opens",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: decision: does the tapped link start with mailto:?",
+          "type": "decision",
+          "next": "yes: an email chooser titled Send email opens",
+          "exception": false
+        },
+        {
+          "label": "yes: an email chooser titled Send email opens",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the link opens in a Custom Tab",
+          "type": "step",
+          "next": "decision: does an activity handle the URL?",
+          "exception": false
+        },
+        {
+          "label": "decision: does an activity handle the URL?",
+          "type": "decision",
+          "next": "yes: the browser shows the page",
+          "exception": false
+        },
+        {
+          "label": "yes: the browser shows the page",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: a snackbar shows the raw URL",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "No activity handles the URL: a snackbar shows the URL instead of opening a browser.",
+        "The About body text is empty: the text view hides itself."
+      ]
+    },
+    {
+      "id": "F-U10-05",
+      "name": "Open the scanner from the launcher shortcut",
+      "steps": [
+        {
+          "label": "start: the user long-presses the app icon and taps Scan QR code",
+          "type": "start",
+          "next": "ScannerActivity starts as its own task root",
+          "exception": false
+        },
+        {
+          "label": "ScannerActivity starts as its own task root",
+          "type": "step",
+          "next": "the scanner reports the scan shortcut as used on API 25 and later",
+          "exception": false
+        },
+        {
+          "label": "the scanner reports the scan shortcut as used on API 25 and later",
+          "type": "step",
+          "next": "the scanner continues as F-U10-01",
+          "exception": false
+        },
+        {
+          "label": "the scanner continues as F-U10-01",
+          "type": "step",
+          "next": "decision: is the scanner the task root?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the scanner the task root?",
+          "type": "decision",
+          "next": "yes: the up action recreates the parent task",
+          "exception": false
+        },
+        {
+          "label": "yes: the up action recreates the parent task",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the up action just finishes the scanner",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The camera is denied or fails to bind: the image picker fallback runs.",
+        "The shortcut is used on API 24 or earlier: the report call is skipped."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U10-01",
+      "title": "Scan a valid SIP002 QR code and add its profile",
+      "preconditions": [
+        "The camera permission has not been granted yet",
+        "The current profile uses route bypass-lan",
+        "A QR code encodes ss://YWVzLTI1Ni1nY206cGFzcw@example.com:8388#Test"
+      ],
+      "steps": [
+        "Open Add Profile and tap Scan QR code",
+        "Allow the camera prompt and point the camera at the QR code"
+      ],
+      "expected": [
+        "The scanner opens and the system camera permission prompt appears",
+        "The camera preview appears, one profile named Test is created with host example.com, port 8388 and method aes-256-gcm, and it copies the current profile route, IPv6, metered, proxy-app and UDP-DNS settings; the scanner closes and the profile list shows the new profile"
+      ],
+      "control_path": "C-U10-001 > C-U10-005",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:139"
+    },
+    {
+      "id": "TC-U10-02",
+      "title": "Scan a code that holds two ss:// URLs",
+      "preconditions": [
+        "The camera permission is granted",
+        "A QR code holds two ss:// URLs on separate lines"
+      ],
+      "steps": [
+        "Open the scanner and point the camera at the code",
+        "Hold the code in view until a frame decodes"
+      ],
+      "expected": [
+        "The camera preview appears",
+        "Two profiles are created in the order the URLs appear; the scanner closes once and the profile list shows both"
+      ],
+      "control_path": "C-U10-001 > C-U10-005",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:139"
+    },
+    {
+      "id": "TC-U10-03",
+      "title": "Scan a code that holds no ss:// URL",
+      "preconditions": [
+        "The camera permission is granted",
+        "A QR code holds the plain text hello world"
+      ],
+      "steps": [
+        "Open the scanner and point the camera at the code",
+        "Wait for more frames"
+      ],
+      "expected": [
+        "The camera preview appears and the analyzer reads frames",
+        "No profile is created, no toast or message shows, and the scanner stays on the preview and keeps analyzing"
+      ],
+      "control_path": "C-U10-001 > C-U10-005",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:137"
+    },
+    {
+      "id": "TC-U10-04",
+      "title": "Deny the camera permission and get the image picker",
+      "preconditions": [
+        "The camera permission is not granted",
+        "No prior denial selected the do not ask again option"
+      ],
+      "steps": [
+        "Open the scanner",
+        "Deny the system camera prompt",
+        "Cancel the image picker"
+      ],
+      "expected": [
+        "The toast Camera permission is required for scanning QR code. shows",
+        "The image picker opens for image/*",
+        "The scanner closes without a result toast"
+      ],
+      "control_path": "C-U10-001 > C-U10-007 > C-U10-008 > C-U10-009",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:126"
+    },
+    {
+      "id": "TC-U10-05",
+      "title": "Camera binding fails and the image picker opens",
+      "preconditions": [
+        "The camera permission is granted",
+        "bindToLifecycle throws IllegalArgumentException"
+      ],
+      "steps": [
+        "Open the scanner"
+      ],
+      "expected": [
+        "No camera preview appears, no permission toast shows, and the image picker opens"
+      ],
+      "control_path": "C-U10-001 > C-U10-009",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:122"
+    },
+    {
+      "id": "TC-U10-06",
+      "title": "A device without a back camera uses the front camera",
+      "preconditions": [
+        "The camera permission is granted",
+        "hasCamera(DEFAULT_BACK_CAMERA) returns false"
+      ],
+      "steps": [
+        "Open the scanner"
+      ],
+      "expected": [
+        "The front camera binds, its preview shows, and scanning proceeds as with a back camera"
+      ],
+      "control_path": "C-U10-001 > C-U10-005",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:111"
+    },
+    {
+      "id": "TC-U10-07",
+      "title": "Import a profile from a chosen image",
+      "preconditions": [
+        "The scanner is open",
+        "An image file holds a QR code with one valid ss:// URL"
+      ],
+      "steps": [
+        "Tap Import from file… in the toolbar",
+        "Select the image"
+      ],
+      "expected": [
+        "The image picker opens",
+        "The scanner closes before the image is read, one profile is created, and the Successfully import! toast shows"
+      ],
+      "control_path": "C-U10-001 > C-U10-006 > C-U10-009 > C-U10-010",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:181"
+    },
+    {
+      "id": "TC-U10-08",
+      "title": "Import an image that holds no ss:// URL",
+      "preconditions": [
+        "The scanner is open",
+        "An image file holds a QR code with plain text only"
+      ],
+      "steps": [
+        "Tap Import from file…",
+        "Select the image"
+      ],
+      "expected": [
+        "The image picker opens",
+        "The scanner closes, no profile is created, and the Failed to import. toast shows"
+      ],
+      "control_path": "C-U10-001 > C-U10-006 > C-U10-009 > C-U10-011",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:189"
+    },
+    {
+      "id": "TC-U10-09",
+      "title": "Cancel the menu image picker",
+      "preconditions": [
+        "The scanner is open"
+      ],
+      "steps": [
+        "Tap Import from file…",
+        "Cancel the picker without choosing an image"
+      ],
+      "expected": [
+        "The picker opens",
+        "The picker closes, no toast shows, and the scanner stays open and keeps analyzing"
+      ],
+      "control_path": "C-U10-001 > C-U10-006 > C-U10-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:194"
+    },
+    {
+      "id": "TC-U10-10",
+      "title": "Cancel the fallback image picker after a denial",
+      "preconditions": [
+        "The camera permission is denied"
+      ],
+      "steps": [
+        "Open the scanner",
+        "Deny the permission prompt",
+        "Cancel the image picker"
+      ],
+      "expected": [
+        "The permission toast shows",
+        "The picker closes and the scanner finishes",
+        "No result toast shows"
+      ],
+      "control_path": "C-U10-001 > C-U10-007 > C-U10-008 > C-U10-009",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:194"
+    },
+    {
+      "id": "TC-U10-11",
+      "title": "An image that cannot be read shows a long error toast",
+      "preconditions": [
+        "The scanner is open",
+        "A selected image is not a readable image file"
+      ],
+      "steps": [
+        "Tap Import from file…",
+        "Select the unreadable image"
+      ],
+      "expected": [
+        "The image picker opens",
+        "The scanner closes, a long toast shows the readable exception message, and the Successfully import! and Failed to import. toasts do not show"
+      ],
+      "control_path": "C-U10-001 > C-U10-006 > C-U10-009 > C-U10-012",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:191"
+    },
+    {
+      "id": "TC-U10-12",
+      "title": "The scanner closes at most once",
+      "preconditions": [
+        "The scanner is open on the camera preview"
+      ],
+      "steps": [
+        "Tap the up arrow",
+        "Send a second navigate-up request"
+      ],
+      "expected": [
+        "The scanner finishes and the caller is shown",
+        "The second request returns false and nothing changes"
+      ],
+      "control_path": "C-U10-001 > C-U10-003",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ScannerActivity.kt:168"
+    },
+    {
+      "id": "TC-U10-13",
+      "title": "Open the scanner from the Scan QR code launcher shortcut",
+      "preconditions": [
+        "The app is installed and no scanner is open",
+        "The device runs API 25 or later"
+      ],
+      "steps": [
+        "Long-press the app icon on the launcher",
+        "Tap Scan QR code"
+      ],
+      "expected": [
+        "ScannerActivity opens directly as its own task",
+        "The scan shortcut is reported as used, the camera preview appears, and a code can be scanned"
+      ],
+      "control_path": "C-U10-034 > C-U10-001",
+      "parity": "android-only",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:11"
+    },
+    {
+      "id": "TC-U10-14",
+      "title": "About shows the app version",
+      "preconditions": [
+        "The main screen is open"
+      ],
+      "steps": [
+        "Open the navigation drawer",
+        "Tap About"
+      ],
+      "expected": [
+        "About replaces the content area and the drawer closes",
+        "The toolbar title reads Shadowsocks 5.3.5-nightly"
+      ],
+      "control_path": "C-U10-013 > C-U10-014 > C-U10-016",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:48"
+    },
+    {
+      "id": "TC-U10-15",
+      "title": "About shows the licence text and the open source list",
+      "preconditions": [
+        "About is open"
+      ],
+      "steps": [
+        "Read the body text",
+        "Scroll to the Open Source Licenses list"
+      ],
+      "expected": [
+        "The GPL paragraphs appear",
+        "The six library licences and the Other licenses entry appear on separate lines, and the text can be selected and scrolled"
+      ],
+      "control_path": "C-U10-013 > C-U10-017 > C-U10-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:51"
+    },
+    {
+      "id": "TC-U10-16",
+      "title": "Follow the Shadowsocks website link in About",
+      "preconditions": [
+        "About is open",
+        "A browser is installed"
+      ],
+      "steps": [
+        "Tap the Shadowsocks link"
+      ],
+      "expected": [
+        "A Custom Tab opens http://shadowsocks.org"
+      ],
+      "control_path": "C-U10-013 > C-U10-018 > C-U10-019 > C-U10-032",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:65"
+    },
+    {
+      "id": "TC-U10-17",
+      "title": "Follow a mailto link in About",
+      "preconditions": [
+        "About is open",
+        "A mail app is installed"
+      ],
+      "steps": [
+        "Tap contact-shadowsocks-android@mygod.be",
+        "Check the chooser title and the address"
+      ],
+      "expected": [
+        "An email chooser titled Send email opens",
+        "The chooser is addressed to contact-shadowsocks-android@mygod.be"
+      ],
+      "control_path": "C-U10-013 > C-U10-018 > C-U10-021 > C-U10-031",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:59"
+    },
+    {
+      "id": "TC-U10-18",
+      "title": "Open the OSS licences from the Other licenses link",
+      "preconditions": [
+        "About is open",
+        "Google Play services are available"
+      ],
+      "steps": [
+        "Tap Other licenses",
+        "Read the list that opens"
+      ],
+      "expected": [
+        "The Google Play OSS licences screen opens",
+        "It lists the open source libraries of the app"
+      ],
+      "control_path": "C-U10-013 > C-U10-018 > C-U10-029 > C-U10-030",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:56"
+    },
+    {
+      "id": "TC-U10-19",
+      "title": "About shows the app version and the licence",
+      "preconditions": [
+        "The app is running"
+      ],
+      "steps": [
+        "Open About from the app navigation",
+        "Read the version and the licence on the page"
+      ],
+      "expected": [
+        "The About page opens",
+        "The app version and the licence are visible on the page"
+      ],
+      "control_path": "C-U10-013 > C-U10-016 > C-U10-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/AboutFragment.kt:48"
+    },
+    {
+      "id": "TC-U10-20",
+      "title": "A link with no handler falls back to a snackbar",
+      "preconditions": [
+        "About is open",
+        "No activity handles http or https URLs"
+      ],
+      "steps": [
+        "Tap the GNU licenses link",
+        "Wait for the launch attempt"
+      ],
+      "expected": [
+        "No browser opens",
+        "A snackbar shows the raw URL http://www.gnu.org/licenses/"
+      ],
+      "control_path": "C-U10-013 > C-U10-018 > C-U10-022 > C-U10-033",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:86"
+    },
+    {
+      "id": "TC-U10-21",
+      "title": "A scan copies the feature settings of the current profile",
+      "preconditions": [
+        "The camera permission is granted",
+        "The current profile uses route bypass-lan and IPv6 on",
+        "The current profile turns metered, per-app proxy and UDP DNS on",
+        "A QR code encodes one valid ss:// URL"
+      ],
+      "steps": [
+        "Open the scanner and point the camera at the code",
+        "Wait for the scanner to close",
+        "Open the new profile and read its feature settings",
+        "Export the new profile and read its JSON"
+      ],
+      "expected": [
+        "The scanner closes and the profile list shows the new profile",
+        "The editor shows route bypass-lan, IPv6 on and metered on",
+        "The per-app proxy switch is on and the app list is the same as in the current profile",
+        "The exported profile JSON reports the same route, ipv6, metered, proxy_apps and udpdns values as the current profile"
+      ],
+      "control_path": "C-U10-001 > C-U10-005",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:277",
+      "rules": [
+        "R-UJ-07"
+      ]
+    },
+    {
+      "id": "TC-U10-22",
+      "title": "A scan skips a malformed URL and imports the valid one",
+      "preconditions": [
+        "The camera permission is granted",
+        "A QR code holds ss://%%%@example.com:8388 on the first line",
+        "The same QR code holds a valid ss:// URL on the second line"
+      ],
+      "steps": [
+        "Open the scanner and point the camera at the code",
+        "Wait for the scanner to close",
+        "Compare the profile list with the list before the scan"
+      ],
+      "expected": [
+        "The scanner closes and the profile list shows one new profile",
+        "The new profile has the name and the address of the valid URL",
+        "No profile has the address example.com:8388 from the malformed URL",
+        "No error message shows"
+      ],
+      "control_path": "C-U10-001 > C-U10-005",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:127",
+      "rules": [
+        "R-UJ-08"
+      ]
+    },
+    {
+      "id": "TC-U10-23",
+      "title": "The About body is selectable and hides when empty",
+      "preconditions": [
+        "About is open",
+        "The About body holds the licence text"
+      ],
+      "steps": [
+        "Long-press a word in the About body and drag to extend the selection",
+        "Tap Copy",
+        "In a build with an empty about.html, open About"
+      ],
+      "expected": [
+        "The word is highlighted and the selection handles show",
+        "The clipboard holds the selected word",
+        "No About body shows and the area below the toolbar stays empty"
+      ],
+      "control_path": "C-U10-013 > C-U10-017 > C-U10-018",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/widget/AutoCollapseTextView.kt:34",
+      "rules": [
+        "R-UJ-26"
+      ]
+    },
+    {
+      "id": "TC-U10-24",
+      "title": "The About toolbar icon opens the navigation drawer",
+      "preconditions": [
+        "About is open"
+      ],
+      "steps": [
+        "Tap the navigation icon in the About toolbar"
+      ],
+      "expected": [
+        "The navigation drawer opens from the start edge",
+        "About stays visible behind the drawer"
+      ],
+      "control_path": "C-U10-013 > C-U10-014 > C-U10-015",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:35",
+      "rules": [
+        "R-UJ-27"
+      ]
+    },
+    {
+      "id": "TC-U10-25",
+      "title": "About keeps its last line above the navigation bar",
+      "preconditions": [
+        "About is open",
+        "The device shows a three-button navigation bar"
+      ],
+      "steps": [
+        "Scroll the About body to the end",
+        "Look at the last line and the navigation bar"
+      ],
+      "expected": [
+        "The last line of the About body is fully visible",
+        "The gap below the last line is at least as tall as the navigation bar",
+        "No About text sits under the navigation bar"
+      ],
+      "control_path": "C-U10-013 > C-U10-017 > C-U10-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/WindowInsetsListeners.kt:44",
+      "rules": [
+        "R-UJ-28"
+      ]
+    }
+  ],
+  "parity_summary": {
+    "implemented": 14,
+    "partial": 4,
+    "missing": 0,
+    "android_only": 7
+  },
+  "notes": "The scanner menu item id is action_import_clipboard, but its title is 'Import from file…' and it opens the image picker, not the clipboard. shortcuts.xml is also a U11 file; the Toggle shortcut is recorded here only because the file is a U10 source, and its behavior belongs to U11. The Add Profile 'Scan QR code' entry lives in U02 profile_manager_menu.xml, and the drawer About entry lives in U01 navigation_main.xml; both appear as flow starts, not as U10 controls. About is a fragment inside MainActivity, so the About screen node is the fragment container; the drawer itself belongs to U01. about.html encodes the Max Lv mailto address with HTML entities, and it decodes to max.c.lv@gmail.com. HarmonyOS has no barcode decoder and no ScannerActivity, so the scan and image-import cases are missing. CameraX, the runtime permission dialog, the launcher shortcut and the Google Play OSS licences UI are Android platform surfaces, so those cases are android-only. HarmonyOS About (pages/About.ets) shows the app version, the native core version and the licence, so the version and licence case is implemented. The Android title format, the about.html body, the clickable links and the drawer route are not ported, so those cases are partial or missing. The About toolbar icon case is included as TC-U10-24. The HarmonyOS About page has a Back control, and U01 records the drawer as missing, so that case is missing. TC-U10-21 reads the exported profile JSON because the editor has no control for the UDP-DNS field. TC-U10-23 uses a test build with an empty about.html to observe the hidden body. The parity reference lists launcher shortcuts under both Missing and Android-only surfaces; this spec uses android-only for the shortcut surface."
+}

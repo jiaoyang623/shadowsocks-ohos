@@ -1,0 +1,23 @@
+Unit    Controls  Rules  States  Flows  Cases  FAIL  WARN
+------  --------  -----  ------  -----  -----  ----  ----
+U01           26     30       5      6     39     0     0
+U02           30     51       3      8     46     0     1
+U03           61     41       5      9     31     0     1
+U04           29     56       3      9     35     0     0
+U05           20     29       4      6     24     0     0
+U06           30     35       8     10     35     0     0
+U07           25     34       4      8     28     0     0
+U08           29     30       5      6     30     0     0
+U09           34     35       6      8     26     0     0
+U10           35     28       3      5     25     0     1
+U11           21     43       5     11     29     0     0
+GLOBAL         0      0       0      0      0     0     0
+TOTAL        340    412      51     86    348     0     3
+
+WARN [check 3] U02: Rule R-UB-02 has only positive examples.
+WARN [check 3] U03: Rule R-UC-39 has only positive examples.
+WARN [check 3] U10: Rule R-UJ-21 has only positive examples.
+
+Result: PASS.
+Failures: 0.
+Warnings: 3.

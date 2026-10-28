@@ -1,0 +1,2973 @@
+{
+  "unit": "U06",
+  "title": "Custom rules and ACL",
+  "sources_read": [
+    "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt",
+    "mobile/src/main/res/layout/layout_custom_rules.xml",
+    "mobile/src/main/res/layout/dialog_acl_rule.xml",
+    "mobile/src/main/res/menu/custom_rules_menu.xml",
+    "mobile/src/main/res/menu/custom_rules_selection.xml",
+    "mobile/src/main/res/menu/navigation_main.xml",
+    "mobile/src/main/res/values/arrays.xml",
+    "mobile/src/main/res/xml/pref_profile.xml",
+    "mobile/src/main/res/xml/pref_global.xml",
+    "plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/fragment/AlertDialogFragment.kt",
+    "core/src/main/java/com/github/shadowsocks/acl/Acl.kt",
+    "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt",
+    "core/src/main/java/com/github/shadowsocks/net/Subnet.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Sorters.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "core/src/main/java/com/github/shadowsocks/Core.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt",
+    "core/src/main/res/values/strings.xml",
+    "core/src/main/assets/acl/bypass-lan.acl",
+    "core/src/main/assets/acl/bypass-china.acl",
+    "core/src/main/assets/acl/bypass-lan-china.acl",
+    "core/src/main/assets/acl/china-list.acl",
+    "core/src/main/assets/acl/gfwlist.acl",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Acl.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Routes.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md"
+  ],
+  "controls": [
+    {
+      "id": "C-U06-001",
+      "type": "screen",
+      "label": "Custom rules",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the user's rule list and the Add rule(s) overflow menu.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:381"
+    },
+    {
+      "id": "C-U06-030",
+      "type": "row",
+      "label": "Toolbar",
+      "android_id": "toolbar",
+      "parent": "C-U06-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the screen title and the Add rule(s) menu. Its navigation icon opens the drawer. In the selection action mode the contextual bar replaces its content.",
+      "navigates_to": "",
+      "source": "plugin/src/main/res/layout/toolbar_light_dark.xml:12"
+    },
+    {
+      "id": "C-U06-032",
+      "type": "text",
+      "label": "Custom rules",
+      "android_id": "",
+      "parent": "C-U06-030",
+      "visible_when": "no selection action mode is active",
+      "enabled_when": "always",
+      "action": "Shows the screen title, set from R.string.custom_rules.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:404"
+    },
+    {
+      "id": "C-U06-002",
+      "type": "button",
+      "label": "Open navigation drawer",
+      "android_id": "",
+      "parent": "C-U06-030",
+      "visible_when": "no selection action mode is active",
+      "enabled_when": "always",
+      "action": "Opens the navigation drawer from the start edge.",
+      "navigates_to": "U01",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:36"
+    },
+    {
+      "id": "C-U06-003",
+      "type": "menu_item",
+      "label": "Add rule(s)…",
+      "android_id": "",
+      "parent": "C-U06-001",
+      "visible_when": "no selection action mode is active",
+      "enabled_when": "always",
+      "action": "Opens the submenu with Manual Settings, Import from Clipboard, and GFW List.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/custom_rules_menu.xml:4"
+    },
+    {
+      "id": "C-U06-004",
+      "type": "menu_item",
+      "label": "Manual Settings",
+      "android_id": "action_manual_settings",
+      "parent": "C-U06-003",
+      "visible_when": "the Add rule(s) submenu is open",
+      "enabled_when": "always",
+      "action": "Opens the Edit rule dialog with the Generic template selected and an empty input.",
+      "navigates_to": "C-U06-017",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:460"
+    },
+    {
+      "id": "C-U06-005",
+      "type": "menu_item",
+      "label": "Import from Clipboard",
+      "android_id": "action_import_clipboard",
+      "parent": "C-U06-003",
+      "visible_when": "the Add rule(s) submenu is open",
+      "enabled_when": "always",
+      "action": "Parses the clipboard text as an ACL. It adds its proxy hostnames and proxy URLs, and its subnets only when the parsed default is bypass. Bypass hostnames and bypass subnets are dropped. It reports Failed to import when nothing is added or the parse throws.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:467"
+    },
+    {
+      "id": "C-U06-006",
+      "type": "menu_item",
+      "label": "GFW List",
+      "android_id": "action_import_gfwlist",
+      "parent": "C-U06-003",
+      "visible_when": "the Add rule(s) submenu is open",
+      "enabled_when": "always",
+      "action": "Reads the gfwlist ACL file from noBackupFilesDir. Core copies that file from the bundled asset, and AclSyncer can replace it with the copy from shadowsocks.org, so it is not necessarily the bundled list. Adds its subnets when the file default is bypass, then its proxy hostnames and URLs.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:476"
+    },
+    {
+      "id": "C-U06-007",
+      "type": "list",
+      "label": "Rule list",
+      "android_id": "list",
+      "parent": "C-U06-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows subnets first, then proxy hostnames, then URLs. A START swipe on a row removes it when the swipe gate allows and no selection is active. The list has a fast scroller.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_custom_rules.xml:13"
+    },
+    {
+      "id": "C-U06-008",
+      "type": "row",
+      "label": "Rule row",
+      "android_id": "",
+      "parent": "C-U06-007",
+      "visible_when": "the ACL has at least one entry",
+      "enabled_when": "always",
+      "action": "A tap opens the Edit rule dialog when no selection is active. A long press toggles selection. A START swipe on the row removes it when the swipe gate allows and no selection is active.",
+      "navigates_to": "C-U06-017",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:225"
+    },
+    {
+      "id": "C-U06-029",
+      "type": "text",
+      "label": "Rule text",
+      "android_id": "android.R.id.text1",
+      "parent": "C-U06-008",
+      "visible_when": "the ACL has at least one entry",
+      "enabled_when": "always",
+      "action": "Shows the rule: the subnet as Subnet.toString(), the hostname as stored, or the URL as URL.toString(). The row layout is android.R.layout.simple_list_item_1.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:200"
+    },
+    {
+      "id": "C-U06-031",
+      "type": "image",
+      "label": "Fast scroll handle",
+      "android_id": "",
+      "parent": "C-U06-007",
+      "visible_when": "the list is longer than the screen",
+      "enabled_when": "always",
+      "action": "Drags the list; a popup shows the leading letter at the position.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:413"
+    },
+    {
+      "id": "C-U06-009",
+      "type": "row",
+      "label": "Selection action mode",
+      "android_id": "",
+      "parent": "C-U06-030",
+      "visible_when": "selectedItems is not empty",
+      "enabled_when": "always",
+      "action": "The contextual ActionMode started by toolbar.startActionMode. It replaces the toolbar content with Select all, Cut, Copy, and Remove until the selection is empty.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:376"
+    },
+    {
+      "id": "C-U06-010",
+      "type": "menu_item",
+      "label": "Select all",
+      "android_id": "action_select_all",
+      "parent": "C-U06-009",
+      "visible_when": "the selection action mode is active",
+      "enabled_when": "always",
+      "action": "Selects every subnet, hostname, and URL in the list.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/custom_rules_selection.xml:6"
+    },
+    {
+      "id": "C-U06-011",
+      "type": "menu_item",
+      "label": "Cut",
+      "android_id": "action_cut",
+      "parent": "C-U06-009",
+      "visible_when": "the selection action mode is active",
+      "enabled_when": "selectedItems is not empty",
+      "action": "Copies the selected rules as ACL text, then removes them.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/custom_rules_selection.xml:12"
+    },
+    {
+      "id": "C-U06-012",
+      "type": "menu_item",
+      "label": "Copy",
+      "android_id": "action_copy",
+      "parent": "C-U06-009",
+      "visible_when": "the selection action mode is active",
+      "enabled_when": "selectedItems is not empty",
+      "action": "Copies the selected rules as ACL text to the clipboard.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/custom_rules_selection.xml:18"
+    },
+    {
+      "id": "C-U06-013",
+      "type": "menu_item",
+      "label": "Remove",
+      "android_id": "action_delete",
+      "parent": "C-U06-009",
+      "visible_when": "the selection action mode is active",
+      "enabled_when": "selectedItems is not empty",
+      "action": "Removes the selected rules and shows the undo snackbar.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/custom_rules_selection.xml:24"
+    },
+    {
+      "id": "C-U06-014",
+      "type": "button",
+      "label": "Undo",
+      "android_id": "",
+      "parent": "C-U06-015",
+      "visible_when": "C-U06-015 is shown",
+      "enabled_when": "always",
+      "action": "Restores every rule held in the recycle bin, newest removal first, and clears the bin.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+    },
+    {
+      "id": "C-U06-015",
+      "type": "snackbar",
+      "label": "Removed / %d items removed",
+      "android_id": "",
+      "parent": "C-U06-001",
+      "visible_when": "a rule was removed by swipe, by Cut, by Remove in the action mode, or by Remove in the dialog",
+      "enabled_when": "always",
+      "action": "Shows the recycle bin size, so a second removal while it is shown reports the combined count. Dismissing it keeps the removals.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+    },
+    {
+      "id": "C-U06-017",
+      "type": "dialog",
+      "label": "Edit rule",
+      "android_id": "",
+      "parent": "C-U06-001",
+      "visible_when": "a rule row is tapped, Manual Settings is used, or an existing rule is opened",
+      "enabled_when": "always",
+      "action": "Edits one rule with a template selector, one text field, OK, Cancel, and Remove.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:128"
+    },
+    {
+      "id": "C-U06-018",
+      "type": "input",
+      "label": "Subnet or Hostname PCRE pattern / Domain name and all its subdomain names / URL to online config",
+      "android_id": "template_selector",
+      "parent": "C-U06-017",
+      "visible_when": "the Edit rule dialog is open",
+      "enabled_when": "always",
+      "action": "Switches the template and re-runs validation.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/dialog_acl_rule.xml:8"
+    },
+    {
+      "id": "C-U06-019",
+      "type": "input",
+      "label": "Rule text",
+      "android_id": "content",
+      "parent": "C-U06-017",
+      "visible_when": "the Edit rule dialog is open",
+      "enabled_when": "always",
+      "action": "Takes the subnet, pattern, domain, or URL. Each change re-runs validation.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/dialog_acl_rule.xml:21"
+    },
+    {
+      "id": "C-U06-020",
+      "type": "text",
+      "label": "Validation error",
+      "android_id": "content_layout",
+      "parent": "C-U06-017",
+      "visible_when": "validation produced a message",
+      "enabled_when": "always",
+      "action": "Shows the parse message, or the cleartext HTTP warning.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/dialog_acl_rule.xml:16"
+    },
+    {
+      "id": "C-U06-021",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U06-017",
+      "visible_when": "the Edit rule dialog is open",
+      "enabled_when": "the current template accepts the current text",
+      "action": "Adds the rule, replacing the item the dialog was opened for.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:129"
+    },
+    {
+      "id": "C-U06-022",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U06-017",
+      "visible_when": "the Edit rule dialog is open",
+      "enabled_when": "always",
+      "action": "Closes the dialog and changes nothing.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:130"
+    },
+    {
+      "id": "C-U06-023",
+      "type": "button",
+      "label": "Remove",
+      "android_id": "android.R.id.button3",
+      "parent": "C-U06-017",
+      "visible_when": "the dialog opened for a non-empty existing rule",
+      "enabled_when": "always",
+      "action": "Removes the rule and offers it back through the undo snackbar.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:131"
+    },
+    {
+      "id": "C-U06-024",
+      "type": "snackbar",
+      "label": "Successfully export!",
+      "android_id": "",
+      "parent": "C-U06-001",
+      "visible_when": "Core.trySetPrimaryClip returns true for Copy or Cut",
+      "enabled_when": "always",
+      "action": "Confirms the copy.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:455"
+    },
+    {
+      "id": "C-U06-025",
+      "type": "snackbar",
+      "label": "Failed to export.",
+      "android_id": "",
+      "parent": "C-U06-001",
+      "visible_when": "Core.trySetPrimaryClip returns false for Copy or Cut because it caught a RuntimeException",
+      "enabled_when": "always",
+      "action": "Reports the failed copy. Cut still removes the selected rules.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:456"
+    },
+    {
+      "id": "C-U06-026",
+      "type": "snackbar",
+      "label": "Failed to import.",
+      "android_id": "",
+      "parent": "C-U06-001",
+      "visible_when": "the clipboard text yields no rule or parsing throws",
+      "enabled_when": "always",
+      "action": "Reports the failed import.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:471"
+    },
+    {
+      "id": "C-U06-027",
+      "type": "menu_item",
+      "label": "Custom rules",
+      "android_id": "customRules",
+      "parent": "",
+      "visible_when": "the navigation drawer is open",
+      "enabled_when": "always",
+      "action": "Replaces the fragment with the Custom rules screen through MainActivity.displayFragment and closes the drawer.",
+      "navigates_to": "U06",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:212"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UF-01",
+      "statement": "The drawer entry Custom rules opens the screen and closes the drawer.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:212",
+      "examples": [
+        {
+          "given": "the drawer is open",
+          "when": "the user taps Custom rules",
+          "then": "the Custom rules screen replaces the current fragment",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Custom rules screen is showing and its drawer entry is checked",
+          "when": "the user taps Custom rules in the drawer",
+          "then": "the drawer closes and the current screen stays",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-02",
+      "statement": "Add rule(s) offers Manual Settings, Import from Clipboard, and GFW List.",
+      "kind": "interaction",
+      "source": "mobile/src/main/res/menu/custom_rules_menu.xml:4",
+      "examples": [
+        {
+          "given": "the Custom rules screen is open",
+          "when": "the user opens Add rule(s)",
+          "then": "the submenu shows exactly three entries",
+          "polarity": "positive"
+        },
+        {
+          "given": "the rule list is empty",
+          "when": "the user opens Add rule(s)",
+          "then": "the submenu shows Manual Settings, Import from Clipboard, and GFW List",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-03",
+      "statement": "Manual Settings opens the dialog with the Generic template and an empty input.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:461",
+      "examples": [
+        {
+          "given": "the rule list has existing rules",
+          "when": "the user taps Manual Settings",
+          "then": "the template selector shows the first entry and the input is empty",
+          "polarity": "positive"
+        },
+        {
+          "given": "a Domain rule is already in the list",
+          "when": "the user taps Manual Settings",
+          "then": "the dialog opens with the Generic template and an empty input",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-04",
+      "statement": "OK is disabled while the current template rejects the current text.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:148",
+      "examples": [
+        {
+          "given": "the Generic template is selected",
+          "when": "the user types an unclosed character class",
+          "then": "OK is disabled and the parse message is shown",
+          "polarity": "negative"
+        },
+        {
+          "given": "the Generic template is selected and the input holds an unclosed character class, so OK is disabled",
+          "when": "the user replaces the text with a string that compiles as a Pattern",
+          "then": "OK is enabled",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-05",
+      "statement": "The Generic template accepts a subnet or any text that compiles as a java.util.regex.Pattern through Kotlin String.toPattern(). The word PCRE appears only in the template label.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:151",
+      "examples": [
+        {
+          "given": "the Generic template is selected",
+          "when": "the user types 10.0.0.0/8",
+          "then": "OK is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Generic template is selected",
+          "when": "the user types an empty string",
+          "then": "OK stays enabled and OK stores an empty rule",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-06",
+      "statement": "A pattern syntax error shows the exception message under the input.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:153",
+      "examples": [
+        {
+          "given": "the Generic template is selected",
+          "when": "the user types an unclosed character class",
+          "then": "the error line holds the regex error text",
+          "polarity": "negative"
+        },
+        {
+          "given": "the Generic template is selected",
+          "when": "the user types a pattern that compiles, such as example\\.com$",
+          "then": "the error line under the input is empty",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-07",
+      "statement": "The Domain template accepts text that IDN.toASCII accepts with IDN.ALLOW_UNASSIGNED or IDN.USE_STD3_ASCII_RULES.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:159",
+      "examples": [
+        {
+          "given": "the Domain template is selected",
+          "when": "the user types example.com",
+          "then": "OK is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Domain template is selected",
+          "when": "the user types two dots in a row",
+          "then": "OK is disabled with the empty-label message",
+          "polarity": "negative"
+        },
+        {
+          "given": "the Domain template is selected",
+          "when": "the user leaves the input empty",
+          "then": "OK stays enabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-08",
+      "statement": "A domain rule is stored as (?:^|\\.) followed by the IDN ASCII name with every dot escaped and a trailing $, for example (?:^|\\.)example\\.com$. The trailing $ is required: without it the rule would also match example.com.evil.com and example.com.cn, and the Domain template read-back would fail.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:183",
+      "examples": [
+        {
+          "given": "the Domain template is selected",
+          "when": "the user saves example.com",
+          "then": "the list row shows (?:^|\\.)example\\.com$ with escaped dots and the trailing $",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored rule is (?:^|\\.)example\\.com$",
+          "when": "the core matches example.com.evil.com",
+          "then": "the rule does not match",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-09",
+      "statement": "The URL template requires a parseable URL and warns on cleartext http.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:165",
+      "examples": [
+        {
+          "given": "the URL template is selected",
+          "when": "the user types text without a protocol",
+          "then": "OK is disabled with the malformed URL message",
+          "polarity": "negative"
+        },
+        {
+          "given": "the URL template is selected",
+          "when": "the user types an http URL",
+          "then": "OK is enabled and the cleartext warning is shown",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the URL template is selected",
+          "when": "the user types https://example.com",
+          "then": "OK is enabled and no cleartext warning is shown",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-10",
+      "statement": "Opening an existing rule picks the template that matches its stored form.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:114",
+      "examples": [
+        {
+          "given": "a URL rule is in the list",
+          "when": "the user taps that row",
+          "then": "the URL template is selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "a stored domain regex is in the list",
+          "when": "the user taps that row",
+          "then": "the Domain template is selected and the name is shown in Unicode",
+          "polarity": "positive"
+        },
+        {
+          "given": "a plain hostname rule is in the list",
+          "when": "the user taps that row",
+          "then": "the Generic template is selected and the hostname is shown as stored",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-11",
+      "statement": "The Remove button appears only when the dialog opened for a non-empty rule.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:131",
+      "examples": [
+        {
+          "given": "the user taps an existing rule",
+          "when": "the dialog opens",
+          "then": "Remove is present",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user taps Manual Settings",
+          "when": "the dialog opens",
+          "then": "Remove is absent",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-12",
+      "statement": "OK saves the rule, removes the old one, and scrolls to the new row.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:387",
+      "examples": [
+        {
+          "given": "the dialog opened for rule A",
+          "when": "the user changes it to B and taps OK",
+          "then": "A is gone, B is added, and the list scrolls to B",
+          "polarity": "positive"
+        },
+        {
+          "given": "the dialog opened for rule A",
+          "when": "the user taps OK without a change",
+          "then": "the app replaces A with an equal rule and scrolls to it",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-13",
+      "statement": "Remove in the dialog deletes the rule and offers it back.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:391",
+      "examples": [
+        {
+          "given": "the dialog opened for rule A",
+          "when": "the user taps Remove",
+          "then": "A leaves the list and a snackbar offers Undo",
+          "polarity": "positive"
+        },
+        {
+          "given": "the dialog opened for the only rule in the list",
+          "when": "the user taps Remove",
+          "then": "the list is empty and the snackbar offers Undo",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-14",
+      "statement": "Cancel changes nothing. A dismissal counts as Cancel.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:192",
+      "examples": [
+        {
+          "given": "the user changed the input",
+          "when": "the user taps Cancel",
+          "then": "the list is unchanged",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user changed the input",
+          "when": "the user dismisses the dialog",
+          "then": "no result is applied and the list is unchanged",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-15",
+      "statement": "A START swipe deletes that row and starts the undo snackbar.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:418",
+      "examples": [
+        {
+          "given": "three rules and no selection",
+          "when": "the user swipes the middle row to the start",
+          "then": "the row is removed and the undo snackbar appears",
+          "polarity": "positive"
+        },
+        {
+          "given": "one rule and no selection",
+          "when": "the user swipes the only row to the start",
+          "then": "the list is empty and the undo snackbar appears",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-16",
+      "statement": "Swipe is off while a selection is active or while the swipe gate is blocked.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:417",
+      "examples": [
+        {
+          "given": "one rule is selected",
+          "when": "the user swipes another row",
+          "then": "the row does not move",
+          "polarity": "negative"
+        },
+        {
+          "given": "no rule is selected and the swipe gate is open because the service is stopped",
+          "when": "the user swipes a row to the start",
+          "then": "the row is removed and the undo snackbar appears",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-17",
+      "statement": "A long press toggles the rule in the selection and starts the action mode.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:231",
+      "examples": [
+        {
+          "given": "no rule is selected",
+          "when": "the user long presses a row",
+          "then": "the row is selected and the action mode starts",
+          "polarity": "positive"
+        },
+        {
+          "given": "one rule is selected",
+          "when": "the user long presses the same row",
+          "then": "the selection is empty and the action mode ends",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-18",
+      "statement": "A tap while a selection is active toggles that rule instead of opening the dialog.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:226",
+      "examples": [
+        {
+          "given": "one rule is selected",
+          "when": "the user taps a second row",
+          "then": "the second row is selected and no dialog opens",
+          "polarity": "positive"
+        },
+        {
+          "given": "no rule is selected",
+          "when": "the user taps a row",
+          "then": "the Edit rule dialog opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-19",
+      "statement": "Select all selects every subnet, proxy hostname, and URL.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:355",
+      "examples": [
+        {
+          "given": "the list has subnets, hostnames, and URLs",
+          "when": "the user taps Select all",
+          "then": "every row is selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "several rules are already selected",
+          "when": "the user taps Select all",
+          "then": "every row stays selected and the action mode stays",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-20",
+      "statement": "Copy writes the selection as an ACL text with the bypass default.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:444",
+      "examples": [
+        {
+          "given": "one hostname is selected",
+          "when": "the user taps Copy",
+          "then": "the clipboard holds a bypass-all ACL with that hostname under proxy list",
+          "polarity": "positive"
+        },
+        {
+          "given": "the clipboard manager refuses the write",
+          "when": "the user taps Copy",
+          "then": "the snackbar says Failed to export",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-21",
+      "statement": "Cut copies the selection and then removes it, with one undo entry. The removal runs even when the clipboard write fails.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:506",
+      "examples": [
+        {
+          "given": "two rules are selected",
+          "when": "the user taps Cut",
+          "then": "both leave the list and the clipboard holds both",
+          "polarity": "positive"
+        },
+        {
+          "given": "the clipboard manager refuses the write",
+          "when": "the user taps Cut",
+          "then": "the snackbar says Failed to export and both rules still leave the list",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-22",
+      "statement": "Remove shows the plural removed message and an Undo action. The count is the recycle bin size, so a second removal while the snackbar shows reports the combined count.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49",
+      "examples": [
+        {
+          "given": "one rule is selected",
+          "when": "the user taps Remove",
+          "then": "the snackbar says Removed",
+          "polarity": "boundary"
+        },
+        {
+          "given": "three rules are selected",
+          "when": "the user taps Remove",
+          "then": "the snackbar says 3 items removed",
+          "polarity": "positive"
+        },
+        {
+          "given": "one rule was removed and its snackbar still shows",
+          "when": "a second rule is removed",
+          "then": "the snackbar says 2 items removed and one Undo restores both",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-23",
+      "statement": "Undo restores every rule held in the recycle bin, newest removal first. Dismissing the snackbar without Undo keeps the removal.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54",
+      "examples": [
+        {
+          "given": "two rules were removed",
+          "when": "the user taps Undo",
+          "then": "both rules are back in the list",
+          "polarity": "positive"
+        },
+        {
+          "given": "the snackbar was dismissed without Undo",
+          "when": "the user taps nothing",
+          "then": "the removal stays",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-24",
+      "statement": "Import parses the clipboard as ACL. It adds proxy hostnames and proxy URLs, and its subnets only when the parsed default is bypass. Bypass hostnames and bypass subnets are dropped. It reports failure when it adds nothing.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:297",
+      "examples": [
+        {
+          "given": "the clipboard holds a proxy list",
+          "when": "the user taps Import from Clipboard",
+          "then": "its hostnames and URLs are added to the list",
+          "polarity": "positive"
+        },
+        {
+          "given": "the clipboard holds a proxy_all text whose only entry is a subnet",
+          "when": "the user taps Import from Clipboard",
+          "then": "the subnet is dropped and the snackbar says Failed to import",
+          "polarity": "negative"
+        },
+        {
+          "given": "the clipboard holds a proxy_all text with a hostname and a subnet",
+          "when": "the user taps Import from Clipboard",
+          "then": "the hostname is added and the subnet is dropped without a message",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the clipboard holds plain text with no entry",
+          "when": "the user taps Import from Clipboard",
+          "then": "the snackbar says Failed to import",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-25",
+      "statement": "GFW List reads the gfwlist ACL file from noBackupFilesDir and adds its subnets when its default is bypass, then its proxy hostnames and URLs. Core copies that file from the bundled asset, and AclSyncer can replace it from shadowsocks.org.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:477",
+      "examples": [
+        {
+          "given": "an empty rule list",
+          "when": "the user taps GFW List",
+          "then": "the gfwlist entries appear in the list",
+          "polarity": "positive"
+        },
+        {
+          "given": "the gfwlist ACL file has the proxy default",
+          "when": "the user taps GFW List",
+          "then": "its subnets are not added and its proxy hostnames and URLs are added",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-26",
+      "statement": "Every change is written to custom-rules-user.acl after the list redraws.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:254",
+      "examples": [
+        {
+          "given": "a rule was added",
+          "when": "the list finishes drawing",
+          "then": "custom-rules-user.acl holds the new rule",
+          "polarity": "positive"
+        },
+        {
+          "given": "two rules are added before the list redraws",
+          "when": "the posted save runs",
+          "then": "one save writes both rules to custom-rules-user.acl",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-27",
+      "statement": "The Back key ends the selection action mode before it leaves the screen.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:425",
+      "examples": [
+        {
+          "given": "two rules are selected",
+          "when": "the user presses Back",
+          "then": "the action mode ends and the screen stays",
+          "polarity": "positive"
+        },
+        {
+          "given": "no rule is selected and the navigation drawer is closed",
+          "when": "the user presses Back",
+          "then": "the screen closes and no action mode ends",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-28",
+      "statement": "A start on the custom-rules route always reads the user file through the forced-bypass getter, flattens its imports ten deep, and saves the result as custom-rules.acl, whether or not the file has import URLs.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:364",
+      "examples": [
+        {
+          "given": "the current profile uses custom-rules with one import URL",
+          "when": "the user connects",
+          "then": "custom-rules.acl holds the imported entries",
+          "polarity": "positive"
+        },
+        {
+          "given": "the current profile uses custom-rules and the user file has no import URL",
+          "when": "the user connects",
+          "then": "custom-rules.acl is written from the getter result with the forced bypass default",
+          "polarity": "boundary"
+        },
+        {
+          "given": "an import fetch fails with an IO error",
+          "when": "the user connects",
+          "then": "the start fails with the service-failed message",
+          "polarity": "negative"
+        },
+        {
+          "given": "an IMPORT_URL line is malformed",
+          "when": "the user connects",
+          "then": "Acl.parse throws MalformedURLException and the start fails with the service-failed message",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-29",
+      "statement": "A custom-rules profile always bypasses by default and lists proxied destinations.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/acl/Acl.kt:62",
+      "examples": [
+        {
+          "given": "custom-rules-user.acl begins with proxy_all",
+          "when": "the file is read",
+          "then": "the default is turned to bypass and the subnets are dropped",
+          "polarity": "boundary"
+        },
+        {
+          "given": "custom-rules-user.acl lists a proxy hostname and a proxy subnet under the bypass default",
+          "when": "Acl.customRules reads the file",
+          "then": "the returned ACL has bypass true and keeps the hostname and the subnet as proxied destinations",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-30",
+      "statement": "Leaving the screen flushes the undo snackbar and ends the action mode.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:486",
+      "examples": [
+        {
+          "given": "the undo snackbar is showing",
+          "when": "the user navigates away",
+          "then": "the snackbar is dismissed and the removal stays",
+          "polarity": "boundary"
+        },
+        {
+          "given": "two rules are selected and the selection action mode is active",
+          "when": "the user leaves the screen",
+          "then": "the action mode ends and the selection is cleared",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-31",
+      "statement": "AclSyncer schedules one refresh for the route with REPLACE, an unmetered-network and charging constraint, and a ten second delay. It returns without work while the user is locked.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:51",
+      "examples": [
+        {
+          "given": "the user is unlocked and the route is gfwlist",
+          "when": "ProxyInstance.scheduleUpdate runs",
+          "then": "one unique work named gfwlist is enqueued with the constraints and the delay",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user is locked",
+          "when": "AclSyncer.schedule runs",
+          "then": "nothing is enqueued",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-32",
+      "statement": "AclSyncer fetches https://shadowsocks.org/acl/android/v1/<route>.acl and writes it over the route ACL file. An IOException retries until the run attempt count is more than five, then returns failure.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:70",
+      "examples": [
+        {
+          "given": "the download succeeds",
+          "when": "the worker runs",
+          "then": "the route ACL file holds the downloaded text",
+          "polarity": "positive"
+        },
+        {
+          "given": "the download throws IOException",
+          "when": "the worker runs with runAttemptCount 0",
+          "then": "the result is retry",
+          "polarity": "negative"
+        },
+        {
+          "given": "the download throws IOException",
+          "when": "the worker runs with runAttemptCount 6",
+          "then": "the result is failure",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-33",
+      "statement": "ProxyInstance schedules AclSyncer only for a route other than all and custom-rules.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt:135",
+      "examples": [
+        {
+          "given": "the route is bypass-lan",
+          "when": "the proxy instance starts",
+          "then": "AclSyncer is scheduled for bypass-lan",
+          "polarity": "positive"
+        },
+        {
+          "given": "the route is all or custom-rules",
+          "when": "the proxy instance starts",
+          "then": "AclSyncer is not scheduled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-34",
+      "statement": "Core copies every bundled ACL asset into noBackupFilesDir when the package update time differs from the stored asset time. An IOException during the copy is logged and the copy is skipped.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:136",
+      "examples": [
+        {
+          "given": "the app was just updated",
+          "when": "Core starts",
+          "then": "every file in assets/acl is copied to noBackupFilesDir",
+          "polarity": "positive"
+        },
+        {
+          "given": "the copy throws IOException",
+          "when": "Core starts",
+          "then": "the error is logged and the asset update time is still stored",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UF-35",
+      "statement": "ProxyInstance starts the core with --acl <noBackupFilesDir>/<route>.acl for every route other than all.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt:126",
+      "examples": [
+        {
+          "given": "the route is gfwlist",
+          "when": "the proxy instance builds the command line",
+          "then": "the command line holds --acl and the path of gfwlist.acl",
+          "polarity": "positive"
+        },
+        {
+          "given": "the route is all",
+          "when": "the proxy instance builds the command line",
+          "then": "the command line holds no --acl argument",
+          "polarity": "negative"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "Rule selection and action mode",
+      "states": [
+        "no selection",
+        "one rule selected",
+        "several rules selected"
+      ],
+      "transitions": [
+        {
+          "from": "no selection",
+          "to": "one rule selected",
+          "event": "long press on a row",
+          "producer": "AclRuleViewHolder.onLongClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:231"
+        },
+        {
+          "from": "one rule selected",
+          "to": "several rules selected",
+          "event": "long press or tap on another row",
+          "producer": "AclRuleViewHolder.onLongClick / onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:232"
+        },
+        {
+          "from": "one rule selected",
+          "to": "several rules selected",
+          "event": "Select all while the action mode is active",
+          "producer": "AclRulesAdapter.selectAll",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:355"
+        },
+        {
+          "from": "several rules selected",
+          "to": "several rules selected",
+          "event": "Select all while several rules are already selected",
+          "producer": "AclRulesAdapter.selectAll",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:355"
+        },
+        {
+          "from": "several rules selected",
+          "to": "one rule selected",
+          "event": "deselect all but one",
+          "producer": "onSelectedItemsUpdated",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:374"
+        },
+        {
+          "from": "one rule selected",
+          "to": "no selection",
+          "event": "deselect the last rule, Back, or a finished action",
+          "producer": "onDestroyActionMode",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:521"
+        },
+        {
+          "from": "several rules selected",
+          "to": "no selection",
+          "event": "Remove, Cut, or Back",
+          "producer": "removeSelected / onDestroyActionMode",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:345"
+        },
+        {
+          "from": "one rule selected",
+          "to": "no selection",
+          "event": "leaving the screen ends the action mode",
+          "producer": "onDetach then mode.finish",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:489"
+        },
+        {
+          "from": "several rules selected",
+          "to": "no selection",
+          "event": "leaving the screen ends the action mode",
+          "producer": "onDetach then mode.finish",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:489"
+        }
+      ]
+    },
+    {
+      "object": "Edit rule dialog validation",
+      "states": [
+        "unvalidated",
+        "valid",
+        "invalid with error",
+        "valid with cleartext warning"
+      ],
+      "transitions": [
+        {
+          "from": "unvalidated",
+          "to": "valid",
+          "event": "the dialog opens from Manual Settings with the Generic template and an empty input",
+          "producer": "AclRuleDialogFragment.onStart then validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:137"
+        },
+        {
+          "from": "unvalidated",
+          "to": "valid with cleartext warning",
+          "event": "the dialog opens for a stored http URL rule",
+          "producer": "AclRuleDialogFragment.prepare then onStart",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:116"
+        },
+        {
+          "from": "valid",
+          "to": "invalid with error",
+          "event": "text no longer parses for the template",
+          "producer": "AclRuleDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:146"
+        },
+        {
+          "from": "invalid with error",
+          "to": "valid",
+          "event": "the text parses, or the template changes to one that accepts the text",
+          "producer": "AclRuleDialogFragment.afterTextChanged / onItemSelected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:142"
+        },
+        {
+          "from": "valid",
+          "to": "valid with cleartext warning",
+          "event": "URL template with an http URL",
+          "producer": "AclRuleDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:167"
+        },
+        {
+          "from": "valid with cleartext warning",
+          "to": "valid",
+          "event": "URL scheme changes to https",
+          "producer": "AclRuleDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:167"
+        },
+        {
+          "from": "valid with cleartext warning",
+          "to": "invalid with error",
+          "event": "the URL text loses its protocol, for example example.com",
+          "producer": "AclRuleDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:169"
+        },
+        {
+          "from": "invalid with error",
+          "to": "valid with cleartext warning",
+          "event": "the URL template text becomes an http URL",
+          "producer": "AclRuleDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:167"
+        }
+      ]
+    },
+    {
+      "object": "Custom rules user file (custom-rules-user.acl)",
+      "states": [
+        "absent",
+        "written by the user"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "written by the user",
+          "event": "first add or import",
+          "producer": "Acl.customRules setter",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/Acl.kt:68"
+        },
+        {
+          "from": "written by the user",
+          "to": "written by the user",
+          "event": "edit, remove, or undo, written after the list redraws",
+          "producer": "AclRulesAdapter.apply",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:258"
+        }
+      ]
+    },
+    {
+      "object": "Custom rules service ACL file (custom-rules.acl)",
+      "states": [
+        "absent",
+        "flattened",
+        "stale"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "flattened",
+          "event": "connect with the custom-rules route and no user file; the getter returns [bypass_all] and the service saves it",
+          "producer": "BaseService.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:367"
+        },
+        {
+          "from": "flattened",
+          "to": "flattened",
+          "event": "another connect re-reads the user file and rewrites the copy",
+          "producer": "BaseService.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:364"
+        },
+        {
+          "from": "stale",
+          "to": "flattened",
+          "event": "the next connect re-reads the user file and replaces the stale copy",
+          "producer": "BaseService.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:364"
+        },
+        {
+          "from": "flattened",
+          "to": "stale",
+          "event": "the user file changes while the service runs; the copy stays as it was",
+          "producer": "Acl.customRules setter",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:258"
+        }
+      ]
+    },
+    {
+      "object": "Swipe gate on the custom-rules route",
+      "states": [
+        "swipe allowed",
+        "swipe blocked"
+      ],
+      "transitions": [
+        {
+          "from": "swipe allowed",
+          "to": "swipe blocked",
+          "event": "the service is not stopped and the current profile uses custom-rules; only getSwipeDirs reads the gate",
+          "producer": "CustomRulesFragment.isEnabled through getSwipeDirs",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:416"
+        },
+        {
+          "from": "swipe blocked",
+          "to": "swipe allowed",
+          "event": "the service stops or the profile route changes",
+          "producer": "CustomRulesFragment.isEnabled",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:365"
+        }
+      ]
+    },
+    {
+      "object": "Removed rules undo window",
+      "states": [
+        "none",
+        "pendingUndo"
+      ],
+      "transitions": [
+        {
+          "from": "none",
+          "to": "pendingUndo",
+          "event": "a rule is removed by swipe, Cut, Remove in the action mode, or Remove in the dialog",
+          "producer": "UndoSnackbarManager.remove",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "pendingUndo",
+          "event": "another removal while the snackbar shows; the recycle bin accumulates and the message reports the combined count",
+          "producer": "UndoSnackbarManager.remove",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:50"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "none",
+          "event": "Undo tapped; every rule in the recycle bin is restored newest first and the bin is cleared",
+          "producer": "UndoSnackbarManager undo callback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "none",
+          "event": "the snackbar is dismissed without the action; the commit callback runs and the bin is cleared",
+          "producer": "UndoSnackbarManager.removedCallback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:38"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "none",
+          "event": "leaving the screen flushes the snackbar",
+          "producer": "CustomRulesFragment.onDetach then UndoSnackbarManager.flush",
+          "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:488"
+        }
+      ]
+    },
+    {
+      "object": "Preset ACL sync work",
+      "states": [
+        "not scheduled",
+        "enqueued",
+        "running",
+        "retry pending",
+        "succeeded",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "not scheduled",
+          "to": "not scheduled",
+          "event": "the route is all or custom-rules, or the user is locked; schedule returns without work",
+          "producer": "ProxyInstance.scheduleUpdate / AclSyncer.schedule",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:52"
+        },
+        {
+          "from": "not scheduled",
+          "to": "enqueued",
+          "event": "the route is another preset and the user is unlocked",
+          "producer": "ProxyInstance.scheduleUpdate",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt:135"
+        },
+        {
+          "from": "enqueued",
+          "to": "enqueued",
+          "event": "another schedule for the same route replaces the work because the policy is REPLACE",
+          "producer": "AclSyncer.schedule",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:58"
+        },
+        {
+          "from": "enqueued",
+          "to": "running",
+          "event": "the unmetered-network and charging constraints hold after the ten second delay",
+          "producer": "AclSyncer.doWork",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:70"
+        },
+        {
+          "from": "running",
+          "to": "succeeded",
+          "event": "the download completes and is written over <route>.acl",
+          "producer": "AclSyncer.doWork",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:75"
+        },
+        {
+          "from": "running",
+          "to": "retry pending",
+          "event": "IOException and runAttemptCount is 5 or less",
+          "producer": "AclSyncer.doWork",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:79"
+        },
+        {
+          "from": "retry pending",
+          "to": "running",
+          "event": "WorkManager runs the work again",
+          "producer": "AclSyncer.doWork",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:79"
+        },
+        {
+          "from": "running",
+          "to": "failed",
+          "event": "IOException and runAttemptCount is more than 5",
+          "producer": "AclSyncer.doWork",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:79"
+        }
+      ]
+    },
+    {
+      "object": "Preset ACL file on disk",
+      "states": [
+        "absent",
+        "present"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "present",
+          "event": "Core copies every assets/acl file into noBackupFilesDir after an app update",
+          "producer": "Core.onCreate",
+          "source": "core/src/main/java/com/github/shadowsocks/Core.kt:136"
+        },
+        {
+          "from": "present",
+          "to": "present",
+          "event": "a later app update copies the assets again",
+          "producer": "Core.onCreate",
+          "source": "core/src/main/java/com/github/shadowsocks/Core.kt:140"
+        },
+        {
+          "from": "present",
+          "to": "present",
+          "event": "AclSyncer replaces the file with the downloaded copy",
+          "producer": "AclSyncer.doWork",
+          "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:75"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U06-01",
+      "name": "Open custom rules from the drawer",
+      "steps": [
+        {
+          "label": "start: the user opens the navigation drawer",
+          "type": "start",
+          "next": "the drawer shows the Custom rules entry",
+          "exception": false
+        },
+        {
+          "label": "the drawer shows the Custom rules entry",
+          "type": "step",
+          "next": "the user taps Custom rules",
+          "exception": false
+        },
+        {
+          "label": "the user taps Custom rules",
+          "type": "step",
+          "next": "the screen replaces the fragment and the drawer closes",
+          "exception": false
+        },
+        {
+          "label": "the screen replaces the fragment and the drawer closes",
+          "type": "step",
+          "next": "the screen shows the rule list and the Add rule(s) menu",
+          "exception": false
+        },
+        {
+          "label": "the screen shows the rule list and the Add rule(s) menu",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "F-U06-02",
+      "name": "Add one rule by hand",
+      "steps": [
+        {
+          "label": "start: the user taps Add rule(s)",
+          "type": "start",
+          "next": "the user picks Manual Settings",
+          "exception": false
+        },
+        {
+          "label": "the user picks Manual Settings",
+          "type": "step",
+          "next": "the dialog opens with the Generic template and an empty input",
+          "exception": false
+        },
+        {
+          "label": "the dialog opens with the Generic template and an empty input",
+          "type": "step",
+          "next": "the user picks a template and types the rule",
+          "exception": false
+        },
+        {
+          "label": "the user picks a template and types the rule",
+          "type": "step",
+          "next": "decision: does the text pass the template check?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the text pass the template check? [yes -> the user taps OK] [no -> the dialog disables OK and shows the error]",
+          "type": "decision",
+          "next": "yes: the user taps OK",
+          "exception": false
+        },
+        {
+          "label": "yes: the user taps OK",
+          "type": "step",
+          "next": "decision: is the Generic text empty?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the Generic text empty? [yes -> the empty rule is stored] [no -> the rule is added and the list scrolls to it]",
+          "type": "decision",
+          "next": "no: the rule is added and the list scrolls to it",
+          "exception": false
+        },
+        {
+          "label": "yes: the empty rule is stored",
+          "type": "step",
+          "next": "the empty rule appears in the list and reopening it shows no Remove button",
+          "exception": false
+        },
+        {
+          "label": "the empty rule appears in the list and reopening it shows no Remove button",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the rule is added and the list scrolls to it",
+          "type": "step",
+          "next": "the rule appears in the list and the file is saved",
+          "exception": false
+        },
+        {
+          "label": "the rule appears in the list and the file is saved",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the dialog disables OK and shows the error",
+          "type": "step",
+          "next": "the user fixes the text or taps Cancel",
+          "exception": false
+        },
+        {
+          "label": "the user fixes the text or taps Cancel",
+          "type": "step",
+          "next": "decision: does the fixed text pass the template check?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the fixed text pass the template check? [yes -> the user taps OK] [no -> the list is unchanged]",
+          "type": "decision",
+          "next": "yes: the user taps OK",
+          "exception": false
+        },
+        {
+          "label": "no: the list is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "Invalid text keeps OK disabled and shows the parse message.",
+        "Cancel leaves the list unchanged.",
+        "An empty Generic text is valid and stores an empty rule."
+      ]
+    },
+    {
+      "id": "F-U06-03",
+      "name": "Edit an existing rule",
+      "steps": [
+        {
+          "label": "start: the user taps a rule row with no selection",
+          "type": "start",
+          "next": "the dialog opens with the matching template and the stored text",
+          "exception": false
+        },
+        {
+          "label": "the dialog opens with the matching template and the stored text",
+          "type": "step",
+          "next": "the user changes the text",
+          "exception": false
+        },
+        {
+          "label": "the user changes the text",
+          "type": "step",
+          "next": "decision: which dialog button does the user press?",
+          "exception": false
+        },
+        {
+          "label": "decision: which dialog button does the user press? [yes -> the user taps OK] [no -> the user taps Remove or Cancel]",
+          "type": "decision",
+          "next": "yes: the user taps OK",
+          "exception": false
+        },
+        {
+          "label": "yes: the user taps OK",
+          "type": "step",
+          "next": "the old rule is removed and the new rule is added",
+          "exception": false
+        },
+        {
+          "label": "the old rule is removed and the new rule is added",
+          "type": "step",
+          "next": "the edited rule is in the list and the file is saved",
+          "exception": false
+        },
+        {
+          "label": "the edited rule is in the list and the file is saved",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the user taps Remove or Cancel",
+          "type": "step",
+          "next": "decision: does the user remove or cancel?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user remove or cancel? [yes -> Remove deletes the rule with undo] [no -> Cancel changes nothing]",
+          "type": "decision",
+          "next": "yes: Remove deletes the rule with undo",
+          "exception": false
+        },
+        {
+          "label": "yes: Remove deletes the rule with undo",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: Cancel changes nothing",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "Remove deletes the rule and shows Undo.",
+        "Cancel changes nothing.",
+        "A tap while a selection is active toggles selection and opens no dialog."
+      ]
+    },
+    {
+      "id": "F-U06-04",
+      "name": "Import rules from the clipboard",
+      "steps": [
+        {
+          "label": "start: the user taps Add rule(s) then Import from Clipboard",
+          "type": "start",
+          "next": "the clipboard text is parsed as an ACL",
+          "exception": false
+        },
+        {
+          "label": "the clipboard text is parsed as an ACL",
+          "type": "step",
+          "next": "decision: does the parse yield a proxy hostname, a proxy URL, or a subnet under a bypass default?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the parse yield a proxy hostname, a proxy URL, or a subnet under a bypass default? [yes -> the rows are added] [no -> Failed to import]",
+          "type": "decision",
+          "next": "yes: the rows are added",
+          "exception": false
+        },
+        {
+          "label": "yes: the rows are added",
+          "type": "step",
+          "next": "the list shows them",
+          "exception": false
+        },
+        {
+          "label": "the list shows them",
+          "type": "step",
+          "next": "the imported rules are in the list and the file is saved",
+          "exception": false
+        },
+        {
+          "label": "the imported rules are in the list and the file is saved",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: Failed to import",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The snackbar says Failed to import.",
+        "A proxy_all text contributes no subnet: subnets are added only when the parsed default is bypass."
+      ]
+    },
+    {
+      "id": "F-U06-05",
+      "name": "Import the GFW list",
+      "steps": [
+        {
+          "label": "start: the user taps Add rule(s) then GFW List",
+          "type": "start",
+          "next": "the gfwlist ACL file is read from noBackupFilesDir",
+          "exception": false
+        },
+        {
+          "label": "the gfwlist ACL file is read from noBackupFilesDir",
+          "type": "step",
+          "next": "decision: does the file hold any entry?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the file hold any entry? [yes -> add every entry] [no -> nothing is added]",
+          "type": "decision",
+          "next": "yes: add every entry",
+          "exception": false
+        },
+        {
+          "label": "yes: add every entry",
+          "type": "step",
+          "next": "the gfwlist entries are in the list",
+          "exception": false
+        },
+        {
+          "label": "the gfwlist entries are in the list",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: nothing is added",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "A missing or empty gfwlist file leaves the list unchanged and reports nothing.",
+        "The file in noBackupFilesDir is the bundled copy or the AclSyncer copy, whichever is there."
+      ]
+    },
+    {
+      "id": "F-U06-06",
+      "name": "Delete one rule by swipe and undo",
+      "steps": [
+        {
+          "label": "start: the user swipes a row toward the start",
+          "type": "start",
+          "next": "decision: does the swipe gate allow editing and is the selection empty?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the swipe gate allow editing and is the selection empty? [yes -> the row is removed] [no -> the row springs back]",
+          "type": "decision",
+          "next": "yes: the row is removed",
+          "exception": false
+        },
+        {
+          "label": "yes: the row is removed",
+          "type": "step",
+          "next": "the undo snackbar appears",
+          "exception": false
+        },
+        {
+          "label": "the undo snackbar appears",
+          "type": "step",
+          "next": "decision: does the user tap Undo before the snackbar ends?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user tap Undo before the snackbar ends? [yes -> the rule comes back] [no -> the removal stays]",
+          "type": "decision",
+          "next": "yes: the rule comes back",
+          "exception": false
+        },
+        {
+          "label": "yes: the rule comes back",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the removal stays",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "no: the row springs back",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The removal stays when the snackbar is dismissed.",
+        "A swipe does nothing while the swipe gate is blocked or a selection is active.",
+        "A second removal before the snackbar ends reports the combined count."
+      ]
+    },
+    {
+      "id": "F-U06-07",
+      "name": "Multi-select copy, cut, or remove",
+      "steps": [
+        {
+          "label": "start: the user long presses a row",
+          "type": "start",
+          "next": "the action mode shows Select all, Cut, Copy, Remove",
+          "exception": false
+        },
+        {
+          "label": "the action mode shows Select all, Cut, Copy, Remove",
+          "type": "step",
+          "next": "the user adds or removes rows from the selection",
+          "exception": false
+        },
+        {
+          "label": "the user adds or removes rows from the selection",
+          "type": "step",
+          "next": "decision: does the user press Back?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user press Back? [yes -> Back ends the action mode and keeps the rules] [no -> decision: copy or destructive action?]",
+          "type": "decision",
+          "next": "decision: copy or destructive action?",
+          "exception": false
+        },
+        {
+          "label": "decision: copy or destructive action? [yes -> Copy] [no -> Cut or Remove]",
+          "type": "decision",
+          "next": "yes: Copy",
+          "exception": false
+        },
+        {
+          "label": "yes: Copy",
+          "type": "step",
+          "next": "decision: does the clipboard write succeed?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the clipboard write succeed? [yes -> Successfully export] [no -> Failed to export]",
+          "type": "decision",
+          "next": "yes: Successfully export",
+          "exception": false
+        },
+        {
+          "label": "yes: Successfully export",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: Failed to export",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "no: Cut or Remove",
+          "type": "step",
+          "next": "decision: is the action Cut?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the action Cut? [yes -> Cut copies and then removes the selection whatever the copy result] [no -> Remove removes the selection]",
+          "type": "decision",
+          "next": "yes: Cut copies and then removes the selection whatever the copy result",
+          "exception": false
+        },
+        {
+          "label": "yes: Cut copies and then removes the selection whatever the copy result",
+          "type": "step",
+          "next": "the selected rules leave the list and the undo snackbar appears",
+          "exception": false
+        },
+        {
+          "label": "no: Remove removes the selection",
+          "type": "step",
+          "next": "the selected rules leave the list and the undo snackbar appears",
+          "exception": false
+        },
+        {
+          "label": "the selected rules leave the list and the undo snackbar appears",
+          "type": "step",
+          "next": "the rules are gone and the undo snackbar offers them back",
+          "exception": false
+        },
+        {
+          "label": "the rules are gone and the undo snackbar offers them back",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "Back ends the action mode and keeps the rules",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "A failed clipboard write shows Failed to export; Cut still removes its selection.",
+        "Back ends the action mode and keeps the rules."
+      ]
+    },
+    {
+      "id": "F-U06-08",
+      "name": "Connect with the custom-rules route",
+      "steps": [
+        {
+          "label": "start: the user connects a profile whose route is custom-rules",
+          "type": "start",
+          "next": "the service reads custom-rules-user.acl through the forced-bypass getter",
+          "exception": false
+        },
+        {
+          "label": "the service reads custom-rules-user.acl through the forced-bypass getter",
+          "type": "step",
+          "next": "the getter forces the default to bypass and drops the subnets when the file said proxy_all",
+          "exception": false
+        },
+        {
+          "label": "the getter forces the default to bypass and drops the subnets when the file said proxy_all",
+          "type": "step",
+          "next": "decision: does the file have import URLs?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the file have import URLs? [yes -> the importer fetches and flattens them ten deep] [no -> the importer has nothing to fetch and saves the getter result]",
+          "type": "decision",
+          "next": "yes: the importer fetches and flattens them ten deep",
+          "exception": false
+        },
+        {
+          "label": "yes: the importer fetches and flattens them ten deep",
+          "type": "step",
+          "next": "decision: does every fetch succeed?",
+          "exception": false
+        },
+        {
+          "label": "decision: does every fetch succeed? [yes -> save custom-rules.acl] [no -> the start fails]",
+          "type": "decision",
+          "next": "save custom-rules.acl",
+          "exception": false
+        },
+        {
+          "label": "no: the importer has nothing to fetch and saves the getter result",
+          "type": "step",
+          "next": "save custom-rules.acl",
+          "exception": false
+        },
+        {
+          "label": "save custom-rules.acl",
+          "type": "step",
+          "next": "the core starts with custom-rules.acl passed as --acl",
+          "exception": false
+        },
+        {
+          "label": "the core starts with custom-rules.acl passed as --acl",
+          "type": "step",
+          "next": "the tunnel connects with the custom rules applied",
+          "exception": false
+        },
+        {
+          "label": "the tunnel connects with the custom rules applied",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "the start fails",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "An IO error during flattening fails the start with the service-failed message.",
+        "A malformed IMPORT_URL line throws MalformedURLException and fails the start the same way.",
+        "The core never reads custom-rules-user.acl; it is always given custom-rules.acl."
+      ]
+    },
+    {
+      "id": "F-U06-09",
+      "name": "Refresh a preset ACL in the background",
+      "steps": [
+        {
+          "label": "start: the proxy instance starts a route other than all and custom-rules",
+          "type": "start",
+          "next": "the sync worker is scheduled for that route",
+          "exception": false
+        },
+        {
+          "label": "the sync worker is scheduled for that route",
+          "type": "step",
+          "next": "decision: is the user unlocked and the route eligible?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the user unlocked and the route eligible? [yes -> the work is enqueued with REPLACE, unmetered and charging constraints, and a ten second delay] [no -> no work is enqueued]",
+          "type": "decision",
+          "next": "yes: the work is enqueued with REPLACE, unmetered and charging constraints, and a ten second delay",
+          "exception": false
+        },
+        {
+          "label": "yes: the work is enqueued with REPLACE, unmetered and charging constraints, and a ten second delay",
+          "type": "step",
+          "next": "the worker downloads https://shadowsocks.org/acl/android/v1/<route>.acl",
+          "exception": false
+        },
+        {
+          "label": "the worker downloads https://shadowsocks.org/acl/android/v1/<route>.acl",
+          "type": "step",
+          "next": "decision: did the download succeed?",
+          "exception": false
+        },
+        {
+          "label": "decision: did the download succeed? [yes -> the copy replaces <route>.acl] [no -> retry until more than five attempts have failed]",
+          "type": "decision",
+          "next": "yes: the copy replaces <route>.acl",
+          "exception": false
+        },
+        {
+          "label": "yes: the copy replaces <route>.acl",
+          "type": "step",
+          "next": "the route ACL file holds the refreshed copy",
+          "exception": false
+        },
+        {
+          "label": "the route ACL file holds the refreshed copy",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "retry until more than five attempts have failed",
+          "type": "step",
+          "next": "the work fails after more than five attempts",
+          "exception": false
+        },
+        {
+          "label": "the work fails after more than five attempts",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "no work is enqueued",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "Schedule returns without work while the user is locked.",
+        "A download that keeps throwing IOException fails after more than five attempts."
+      ]
+    },
+    {
+      "id": "F-U06-10",
+      "name": "Deploy the preset ACL files",
+      "steps": [
+        {
+          "label": "start: the app starts after an update, or a route other than all is used",
+          "type": "start",
+          "next": "decision: does the package update time differ from the stored asset time?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the package update time differ from the stored asset time? [yes -> copy every bundled ACL asset to noBackupFilesDir] [no -> keep the files on disk]",
+          "type": "decision",
+          "next": "yes: copy every bundled ACL asset to noBackupFilesDir",
+          "exception": false
+        },
+        {
+          "label": "yes: copy every bundled ACL asset to noBackupFilesDir",
+          "type": "step",
+          "next": "the route ACL file exists in noBackupFilesDir",
+          "exception": false
+        },
+        {
+          "label": "no: keep the files on disk",
+          "type": "step",
+          "next": "the route ACL file exists in noBackupFilesDir",
+          "exception": false
+        },
+        {
+          "label": "the route ACL file exists in noBackupFilesDir",
+          "type": "step",
+          "next": "decision: is the route all?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the route all? [yes -> the core starts with no --acl argument] [no -> the core starts with --acl <noBackupFilesDir>/<route>.acl]",
+          "type": "decision",
+          "next": "the core starts with no --acl argument",
+          "exception": false
+        },
+        {
+          "label": "the core starts with no --acl argument",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "the core starts with --acl <noBackupFilesDir>/<route>.acl",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "An IOException during the asset copy is logged and the stored asset time is still saved.",
+        "The gfwlist file may later be replaced by the AclSyncer copy."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U06-01",
+      "title": "Open Custom rules from the drawer",
+      "preconditions": [
+        "the app is on the profiles screen",
+        "the navigation drawer is closed"
+      ],
+      "steps": [
+        "Open the navigation drawer",
+        "Tap Custom rules"
+      ],
+      "expected": [
+        "the drawer lists Custom rules between Subscriptions and Settings",
+        "the Custom rules screen shows the rule list and the Add rule(s) menu",
+        "the drawer closes"
+      ],
+      "control_path": "C-U06-027 > C-U06-001",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:212"
+    },
+    {
+      "id": "TC-U06-02",
+      "title": "Add a subnet through Manual Settings",
+      "preconditions": [
+        "the Custom rules screen is open"
+      ],
+      "steps": [
+        "Tap Add rule(s)",
+        "Tap Manual Settings",
+        "Leave the Generic template selected",
+        "Type 10.0.0.0/8",
+        "Tap OK"
+      ],
+      "expected": [
+        "the Edit rule dialog opens with an empty input and the Generic template",
+        "OK becomes enabled",
+        "the list gains a row showing 10.0.0.0/8",
+        "custom-rules-user.acl contains the new rule"
+      ],
+      "control_path": "C-U06-003 > C-U06-004 > C-U06-018 > C-U06-019 > C-U06-021",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:460"
+    },
+    {
+      "id": "TC-U06-03",
+      "title": "Generic template rejects an invalid pattern and recovers",
+      "preconditions": [
+        "the Edit rule dialog is open on the Generic template"
+      ],
+      "steps": [
+        "Type an unclosed character class",
+        "Read the OK button and the error line",
+        "Replace the text with a valid pattern",
+        "Read the OK button again",
+        "Tap OK"
+      ],
+      "expected": [
+        "OK is disabled and the error line shows the regex message",
+        "OK becomes enabled once the text compiles",
+        "the rule is added to the list"
+      ],
+      "control_path": "C-U06-017 > C-U06-018 > C-U06-019 > C-U06-020 > C-U06-021",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:153"
+    },
+    {
+      "id": "TC-U06-04",
+      "title": "Domain template stores an anchored pattern",
+      "preconditions": [
+        "the Edit rule dialog is open"
+      ],
+      "steps": [
+        "Select the Domain template",
+        "Type example.com",
+        "Tap OK"
+      ],
+      "expected": [
+        "OK is enabled",
+        "the new row shows (?:^|\\.)example\\.com$ with escaped dots and the trailing $",
+        "opening that row again shows the Domain template and example.com in Unicode"
+      ],
+      "control_path": "C-U06-018 > C-U06-019 > C-U06-021 > C-U06-008 > C-U06-029",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:182"
+    },
+    {
+      "id": "TC-U06-05",
+      "title": "URL template warns on cleartext http",
+      "preconditions": [
+        "the Edit rule dialog is open"
+      ],
+      "steps": [
+        "Select the URL template",
+        "Type an http URL",
+        "Change the scheme to https",
+        "Tap OK"
+      ],
+      "expected": [
+        "OK is enabled",
+        "the error line shows the cleartext HTTP warning for http and clears for https",
+        "the URL appears in the list"
+      ],
+      "control_path": "C-U06-018 > C-U06-019 > C-U06-020 > C-U06-021",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:167"
+    },
+    {
+      "id": "TC-U06-06",
+      "title": "Edit an existing rule and save it",
+      "preconditions": [
+        "the rule list holds example.com as a Domain rule"
+      ],
+      "steps": [
+        "Tap the example.com row",
+        "Change the text to example.org",
+        "Tap OK"
+      ],
+      "expected": [
+        "the dialog opens with the Domain template and example.com",
+        "the old row is removed and the new rule is added",
+        "the list scrolls to the new row and the file holds example.org"
+      ],
+      "control_path": "C-U06-008 > C-U06-017 > C-U06-019 > C-U06-021",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:387"
+    },
+    {
+      "id": "TC-U06-07",
+      "title": "Remove a rule from the edit dialog",
+      "preconditions": [
+        "the rule list holds example.com"
+      ],
+      "steps": [
+        "Tap the example.com row",
+        "Tap Remove",
+        "Tap Undo on the snackbar"
+      ],
+      "expected": [
+        "the dialog shows the Domain template with example.com and a Remove button",
+        "the row leaves the list and the snackbar says Removed",
+        "Undo restores the rule"
+      ],
+      "control_path": "C-U06-008 > C-U06-017 > C-U06-023 > C-U06-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:391"
+    },
+    {
+      "id": "TC-U06-08",
+      "title": "Import rules from the clipboard",
+      "preconditions": [
+        "the clipboard holds an ACL text with a proxy list"
+      ],
+      "steps": [
+        "Tap Add rule(s)",
+        "Tap Import from Clipboard",
+        "Read the list"
+      ],
+      "expected": [
+        "the proxy hostnames and proxy URLs of the clipboard text appear as rows",
+        "the edited file holds them"
+      ],
+      "control_path": "C-U06-003 > C-U06-005",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:467"
+    },
+    {
+      "id": "TC-U06-09",
+      "title": "Import fails on a clipboard with no rule",
+      "preconditions": [
+        "the clipboard holds text that parses to no entry"
+      ],
+      "steps": [
+        "Tap Add rule(s)",
+        "Tap Import from Clipboard"
+      ],
+      "expected": [
+        "the list is unchanged",
+        "the snackbar says Failed to import"
+      ],
+      "control_path": "C-U06-003 > C-U06-005 > C-U06-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:471"
+    },
+    {
+      "id": "TC-U06-10",
+      "title": "Import the bundled GFW list in one tap",
+      "preconditions": [
+        "the rule list is empty"
+      ],
+      "steps": [
+        "Tap Add rule(s)",
+        "Tap GFW List",
+        "Scroll the list"
+      ],
+      "expected": [
+        "subnets from the gfwlist file in noBackupFilesDir appear first",
+        "hostname patterns and URLs follow",
+        "custom-rules-user.acl holds the added entries"
+      ],
+      "control_path": "C-U06-003 > C-U06-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:476"
+    },
+    {
+      "id": "TC-U06-11",
+      "title": "Swipe a row away and undo it",
+      "preconditions": [
+        "the list holds three rules",
+        "no selection is active",
+        "the service is stopped or the route is not custom-rules"
+      ],
+      "steps": [
+        "Swipe the middle row toward the start",
+        "Tap Undo on the snackbar"
+      ],
+      "expected": [
+        "the row leaves the list immediately",
+        "the snackbar shows the removed count and Undo",
+        "Undo puts the row back"
+      ],
+      "control_path": "C-U06-007 > C-U06-008 > C-U06-015 > C-U06-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:418"
+    },
+    {
+      "id": "TC-U06-12",
+      "title": "Swipe does nothing while a selection is active",
+      "preconditions": [
+        "the list holds three rules",
+        "one rule is selected"
+      ],
+      "steps": [
+        "Swipe a second row toward the start"
+      ],
+      "expected": [
+        "the row does not move",
+        "the selection stays as it was"
+      ],
+      "control_path": "C-U06-009 > C-U06-007 > C-U06-008",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:417"
+    },
+    {
+      "id": "TC-U06-13",
+      "title": "Swipe is blocked while the custom-rules route runs",
+      "preconditions": [
+        "the service state is Connected",
+        "the current profile uses the custom-rules route"
+      ],
+      "steps": [
+        "Open Custom rules",
+        "Swipe a row toward the start",
+        "Leave the screen and stop the service from the profiles screen or its notification",
+        "Open Custom rules again and swipe the same row"
+      ],
+      "expected": [
+        "the row does not move while the service runs",
+        "the row is removed after the service stops",
+        "row taps, dialog OK and Remove, and Cut and Remove still work while the service runs, because the gate is read only by getSwipeDirs"
+      ],
+      "control_path": "C-U06-001 > C-U06-007 > C-U06-008",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:365"
+    },
+    {
+      "id": "TC-U06-14",
+      "title": "Long press starts the selection and tap toggles",
+      "preconditions": [
+        "the list holds two rules"
+      ],
+      "steps": [
+        "Long press the first row",
+        "Tap the second row",
+        "Tap the first row again",
+        "Tap the second row again"
+      ],
+      "expected": [
+        "the action mode appears with one rule selected",
+        "the second row is added to the selection and no dialog opens",
+        "the first row is deselected and the action mode stays",
+        "the last row is deselected and the action mode ends"
+      ],
+      "control_path": "C-U06-008 > C-U06-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:226"
+    },
+    {
+      "id": "TC-U06-15",
+      "title": "Select all and copy the rules as ACL",
+      "preconditions": [
+        "the list holds a subnet, a hostname, and a URL"
+      ],
+      "steps": [
+        "Long press one row",
+        "Tap Select all",
+        "Tap Copy"
+      ],
+      "expected": [
+        "every row is selected",
+        "the clipboard holds an ACL text with a bypass default and the proxy list",
+        "the snackbar says Successfully export"
+      ],
+      "control_path": "C-U06-009 > C-U06-010 > C-U06-012 > C-U06-024",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:444"
+    },
+    {
+      "id": "TC-U06-16",
+      "title": "Cut removes the selection after copying",
+      "preconditions": [
+        "the list holds two rules",
+        "both rules are selected"
+      ],
+      "steps": [
+        "Tap Cut",
+        "Read the list and the snackbar"
+      ],
+      "expected": [
+        "both rules leave the list",
+        "the clipboard holds both rules",
+        "the snackbar shows 2 items removed with Undo"
+      ],
+      "control_path": "C-U06-009 > C-U06-011 > C-U06-015 > C-U06-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:506"
+    },
+    {
+      "id": "TC-U06-17",
+      "title": "Back ends the action mode and keeps the rules",
+      "preconditions": [
+        "two rules are selected"
+      ],
+      "steps": [
+        "Press Back"
+      ],
+      "expected": [
+        "the toolbar returns and the selection clears",
+        "the screen stays open and the rules remain"
+      ],
+      "control_path": "C-U06-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:425"
+    },
+    {
+      "id": "TC-U06-18",
+      "title": "Remove selected rules and read the count",
+      "preconditions": [
+        "the list holds three rules"
+      ],
+      "steps": [
+        "Select two rules",
+        "Tap Remove",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "both rules leave the list",
+        "the snackbar says 2 items removed and offers Undo"
+      ],
+      "control_path": "C-U06-009 > C-U06-013 > C-U06-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+    },
+    {
+      "id": "TC-U06-19",
+      "title": "Connect with the custom-rules route",
+      "preconditions": [
+        "the current profile uses the custom-rules route",
+        "custom-rules-user.acl holds a list URL"
+      ],
+      "steps": [
+        "Tap the connect control",
+        "Wait for the connected state",
+        "Stop the tunnel",
+        "Tap the connect control again"
+      ],
+      "expected": [
+        "the imported entries are fetched and saved into custom-rules.acl",
+        "the tunnel connects with the custom rules applied",
+        "a second connect rewrites custom-rules.acl from the user file"
+      ],
+      "control_path": "C-U06-001",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:364"
+    },
+    {
+      "id": "TC-U06-20",
+      "title": "Custom rules default is forced to bypass",
+      "preconditions": [
+        "custom-rules-user.acl begins with proxy_all and holds one subnet"
+      ],
+      "steps": [
+        "Open Custom rules",
+        "Connect with a custom-rules profile"
+      ],
+      "expected": [
+        "the editor reads the file with bypass set and the subnet dropped",
+        "the file handed to the core starts with a bypass default"
+      ],
+      "control_path": "C-U06-001",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/acl/Acl.kt:62"
+    },
+    {
+      "id": "TC-U06-21",
+      "title": "A failing import URL aborts the connect",
+      "preconditions": [
+        "the current profile uses the custom-rules route",
+        "custom-rules-user.acl holds an import URL that throws IOException"
+      ],
+      "steps": [
+        "Tap the connect control",
+        "Read the service state and the message"
+      ],
+      "expected": [
+        "BaseService catches the IOException while flattening and stops the start",
+        "the service shows the service-failed message and no tunnel is established"
+      ],
+      "control_path": "C-U06-001",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:370",
+      "rules": [
+        "R-UF-28"
+      ]
+    },
+    {
+      "id": "TC-U06-22",
+      "title": "A malformed IMPORT_URL line fails the start",
+      "preconditions": [
+        "custom-rules-user.acl holds a #IMPORT_URL line with a value that is not a URL"
+      ],
+      "steps": [
+        "Connect with a custom-rules profile",
+        "Read the service state and the message"
+      ],
+      "expected": [
+        "Acl.parse calls URL with the malformed value and throws MalformedURLException",
+        "the start fails with the service-failed message"
+      ],
+      "control_path": "C-U06-001 > C-U06-030 > C-U06-032",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/acl/Acl.kt:84",
+      "rules": [
+        "R-UF-28"
+      ]
+    },
+    {
+      "id": "TC-U06-23",
+      "title": "A preset ACL refresh retries and then fails",
+      "preconditions": [
+        "the route is gfwlist",
+        "the download throws IOException on every attempt"
+      ],
+      "steps": [
+        "Start the service",
+        "Wait for AclSyncer to run more than five times"
+      ],
+      "expected": [
+        "each attempt returns retry while runAttemptCount is 5 or less",
+        "the attempt after runAttemptCount becomes 6 returns failure"
+      ],
+      "control_path": "C-U06-001",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/acl/AclSyncer.kt:70",
+      "rules": [
+        "R-UF-31",
+        "R-UF-32"
+      ]
+    },
+    {
+      "id": "TC-U06-24",
+      "title": "Preset ACL files are deployed for the core",
+      "preconditions": [
+        "the app has just been updated"
+      ],
+      "steps": [
+        "Start the app",
+        "Start a service whose route is gfwlist",
+        "Read the core command line"
+      ],
+      "expected": [
+        "every file in assets/acl is copied into noBackupFilesDir",
+        "the command line holds --acl followed by the path of gfwlist.acl",
+        "a route of all adds no --acl argument"
+      ],
+      "control_path": "C-U06-001",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:136",
+      "rules": [
+        "R-UF-33",
+        "R-UF-34",
+        "R-UF-35"
+      ]
+    },
+    {
+      "id": "TC-U06-25",
+      "title": "An empty Generic rule is stored as an empty row",
+      "preconditions": [
+        "the Edit rule dialog was opened from Manual Settings"
+      ],
+      "steps": [
+        "Leave the input empty",
+        "Tap OK",
+        "Tap the new empty row"
+      ],
+      "expected": [
+        "OK is enabled because an empty text compiles as a pattern",
+        "the list gains an empty hostname row and custom-rules-user.acl gains an empty line",
+        "the reopened dialog shows no Remove button because the item is empty"
+      ],
+      "control_path": "C-U06-017 > C-U06-018 > C-U06-019 > C-U06-021 > C-U06-008 > C-U06-029",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:179",
+      "rules": [
+        "R-UF-05",
+        "R-UF-11"
+      ]
+    },
+    {
+      "id": "TC-U06-26",
+      "title": "Cancel and dismissal leave the list unchanged",
+      "preconditions": [
+        "the Edit rule dialog was opened for an existing rule"
+      ],
+      "steps": [
+        "Change the text",
+        "Tap Cancel",
+        "Open the same rule again, change the text, and dismiss the dialog"
+      ],
+      "expected": [
+        "neither Cancel nor a dismissal returns an edit result",
+        "the rule and the list are unchanged"
+      ],
+      "control_path": "C-U06-008 > C-U06-017 > C-U06-019 > C-U06-022",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:192",
+      "rules": [
+        "R-UF-14"
+      ]
+    },
+    {
+      "id": "TC-U06-27",
+      "title": "Manual Settings shows no Remove button",
+      "preconditions": [
+        "the rule list holds at least one rule"
+      ],
+      "steps": [
+        "Tap Add rule(s)",
+        "Tap Manual Settings",
+        "Read the dialog buttons"
+      ],
+      "expected": [
+        "the dialog shows OK and Cancel",
+        "the Remove button is absent because the argument item is null"
+      ],
+      "control_path": "C-U06-003 > C-U06-004 > C-U06-017 > C-U06-021 > C-U06-023",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:131",
+      "rules": [
+        "R-UF-11"
+      ]
+    },
+    {
+      "id": "TC-U06-28",
+      "title": "Dismissing the undo snackbar keeps the removal",
+      "preconditions": [
+        "a rule was removed and its snackbar is visible"
+      ],
+      "steps": [
+        "Wait until the snackbar dismisses without the Undo action"
+      ],
+      "expected": [
+        "the removedCallback runs with a dismissal event other than action",
+        "the recycle bin is cleared and the rule does not return"
+      ],
+      "control_path": "C-U06-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:38",
+      "rules": [
+        "R-UF-23",
+        "R-UF-30"
+      ]
+    },
+    {
+      "id": "TC-U06-29",
+      "title": "Leaving the screen flushes the snackbar and ends the action mode",
+      "preconditions": [
+        "a removal snackbar is visible",
+        "two rules are selected in the action mode"
+      ],
+      "steps": [
+        "Navigate away from Custom rules"
+      ],
+      "expected": [
+        "onDetach flushes the snackbar",
+        "the action mode ends and its selection is cleared"
+      ],
+      "control_path": "C-U06-009 > C-U06-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:486",
+      "rules": [
+        "R-UF-30"
+      ]
+    },
+    {
+      "id": "TC-U06-30",
+      "title": "A second removal joins the undo snackbar",
+      "preconditions": [
+        "one rule was removed and its snackbar is visible"
+      ],
+      "steps": [
+        "Remove a second rule",
+        "Read the snackbar",
+        "Tap Undo"
+      ],
+      "expected": [
+        "the snackbar shows the combined count of two removals",
+        "one Undo restores both rules, newest removal first"
+      ],
+      "control_path": "C-U06-015 > C-U06-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:50",
+      "rules": [
+        "R-UF-22",
+        "R-UF-23"
+      ]
+    },
+    {
+      "id": "TC-U06-31",
+      "title": "Cut removes the selection when the clipboard write fails",
+      "preconditions": [
+        "two rules are selected",
+        "Core.trySetPrimaryClip returns false"
+      ],
+      "steps": [
+        "Tap Cut",
+        "Read the list and the snackbar"
+      ],
+      "expected": [
+        "the snackbar says Failed to export",
+        "both rules still leave the list and the undo snackbar offers them back"
+      ],
+      "control_path": "C-U06-009 > C-U06-011 > C-U06-015 > C-U06-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:506",
+      "rules": [
+        "R-UF-21"
+      ]
+    },
+    {
+      "id": "TC-U06-32",
+      "title": "A proxy_all clipboard drops its subnets",
+      "preconditions": [
+        "the clipboard holds [proxy_all], [proxy_list], and one subnet"
+      ],
+      "steps": [
+        "Tap Import from Clipboard",
+        "Read the list and the snackbar"
+      ],
+      "expected": [
+        "addToProxy adds subnets only when the parsed default is bypass, so the subnet is dropped",
+        "addToProxy returns null and the snackbar says Failed to import"
+      ],
+      "control_path": "C-U06-003 > C-U06-005 > C-U06-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:297",
+      "rules": [
+        "R-UF-24"
+      ]
+    },
+    {
+      "id": "TC-U06-33",
+      "title": "Changing the profile route opens the swipe gate",
+      "preconditions": [
+        "the service is Connected with the custom-rules route",
+        "the list holds one rule"
+      ],
+      "steps": [
+        "Open Custom rules and swipe the row",
+        "Open the profile editor and change the route to all",
+        "Open Custom rules and swipe the row again"
+      ],
+      "expected": [
+        "the first swipe is refused because isEnabled is false",
+        "the second swipe removes the row because the route is no longer custom-rules"
+      ],
+      "control_path": "C-U06-001 > C-U06-007 > C-U06-008",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:365",
+      "rules": [
+        "R-UF-16"
+      ]
+    },
+    {
+      "id": "TC-U06-34",
+      "title": "A connect with no user file still writes the served ACL",
+      "preconditions": [
+        "custom-rules-user.acl does not exist",
+        "the current profile uses the custom-rules route"
+      ],
+      "steps": [
+        "Connect",
+        "Read the file passed to the core"
+      ],
+      "expected": [
+        "Acl.customRules returns bypass with no entries",
+        "BaseService saves that as custom-rules.acl, which starts with [bypass_all]",
+        "the core receives custom-rules.acl"
+      ],
+      "control_path": "C-U06-001",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:366",
+      "rules": [
+        "R-UF-29"
+      ]
+    },
+    {
+      "id": "TC-U06-35",
+      "title": "An edit after a connect leaves the served ACL stale",
+      "preconditions": [
+        "a custom-rules tunnel is connected",
+        "custom-rules.acl was written by that connect"
+      ],
+      "steps": [
+        "Add a rule in the editor",
+        "Read custom-rules-user.acl and custom-rules.acl",
+        "Reconnect"
+      ],
+      "expected": [
+        "the user file holds the new rule",
+        "custom-rules.acl still holds the previous rules until the next connect",
+        "the next connect rewrites custom-rules.acl from the user file"
+      ],
+      "control_path": "C-U06-001 > C-U06-003 > C-U06-004 > C-U06-017 > C-U06-021",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/acl/CustomRulesFragment.kt:258",
+      "rules": [
+        "R-UF-26",
+        "R-UF-28"
+      ]
+    }
+  ],
+  "parity_summary": {
+    "implemented": 29,
+    "partial": 3,
+    "missing": 0,
+    "android_only": 3
+  },
+  "notes": "All listed files exist. layout_custom_rules.xml includes plugin/src/main/res/layout/toolbar_light_dark.xml, so the toolbar comes from the plugin module. The Add rule(s) menu item (custom_rules_menu.xml:4) has no id; its submenu is addressed by position. C-U06-027 is the drawer entry owned by U01 and carries an empty parent because its parent lives in another unit; the route preference is U03's C-U03-013, so it is not repeated here. The toolbar navigation icon has no id of its own; the id toolbar belongs to the MaterialToolbar, modelled as C-U06-030. A domain rule is stored as (?:^|\\.) with escaped dots and a trailing $, and the Domain read-back needs that trailing $. Swipe delete is an ItemTouchHelper attached to the list, not a button; the row and list actions describe it. The swipe gate is read only by getSwipeDirs, so row tap, dialog Remove, Cut, and Remove stay usable while the custom-rules route runs. A custom-rules start always reads the user file through the forced-bypass getter, flattens imports ten deep, and writes custom-rules.acl, with or without import URLs; the core never reads custom-rules-user.acl. A failing import URL or a malformed IMPORT_URL line aborts the Android start (BaseService.kt:370, Acl.kt:84), while the HarmonyOS port skips unreachable lists, so TC-U06-19, TC-U06-21, and TC-U06-22 diverge. AclSyncer refreshes only routes other than all and custom-rules (ProxyInstance.kt:135), waits for unmetered network and charging, and gives up after more than five attempts (AclSyncer.kt:79). The undo count is the recycle bin size, so a second removal before the snackbar ends reports the combined count and one Undo restores both batches. Cut removes the selection even when the clipboard write fails. Import adds subnets only when the parsed default is bypass. An empty Generic rule is valid and becomes an empty hostname row that reopens without a Remove button. The 5.4.0 port adds the per-rule editor, the Generic, Domain, and URL validation, the one-tap GFW List action, the drawer entry, and the undo bar. Three behaviors stay partial: a connect refreshes imported lists after the start for the next start, so the first connect serves the cached or unflattened file (TC-U06-19); a proxy-default file keeps its proxy-list subnets and drops only the bypass-list subnets (TC-U06-20); and the preset ACLs are read and deployed one route at a time at start and reach the core through the config's acl field, not a bulk noBackupFilesDir copy or a --acl command line (TC-U06-24). A failed import URL or a malformed IMPORT_URL line does not stop the start, and a refresh does not retry, so TC-U06-21, TC-U06-22, and TC-U06-23 are android-only platform divergences."
+}

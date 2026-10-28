@@ -18,6 +18,7 @@
  *******************************************************************************/
 
 import { common } from '@kit.AbilityKit';
+import { decodeFallbackChoice, encodeFallbackChoice } from './UdpFallback';
 
 const KEY = 'ability_context';
 
@@ -53,6 +54,37 @@ export function takePendingImport(): string {
   }
   AppStorage.setOrCreate(IMPORT_KEY, '');
   return uri;
+}
+
+const FALLBACK_KEY = 'pending_udp_fallback';
+
+/**
+ * A UDP fallback choice the chooser made, waiting for the editor of the same
+ * profile. A new choice replaces an older one.
+ */
+export function setPendingFallback(profileId: string, fallbackId: string): void {
+  AppStorage.setOrCreate(FALLBACK_KEY, encodeFallbackChoice(profileId, fallbackId));
+}
+
+/**
+ * Takes the pending fallback choice for one profile. Returns null when there
+ * is no choice or the choice is for another profile. An empty string means the
+ * user chose Disabled.
+ *
+ * A choice for another profile stays in place, so that profile's editor can
+ * take it.
+ */
+export function takePendingFallback(profileId: string): string | null {
+  const raw = AppStorage.get(FALLBACK_KEY) as string | undefined;
+  if (raw === undefined || raw.length === 0) {
+    return null;
+  }
+  const choice = decodeFallbackChoice(profileId, raw);
+  if (choice === null) {
+    return null;
+  }
+  AppStorage.setOrCreate(FALLBACK_KEY, '');
+  return choice;
 }
 
 export function abilityContext(): common.UIAbilityContext {

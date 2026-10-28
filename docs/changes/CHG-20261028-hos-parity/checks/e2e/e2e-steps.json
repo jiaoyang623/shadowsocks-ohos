@@ -1,0 +1,133 @@
+{
+  "skill_version": "a01",
+  "title": "HarmonyOS on-device suites: NAPI surface and SOCKS tunnel",
+  "change_id": "CHG-20261028-hos-parity",
+  "baseline": "e123804+dirty",
+  "environment": "HarmonyOS 6.1.1 API 24 emulator, x86_64, hdc 127.0.0.1:5555",
+  "command": "ci/hos-emulator-e2e.sh (SKIP_EMULATOR=1)",
+  "executed_at": "2026-10-28T14:31:06+11:00",
+  "target": "mobile",
+  "cases": [
+    {
+      "id": "E2E-DEVICE-01",
+      "title": "exposes the native core",
+      "oracle_ids": [
+        "O-JOURNEY-01"
+      ],
+      "status": "pass",
+      "steps": [
+        {
+          "id": "S-01",
+          "name": "Run on the emulator",
+          "operation": "aa test -s class SslocalNativeTest on the running emulator.",
+          "expected": [
+            "The test passes."
+          ],
+          "actual": "Pass.",
+          "status": "pass",
+          "evidence": {
+            "kind": "terminal",
+            "output": "class=SslocalNativeTest\ntest=exposes the native core\nstatus_code=0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E2E-DEVICE-02",
+      "title": "rejects invalid configs",
+      "oracle_ids": [
+        "O-JOURNEY-01"
+      ],
+      "status": "pass",
+      "steps": [
+        {
+          "id": "S-01",
+          "name": "Run on the emulator",
+          "operation": "aa test -s class SslocalNativeTest on the running emulator.",
+          "expected": [
+            "The test passes."
+          ],
+          "actual": "Pass.",
+          "status": "pass",
+          "evidence": {
+            "kind": "terminal",
+            "output": "class=SslocalNativeTest\ntest=rejects invalid configs\nstatus_code=0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E2E-DEVICE-03",
+      "title": "rejects a negative tun fd",
+      "oracle_ids": [
+        "O-JOURNEY-01"
+      ],
+      "status": "pass",
+      "steps": [
+        {
+          "id": "S-01",
+          "name": "Run on the emulator",
+          "operation": "aa test -s class SslocalNativeTest on the running emulator.",
+          "expected": [
+            "The test passes."
+          ],
+          "actual": "Pass.",
+          "status": "pass",
+          "evidence": {
+            "kind": "terminal",
+            "output": "class=SslocalNativeTest\ntest=rejects a negative tun fd\nstatus_code=0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E2E-DEVICE-04",
+      "title": "round-trips an HTTP fetch through the shadowsocks tunnel",
+      "oracle_ids": [
+        "O-JOURNEY-01"
+      ],
+      "status": "pass",
+      "steps": [
+        {
+          "id": "S-01",
+          "name": "Run on the emulator",
+          "operation": "aa test -s class SocksE2eTest on the running emulator.",
+          "expected": [
+            "The test passes."
+          ],
+          "actual": "Pass.",
+          "status": "pass",
+          "evidence": {
+            "kind": "terminal",
+            "output": "class=SocksE2eTest\ntest=round-trips an HTTP fetch through the shadowsocks tunnel\nstatus_code=0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E2E-DEVICE-05",
+      "title": "cannot reach the marker without the tunnel",
+      "oracle_ids": [
+        "O-JOURNEY-01"
+      ],
+      "status": "pass",
+      "steps": [
+        {
+          "id": "S-01",
+          "name": "Run on the emulator",
+          "operation": "aa test -s class SocksE2eTest on the running emulator.",
+          "expected": [
+            "The test passes."
+          ],
+          "actual": "Pass.",
+          "status": "pass",
+          "evidence": {
+            "kind": "terminal",
+            "output": "class=SocksE2eTest\ntest=cannot reach the marker without the tunnel\nstatus_code=0"
+          }
+        }
+      ]
+    }
+  ],
+  "notice": "Tests run: 5, Failure: 0, Error: 0, Pass: 5, Ignore: 0."
+}

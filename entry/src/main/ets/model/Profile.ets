@@ -17,19 +17,13 @@
  *                                                                             *
  *******************************************************************************/
 
+import { DEFAULT_LOCAL_DNS_PORT } from './Diagnostics';
+import {
+  PLUGIN_STATE_KNOWN, pluginDefaultOptions, pluginStateOf, samePlugin,
+} from './PluginOptions';
 import { ROUTE_ALL } from './Routes';
 
 const DEFAULT_SOCKS_PORT = 1080;
-
-/**
- * Port the core's own DNS resolver listens on, bound to loopback and handed to
- * the tun as its `dns_gateway`.
- *
- * Not 53 — binding a privileged port is refused (EACCES) — and not 5353, which
- * belongs to mDNS and is very likely taken already by a daemon holding it on
- * all interfaces, loopback included.
- */
-const DNS_PORT = 5453;
 
 /**
  * Remote resolver for names this profile sends through the proxy. A hostname
@@ -43,6 +37,15 @@ export const DEFAULT_REMOTE_DNS = 'dns.google';
  * deployed, since every name goes to the remote resolver otherwise.
  */
 const LOCAL_DNS_ADDRESS = '1.1.1.1';
+
+/**
+ * The values a new manual profile starts with. shadowsocks-android writes the
+ * same host and password. The method differs: the core refuses the Android
+ * default `aes-256-cfb`, so a manual profile starts with an AEAD cipher.
+ */
+const MANUAL_HOST = 'example.shadowsocks.org';
+const MANUAL_PASSWORD = 'u1rRWTssNv0p';
+const MANUAL_METHOD = 'aes-256-gcm';
 
 /**
  * Subscription states, mirroring shadowsocks-android's SubscriptionStatus.
@@ -99,6 +102,71 @@ export function nextUserOrder(profiles: Profile[]): number {
 }
 
 /**
+ * Reads a port the user typed. The value 8388 replaces a value outside the
+ * range 1 through 65535, including text that is not a number.
+ */
+export function normalizeRemotePort(text: string): number {
+  const parsed = Number.parseInt(text, 10);
+  if (Number.isNaN(parsed) || parsed < 1 || parsed > 65535) {
+    return 8388;
+  }
+  return parsed;
+}
+
+/**
+ * Copies the feature settings that describe how this device uses a server.
+ *
+ * The copy covers `route`, `ipv6`, `udpdns`, `metered`, `proxyAppsEnabled`,
+ * `proxyAppsBypass` and `proxyAppsList`. Android's `copyFeatureSettingsTo`
+ * copies the same set. It does not copy the server, the transport, the name,
+ * the resolver, or the UDP fallback.
+ *
+ * @param from the profile to read, or null to keep the target defaults.
+ * @param to the profile to write.
+ */
+export function copyFeatureSettings(from: Profile | null, to: Profile): void {
+  if (from === null) {
+    return;
+  }
+  to.route = from.route;
+  to.ipv6 = from.ipv6;
+  to.udpdns = from.udpdns;
+  to.metered = from.metered;
+  to.proxyAppsEnabled = from.proxyAppsEnabled;
+  to.proxyAppsBypass = from.proxyAppsBypass;
+  to.proxyAppsList = from.proxyAppsList;
+}
+
+/**
+ * A new profile with the manual defaults. The row exists before the editor
+ * opens, so the name takes the host: an empty name draws a blank row.
+ *
+ * @param current the profile in use, whose feature settings the new profile
+ *   takes, or null for a plain default profile.
+ */
+export function newManualProfile(current: Profile | null): Profile {
+  const profile = new Profile();
+  profile.host = MANUAL_HOST;
+  // Android's Profile default has an empty name, so the row title is the
+  // address and no second line is drawn.
+  profile.name = '';
+  profile.remotePort = 8388;
+  profile.password = MANUAL_PASSWORD;
+  profile.method = MANUAL_METHOD;
+  copyFeatureSettings(current, profile);
+  profile.ensureId();
+  return profile;
+}
+
+/**
+ * True when the profile belongs to an active subscription, which locks the
+ * server fields in the editor. The rule uses the status alone, as Android does.
+ */
+export function isSubscriptionLocked(profile: Profile): boolean {
+  return profile.subscriptionStatus === STATUS_ACTIVE;
+}
+
+/**
  * A shadowsocks server profile, parseable from SIP002 `ss://` URLs and
  * serializable into the JSON config consumed by the native sslocal core.
  */
@@ -122,20 +190,31 @@ export class Profile {
   plugin: string = '';
   /** SIP003 plugin options (`k=v;...`), e.g. `obfs=tls;obfs-host=example.com`. */
   pluginOpts: string = '';
+  /**
+   * Options per plugin id, so a switch away from a plugin and back keeps its
+   * options. The selected entry agrees with `pluginOpts`. A missing entry means
+   * the plugin default applies. The field never goes to an ss URL or to an
+   * exported JSON file.
+   */
+  pluginConfigs: Record<string, string> = {};
   /** Remote resolver for proxied names, as `host`, `host:port` or `dns://…`. */
   remoteDns: string = DEFAULT_REMOTE_DNS;
-  /**
-   * Carried for import and export only. shadowsocks-android still stores and
-   * exports this field and no longer reads it anywhere, so nothing here reads
-   * it either.
-   */
+  /** Carried for import and export only, as Android carries it. */
   udpdns: boolean = false;
   /**
    * Route IPv6 as well as IPv4. Recorded now and not yet acted on: the tun is
    * configured for IPv4 only.
    */
   ipv6: boolean = false;
-  /** Profile used for UDP when this one cannot carry it. Unused so far. */
+  /** Android metered-network hint. Stored and exported; no platform behavior. */
+  metered: boolean = false;
+  /** Apps VPN mode: the profile proxies selected bundle names, or all but them. */
+  proxyAppsEnabled: boolean = false;
+  /** True means Bypass: the selected apps skip the tunnel. False means On. */
+  proxyAppsBypass: boolean = false;
+  /** Newline-joined bundle names. Android stores package names here. */
+  proxyAppsList: string = '';
+  /** Profile used for UDP when this one cannot carry it. Stored only. */
   udpFallbackId: string = '';
   /** One of the STATUS_* constants above. */
   subscriptionStatus: number = STATUS_USER_CONFIGURED;
@@ -150,6 +229,198 @@ export class Profile {
     if (this.id.length === 0) {
       this.id = newProfileId();
     }
+  }
+
+  /* ---- row display ---- */
+
+  /** The row title: the name, or host:port when the name is empty. */
+  displayName(): string {
+    if (this.name.length > 0) {
+      return this.name;
+    }
+    return `${this.host}:${this.remotePort}`;
+  }
+
+  /**
+   * The row's second line: the address when a name exists, then the plugin.
+   * An empty string means the line is hidden.
+   */
+  displaySecondary(): string {
+    const parts: string[] = [];
+    if (this.name.length > 0) {
+      parts.push(`${this.host}:${this.remotePort}`);
+    }
+    if (this.plugin.length > 0) {
+      parts.push(`Plugin: ${this.plugin}`);
+    }
+    return parts.join('\n');
+  }
+
+  /* ---- plugin state and options ---- */
+
+  /** `disabled`, `known` or `unknown`, as PluginOptions.ets defines them. */
+  pluginState(): string {
+    return pluginStateOf(this.plugin);
+  }
+
+  /** True when a plugin id is selected. */
+  hasPlugin(): boolean {
+    return this.plugin.length > 0;
+  }
+
+  /**
+   * True when the profile belongs to an active subscription. This is the
+   * instance form of the module function above, with the same rule.
+   */
+  isSubscriptionLocked(): boolean {
+    return this.subscriptionStatus === STATUS_ACTIVE;
+  }
+
+  /** True when the editor may change the plugin selection. */
+  canEditPlugin(): boolean {
+    return !this.isSubscriptionLocked();
+  }
+
+  /** True when the editor may open the options editor. */
+  canConfigurePlugin(): boolean {
+    return this.canEditPlugin() && this.pluginState() === PLUGIN_STATE_KNOWN;
+  }
+
+  /**
+   * The reason the core refuses this profile, or '' when the plugin is empty
+   * or known. The native core stays the final authority.
+   */
+  pluginError(): string {
+    if (this.plugin.length === 0 || this.pluginState() === PLUGIN_STATE_KNOWN) {
+      return '';
+    }
+    return `Unknown plugin ${this.plugin}`;
+  }
+
+  /**
+   * The stored options of a plugin id, or its catalogue default when the map
+   * has no entry. A stored empty entry wins over the default.
+   */
+  pluginOptionsFor(id: string): string {
+    if (id.length === 0) {
+      return '';
+    }
+    if (Object.keys(this.pluginConfigs).indexOf(id) >= 0) {
+      return this.pluginConfigs[id];
+    }
+    return pluginDefaultOptions(id);
+  }
+
+  /**
+   * Stores the options of a plugin id. The selected plugin takes the text as
+   * its effective options. An empty id changes nothing.
+   */
+  setPluginOptions(id: string, text: string): void {
+    if (id.length === 0) {
+      return;
+    }
+    this.pluginConfigs[id] = text;
+    if (id === this.plugin) {
+      this.pluginOpts = text;
+    }
+  }
+
+  /**
+   * Selects a plugin id.
+   *
+   * An empty id disables the plugin and keeps the stored entries. The same
+   * plugin as the current one changes nothing, so an alias keeps its options.
+   * A stored alias entry is selected when the user picks the canonical id.
+   */
+  selectPlugin(id: string): void {
+    if (id.length === 0) {
+      this.plugin = '';
+      this.pluginOpts = '';
+      return;
+    }
+    if (samePlugin(id, this.plugin)) {
+      return;
+    }
+    const existing = this.existingPluginKey(id);
+    const selected = existing.length > 0 ? existing : id;
+    const options = this.pluginOptionsFor(selected);
+    this.plugin = selected;
+    this.pluginOpts = options;
+    this.pluginConfigs[selected] = options;
+  }
+
+  /**
+   * Records the selected plugin options in the map. A bare plugin URL keeps an
+   * empty `pluginOpts`, so no entry is written for it.
+   */
+  seedPluginConfigs(): void {
+    if (this.plugin.length > 0 && this.pluginOpts.length > 0) {
+      this.pluginConfigs[this.plugin] = this.pluginOpts;
+    }
+  }
+
+  /**
+   * Makes `pluginOpts` agree with the map.
+   *
+   * A selected plugin with options writes its entry. Empty options take the
+   * stored entry. `applyDefault` fills the catalogue default when no entry
+   * exists. A caller passes false for a record that stores its plugin
+   * configuration, because an explicit empty text there is a choice and must
+   * stay empty.
+   */
+  normalizePluginOptions(applyDefault: boolean = true): void {
+    if (this.plugin.length === 0) {
+      this.pluginOpts = '';
+      return;
+    }
+    if (this.pluginOpts.length > 0) {
+      this.pluginConfigs[this.plugin] = this.pluginOpts;
+      return;
+    }
+    if (Object.keys(this.pluginConfigs).indexOf(this.plugin) >= 0) {
+      this.pluginOpts = this.pluginConfigs[this.plugin];
+      return;
+    }
+    if (applyDefault) {
+      this.pluginOpts = pluginDefaultOptions(this.plugin);
+    }
+  }
+
+  /** The stored key that means the same plugin, or '' when none exists. */
+  private existingPluginKey(id: string): string {
+    const keys = Object.keys(this.pluginConfigs);
+    if (keys.indexOf(id) >= 0) {
+      return id;
+    }
+    for (const key of keys) {
+      if (samePlugin(key, id)) {
+        return key;
+      }
+    }
+    return '';
+  }
+
+  /* ---- feature and transport copies ---- */
+
+  /**
+   * Copies the feature settings of another profile onto this one. The set is
+   * the same as `copyFeatureSettings`.
+   */
+  copyFeatureSettingsFrom(source: Profile): void {
+    copyFeatureSettings(source, this);
+  }
+
+  /**
+   * Copies the transport fields that a re-listed subscription profile takes.
+   * The local values stay: id, name, address, route, resolver, counters, order,
+   * subscription state, and the plugin map for the other plugins.
+   */
+  copyTransportFrom(incoming: Profile): void {
+    this.password = incoming.password;
+    this.method = incoming.method;
+    this.plugin = incoming.plugin;
+    this.pluginOpts = incoming.pluginOpts;
+    this.udpFallbackId = incoming.udpFallbackId;
   }
 
   /**
@@ -362,8 +633,12 @@ export class Profile {
    * (`ss://base64(method:password)@host:port#name`) or legacy form
    * (`ss://base64(method:password@host:port)#name`). Returns null when the
    * text is not a valid shadowsocks URL.
+   *
+   * The URL owns the transport fields, the plugin and the name. A feature
+   * profile, when given, supplies the feature settings that describe how this
+   * device uses the server.
    */
-  static parseUrl(url: string): Profile | null {
+  static parseUrl(url: string, feature: Profile | null = null): Profile | null {
     const trimmed = url.trim();
     if (!trimmed.startsWith('ss://')) {
       return null;
@@ -447,6 +722,10 @@ export class Profile {
     profile.password = password;
     profile.plugin = plugin;
     profile.pluginOpts = pluginOpts;
+    // The URL carries no options. A non-empty text seeds its map entry, and a
+    // bare plugin keeps an empty pluginOpts.
+    profile.seedPluginConfigs();
+    copyFeatureSettings(feature, profile);
     return profile;
   }
 
@@ -475,9 +754,9 @@ export class Profile {
   }
 
   /**
-   * JSON config for the native sslocal core with a local SOCKS5 service — the
-   * proxy mode config, where nothing is routed and a client is pointed at the
-   * listener instead.
+   * JSON config for the native sslocal core with a local SOCKS5 service. This
+   * is the proxy mode config, where nothing is routed and a client is pointed
+   * at the listener instead.
    *
    * `shareOverLan` binds every interface rather than loopback, which lets other
    * devices on the network use the tunnel. That is a deliberate exposure: the
@@ -501,16 +780,18 @@ export class Profile {
       config['plugin_opts'] = this.pluginOpts;
     }
     // Name the upstream resolver explicitly, as the tun config does: the
-    // default is the system resolver, which means reading /etc/resolv.conf —
-    // denied in the app sandbox, and fatal rather than a warning.
+    // default is the system resolver, which means reading /etc/resolv.conf.
+    // The app sandbox denies that read, and the failure is fatal rather than a
+    // warning.
     config['dns'] = 'google';
     return JSON.stringify(config);
   }
 
   /**
    * JSON config for tun mode. The `tun` local's device fd is injected by the
-   * native layer (`sslocal.startTunFd`); `tcp_and_udp` routes both TCP streams
-   * and UDP datagrams through the tunnel.
+   * native layer (`sslocal.startTunFd`). The mode is `tcp_and_udp` because both
+   * protocols route through the tunnel. A plugin forwards TCP only, so a
+   * profile with a plugin uses `tcp_only`.
    *
    * `tunAddress` is the interface address as `addr/prefix` (e.g. `172.19.0.1/30`)
    * and must match what the system VPN was configured with. It is not optional
@@ -524,38 +805,43 @@ export class Profile {
    * `localDns` is the resolver for names the route sends directly (see
    * Network.ets). It only matters when an ACL is deployed, since without one
    * every name takes the remote resolver.
+   *
+   * `dnsPort` is the loopback port of the core's own resolver. The settings
+   * store supplies it (see Settings.ets), and the value must be free on the
+   * device. The default is the store default.
    */
-  toTunConfig(aclPath: string = '', tunAddress: string = '', localDns: string = ''): string {
+  toTunConfig(aclPath: string = '', tunAddress: string = '',
+    localDns: string = '', dnsPort: number = DEFAULT_LOCAL_DNS_PORT): string {
     const local: Record<string, Object> = { 'protocol': 'tun' };
     const locals: Object[] = [local];
     if (tunAddress.length > 0) {
       local['tun_interface_address'] = tunAddress;
       // Resolving names has to happen inside the tun, not by relaying UDP
-      // through the server: a server that does not relay UDP (many do not) is
-      // otherwise fatal to DNS, because clients which pick their own resolver —
-      // browsers, above all — send their queries straight at it and wait
+      // through the server. A server that does not relay UDP (many do not) is
+      // otherwise fatal to DNS, because clients which pick their own resolver
+      // (browsers, above all) send their queries straight at it and wait
       // forever. The core answers port 53 itself when given a gateway, so the
       // resolver below is bound on loopback and handed to it. A tunnel built
       // from this config cannot have DNS depend on the server's UDP support.
-      local['dns_gateway'] = `127.0.0.1:${DNS_PORT}`;
+      local['dns_gateway'] = `127.0.0.1:${dnsPort}`;
       const remoteDns = Profile.parseDnsAddress(this.remoteDns);
       const dnsLocal: Record<string, Object> = {
         'protocol': 'dns',
         'local_address': '127.0.0.1',
-        'local_port': DNS_PORT,
+        'local_port': dnsPort,
         // Both are required: DnsBuilder takes them as arguments rather than
         // options and panics without them, which takes the whole local server
         // down before the tun ever serves. With no ACL deployed the local one
-        // is never consulted — every name goes to the remote resolver.
-        // the network's own resolver when one was found, since a fixed public
-        // resolver is the kind of address a network can block
+        // is never consulted, because every name goes to the remote resolver.
+        // The address is the network's own resolver when one was found, since
+        // a fixed public resolver is the kind of address a network can block.
         'local_dns_address': localDns.length > 0 ? localDns : LOCAL_DNS_ADDRESS,
         'local_dns_port': 53,
         'remote_dns_address': remoteDns.host,
         'remote_dns_port': remoteDns.port,
         // Resolving through the proxy over TCP only. The alternative races a
-        // UDP query it cannot win against one sent 500–1500 ms later, so every
-        // uncached lookup would pay that wait for nothing.
+        // UDP query it cannot win against one sent 500 to 1500 ms later, so
+        // every uncached lookup would pay that wait for nothing.
         'remote_dns_protocol': 'tcp_only',
       };
       locals.push(dnsLocal);
@@ -566,10 +852,10 @@ export class Profile {
       'server_port': this.remotePort,
       'password': this.password,
       'method': this.method,
-      'mode': 'tcp_and_udp',
+      'mode': this.plugin.length > 0 ? 'tcp_only' : 'tcp_and_udp',
       // Name the upstream resolver explicitly. The default is the system
-      // resolver, and loading it means reading /etc/resolv.conf — which the app
-      // sandbox denies, and with a `dns` local enabled that turns into a fatal
+      // resolver, and loading it means reading /etc/resolv.conf, which the app
+      // sandbox denies. With a `dns` local enabled that turns into a fatal
       // `sslocal exited with error: Permission denied (os error 13)` instead of
       // the harmless warning it is otherwise.
       'dns': 'google',

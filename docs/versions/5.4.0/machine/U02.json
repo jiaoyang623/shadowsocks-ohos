@@ -1,0 +1,3083 @@
+{
+  "unit": "U02",
+  "title": "Profile list, row layout, search, reorder, delete, share popup",
+  "sources_read": [
+    "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt",
+    "mobile/src/main/res/layout/layout_list.xml",
+    "mobile/src/main/res/layout/layout_profile.xml",
+    "mobile/src/main/res/menu/profile_manager_menu.xml",
+    "mobile/src/main/res/menu/profile_share_popup.xml",
+    "core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt",
+    "core/src/main/res/values/strings.xml",
+    "plugin/src/main/res/values/strings.xml",
+    "plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "core/src/main/java/com/github/shadowsocks/widget/AutoCollapseTextView.kt",
+    "mobile/src/main/res/values/dimen.xml",
+    "mobile/src/main/res/drawable/background_profile.xml",
+    "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt",
+    "core/src/main/java/com/github/shadowsocks/Core.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfilesFile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json"
+  ],
+  "controls": [
+    {
+      "id": "C-U02-001",
+      "type": "screen",
+      "label": "Profiles",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the toolbar, the profile list, and transient snackbars.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:342"
+    },
+    {
+      "id": "C-U02-002",
+      "type": "text",
+      "label": "Profiles",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the screen title.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:348"
+    },
+    {
+      "id": "C-U02-003",
+      "type": "menu_item",
+      "label": "Add Profile",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the add submenu.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:4"
+    },
+    {
+      "id": "C-U02-004",
+      "type": "menu_item",
+      "label": "Scan QR code",
+      "android_id": "action_scan_qr_code",
+      "parent": "C-U02-003",
+      "visible_when": "the add submenu is open",
+      "enabled_when": "always",
+      "action": "Starts the QR scanner activity.",
+      "navigates_to": "U10",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:10"
+    },
+    {
+      "id": "C-U02-005",
+      "type": "menu_item",
+      "label": "Import from Clipboard",
+      "android_id": "action_import_clipboard",
+      "parent": "C-U02-003",
+      "visible_when": "the add submenu is open",
+      "enabled_when": "always",
+      "action": "Parses ss:// URLs from the clipboard, creates each profile, and shows a result snackbar.",
+      "navigates_to": "U04",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:13"
+    },
+    {
+      "id": "C-U02-006",
+      "type": "menu_item",
+      "label": "Import from file…",
+      "android_id": "action_import_file",
+      "parent": "C-U02-003",
+      "visible_when": "the add submenu is open",
+      "enabled_when": "always",
+      "action": "Opens a document picker that accepts any application or text document, and appends the profiles in the chosen files.",
+      "navigates_to": "U04",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:17"
+    },
+    {
+      "id": "C-U02-007",
+      "type": "menu_item",
+      "label": "Replace from file…",
+      "android_id": "action_replace_file",
+      "parent": "C-U02-003",
+      "visible_when": "the add submenu is open",
+      "enabled_when": "always",
+      "action": "Opens a document picker that accepts any application or text document, and creates the profiles in the chosen files; the first created profile clears the stored profiles.",
+      "navigates_to": "U04",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:21"
+    },
+    {
+      "id": "C-U02-008",
+      "type": "menu_item",
+      "label": "Manual Settings",
+      "android_id": "action_manual_settings",
+      "parent": "C-U02-003",
+      "visible_when": "the add submenu is open",
+      "enabled_when": "always",
+      "action": "Creates a profile with the default host, port, password, and method, copies the current profile's feature settings to it, and opens its editor.",
+      "navigates_to": "U03",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:26"
+    },
+    {
+      "id": "C-U02-009",
+      "type": "menu_item",
+      "label": "Export…",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the export submenu.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:33"
+    },
+    {
+      "id": "C-U02-010",
+      "type": "menu_item",
+      "label": "Export to Clipboard",
+      "android_id": "action_export_clipboard",
+      "parent": "C-U02-009",
+      "visible_when": "the export submenu is open",
+      "enabled_when": "always",
+      "action": "Copies every active profile's ss:// URI, joined by newlines, and shows a result snackbar.",
+      "navigates_to": "U04",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:39"
+    },
+    {
+      "id": "C-U02-011",
+      "type": "menu_item",
+      "label": "Export to file…",
+      "android_id": "action_export_file",
+      "parent": "C-U02-009",
+      "visible_when": "the export submenu is open",
+      "enabled_when": "always",
+      "action": "Opens a save picker and writes the profile JSON array.",
+      "navigates_to": "U04",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:43"
+    },
+    {
+      "id": "C-U02-012",
+      "type": "input",
+      "label": "Search",
+      "android_id": "action_search",
+      "parent": "C-U02-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Expands a SearchView and filters the list as the text changes.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:50"
+    },
+    {
+      "id": "C-U02-013",
+      "type": "list",
+      "label": "Profile list",
+      "android_id": "list",
+      "parent": "C-U02-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Scrolls through the profile rows and hosts drag and swipe gestures. The list has no visible label. Its label is descriptive.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_list.xml:9"
+    },
+    {
+      "id": "C-U02-014",
+      "type": "row",
+      "label": "profile row",
+      "android_id": "content",
+      "parent": "C-U02-013",
+      "visible_when": "the profile's subscription status is not Obsolete",
+      "enabled_when": "service state is Stopped, Connecting, or Connected",
+      "action": "Selects the profile and reloads the service when it can stop.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:7"
+    },
+    {
+      "id": "C-U02-015",
+      "type": "text",
+      "label": "profile name or address",
+      "android_id": "@android:id/text1",
+      "parent": "C-U02-014",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the profile name, or host:port when the name is empty.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:22"
+    },
+    {
+      "id": "C-U02-016",
+      "type": "text",
+      "label": "address and plugin",
+      "android_id": "@android:id/text2",
+      "parent": "C-U02-014",
+      "visible_when": "the composed text is not empty",
+      "enabled_when": "always",
+      "action": "Shows the address when the profile has a name, then a Plugin: line.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:78"
+    },
+    {
+      "id": "C-U02-017",
+      "type": "text",
+      "label": "traffic",
+      "android_id": "traffic",
+      "parent": "C-U02-014",
+      "visible_when": "tx is positive or rx is positive",
+      "enabled_when": "always",
+      "action": "Shows sent and received bytes with up and down arrows.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:92"
+    },
+    {
+      "id": "C-U02-018",
+      "type": "button",
+      "label": "Edit",
+      "android_id": "edit",
+      "parent": "C-U02-014",
+      "visible_when": "the profile is not an Active subscription profile",
+      "enabled_when": "service is Stopped or the profile is not active",
+      "action": "Reloads the profile and opens the profile editor.",
+      "navigates_to": "U03",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:48"
+    },
+    {
+      "id": "C-U02-019",
+      "type": "button",
+      "label": "Subscriptions",
+      "android_id": "subscription",
+      "parent": "C-U02-014",
+      "visible_when": "the profile status is Active",
+      "enabled_when": "service is Stopped or the profile is not active",
+      "action": "Reloads the profile and opens the profile editor; it returns silently when the profile no longer exists.",
+      "navigates_to": "U03",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:36"
+    },
+    {
+      "id": "C-U02-020",
+      "type": "button",
+      "label": "Share",
+      "android_id": "share",
+      "parent": "C-U02-014",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the share popup menu.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_profile.xml:59"
+    },
+    {
+      "id": "C-U02-021",
+      "type": "dialog",
+      "label": "share popup",
+      "android_id": "",
+      "parent": "C-U02-020",
+      "visible_when": "the share icon is tapped",
+      "enabled_when": "always",
+      "action": "Shows QR code and Export to Clipboard.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:143"
+    },
+    {
+      "id": "C-U02-022",
+      "type": "menu_item",
+      "label": "QR code",
+      "android_id": "action_qr_code",
+      "parent": "C-U02-021",
+      "visible_when": "the share popup is open",
+      "enabled_when": "always",
+      "action": "Opens a dialog with the profile's ss:// URI encoded as a QR code.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/profile_share_popup.xml:3"
+    },
+    {
+      "id": "C-U02-023",
+      "type": "menu_item",
+      "label": "Export to Clipboard",
+      "android_id": "action_export_clipboard",
+      "parent": "C-U02-021",
+      "visible_when": "the share popup is open",
+      "enabled_when": "always",
+      "action": "Copies the profile's ss:// URI as sensitive text and shows a result snackbar.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/profile_share_popup.xml:5"
+    },
+    {
+      "id": "C-U02-024",
+      "type": "dialog",
+      "label": "QR code",
+      "android_id": "",
+      "parent": "C-U02-022",
+      "visible_when": "the QR code menu item is tapped",
+      "enabled_when": "always",
+      "action": "Shows the profile URI as a QR image, or dismisses and reports an encoding error.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:87"
+    },
+    {
+      "id": "C-U02-025",
+      "type": "image",
+      "label": "QR code image",
+      "android_id": "",
+      "parent": "C-U02-024",
+      "visible_when": "encoding succeeded",
+      "enabled_when": "always",
+      "action": "Shows the 264dp QR bitmap, black modules on white.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:102"
+    },
+    {
+      "id": "C-U02-026",
+      "type": "snackbar",
+      "label": "Removed",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "a row was swiped toward the start edge: left in an LTR locale, right in an RTL locale",
+      "enabled_when": "always",
+      "action": "Reports the removal count and offers Undo.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+    },
+    {
+      "id": "C-U02-027",
+      "type": "button",
+      "label": "Undo",
+      "android_id": "",
+      "parent": "C-U02-026",
+      "visible_when": "the removal snackbar is showing",
+      "enabled_when": "always",
+      "action": "Reinserts the removed rows and cancels the database deletion.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+    },
+    {
+      "id": "C-U02-028",
+      "type": "snackbar",
+      "label": "result message",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "an import, export, file, or QR action reports a result",
+      "enabled_when": "always",
+      "action": "Shows one line of success or failure text for a short time.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:411"
+    },
+    {
+      "id": "C-U02-029",
+      "type": "screen",
+      "label": "Open file",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "Import from file or Replace from file is chosen",
+      "enabled_when": "a document provider handles the intent",
+      "action": "Lets the user pick one or more application or text documents.",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt:35"
+    },
+    {
+      "id": "C-U02-030",
+      "type": "screen",
+      "label": "Save file",
+      "android_id": "",
+      "parent": "C-U02-001",
+      "visible_when": "Export to file is chosen",
+      "enabled_when": "a document provider handles the intent",
+      "action": "Lets the user pick a destination for profiles.json.",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt:40"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UB-01",
+      "statement": "The list shows profiles whose subscription status is not Obsolete, in ascending userOrder.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:249",
+      "examples": [
+        {
+          "given": "profiles with userOrder 2, 1, and 3 exist",
+          "when": "the list loads",
+          "then": "rows appear in order 1, 2, 3",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has subscription status Obsolete",
+          "when": "the list loads",
+          "then": "that profile has no row",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-02",
+      "statement": "The toolbar title reads Profiles.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:348",
+      "examples": [
+        {
+          "given": "the Profiles screen is open",
+          "when": "the toolbar is drawn",
+          "then": "its title reads Profiles",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-03",
+      "statement": "A row tap is accepted when the service state is Stopped, Connecting, or Connected.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:82",
+      "examples": [
+        {
+          "given": "the service is Connecting",
+          "when": "the user taps a row",
+          "then": "the profile is selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopping",
+          "when": "the user taps a row",
+          "then": "nothing happens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-04",
+      "statement": "Drag reorder uses the same enable condition as a row tap.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:375",
+      "examples": [
+        {
+          "given": "the service state is Idle",
+          "when": "the user long-presses a row",
+          "then": "no drag starts",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service state is Connected",
+          "when": "the user long-presses a row",
+          "then": "the drag starts",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-05",
+      "statement": "The edit icon and swipe delete are enabled when the service is Stopped or the profile is not active.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:84",
+      "examples": [
+        {
+          "given": "the service is Connected and the row is the active profile",
+          "when": "the row binds",
+          "then": "the edit icon is dimmed and does nothing",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service is Connected and the row is not the active profile",
+          "when": "the row binds",
+          "then": "the edit icon is enabled",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-06",
+      "statement": "The active profile id covers the selected profile and its UDP fallback profile.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:86",
+      "examples": [
+        {
+          "given": "the selected profile has a UDP fallback",
+          "when": "row editability is computed",
+          "then": "both profiles are locked while the service runs",
+          "polarity": "negative"
+        },
+        {
+          "given": "profile 1 is selected and names profile 2 as its UDP fallback",
+          "when": "Core.activeProfileIds is read",
+          "then": "the list holds ids 1 and 2",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-07",
+      "statement": "The row title shows the profile name, or host:port when the name is empty.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:275",
+      "examples": [
+        {
+          "given": "a profile has name Home and host 1.2.3.4:8388",
+          "when": "the row binds",
+          "then": "the title reads Home",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has an empty name",
+          "when": "the row binds",
+          "then": "the title reads the host and port",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-08",
+      "statement": "The secondary line shows the address only when a name exists.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:165",
+      "examples": [
+        {
+          "given": "a profile has name Home",
+          "when": "the row binds",
+          "then": "the secondary line starts with the address",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has no name and no plugin",
+          "when": "the row binds",
+          "then": "the secondary line is hidden",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-09",
+      "statement": "The secondary line adds Plugin: with the plugin id when the profile has a plugin.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:167",
+      "examples": [
+        {
+          "given": "a profile has plugin obfs-local",
+          "when": "the row binds",
+          "then": "the second line reads Plugin: obfs-local",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has a name and no plugin",
+          "when": "the row binds",
+          "then": "the second line holds only the address and no Plugin: text",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-10",
+      "statement": "The secondary and traffic texts hide themselves when their text is empty.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/widget/AutoCollapseTextView.kt:34",
+      "examples": [
+        {
+          "given": "the composed secondary text is empty",
+          "when": "the text changes",
+          "then": "the view sets itself gone",
+          "polarity": "negative"
+        },
+        {
+          "given": "the profile tx and rx counters are above zero",
+          "when": "ProfileViewHolder.bind sets the traffic text",
+          "then": "the text holds the formatted traffic and the view stays visible",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-11",
+      "statement": "The traffic line appears only when tx or rx is positive.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:171",
+      "examples": [
+        {
+          "given": "tx is 0 and rx is 0",
+          "when": "the row binds",
+          "then": "no traffic text is shown",
+          "polarity": "boundary"
+        },
+        {
+          "given": "rx is 1024",
+          "when": "the row binds",
+          "then": "the traffic text shows 0 B up and 1.02 kB down",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-12",
+      "statement": "The traffic line adds cached live session stats to the stored counters for the running profile.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:158",
+      "examples": [
+        {
+          "given": "the stored counters are 100 and 200",
+          "when": "a live sample reports 10 and 20 for that profile",
+          "then": "the row shows 110 and 220",
+          "polarity": "positive"
+        },
+        {
+          "given": "a row is not the running profile and has stored counters 100 and 200",
+          "when": "the row binds",
+          "then": "it shows 100 and 200 because the stats cache has no entry for its id",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-13",
+      "statement": "A row is marked selected only when its id equals the selected profile id.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:174",
+      "examples": [
+        {
+          "given": "the selected id names the first row",
+          "when": "two rows bind",
+          "then": "only the first row is selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "the selected id names no row",
+          "when": "two rows bind",
+          "then": "neither row is selected",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-14",
+      "statement": "A row tap calls Core.switchProfile with the row id, refreshes the previous row, and marks the tapped row selected in place.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:191",
+      "examples": [
+        {
+          "given": "Alpha is selected",
+          "when": "the user taps Beta",
+          "then": "Beta becomes selected and Alpha rebinds unselected",
+          "polarity": "positive"
+        },
+        {
+          "given": "the tapped row's profile was deleted in another process",
+          "when": "the user taps that row",
+          "then": "Core.switchProfile creates a blank profile and selects it silently",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-15",
+      "statement": "A row tap broadcasts a service reload when the service state can stop.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:198",
+      "examples": [
+        {
+          "given": "the service is Connected",
+          "when": "the user taps a row",
+          "then": "Core.reloadService sends Action.RELOAD",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopped",
+          "when": "the user taps a row",
+          "then": "no reload is sent",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-16",
+      "statement": "The edit icon reloads the profile, serializes it, and opens the profile editor.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:130",
+      "examples": [
+        {
+          "given": "a profile exists",
+          "when": "the user taps its edit icon",
+          "then": "ProfileConfigActivity opens with that profile id",
+          "polarity": "positive"
+        },
+        {
+          "given": "the row's profile was deleted elsewhere and getProfile returns null",
+          "when": "the user taps its edit icon",
+          "then": "the force-unwrap throws and no editor opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-17",
+      "statement": "The edit icon force-unwraps the database lookup, so a deleted profile crashes the tap.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:131",
+      "examples": [
+        {
+          "given": "the profile was deleted in another process",
+          "when": "the user taps its edit icon",
+          "then": "getProfile returns null and the force-unwrap throws",
+          "polarity": "negative"
+        },
+        {
+          "given": "the profile still exists in the database",
+          "when": "the user taps its edit icon",
+          "then": "getProfile returns the profile and startConfig opens ProfileConfigActivity with its id",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-18",
+      "statement": "An Active subscription profile hides the edit icon and shows the subscription icon.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:182",
+      "examples": [
+        {
+          "given": "a profile has status Active",
+          "when": "the row binds",
+          "then": "the edit icon is gone and the subscription icon is visible",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has status UserConfigured",
+          "when": "the row binds",
+          "then": "the edit icon is visible and the subscription icon is gone",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-19",
+      "statement": "The subscription icon refreshes the profile and opens the same profile editor.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:134",
+      "examples": [
+        {
+          "given": "an Active subscription profile is shown",
+          "when": "the user taps the subscription icon",
+          "then": "the profile editor opens",
+          "polarity": "positive"
+        },
+        {
+          "given": "the subscription profile was deleted elsewhere",
+          "when": "the user taps the subscription icon",
+          "then": "the null check returns early and no editor opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-20",
+      "statement": "The share icon opens a popup menu with QR code and Export to Clipboard.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:141",
+      "examples": [
+        {
+          "given": "a row is visible",
+          "when": "the user taps the share icon",
+          "then": "the popup shows two items",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connected and the row is the active profile",
+          "when": "the user taps the share icon",
+          "then": "the popup opens because the share icon is never disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-21",
+      "statement": "The QR code item encodes the profile's ss:// URI as a 264dp image.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:203",
+      "examples": [
+        {
+          "given": "a profile has method, password, host, port, and name",
+          "when": "the user taps QR code",
+          "then": "a dialog shows the encoded URI",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has an empty name",
+          "when": "the user taps QR code",
+          "then": "the URI has no fragment and the dialog still encodes it as a 264dp image",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-22",
+      "statement": "The QR encoder requests UTF-8 only when the profile URI is not ISO-8859-1 encodable.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:100",
+      "examples": [
+        {
+          "given": "the profile host holds Chinese characters, which encodedAuthority does not encode",
+          "when": "the QR code is built",
+          "then": "the UTF-8 hint is set",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the profile name holds Chinese characters, which the URI fragment percent-encodes",
+          "when": "the QR code is built",
+          "then": "the URI is ASCII and no charset hint is set",
+          "polarity": "negative"
+        },
+        {
+          "given": "the profile name holds ASCII characters only",
+          "when": "the QR code is built",
+          "then": "no charset hint is set",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-23",
+      "statement": "A QR encoding failure shows the message in a snackbar and dismisses the dialog.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:111",
+      "examples": [
+        {
+          "given": "the text is too long for a QR code",
+          "when": "the dialog builds its view",
+          "then": "WriterException is caught, the snackbar shows, and the dialog dismisses",
+          "polarity": "negative"
+        },
+        {
+          "given": "the profile URI fits a QR code",
+          "when": "the user picks QR code in the share popup and the dialog builds its view",
+          "then": "MultiFormatWriter.encode returns the matrix and the dialog shows the QR image with no snackbar",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-24",
+      "statement": "The popup Export to Clipboard copies the profile ss:// URI as sensitive text.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:169",
+      "examples": [
+        {
+          "given": "a profile exists",
+          "when": "the user taps popup Export to Clipboard",
+          "then": "the clipboard holds its URI and the snackbar reports success",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device runs API 23",
+          "when": "the user taps popup Export to Clipboard",
+          "then": "the URI is copied without the sensitive extra because trySetPrimaryClip marks it only on API 24 and later",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-25",
+      "statement": "A clipboard write failure shows \"Failed to export.\" in the snackbar.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:209",
+      "examples": [
+        {
+          "given": "the clipboard service throws RuntimeException",
+          "when": "the export runs",
+          "then": "trySetPrimaryClip returns false and the snackbar shows \"Failed to export.\"",
+          "polarity": "negative"
+        },
+        {
+          "given": "the clipboard accepts the write",
+          "when": "the user taps popup Export to Clipboard",
+          "then": "trySetPrimaryClip returns true and the snackbar shows \"Successfully export!\"",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-26",
+      "statement": "A swipe toward the start edge removes the row at once and shows an undo snackbar.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:378",
+      "examples": [
+        {
+          "given": "an editable row is shown",
+          "when": "the user swipes it toward the start edge",
+          "then": "the row leaves the list and the snackbar appears",
+          "polarity": "positive"
+        },
+        {
+          "given": "an editable row is shown",
+          "when": "the user swipes it toward the end edge",
+          "then": "the row stays because only the start edge has a swipe direction",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-27",
+      "statement": "The swipe is refused when the profile is active and the service is not Stopped.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:370",
+      "examples": [
+        {
+          "given": "the service is Connected and the row is active",
+          "when": "the user swipes it toward the start edge",
+          "then": "the row stays in place",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service is Stopped and the row is active",
+          "when": "the user swipes it toward the start edge",
+          "then": "getSwipeDirs returns the START direction and the row leaves the list",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-28",
+      "statement": "The undo snackbar shows Removed for one item and a count for more items.",
+      "kind": "display",
+      "source": "core/src/main/res/values/strings.xml:116",
+      "examples": [
+        {
+          "given": "one row was removed",
+          "when": "the snackbar shows",
+          "then": "its text reads Removed",
+          "polarity": "boundary"
+        },
+        {
+          "given": "three rows were removed",
+          "when": "the snackbar shows",
+          "then": "its text reads 3 items removed",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-29",
+      "statement": "Undo reinserts each removed row at its original index and clears the recycle bin.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54",
+      "examples": [
+        {
+          "given": "rows at indices 0 and 2 were removed",
+          "when": "the user taps Undo",
+          "then": "both rows return at those indices",
+          "polarity": "positive"
+        },
+        {
+          "given": "two removals are pending",
+          "when": "the user taps Undo",
+          "then": "the later removal is reinserted first and both rows land at their recorded indices",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-30",
+      "statement": "The app deletes each swiped profile from the database only when the snackbar dismisses without Undo.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:37",
+      "examples": [
+        {
+          "given": "a row was swiped",
+          "when": "the snackbar times out",
+          "then": "ProfileManager.delProfile runs for that id",
+          "polarity": "positive"
+        },
+        {
+          "given": "a row was swiped",
+          "when": "the user taps Undo",
+          "then": "no database delete runs",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-31",
+      "statement": "A second swipe joins the recycle bin, and the snackbar shows the total count.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49",
+      "examples": [
+        {
+          "given": "one removal is pending",
+          "when": "another row is swiped",
+          "then": "the snackbar reports two items removed",
+          "polarity": "positive"
+        },
+        {
+          "given": "one removal is pending",
+          "when": "another row is swiped",
+          "then": "the first profile is not deleted at that moment because the old snackbar is no longer the current one",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-32",
+      "statement": "Adding a profile, the first row crossover of a drag, or destroying the view flushes the snackbar and commits pending deletions.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:65",
+      "examples": [
+        {
+          "given": "a removal is pending",
+          "when": "the dragged row crosses another row",
+          "then": "ProfilesAdapter.move flushes the snackbar and the pending profile is deleted",
+          "polarity": "positive"
+        },
+        {
+          "given": "a removal is pending",
+          "when": "the user long-presses a row and releases it without crossing another row",
+          "then": "move never runs, so the snackbar and the pending deletion survive",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-33",
+      "statement": "A committed swipe delete leaves the selected profile id unchanged because the listener finds no row.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:303",
+      "examples": [
+        {
+          "given": "the selected profile row was swiped and the snackbar dismissed",
+          "when": "delProfile notifies the adapter",
+          "then": "the adapter returns early and profileId still names the deleted id",
+          "polarity": "boundary"
+        },
+        {
+          "given": "a row for a non-selected profile was swiped and the snackbar timed out",
+          "when": "delProfile notifies the adapter",
+          "then": "onRemove finds no row and returns early, so DataStore.profileId still names the selected profile",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-34",
+      "statement": "A drag rewrites userOrder across the crossed range and saves each changed profile on drop.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:250",
+      "examples": [
+        {
+          "given": "rows A, B, C are shown",
+          "when": "A is dragged below B and dropped",
+          "then": "orders become B, A, C; only B and A change, so two updates run",
+          "polarity": "positive"
+        },
+        {
+          "given": "rows A, B, C are shown",
+          "when": "the user long-presses A and releases it without crossing another row",
+          "then": "move never runs and commitMove saves no profile because updated is empty",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-35",
+      "statement": "Search filters by case-insensitive substring of name or host.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239",
+      "examples": [
+        {
+          "given": "a profile is named Home and hosted at example.com",
+          "when": "the user types EXAM",
+          "then": "the profile remains visible",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile is named Home",
+          "when": "the user types 8388",
+          "then": "the port does not match and the profile is hidden",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-36",
+      "statement": "An empty query restores every profile from the database in stored order.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:244",
+      "examples": [
+        {
+          "given": "a filter narrowed the list",
+          "when": "the query becomes empty",
+          "then": "all active profiles return in userOrder",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile has subscription status Obsolete",
+          "when": "the query becomes empty",
+          "then": "the profile still has no row because the reload reads only active profiles",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-37",
+      "statement": "Search changes only the adapter list, so the selected profile id stays the same.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239",
+      "examples": [
+        {
+          "given": "Alpha is selected",
+          "when": "a query hides Alpha",
+          "then": "DataStore.profileId still names Alpha",
+          "polarity": "boundary"
+        },
+        {
+          "given": "Alpha is selected and Beta also matches the query text",
+          "when": "the user types the query in the search field",
+          "then": "ProfilesAdapter.filter shows Alpha and Beta, and DataStore.profileId still names Alpha",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-38",
+      "statement": "An empty database gets one default profile, created and selected, when the screen opens.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:127",
+      "examples": [
+        {
+          "given": "no profile exists",
+          "when": "the Profiles screen is created",
+          "then": "a default profile is created and becomes the selected profile",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the database already holds profiles",
+          "when": "the Profiles screen is created",
+          "then": "isNotEmpty is true, no profile is created, and DataStore.profileId keeps its value",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-39",
+      "statement": "The Search action expands a SearchView with the hint Search.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:353",
+      "examples": [
+        {
+          "given": "the Profiles screen is open",
+          "when": "the user taps Search",
+          "then": "a text field appears with the hint Search",
+          "polarity": "positive"
+        },
+        {
+          "given": "the SearchView is expanded with a query",
+          "when": "the user submits the query",
+          "then": "onQueryTextSubmit returns false and the filter stays as it is",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-40",
+      "statement": "Scan QR code starts the scanner activity.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:399",
+      "examples": [
+        {
+          "given": "the add submenu is open",
+          "when": "the user taps Scan QR code",
+          "then": "ScannerActivity starts",
+          "polarity": "positive"
+        },
+        {
+          "given": "the add submenu is open",
+          "when": "the user taps Scan QR code and then cancels the scanner",
+          "then": "no result returns to the Profiles screen because the tap starts the scanner without a result launcher",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-41",
+      "statement": "Import from Clipboard parses ss:// URLs, copies feature settings, and creates each profile.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:403",
+      "examples": [
+        {
+          "given": "the clipboard holds two ss:// URLs",
+          "when": "the user taps Import from Clipboard",
+          "then": "two profiles are created with the current profile's feature settings",
+          "polarity": "positive"
+        },
+        {
+          "given": "the clipboard holds one valid ss:// URL and one URL with invalid user info",
+          "when": "the user taps Import from Clipboard",
+          "then": "findAllUrls drops the invalid URL, creates one profile, and the snackbar reports success",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-42",
+      "statement": "Import from Clipboard shows \"Failed to import.\" when no URL parses or the clipboard read throws.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:414",
+      "examples": [
+        {
+          "given": "the clipboard holds plain text",
+          "when": "the user taps Import from Clipboard",
+          "then": "no profile is created and \"Failed to import.\" appears",
+          "polarity": "negative"
+        },
+        {
+          "given": "the clipboard holds one ss:// URL",
+          "when": "the user taps Import from Clipboard",
+          "then": "Profile.findAllUrls returns the profile, ProfileManager.createProfile stores it, and the snackbar shows \"Successfully import!\"",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-43",
+      "statement": "Import from file appends parsed profiles. Replace from file clears the stored profiles when it creates the first profile from a file.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:66",
+      "examples": [
+        {
+          "given": "two profiles exist and a file holds one",
+          "when": "Import from file finishes",
+          "then": "three profiles exist",
+          "polarity": "positive"
+        },
+        {
+          "given": "two profiles exist and a file holds one",
+          "when": "Replace from file finishes",
+          "then": "only the file's profile exists",
+          "polarity": "boundary"
+        },
+        {
+          "given": "two profiles exist and a replace file yields no profile",
+          "when": "Replace from file finishes",
+          "then": "both profiles remain, because the clear never runs",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-44",
+      "statement": "Replace copies tx and rx from an existing profile with the same formatted address.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:77",
+      "examples": [
+        {
+          "given": "a profile with address host:8388 has tx 500",
+          "when": "the replacement file holds host:8388",
+          "then": "the new profile keeps tx 500",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile with address other:8388 has tx 500",
+          "when": "the replacement file holds host:8388",
+          "then": "the new profile starts at tx 0 because the formatted addresses differ",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-45",
+      "statement": "Manual Settings creates a profile with the current profile's feature settings and opens its editor.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:428",
+      "examples": [
+        {
+          "given": "the current profile uses route bypass-lan",
+          "when": "the user taps Manual Settings",
+          "then": "the new profile uses route bypass-lan and its editor opens",
+          "polarity": "positive"
+        },
+        {
+          "given": "the selected profile id names a deleted profile, so Core.currentProfile is null",
+          "when": "the user taps Manual Settings",
+          "then": "no feature settings copy runs, the new profile keeps its defaults, and its editor opens",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-46",
+      "statement": "Export to Clipboard joins all active profiles' ss:// URIs with newlines.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:433",
+      "examples": [
+        {
+          "given": "two active profiles exist",
+          "when": "the user taps Export to Clipboard",
+          "then": "the clipboard holds two URIs separated by a newline",
+          "polarity": "positive"
+        },
+        {
+          "given": "one active profile exists",
+          "when": "the user taps Export to Clipboard",
+          "then": "the clipboard holds its URI with no newline",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-47",
+      "statement": "Export to file writes the profile JSON array through the system save picker, and writes nothing when the picker returns no document or the profiles cannot be read.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:470",
+      "examples": [
+        {
+          "given": "the save picker returns a document",
+          "when": "the export runs",
+          "then": "the document receives the pretty-printed JSON array",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user cancels the save picker",
+          "when": "the export runs",
+          "then": "nothing is written",
+          "polarity": "negative"
+        },
+        {
+          "given": "serializeToJson returns null because the profiles cannot be read",
+          "when": "the save picker returns a document",
+          "then": "nothing is written and no message shows",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-48",
+      "statement": "A missing or refusing file manager shows \"Please install a file manager like MiXplorer\" without a trailing period.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:448",
+      "examples": [
+        {
+          "given": "no activity handles the document intent",
+          "when": "the user starts an import or export",
+          "then": "ActivityNotFoundException is caught and the file manager message shows",
+          "polarity": "negative"
+        },
+        {
+          "given": "a file manager handles the document intent",
+          "when": "the user starts an import or export",
+          "then": "launcher.launch returns and the file picker opens with no message",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-49",
+      "statement": "A profile import read or parse failure, and an export write failure, show the exception message in a snackbar.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:464",
+      "examples": [
+        {
+          "given": "the chosen file is not valid JSON",
+          "when": "the import runs",
+          "then": "the exception message appears in a snackbar",
+          "polarity": "negative"
+        },
+        {
+          "given": "the chosen file holds valid profile JSON",
+          "when": "the import runs",
+          "then": "createProfilesFromJson returns without an exception and no snackbar shows",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-50",
+      "statement": "The list scrolls to the selected profile when the screen opens.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:360",
+      "examples": [
+        {
+          "given": "the selected profile is the tenth row",
+          "when": "the screen opens",
+          "then": "the list scrolls to that row",
+          "polarity": "positive"
+        },
+        {
+          "given": "the selected profile id matches no row",
+          "when": "the screen opens",
+          "then": "indexOfFirst returns -1 and the list has no row to scroll to",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UB-51",
+      "statement": "A search query re-reads the database, so a profile whose removal is pending returns to the list while its Undo is still offered.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239",
+      "examples": [
+        {
+          "given": "one removal is pending in the recycle bin",
+          "when": "the user types a query that matches the removed profile",
+          "then": "ProfilesAdapter.filter reloads the database and the profile shows again while the snackbar still offers Undo",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the filtered list shows the profile of a pending removal",
+          "when": "the user taps Undo",
+          "then": "ProfilesAdapter.undo inserts a second row for the same profile",
+          "polarity": "negative"
+        },
+        {
+          "given": "one removal is pending and the user types a query that does not match the removed profile",
+          "when": "ProfilesAdapter.filter runs",
+          "then": "the reload leaves the removed profile out of the list and the snackbar still offers Undo",
+          "polarity": "positive"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "profile list filter",
+      "states": [
+        "unfiltered",
+        "filtered"
+      ],
+      "transitions": [
+        {
+          "from": "unfiltered",
+          "to": "filtered",
+          "event": "the user types a non-empty query",
+          "producer": "ProfilesAdapter.filter",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239"
+        },
+        {
+          "from": "filtered",
+          "to": "unfiltered",
+          "event": "the user clears the query",
+          "producer": "ProfilesAdapter.filter",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:244"
+        }
+      ]
+    },
+    {
+      "object": "pending profile removal",
+      "states": [
+        "clean",
+        "pending"
+      ],
+      "transitions": [
+        {
+          "from": "clean",
+          "to": "pending",
+          "event": "the user swipes an editable row toward the start edge",
+          "producer": "ItemTouchHelper.onSwiped",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:378"
+        },
+        {
+          "from": "pending",
+          "to": "clean",
+          "event": "the user taps Undo",
+          "producer": "Snackbar action set in UndoSnackbarManager.remove",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+        },
+        {
+          "from": "pending",
+          "to": "clean",
+          "event": "the snackbar dismisses without Undo",
+          "producer": "UndoSnackbarManager.removedCallback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:37"
+        },
+        {
+          "from": "pending",
+          "to": "pending",
+          "event": "the user swipes another row while the snackbar shows; the recycle bin grows and a new snackbar replaces the old one without committing",
+          "producer": "UndoSnackbarManager.remove",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+        },
+        {
+          "from": "pending",
+          "to": "pending",
+          "event": "the user changes the search query; the filter re-reads the database and shows the pending profile again",
+          "producer": "ProfilesAdapter.filter",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239"
+        },
+        {
+          "from": "pending",
+          "to": "clean",
+          "event": "an add, the first row crossover of a drag, or view destruction flushes the snackbar",
+          "producer": "UndoSnackbarManager.flush",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:65"
+        },
+        {
+          "from": "pending",
+          "to": "clean",
+          "event": "another snackbar replaces the undo snackbar and dismisses it consecutively",
+          "producer": "Snackbar.Callback.onDismissed",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:37"
+        }
+      ]
+    },
+    {
+      "object": "profile row input availability",
+      "states": [
+        "free",
+        "selected_running",
+        "inert",
+        "locked"
+      ],
+      "transitions": [
+        {
+          "from": "free",
+          "to": "selected_running",
+          "event": "the service enters Connecting or Connected while this row is the active profile",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "free",
+          "to": "selected_running",
+          "event": "the user taps this row while the service is Connecting or Connected; the model follows the new active id, while the row keeps its old bind until a state change",
+          "producer": "Core.switchProfile",
+          "source": "core/src/main/java/com/github/shadowsocks/Core.kt:94"
+        },
+        {
+          "from": "selected_running",
+          "to": "free",
+          "event": "the service reaches Stopped, or the user selects another profile",
+          "producer": "MainActivity.changeState and Core.switchProfile",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "free",
+          "to": "inert",
+          "event": "the service enters Idle or Stopping while this row is not active",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "inert",
+          "to": "free",
+          "event": "the service reaches Stopped",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "inert",
+          "to": "free",
+          "event": "the service enters Connecting or Connected while this row is not active",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "free",
+          "to": "locked",
+          "event": "the service enters Idle while this row is the active profile",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:125"
+        },
+        {
+          "from": "selected_running",
+          "to": "locked",
+          "event": "the service enters Stopping, or enters Idle by disconnecting, while this row is the active profile",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "locked",
+          "to": "free",
+          "event": "the service reaches Stopped",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        },
+        {
+          "from": "locked",
+          "to": "selected_running",
+          "event": "the service enters Connecting or Connected while this row is the active profile",
+          "producer": "MainActivity.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U02-01",
+      "name": "Select a profile",
+      "steps": [
+        {
+          "label": "start: user opens the Profiles screen",
+          "type": "start",
+          "next": "list: shows active profiles in ascending userOrder",
+          "exception": false
+        },
+        {
+          "label": "list: shows active profiles in ascending userOrder",
+          "type": "step",
+          "next": "decision: row tap enabled?",
+          "exception": false
+        },
+        {
+          "label": "decision: row tap enabled? yes → user taps a row, no → the tap has no effect",
+          "type": "decision",
+          "next": "yes -> user: taps a row | no -> end: the tap is ignored and nothing changes",
+          "exception": false
+        },
+        {
+          "label": "user: taps a row",
+          "type": "step",
+          "next": "system: Core.switchProfile writes DataStore.profileId",
+          "exception": false
+        },
+        {
+          "label": "system: Core.switchProfile writes DataStore.profileId",
+          "type": "step",
+          "next": "system: refreshId(old) rebinds the old row, and the tapped row is marked selected without a rebind",
+          "exception": false
+        },
+        {
+          "label": "system: refreshId(old) rebinds the old row, and the tapped row is marked selected without a rebind",
+          "type": "step",
+          "next": "decision: service can stop?",
+          "exception": false
+        },
+        {
+          "label": "decision: service can stop? yes → broadcast a reload, no → no service runs",
+          "type": "decision",
+          "next": "yes -> system: Core.reloadService sends Action.RELOAD | no -> end: the choice is stored and no service runs",
+          "exception": false
+        },
+        {
+          "label": "system: Core.reloadService sends Action.RELOAD",
+          "type": "step",
+          "next": "end: the tunnel reloads with the selected profile",
+          "exception": false
+        },
+        {
+          "label": "end: the tunnel reloads with the selected profile",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the choice is stored and no service runs",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the tap is ignored and nothing changes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service state is Idle or Stopping, so no row accepts a tap.",
+        "The selected profile id has no row, so no row shows the selected mark.",
+        "The tapped row's profile was deleted elsewhere, so Core.switchProfile creates a blank profile and selects it."
+      ]
+    },
+    {
+      "id": "F-U02-02",
+      "name": "Filter the profile list",
+      "steps": [
+        {
+          "label": "start: user taps the Search toolbar action",
+          "type": "start",
+          "next": "system: SearchView expands",
+          "exception": false
+        },
+        {
+          "label": "system: SearchView expands with the hint Search",
+          "type": "step",
+          "next": "user: types a query",
+          "exception": false
+        },
+        {
+          "label": "user: types a query",
+          "type": "step",
+          "next": "decision: query empty?",
+          "exception": false
+        },
+        {
+          "label": "decision: query empty? yes → show all profiles, no → filter the list",
+          "type": "decision",
+          "next": "yes -> system: show every profile in userOrder | no -> system: filter by name and host",
+          "exception": false
+        },
+        {
+          "label": "system: show every profile in userOrder",
+          "type": "step",
+          "next": "list: rows update with the filtered set",
+          "exception": false
+        },
+        {
+          "label": "system: filter keeps profiles whose name or host contains the query, ignoring case",
+          "type": "step",
+          "next": "list: rows update with the filtered set",
+          "exception": false
+        },
+        {
+          "label": "list: rows update with the filtered set",
+          "type": "step",
+          "next": "decision: any profile matches?",
+          "exception": false
+        },
+        {
+          "label": "decision: any profile matches? yes → matches shown, no → empty list shown",
+          "type": "decision",
+          "next": "yes -> end: matching rows are shown | no -> end: the list shows no rows and the selected id is unchanged",
+          "exception": false
+        },
+        {
+          "label": "end: matching rows are shown and the selected id is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the list shows no rows and the selected id is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "F-U02-03",
+      "name": "Reorder profiles by drag",
+      "steps": [
+        {
+          "label": "start: user long-presses a profile row",
+          "type": "start",
+          "next": "decision: drag enabled?",
+          "exception": false
+        },
+        {
+          "label": "decision: drag enabled? yes → the row lifts, no → nothing happens",
+          "type": "decision",
+          "next": "yes -> user: drags the row across another row | no -> end: no drag starts",
+          "exception": false
+        },
+        {
+          "label": "user: drags the row across another row",
+          "type": "step",
+          "next": "system: ItemTouchHelper.onMove calls ProfilesAdapter.move, whose first line flushes the undo snackbar",
+          "exception": false
+        },
+        {
+          "label": "system: ItemTouchHelper.onMove calls ProfilesAdapter.move, whose first line flushes the undo snackbar",
+          "type": "step",
+          "next": "system: move rotates userOrder across the range",
+          "exception": false
+        },
+        {
+          "label": "system: ProfilesAdapter.move rotates userOrder across the moved range",
+          "type": "step",
+          "next": "user: drops the row",
+          "exception": false
+        },
+        {
+          "label": "user: drops the row",
+          "type": "step",
+          "next": "system: commitMove calls ProfileManager.updateProfile for each changed profile",
+          "exception": false
+        },
+        {
+          "label": "system: commitMove calls ProfileManager.updateProfile for each changed profile",
+          "type": "step",
+          "next": "decision: database update succeeds?",
+          "exception": false
+        },
+        {
+          "label": "decision: database update succeeds? yes → the order persists, no → exception end",
+          "type": "decision",
+          "next": "yes -> end: the new order is stored | no -> end: exception from updateProfile aborts the drop",
+          "exception": false
+        },
+        {
+          "label": "end: the new order is stored",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: exception from updateProfile aborts the drop",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "end: no drag starts",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "ProfileManager.updateProfile uses check, so a missing row throws and the exception is not caught.",
+        "The service state does not accept input, so no drag starts.",
+        "A long-press released without crossing another row never calls move, so the undo snackbar and its pending deletion survive."
+      ]
+    },
+    {
+      "id": "F-U02-04",
+      "name": "Delete a profile and undo the deletion",
+      "steps": [
+        {
+          "label": "start: user swipes a row toward the start edge",
+          "type": "start",
+          "next": "decision: profile editable?",
+          "exception": false
+        },
+        {
+          "label": "decision: profile editable? yes → remove the row, no → the swipe is refused",
+          "type": "decision",
+          "next": "yes -> system: remove the row from the adapter without a database delete | no -> end: the row stays in place",
+          "exception": false
+        },
+        {
+          "label": "system: remove the row from the adapter without a database delete",
+          "type": "step",
+          "next": "system: show Removed or the items removed count with an Undo action",
+          "exception": false
+        },
+        {
+          "label": "system: show Removed or the items removed count with an Undo action",
+          "type": "step",
+          "next": "decision: Undo pressed?",
+          "exception": false
+        },
+        {
+          "label": "decision: Undo pressed? yes → restore the rows, no → the snackbar dismisses",
+          "type": "decision",
+          "next": "yes -> system: undo reinserts the rows | no -> system: the dismiss callback runs ProfileManager.delProfile for each removed id",
+          "exception": false
+        },
+        {
+          "label": "system: undo reinserts the rows at their original indices and clears the recycle bin",
+          "type": "step",
+          "next": "end: the profiles are restored",
+          "exception": false
+        },
+        {
+          "label": "end: the profiles are restored and never deleted",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: the dismiss callback runs ProfileManager.delProfile for each removed id",
+          "type": "step",
+          "next": "end: the profiles are deleted",
+          "exception": false
+        },
+        {
+          "label": "end: the profiles are deleted from the database",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the row stays in place",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "An add, the first row crossover of a drag, view destruction, or a replacing snackbar dismisses the undo snackbar and commits the pending deletion. Another swipe does not: it adds to the recycle bin and shows a new snackbar over the old one.",
+        "Committing the delete of the selected profile leaves profileId pointing at the deleted id."
+      ]
+    },
+    {
+      "id": "F-U02-05",
+      "name": "Share one profile from the row popup",
+      "steps": [
+        {
+          "label": "start: user taps the row share icon",
+          "type": "start",
+          "next": "system: show the popup menu",
+          "exception": false
+        },
+        {
+          "label": "system: show the popup menu",
+          "type": "step",
+          "next": "system: the popup shows QR code and Export to Clipboard",
+          "exception": false
+        },
+        {
+          "label": "system: the popup shows QR code and Export to Clipboard",
+          "type": "step",
+          "next": "decision: QR code chosen?",
+          "exception": false
+        },
+        {
+          "label": "decision: QR code chosen? yes → build the QR dialog, no → copy the URI",
+          "type": "decision",
+          "next": "yes -> system: QRCodeDialog encodes profile.toString() at 264dp | no -> system: copy the profile URI as sensitive text",
+          "exception": false
+        },
+        {
+          "label": "system: QRCodeDialog encodes profile.toString() at 264dp",
+          "type": "step",
+          "next": "decision: encoding succeeded?",
+          "exception": false
+        },
+        {
+          "label": "decision: encoding succeeded? yes → show the image, no → exception end",
+          "type": "decision",
+          "next": "yes -> end: the QR dialog shows the code | no -> end: WriterException shows a snackbar and dismisses the dialog",
+          "exception": false
+        },
+        {
+          "label": "end: the QR dialog shows the code",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: WriterException shows a snackbar and dismisses the dialog",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "system: copy the profile URI as sensitive text",
+          "type": "step",
+          "next": "decision: clipboard write succeeded?",
+          "exception": false
+        },
+        {
+          "label": "decision: clipboard write succeeded? yes → success snackbar, no → failure snackbar",
+          "type": "decision",
+          "next": "yes -> end: the success snackbar appears | no -> end: Failed to export shows",
+          "exception": false
+        },
+        {
+          "label": "end: the success snackbar appears",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: Failed to export shows",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "WriterException: the QR dialog dismisses and the exception message shows in a snackbar.",
+        "Clipboard RuntimeException: the export failure snackbar shows."
+      ]
+    },
+    {
+      "id": "F-U02-06",
+      "name": "Add profiles from the Add Profile menu",
+      "steps": [
+        {
+          "label": "start: user taps Add Profile",
+          "type": "start",
+          "next": "system: show the add submenu",
+          "exception": false
+        },
+        {
+          "label": "system: show the add submenu",
+          "type": "step",
+          "next": "system: the submenu lists Scan QR code, Import from Clipboard, Import from file…, Replace from file…, and Manual Settings",
+          "exception": false
+        },
+        {
+          "label": "system: the submenu lists Scan QR code, Import from Clipboard, Import from file…, Replace from file…, and Manual Settings",
+          "type": "step",
+          "next": "decision: Scan QR code chosen?",
+          "exception": false
+        },
+        {
+          "label": "decision: Scan QR code chosen? yes → start the scanner, no → next item",
+          "type": "decision",
+          "next": "yes -> system: start ScannerActivity | no -> decision: Import from Clipboard chosen?",
+          "exception": false
+        },
+        {
+          "label": "system: start ScannerActivity",
+          "type": "step",
+          "next": "end: the scanner opens",
+          "exception": false
+        },
+        {
+          "label": "end: the scanner opens",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "decision: Import from Clipboard chosen? yes → read the clipboard, no → next item",
+          "type": "decision",
+          "next": "yes -> system: Profile.findAllUrls parses the clipboard text with the current profile features | no -> decision: Import from file or Replace from file chosen?",
+          "exception": false
+        },
+        {
+          "label": "system: Profile.findAllUrls parses the clipboard text with the current profile features",
+          "type": "step",
+          "next": "decision: any profile found?",
+          "exception": false
+        },
+        {
+          "label": "decision: any profile found? yes → create them and report success, no → report failure",
+          "type": "decision",
+          "next": "yes -> end: the profiles are created and Successfully import! shows | no -> end: Failed to import shows",
+          "exception": false
+        },
+        {
+          "label": "end: the profiles are created and Successfully import! shows",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: Failed to import shows",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "decision: Import from file or Replace from file chosen? yes → open the picker, no → Manual Settings",
+          "type": "decision",
+          "next": "yes -> user: picks one or more application or text documents in the picker | no -> system: createProfile with the current profile's feature settings and open the editor",
+          "exception": false
+        },
+        {
+          "label": "user: picks one or more application or text documents in the picker",
+          "type": "step",
+          "next": "decision: replace mode?",
+          "exception": false
+        },
+        {
+          "label": "decision: replace mode? yes → the first created profile clears the stored profiles, no → the profiles are appended",
+          "type": "decision",
+          "next": "yes -> system: create the file's profiles, with the first creation clearing the stored profiles | no -> system: append the file's profiles to the stored ones",
+          "exception": false
+        },
+        {
+          "label": "system: create the file's profiles, with the first creation clearing the stored profiles and copying tx and rx for a matching formatted address",
+          "type": "step",
+          "next": "end: the profiles are stored",
+          "exception": false
+        },
+        {
+          "label": "system: append the file's profiles to the stored ones",
+          "type": "step",
+          "next": "end: the profiles are stored",
+          "exception": false
+        },
+        {
+          "label": "end: the profiles are stored",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: createProfile with the current profile's feature settings and open the editor",
+          "type": "step",
+          "next": "end: the profile editor opens for the new profile",
+          "exception": false
+        },
+        {
+          "label": "end: the profile editor opens for the new profile",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The clipboard holds no ss:// URL: Failed to import shows and no profile is created.",
+        "No activity handles the document intent: Please install a file manager like MiXplorer shows.",
+        "A chosen file cannot be read or parsed: its exception message shows in a snackbar.",
+        "A replace file yields no profile: the lazy clear never runs, so every stored profile remains and no message shows."
+      ]
+    },
+    {
+      "id": "F-U02-07",
+      "name": "Export profiles",
+      "steps": [
+        {
+          "label": "start: user taps Export…",
+          "type": "start",
+          "next": "system: show the export submenu",
+          "exception": false
+        },
+        {
+          "label": "system: show the export submenu",
+          "type": "step",
+          "next": "system: the submenu shows Export to Clipboard and Export to file…",
+          "exception": false
+        },
+        {
+          "label": "system: the submenu shows Export to Clipboard and Export to file…",
+          "type": "step",
+          "next": "decision: Export to Clipboard chosen?",
+          "exception": false
+        },
+        {
+          "label": "decision: Export to Clipboard chosen? yes → copy all profiles, no → open the save picker",
+          "type": "decision",
+          "next": "yes -> system: join every active profile's ss:// URI with newlines and copy it | no -> user: picks a destination in the save picker",
+          "exception": false
+        },
+        {
+          "label": "system: join every active profile's ss:// URI with newlines and copy it",
+          "type": "step",
+          "next": "decision: clipboard write succeeded?",
+          "exception": false
+        },
+        {
+          "label": "decision: clipboard write succeeded? yes → success snackbar, no → failure snackbar",
+          "type": "decision",
+          "next": "yes -> end: Successfully export! shows | no -> end: Failed to export shows",
+          "exception": false
+        },
+        {
+          "label": "end: Successfully export! shows",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: Failed to export shows",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "user: picks a destination in the save picker",
+          "type": "step",
+          "next": "decision: destination chosen?",
+          "exception": false
+        },
+        {
+          "label": "decision: destination chosen? yes → serialize the profiles, no → cancel",
+          "type": "decision",
+          "next": "yes -> decision: profile serialization succeeds? | no -> end: nothing is written and no message shows",
+          "exception": false
+        },
+        {
+          "label": "decision: profile serialization succeeds? yes → write the JSON array, no → nothing happens",
+          "type": "decision",
+          "next": "yes -> system: write the profile JSON array to the document | no -> end: nothing is written and no message shows",
+          "exception": false
+        },
+        {
+          "label": "system: write the profile JSON array to the document",
+          "type": "step",
+          "next": "end: the file is written",
+          "exception": false
+        },
+        {
+          "label": "end: the file is written",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: nothing is written and no message shows",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The save picker is unavailable: Please install a file manager like MiXplorer shows.",
+        "The write throws: its exception message shows in a snackbar."
+      ]
+    },
+    {
+      "id": "F-U02-08",
+      "name": "Edit a profile from its row",
+      "steps": [
+        {
+          "label": "start: user taps the row edit icon or subscription icon",
+          "type": "start",
+          "next": "decision: row editable?",
+          "exception": false
+        },
+        {
+          "label": "decision: row editable? yes → open the editor, no → the icon is dimmed and does nothing",
+          "type": "decision",
+          "next": "yes -> system: reload the profile | no -> end: the editor does not open",
+          "exception": false
+        },
+        {
+          "label": "system: reload the profile from the database",
+          "type": "step",
+          "next": "system: serialize the profile",
+          "exception": false
+        },
+        {
+          "label": "system: serialize the profile into DataStore",
+          "type": "step",
+          "next": "system: open ProfileConfigActivity",
+          "exception": false
+        },
+        {
+          "label": "system: open ProfileConfigActivity with the profile id",
+          "type": "step",
+          "next": "end: the profile editor opens",
+          "exception": false
+        },
+        {
+          "label": "end: the profile editor opens",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the editor does not open",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The edit icon force-unwraps a missing profile and crashes, while the subscription icon returns silently."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U02-01",
+      "title": "Selecting a profile while stopped marks it and persists the choice",
+      "preconditions": [
+        "Two profiles exist, Alpha and Beta.",
+        "Alpha is selected.",
+        "Service state is Stopped."
+      ],
+      "steps": [
+        "Tap the Beta row."
+      ],
+      "expected": [
+        "Beta shows the selected background and Alpha loses it.",
+        "DataStore.profileId becomes the Beta id.",
+        "No service reload is sent because the state cannot stop."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:191"
+    },
+    {
+      "id": "TC-U02-02",
+      "title": "Selecting another profile while connected restarts the tunnel with it",
+      "preconditions": [
+        "Service state is Connected with Alpha.",
+        "Beta exists."
+      ],
+      "steps": [
+        "Tap the Beta row."
+      ],
+      "expected": [
+        "Beta becomes selected.",
+        "Core.switchProfile writes the Beta id.",
+        "Core.reloadService broadcasts Action.RELOAD."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:191"
+    },
+    {
+      "id": "TC-U02-03",
+      "title": "A row tap does nothing while the service is stopping",
+      "preconditions": [
+        "Service state is Stopping.",
+        "Two profiles exist, Alpha selected and Beta not selected."
+      ],
+      "steps": [
+        "Tap the Alpha row.",
+        "Tap the Beta row."
+      ],
+      "expected": [
+        "Neither tap changes the selected profile.",
+        "No service reload is broadcast.",
+        "The rows do not respond to the taps."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:82"
+    },
+    {
+      "id": "TC-U02-04",
+      "title": "Search filters by name and host, ignoring case",
+      "preconditions": [
+        "Profiles Alpha (host a.example) and Beta (host b.example) exist.",
+        "The search field is expanded."
+      ],
+      "steps": [
+        "Type ALP into the search field."
+      ],
+      "expected": [
+        "Only the Alpha row remains in the list."
+      ],
+      "control_path": "C-U02-001 > C-U02-012",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239"
+    },
+    {
+      "id": "TC-U02-05",
+      "title": "A query with no match shows an empty list and keeps the selection",
+      "preconditions": [
+        "Two profiles exist.",
+        "Alpha is selected."
+      ],
+      "steps": [
+        "Type zzz into the search field."
+      ],
+      "expected": [
+        "The list shows no rows.",
+        "DataStore.profileId still names Alpha."
+      ],
+      "control_path": "C-U02-001 > C-U02-012",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:244"
+    },
+    {
+      "id": "TC-U02-06",
+      "title": "Clearing the query restores every profile in its stored order",
+      "preconditions": [
+        "A query narrows the list to Alpha.",
+        "Three profiles exist in order A, B, C."
+      ],
+      "steps": [
+        "Clear the search field."
+      ],
+      "expected": [
+        "All active profiles appear in ascending userOrder."
+      ],
+      "control_path": "C-U02-001 > C-U02-012",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:244"
+    },
+    {
+      "id": "TC-U02-07",
+      "title": "Search is available while the list holds one profile",
+      "preconditions": [
+        "Exactly one profile exists."
+      ],
+      "steps": [
+        "Tap the Search action.",
+        "Type a letter that matches no name or host."
+      ],
+      "expected": [
+        "The search field accepts the query.",
+        "The list shows no rows."
+      ],
+      "control_path": "C-U02-001 > C-U02-012",
+      "parity": "implemented",
+      "source": "mobile/src/main/res/menu/profile_manager_menu.xml:50"
+    },
+    {
+      "id": "TC-U02-08",
+      "title": "Dragging a row down stores the new order",
+      "preconditions": [
+        "Three profiles exist in order A, B, C.",
+        "Service state is Stopped."
+      ],
+      "steps": [
+        "Long-press A and drag it below B.",
+        "Drop the row."
+      ],
+      "expected": [
+        "The visible order becomes B, A, C.",
+        "userOrder is rewritten for the crossed profiles and saved."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:250"
+    },
+    {
+      "id": "TC-U02-09",
+      "title": "The first row crossover of a drag commits a pending swipe deletion",
+      "preconditions": [
+        "A row was swiped toward the start edge and the undo snackbar still shows."
+      ],
+      "steps": [
+        "Long-press another row and drag it across a neighbor.",
+        "Drop it at the new position."
+      ],
+      "expected": [
+        "The snackbar dismisses without Undo.",
+        "The swiped profile is deleted from the database.",
+        "The new drag order is saved."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:251"
+    },
+    {
+      "id": "TC-U02-10",
+      "title": "Swiping a row toward the start edge removes it and offers Undo",
+      "preconditions": [
+        "One profile exists and is not the active profile.",
+        "Service state is Stopped."
+      ],
+      "steps": [
+        "Swipe the row toward the start edge: left in an LTR locale, right in an RTL locale."
+      ],
+      "expected": [
+        "The row leaves the list immediately.",
+        "A snackbar reads Removed and carries an Undo action."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:378"
+    },
+    {
+      "id": "TC-U02-11",
+      "title": "Undo restores the swiped row at its old position",
+      "preconditions": [
+        "The undo snackbar for a swipe is visible.",
+        "The swiped row was at index 1."
+      ],
+      "steps": [
+        "Tap Undo on the snackbar."
+      ],
+      "expected": [
+        "The row returns at index 1.",
+        "The profile still exists in the database."
+      ],
+      "control_path": "C-U02-001 > C-U02-026 > C-U02-027",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+    },
+    {
+      "id": "TC-U02-12",
+      "title": "Dismissing the undo snackbar deletes the profile",
+      "preconditions": [
+        "The undo snackbar for a swipe is visible."
+      ],
+      "steps": [
+        "Let the snackbar time out without Undo.",
+        "Reload the profile list."
+      ],
+      "expected": [
+        "ProfileManager.delProfile ran for the swiped id.",
+        "The profile does not return to the list."
+      ],
+      "control_path": "C-U02-001 > C-U02-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:37"
+    },
+    {
+      "id": "TC-U02-13",
+      "title": "A second swipe accumulates in the same undo offer",
+      "preconditions": [
+        "The undo snackbar for one swipe is visible."
+      ],
+      "steps": [
+        "Swipe another row toward the start edge.",
+        "Tap Undo on the new snackbar."
+      ],
+      "expected": [
+        "The new snackbar reports two items removed.",
+        "Undo restores both rows at their original indices."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+    },
+    {
+      "id": "TC-U02-14",
+      "title": "The row share icon opens a popup with QR code and clipboard export",
+      "preconditions": [
+        "A profile row is visible."
+      ],
+      "steps": [
+        "Tap the share icon."
+      ],
+      "expected": [
+        "A popup menu appears.",
+        "It lists QR code and Export to Clipboard."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-020 > C-U02-021",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:141"
+    },
+    {
+      "id": "TC-U02-15",
+      "title": "The QR code menu item shows the profile as a 264dp QR image",
+      "preconditions": [
+        "The share popup is open for a profile with a name and a server."
+      ],
+      "steps": [
+        "Tap QR code."
+      ],
+      "expected": [
+        "A dialog appears with a 264dp QR image of the ss:// URI."
+      ],
+      "control_path": "C-U02-001 > C-U02-020 > C-U02-021 > C-U02-022 > C-U02-024 > C-U02-025",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:203"
+    },
+    {
+      "id": "TC-U02-16",
+      "title": "Import from Clipboard adds parsed profiles",
+      "preconditions": [
+        "The clipboard holds one valid ss:// URL.",
+        "One profile exists."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Import from Clipboard."
+      ],
+      "expected": [
+        "A new profile is created from the URL.",
+        "The snackbar reads Successfully import!"
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-005 > C-U02-028",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:403"
+    },
+    {
+      "id": "TC-U02-17",
+      "title": "Import from Clipboard fails when no URL parses",
+      "preconditions": [
+        "The clipboard holds text without an ss:// URL."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Import from Clipboard."
+      ],
+      "expected": [
+        "No profile is created.",
+        "The snackbar reads \"Failed to import.\""
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-005 > C-U02-028",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:414"
+    },
+    {
+      "id": "TC-U02-18",
+      "title": "Manual Settings opens an editor for a profile seeded from the current profile",
+      "preconditions": [
+        "The selected profile uses route bypass-lan."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Manual Settings."
+      ],
+      "expected": [
+        "A new profile is created with route bypass-lan and the current profile's other feature fields.",
+        "The profile editor opens for the new profile."
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-008",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:428"
+    },
+    {
+      "id": "TC-U02-19",
+      "title": "Export to Clipboard copies every active profile as ss:// links",
+      "preconditions": [
+        "Two active profiles exist."
+      ],
+      "steps": [
+        "Open Export….",
+        "Tap Export to Clipboard."
+      ],
+      "expected": [
+        "The clipboard holds two ss:// URIs separated by a newline.",
+        "The snackbar reads Successfully export!"
+      ],
+      "control_path": "C-U02-001 > C-U02-009 > C-U02-010 > C-U02-028",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:433"
+    },
+    {
+      "id": "TC-U02-20",
+      "title": "The edit icon opens the profile editor",
+      "preconditions": [
+        "A profile row is visible.",
+        "Service state is Stopped."
+      ],
+      "steps": [
+        "Tap the edit icon."
+      ],
+      "expected": [
+        "The profile is reloaded from the database and serialized.",
+        "The profile editor opens for it."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:130"
+    },
+    {
+      "id": "TC-U02-21",
+      "title": "Import from file appends the parsed profiles",
+      "preconditions": [
+        "Two profiles exist.",
+        "The chosen document holds one valid profile."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Import from file….",
+        "Choose the document."
+      ],
+      "expected": [
+        "The document picker accepts any application or text document.",
+        "Three profiles exist, and the two old profiles keep their order and counters."
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-006 > C-U02-029",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:66"
+    },
+    {
+      "id": "TC-U02-22",
+      "title": "Replace from file clears the old profiles when the first profile is created",
+      "preconditions": [
+        "Two profiles exist, one at host:8388 with tx 500.",
+        "The chosen document holds host:8388 and one other profile."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Replace from file….",
+        "Choose the document."
+      ],
+      "expected": [
+        "Only the document's profiles exist.",
+        "The profile at host:8388 keeps tx 500."
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-007 > C-U02-029",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:77"
+    },
+    {
+      "id": "TC-U02-23",
+      "title": "Replace from a file with no profile keeps every stored profile",
+      "preconditions": [
+        "Two profiles exist.",
+        "The chosen document holds no valid profile."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Replace from file….",
+        "Choose the document."
+      ],
+      "expected": [
+        "Both stored profiles remain in the list.",
+        "No profile is deleted, because the clear runs only when a profile is created."
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-007 > C-U02-029",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:71"
+    },
+    {
+      "id": "TC-U02-24",
+      "title": "Export to file writes the profile JSON array",
+      "preconditions": [
+        "Two active profiles exist.",
+        "The save picker returns a document."
+      ],
+      "steps": [
+        "Open Export….",
+        "Tap Export to file….",
+        "Choose a destination."
+      ],
+      "expected": [
+        "The document receives the pretty-printed JSON array of the profiles."
+      ],
+      "control_path": "C-U02-001 > C-U02-009 > C-U02-011 > C-U02-030",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:470"
+    },
+    {
+      "id": "TC-U02-25",
+      "title": "Export to file writes nothing when the picker returns no document or the profiles cannot be read",
+      "preconditions": [
+        "Two active profiles exist."
+      ],
+      "steps": [
+        "Open Export….",
+        "Tap Export to file….",
+        "Cancel the save picker.",
+        "Repeat the export and choose a destination while the profile read fails."
+      ],
+      "expected": [
+        "Neither run writes a document.",
+        "Neither run shows a message."
+      ],
+      "control_path": "C-U02-001 > C-U02-009 > C-U02-011 > C-U02-030",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:471"
+    },
+    {
+      "id": "TC-U02-26",
+      "title": "An unreadable or invalid import file reports its error",
+      "preconditions": [
+        "The chosen document is not valid JSON."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Import from file….",
+        "Choose the document."
+      ],
+      "expected": [
+        "No profile is created.",
+        "The exception message shows in a snackbar."
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-006 > C-U02-029",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:464"
+    },
+    {
+      "id": "TC-U02-27",
+      "title": "A missing file manager reports the file manager message",
+      "preconditions": [
+        "No activity handles the document intent."
+      ],
+      "steps": [
+        "Open Add Profile.",
+        "Tap Import from file…."
+      ],
+      "expected": [
+        "The snackbar reads \"Please install a file manager like MiXplorer\"."
+      ],
+      "control_path": "C-U02-001 > C-U02-003 > C-U02-006",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:448"
+    },
+    {
+      "id": "TC-U02-28",
+      "title": "A QR encoding failure dismisses the dialog and reports the error",
+      "preconditions": [
+        "The share popup is open for a profile whose URI is too long for a QR code."
+      ],
+      "steps": [
+        "Tap QR code."
+      ],
+      "expected": [
+        "The dialog dismisses.",
+        "The exception message shows in a snackbar."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-020 > C-U02-021 > C-U02-022 > C-U02-024",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:111"
+    },
+    {
+      "id": "TC-U02-29",
+      "title": "A refused clipboard write shows the export failure message",
+      "preconditions": [
+        "The share popup is open for a profile.",
+        "The clipboard service throws RuntimeException."
+      ],
+      "steps": [
+        "Tap Export to Clipboard."
+      ],
+      "expected": [
+        "trySetPrimaryClip returns false.",
+        "The snackbar reads \"Failed to export.\""
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-020 > C-U02-021 > C-U02-023",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:209"
+    },
+    {
+      "id": "TC-U02-30",
+      "title": "A failed profile update aborts the drop",
+      "preconditions": [
+        "Three profiles exist in order A, B, C.",
+        "The database update throws."
+      ],
+      "steps": [
+        "Long-press A and drag it below B.",
+        "Drop the row."
+      ],
+      "expected": [
+        "ProfileManager.updateProfile throws from check.",
+        "The exception aborts the drop and the new order is not stored."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:270"
+    },
+    {
+      "id": "TC-U02-31",
+      "title": "The edit icon crashes on a profile deleted elsewhere",
+      "preconditions": [
+        "A profile row is visible.",
+        "The profile was deleted in another process."
+      ],
+      "steps": [
+        "Tap the edit icon."
+      ],
+      "expected": [
+        "ProfileManager.getProfile returns null.",
+        "The force-unwrap throws and no editor opens."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-018",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:131"
+    },
+    {
+      "id": "TC-U02-32",
+      "title": "A committed delete leaves the selected profile id stale",
+      "preconditions": [
+        "The selected profile's row was swiped toward the start edge.",
+        "The undo snackbar dismissed without Undo."
+      ],
+      "steps": [
+        "Let the dismiss callback commit the deletion.",
+        "Open the Profiles screen again."
+      ],
+      "expected": [
+        "ProfilesAdapter.onRemove finds no row and returns early.",
+        "DataStore.profileId still names the deleted profile."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-026",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:303"
+    },
+    {
+      "id": "TC-U02-33",
+      "title": "A drag is refused while the service is Idle or Stopping",
+      "preconditions": [
+        "Service state is Idle.",
+        "Two profiles exist."
+      ],
+      "steps": [
+        "Long-press a row."
+      ],
+      "expected": [
+        "No drag starts and the row stays in place."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:375"
+    },
+    {
+      "id": "TC-U02-34",
+      "title": "A row tap does nothing while the service is Idle",
+      "preconditions": [
+        "Service state is Idle.",
+        "Alpha is selected and Beta exists."
+      ],
+      "steps": [
+        "Tap the Beta row."
+      ],
+      "expected": [
+        "The selected profile does not change.",
+        "No service reload is sent."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:82"
+    },
+    {
+      "id": "TC-U02-35",
+      "title": "The edit and subscription icons are disabled on the active profile while connected",
+      "preconditions": [
+        "Service state is Connected with Alpha.",
+        "Beta exists."
+      ],
+      "steps": [
+        "Inspect the edit and subscription icons on the Alpha row.",
+        "Tap the edit icon."
+      ],
+      "expected": [
+        "Both icons are dimmed.",
+        "The edit icon does nothing."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-018",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:84"
+    },
+    {
+      "id": "TC-U02-36",
+      "title": "The swipe is refused on the active profile while connected",
+      "preconditions": [
+        "Service state is Connected with Alpha."
+      ],
+      "steps": [
+        "Swipe the Alpha row toward the start edge."
+      ],
+      "expected": [
+        "The row stays in place."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:370"
+    },
+    {
+      "id": "TC-U02-37",
+      "title": "The row title falls back to the host and port",
+      "preconditions": [
+        "A profile has no name, host 1.2.3.4, and port 8388."
+      ],
+      "steps": [
+        "Open the Profiles screen."
+      ],
+      "expected": [
+        "The row title reads 1.2.3.4:8388."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-015",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:275"
+    },
+    {
+      "id": "TC-U02-38",
+      "title": "The list shows active profiles in userOrder",
+      "preconditions": [
+        "Profiles with userOrder 2, 1, and 3 exist.",
+        "One profile has subscription status Obsolete."
+      ],
+      "steps": [
+        "Open the Profiles screen."
+      ],
+      "expected": [
+        "Rows appear in order 1, 2, 3.",
+        "The Obsolete profile has no row."
+      ],
+      "control_path": "C-U02-001 > C-U02-013",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:249"
+    },
+    {
+      "id": "TC-U02-39",
+      "title": "An empty database gets one default profile",
+      "preconditions": [
+        "No profile exists."
+      ],
+      "steps": [
+        "Open the Profiles screen."
+      ],
+      "expected": [
+        "One default profile is created and selected."
+      ],
+      "control_path": "C-U02-001 > C-U02-013",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt:127"
+    },
+    {
+      "id": "TC-U02-40",
+      "title": "The secondary line is hidden when its text is empty",
+      "preconditions": [
+        "A profile has no name and no plugin."
+      ],
+      "steps": [
+        "Open the Profiles screen."
+      ],
+      "expected": [
+        "The secondary line is not shown."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-016",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/widget/AutoCollapseTextView.kt:34"
+    },
+    {
+      "id": "TC-U02-41",
+      "title": "The undo snackbar reports a count for several removals",
+      "preconditions": [
+        "Three editable profiles exist.",
+        "Service state is Stopped."
+      ],
+      "steps": [
+        "Swipe three rows toward the start edge, one after another."
+      ],
+      "expected": [
+        "Each new snackbar replaces the previous one.",
+        "The last snackbar reads 3 items removed."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-026",
+      "parity": "implemented",
+      "source": "core/src/main/res/values/strings.xml:116"
+    },
+    {
+      "id": "TC-U02-42",
+      "title": "A UDP fallback profile is locked with its selected profile",
+      "preconditions": [
+        "The selected profile has a UDP fallback.",
+        "Service state is Connected."
+      ],
+      "steps": [
+        "Inspect the selected row and its UDP fallback row."
+      ],
+      "expected": [
+        "Both rows are dimmed for edit and refuse the swipe."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-018",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:86"
+    },
+    {
+      "id": "TC-U02-43",
+      "title": "A search during a pending removal brings the profile back",
+      "preconditions": [
+        "One row was swiped toward the start edge and its undo snackbar shows."
+      ],
+      "steps": [
+        "Type a query that matches the removed profile."
+      ],
+      "expected": [
+        "The removed profile appears in the filtered list again.",
+        "The snackbar still offers Undo, and tapping it inserts a duplicate row."
+      ],
+      "control_path": "C-U02-001 > C-U02-012 > C-U02-026 > C-U02-027",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:239"
+    },
+    {
+      "id": "TC-U02-44",
+      "title": "The subscription icon opens the profile editor",
+      "preconditions": [
+        "An Active subscription profile is shown.",
+        "Service state is Stopped."
+      ],
+      "steps": [
+        "Tap the subscription icon."
+      ],
+      "expected": [
+        "The profile is reloaded from the database.",
+        "The profile editor opens for it."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-019",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:134"
+    },
+    {
+      "id": "TC-U02-45",
+      "title": "A long-press without a row crossover keeps the pending deletion",
+      "preconditions": [
+        "A row was swiped toward the start edge and the undo snackbar still shows.",
+        "Another row is shown."
+      ],
+      "steps": [
+        "Long-press another row and release it without crossing a neighbor."
+      ],
+      "expected": [
+        "The undo snackbar stays.",
+        "The swiped profile is not deleted."
+      ],
+      "control_path": "C-U02-001 > C-U02-013 > C-U02-014 > C-U02-026",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:251"
+    },
+    {
+      "id": "TC-U02-46",
+      "title": "An unrelated result snackbar commits the pending deletion",
+      "preconditions": [
+        "A row was swiped toward the start edge and the undo snackbar still shows."
+      ],
+      "steps": [
+        "Open Export… and tap Export to Clipboard."
+      ],
+      "expected": [
+        "The result snackbar dismisses the undo snackbar consecutively.",
+        "The swiped profile is deleted and cannot return."
+      ],
+      "control_path": "C-U02-001 > C-U02-009 > C-U02-010 > C-U02-028",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:37"
+    }
+  ],
+  "parity_summary": {
+    "implemented": 39,
+    "partial": 1,
+    "missing": 0,
+    "android_only": 6
+  },
+  "notes": "HarmonyOS implements 39 cases. Seven cases are partial, missing, or android-only. TC-U02-27 is android-only: the platform has no intent handler lookup and always provides a system document picker, and the U04 LLD records that decision. TC-U02-33 and TC-U02-34 are android-only: HarmonyOS has no bound-but-idle service, so the LLD maps PHASE_IDLE to the stopped state, which accepts input. TC-U02-31 is missing: the edit icon handles a profile deleted elsewhere and does not crash, a deliberate deviation (R-UB-17). TC-U02-32 is missing: a committed delete selects the first remaining profile, so the selected id is never stale (R-UB-33). TC-U02-43 is missing: a pending removal stays hidden under every query (R-UB-51). TC-U02-44 is partial: the row Subscription action opens the Subscription page, not the profile editor. Device E2E has not run. Host specs cover the model decisions. Visible UI paths cover the gestures and the dialogs."
+}

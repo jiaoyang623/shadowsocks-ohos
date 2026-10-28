@@ -1,0 +1,16 @@
+判据检查总账（docs/oracles）
+
+① 形式 字段、取值、层、锚点写法、进度
+    ✅ 无命中
+    覆盖：oracles 11 · files 1
+
+② 关系 判据之间的索引连接与反查
+    ✅ 无命中
+    覆盖：oracles 11 · files 1
+
+③ 闭环 锚点真不真、通道在不在、缺口有没有主
+    ✅ 无命中
+    覆盖：oracles 11 · testFiles 18 · entries 18 · reachable 29 · caseNames 1141 · expected null
+
+进度：判据 11 条 · 状态 closed 0（闭环率 0.0%）
+P0 合计 0 条 ✅

@@ -1,0 +1,71 @@
+{
+  "skill_version": "a01",
+  "report_version": 1,
+  "title": "HarmonyOS on-device suites: NAPI surface and SOCKS tunnel",
+  "change_id": "CHG-20261028-hos-parity",
+  "baseline": "e123804+dirty",
+  "environment": "HarmonyOS 6.1.1 API 24 emulator, x86_64, hdc 127.0.0.1:5555",
+  "command": "ci/hos-emulator-e2e.sh (SKIP_EMULATOR=1)",
+  "executed_at": "2026-10-28T14:31:06+11:00",
+  "target": "mobile",
+  "generated_at": "2026-10-28T14:32:08+11:00",
+  "case_count": 5,
+  "passed": 5,
+  "failed": 0,
+  "skipped": 0,
+  "blocked": 0,
+  "step_count": 5,
+  "steps_passed": 5,
+  "steps_failed": 0,
+  "steps_skipped": 0,
+  "steps_blocked": 0,
+  "screenshots": 0,
+  "outputs": 5,
+  "evidence": [
+    {
+      "case_id": "E2E-DEVICE-01",
+      "step_id": "S-01",
+      "type": "output",
+      "label": "terminal",
+      "file": "",
+      "size": 66,
+      "sha256": "55cd96cf068e24d66c1b466094ae1c23a0cbb9fcb3c4776ef1a171a65fe66d07"
+    },
+    {
+      "case_id": "E2E-DEVICE-02",
+      "step_id": "S-01",
+      "type": "output",
+      "label": "terminal",
+      "file": "",
+      "size": 66,
+      "sha256": "ecf7f445cb66f4c15d4ec0c0df6a9eb14d6887e1a22a3d2b8aec8eaabeb40c9a"
+    },
+    {
+      "case_id": "E2E-DEVICE-03",
+      "step_id": "S-01",
+      "type": "output",
+      "label": "terminal",
+      "file": "",
+      "size": 68,
+      "sha256": "d90a5d761c8f4639cc4391950951548a76adf69e067df1c93a4a74bd4ef85200"
+    },
+    {
+      "case_id": "E2E-DEVICE-04",
+      "step_id": "S-01",
+      "type": "output",
+      "label": "terminal",
+      "file": "",
+      "size": 94,
+      "sha256": "de1dbbb1ef64349267c002e0a9dba5601c2616435cbb30379e865315e36ea279"
+    },
+    {
+      "case_id": "E2E-DEVICE-05",
+      "step_id": "S-01",
+      "type": "output",
+      "label": "terminal",
+      "file": "",
+      "size": 80,
+      "sha256": "17227614a809d7756b18499608cad5b2a16e3f9a1e4c02612d94ae19777a0067"
+    }
+  ]
+}

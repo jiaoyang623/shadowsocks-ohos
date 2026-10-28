@@ -1,0 +1,14 @@
+❌ [P1] fields-missing  步骤 I-07 的 A 级产物 high-level-review-list 缺字段：change_id、baseline
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-01 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-01 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-02 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-02 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/architecture/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-03 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-03 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/hld/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-04 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：L-04 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/lld/review-decisions.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：I-06 的 ui-restoration-evidence（docs/changes/CHG-20261028-hos-parity/checks/ui-restoration.json）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：I-06 的 ui-restoration-report（docs/changes/CHG-20261028-hos-parity/checks/ui-restoration/index.html）
+❌ [P0] upstream-missing  当前步 C-02 的上游产物缺失：I-06 的 ui-restoration-published（docs/changes/CHG-20261028-hos-parity/checks/ui-restoration-published.txt）
+❌ [P0] completion-incomplete  完成记录判 incomplete，批次不得合入，也不得作为下一批次的基线：docs/changes/CHG-20261028-hos-parity/completion.md
+覆盖率：过程 15 个 · 已声明步骤 23 个 · 核对产物 113 件

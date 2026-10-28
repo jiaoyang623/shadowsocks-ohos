@@ -17,8 +17,10 @@
  *                                                                             *
  *******************************************************************************/
 
-import { DEFAULT_REMOTE_DNS, Profile, nextUserOrder } from './Profile';
-import { ROUTE_ALL } from './Routes';
+import { joinNames, namesOf } from './PerApp';
+import {
+  DEFAULT_REMOTE_DNS, Profile, STATUS_OBSOLETE, copyFeatureSettings, nextUserOrder,
+} from './Profile';
 
 /**
  * One profile in the shape shadowsocks-android exports, which is also the
@@ -40,11 +42,37 @@ export interface ProfileJson {
   metered?: boolean;
   udpdns?: boolean;
   proxy_apps?: ProxyAppsJson;
+  udp_fallback?: UdpFallbackJson;
 }
 
-/** Android's per-app settings block. Carried for the shape, never enabled. */
+/**
+ * Android's per-app settings block. `android_list` holds Android package names
+ * as a JSON array, which is the shape Android writes and reads.
+ */
 export interface ProxyAppsJson {
   enabled: boolean;
+  bypass?: boolean;
+  android_list?: string[];
+}
+
+/** The nested profile Android writes for a UDP fallback. */
+export interface UdpFallbackJson {
+  server: string;
+  server_port: number;
+  password: string;
+  method: string;
+}
+
+/** One parsed entry: the profile and, when the entry carries one, its fallback. */
+interface ParsedEntry {
+  profile: Profile;
+  fallback: Profile | null;
+}
+
+/** The result of one import batch: the profiles and the first error message. */
+export interface ImportBatch {
+  profiles: Profile[];
+  error: string;
 }
 
 /** How deep the importer walks before deciding a file is not a profile list. */
@@ -58,8 +86,42 @@ export function addressKey(profile: Profile): string {
   return `${profile.host}:${profile.remotePort}`;
 }
 
-/** One profile from a parsed JSON object, or null when it is not one. */
-export function profileFromJson(record: Record<string, Object>): Profile | null {
+/** A boolean field, or null when the value is absent or is not a boolean. */
+function booleanField(record: Record<string, Object>, key: string): boolean | null {
+  const value = record[key];
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  return null;
+}
+
+/**
+ * A bundle list from the `android_list` array. Items that are not strings are
+ * ignored, and the result drops blank lines and duplicates.
+ */
+function bundleListFromItems(items: Object[]): string {
+  const lines: string[] = [];
+  for (const item of items) {
+    if (typeof item === 'string') {
+      lines.push(item);
+    }
+  }
+  return joinNames(lines);
+}
+
+/**
+ * One profile from a parsed JSON object, or null when it is not one.
+ *
+ * `feature` supplies the feature settings of the selected profile, which the
+ * entry inherits. A JSON boolean overrides an inherited boolean. A
+ * non-boolean value keeps the inherited value. `remote_dns`, the plugin and
+ * the name are never inherited.
+ *
+ * A `fallback` entry reads only the plugin, the remarks and the route. The
+ * caller reads the nested `udp_fallback` object.
+ */
+export function profileFromJson(record: Record<string, Object>,
+  feature: Profile | null, fallback: boolean = false): Profile | null {
   const server = record['server'];
   const port = record['server_port'];
   const password = record['password'];
@@ -70,7 +132,8 @@ export function profileFromJson(record: Record<string, Object>): Profile | null 
   }
   // providers write the port as a number and, less often, as a string
   const remotePort = typeof port === 'number' ? port : Number.parseInt(`${port}`, 10);
-  if (Number.isNaN(remotePort) || remotePort <= 0 || remotePort > 65535) {
+  if (Number.isNaN(remotePort) || !Number.isInteger(remotePort)
+    || remotePort <= 0 || remotePort > 65535) {
     return null;
   }
   if (typeof password !== 'string' || password.length === 0) {
@@ -81,6 +144,7 @@ export function profileFromJson(record: Record<string, Object>): Profile | null 
   }
 
   const profile = new Profile();
+  copyFeatureSettings(feature, profile);
   profile.host = server;
   profile.remotePort = remotePort;
   profile.password = password;
@@ -95,34 +159,98 @@ export function profileFromJson(record: Record<string, Object>): Profile | null 
     const opts = record['plugin_opts'];
     profile.pluginOpts = typeof opts === 'string' ? opts : '';
   }
+  // A non-empty `plugin_opts` seeds the map. An empty one takes the default.
+  profile.normalizePluginOptions();
 
   const route = record['route'];
-  profile.route = typeof route === 'string' && route.length > 0 ? route : ROUTE_ALL;
+  if (typeof route === 'string' && route.length > 0) {
+    profile.route = route;
+  }
+  if (fallback) {
+    return profile;
+  }
 
   const remoteDns = record['remote_dns'];
   profile.remoteDns =
     typeof remoteDns === 'string' && remoteDns.length > 0 ? remoteDns : DEFAULT_REMOTE_DNS;
 
-  profile.ipv6 = record['ipv6'] === true;
-  profile.udpdns = record['udpdns'] === true;
-  // `metered`, `proxy_apps` and `udp_fallback` are read and dropped: the first
-  // two describe Android behaviour this platform has no equivalent for, and the
-  // third needs a second core instance. Importing a file from Android therefore
-  // loses per-app settings, which is the honest outcome rather than a silent
-  // claim to have honoured them.
+  const ipv6 = booleanField(record, 'ipv6');
+  if (ipv6 !== null) {
+    profile.ipv6 = ipv6;
+  }
+  const metered = booleanField(record, 'metered');
+  if (metered !== null) {
+    profile.metered = metered;
+  }
+  const udpdns = booleanField(record, 'udpdns');
+  if (udpdns !== null) {
+    profile.udpdns = udpdns;
+  }
+
+  const proxyApps = record['proxy_apps'];
+  if (proxyApps !== null && proxyApps !== undefined && typeof proxyApps === 'object'
+    && !Array.isArray(proxyApps)) {
+    const block = proxyApps as Record<string, Object>;
+    const enabled = booleanField(block, 'enabled');
+    if (enabled !== null) {
+      profile.proxyAppsEnabled = enabled;
+    }
+    // A disabled block ignores the bypass flag and the list. A stored list is
+    // meaningful only while the mode is on.
+    if (profile.proxyAppsEnabled) {
+      const bypass = booleanField(block, 'bypass');
+      if (bypass !== null) {
+        profile.proxyAppsBypass = bypass;
+      }
+      const list = block['android_list'];
+      if (Array.isArray(list)) {
+        profile.proxyAppsList = bundleListFromItems(list as Object[]);
+      } else {
+        // `individual` is not an Android key. It is read as a legacy text
+        // input so a file that carries it still yields a list.
+        const legacy = block['individual'];
+        if (typeof legacy === 'string') {
+          profile.proxyAppsList = joinNames(namesOf(legacy));
+        }
+      }
+    }
+  }
+  // `udp_fallback` is read by the entry parser, which links the two rows.
   return profile;
 }
 
-/** Every profile anywhere inside a parsed JSON value, however it is nested. */
-function profilesInValue(value: Object | null | undefined, depth: number): Profile[] {
-  const found: Profile[] = [];
+/**
+ * One entry from a parsed JSON object. The name falls back to the server
+ * address, because a row renders the name without a fallback.
+ */
+function entryFromJson(record: Record<string, Object>, feature: Profile | null): ParsedEntry | null {
+  const profile = profileFromJson(record, feature, false);
+  if (profile === null) {
+    return null;
+  }
+  let fallback: Profile | null = null;
+  const nested = record['udp_fallback'];
+  if (nested !== null && nested !== undefined && typeof nested === 'object'
+    && !Array.isArray(nested)) {
+    fallback = profileFromJson(nested as Record<string, Object>, feature, true);
+  }
+  return { profile: profile, fallback: fallback };
+}
+
+/**
+ * Every entry anywhere inside a parsed JSON value, however it is nested. A
+ * recognized profile stops the search inside that object.
+ */
+function entriesInValue(value: Object | null | undefined, depth: number,
+  feature: Profile | null): ParsedEntry[] {
+  const found: ParsedEntry[] = [];
   if (value === null || value === undefined || depth > MAX_DEPTH) {
     return found;
   }
   if (Array.isArray(value)) {
     for (const item of value as Object[]) {
-      for (const profile of profilesInValue(item, depth + 1)) {
-        found.push(profile);
+      for (const entry of entriesInValue(item, depth + 1, feature)) {
+        found.push(entry);
       }
     }
     return found;
@@ -131,23 +259,27 @@ function profilesInValue(value: Object | null | undefined, depth: number): Profi
     return found;
   }
   const record = value as Record<string, Object>;
-  const profile = profileFromJson(record);
-  if (profile !== null) {
-    found.push(profile);
+  const entry = entryFromJson(record, feature);
+  if (entry !== null) {
+    found.push(entry);
     return found;
   }
   // not a server entry itself, so it is a container: SIP008 wraps its servers
   // in `servers`, and other providers use `configs` or an unnamed array
   for (const key of Object.keys(record)) {
-    for (const nested of profilesInValue(record[key], depth + 1)) {
+    for (const nested of entriesInValue(record[key], depth + 1, feature)) {
       found.push(nested);
     }
   }
   return found;
 }
 
-/** Profiles from text that is a list of `ss://` URLs, one per token. */
-function profilesFromUrls(text: string): Profile[] {
+/**
+ * Profiles from text that is a list of `ss://` URLs, one per whitespace
+ * token. This is the URL-only parser the QR import uses: Android imports only
+ * `ss://` URLs from a scan.
+ */
+export function parseProfileUrls(text: string): Profile[] {
   const profiles: Profile[] = [];
   for (const token of text.split(/\s+/)) {
     if (!token.startsWith('ss://')) {
@@ -161,20 +293,103 @@ function profilesFromUrls(text: string): Profile[] {
   return profiles;
 }
 
+/** Entries from `ss://` URLs, with the feature settings applied. */
+function entriesFromUrls(text: string, feature: Profile | null): ParsedEntry[] {
+  const entries: ParsedEntry[] = [];
+  for (const token of text.split(/\s+/)) {
+    if (!token.startsWith('ss://')) {
+      continue;
+    }
+    const profile = Profile.parseUrl(token, feature);
+    if (profile !== null) {
+      entries.push({ profile: profile, fallback: null });
+    }
+  }
+  return entries;
+}
+
+/**
+ * The main profiles and their fallbacks as rows. Every row takes an id, and a
+ * main profile points at its fallback.
+ */
+function flattenEntries(entries: ParsedEntry[]): Profile[] {
+  for (const entry of entries) {
+    entry.profile.ensureId();
+    if (entry.fallback !== null) {
+      entry.fallback.ensureId();
+    }
+  }
+  // A fallback that is also a top-level entry is one row, not two. Android
+  // sees every created row and points the main profile at the standalone one.
+  const standalone: Profile[] = [];
+  for (const entry of entries) {
+    if (entry.fallback === null) {
+      standalone.push(entry.profile);
+    }
+  }
+  const profiles: Profile[] = [];
+  for (const entry of entries) {
+    profiles.push(entry.profile);
+    const fallback = entry.fallback;
+    if (fallback === null) {
+      continue;
+    }
+    const match = findFallbackMatch(standalone, fallback, entry.profile);
+    if (match !== null) {
+      entry.profile.udpFallbackId = match.id;
+      continue;
+    }
+    entry.profile.udpFallbackId = fallback.id;
+    profiles.push(fallback);
+  }
+  return profiles;
+}
+
+/**
+ * The strict document parser.
+ *
+ * A document that starts with `{` or `[` is JSON, and a syntax error escapes
+ * to the caller. Any other text is a list of `ss://` URLs, or a base64 blob of
+ * them. An empty text gives an empty list.
+ */
+export function parseProfileDocument(text: string, feature: Profile | null): Profile[] {
+  const trimmed = text.trim();
+  if (trimmed.length === 0) {
+    return [];
+  }
+  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+    const parsed = JSON.parse(trimmed) as Object;
+    return flattenEntries(entriesInValue(parsed, 0, feature));
+  }
+  const entries = entriesFromUrls(trimmed, feature);
+  if (entries.length > 0) {
+    return flattenEntries(entries);
+  }
+  try {
+    return flattenEntries(entriesFromUrls(Profile.decodeBase64(trimmed), feature));
+  } catch (e) {
+    return [];
+  }
+}
+
 /**
  * Reads profiles from text, in any of the shapes a user or a provider can
  * produce: an exported file, a SIP008 document, a nested provider document,
- * a list of `ss://` URLs, or a base64 blob of them — which is how most
+ * a list of `ss://` URLs, or a base64 blob of them, which is how most
  * subscriptions are served.
+ *
+ * This is the lenient parser. A malformed JSON body does not throw from here:
+ * the scan for `ss://` URLs still runs. The subscription and file paths use
+ * the strict parser when they must report a syntax error.
  */
-export function parseProfilesText(text: string): Profile[] {
+export function parseProfilesText(text: string, feature: Profile | null = null): Profile[] {
   const trimmed = text.trim();
   if (trimmed.length === 0) {
     return [];
   }
   if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
     try {
-      const parsed = profilesInValue(JSON.parse(trimmed) as Object, 0);
+      const parsed = parseProfileDocument(trimmed, feature);
       if (parsed.length > 0) {
         return parsed;
       }
@@ -182,15 +397,80 @@ export function parseProfilesText(text: string): Profile[] {
       // not JSON after all: the scan below may still find URLs in it
     }
   }
-  const direct = profilesFromUrls(trimmed);
+  const direct = flattenEntries(entriesFromUrls(trimmed, feature));
   if (direct.length > 0) {
     return direct;
   }
   try {
-    return profilesFromUrls(Profile.decodeBase64(trimmed));
+    return flattenEntries(entriesFromUrls(Profile.decodeBase64(trimmed), feature));
   } catch (e) {
     return [];
   }
+}
+
+/** The message of an error, or the text of any other thrown value. */
+function errorText(e: Object): string {
+  if (e instanceof Error) {
+    return e.message;
+  }
+  return String(e);
+}
+
+/**
+ * Profiles from a batch of documents. A document that throws contributes its
+ * message and no profile. The other documents still parse, and the first
+ * message is kept.
+ */
+export function collectProfiles(texts: string[], feature: Profile | null): ImportBatch {
+  const profiles: Profile[] = [];
+  let error = '';
+  for (const text of texts) {
+    try {
+      const parsed = parseProfileDocument(text, feature);
+      for (const profile of parsed) {
+        profiles.push(profile);
+      }
+    } catch (e) {
+      if (error.length === 0) {
+        error = errorText(e as Object);
+      }
+    }
+  }
+  return { profiles: profiles, error: error };
+}
+
+/** A stored profile with the same address as the imported one, or null. */
+function findAddressMatch(existing: Profile[], profile: Profile): Profile | null {
+  const key = addressKey(profile);
+  for (const stored of existing) {
+    if (addressKey(stored) === key) {
+      return stored;
+    }
+  }
+  return null;
+}
+
+/**
+ * A stored profile that a parsed fallback can reuse: same host, port,
+ * password and method, and no plugin. Android uses the same test.
+ */
+function findFallbackMatch(existing: Profile[], fallback: Profile,
+  exclude: Profile | null = null): Profile | null {
+  for (const stored of existing) {
+    // The fallback itself is not a match, and neither is the profile that
+    // names it: both can share the same address.
+    if (stored === exclude || stored.udpFallbackId === fallback.id) {
+      continue;
+    }
+    if (stored.host === fallback.host
+      && stored.remotePort === fallback.remotePort
+      && stored.password === fallback.password
+      && stored.method === fallback.method
+      && stored.plugin.length === 0) {
+      return stored;
+    }
+  }
+  return null;
 }
 
 /**
@@ -199,53 +479,118 @@ export function parseProfilesText(text: string): Profile[] {
  * of profiles with the same address, while an import appends. The address is
  * the same key Android uses, so the two clients agree on what "the same
  * profile" means.
+ *
+ * An imported fallback that names a stored profile reuses that row in import
+ * mode. Both modes keep the main profile and its fallback as two rows, and the
+ * main profile points at its fallback with `udpFallbackId`.
+ *
+ * A replace with no parsed profile changes nothing.
  */
 export function applyImport(existing: Profile[], imported: Profile[], replace: boolean): Profile[] {
-  if (!replace) {
-    const appended = existing.slice();
-    let order = nextUserOrder(appended);
-    for (const profile of imported) {
-      profile.subscriptionId = '';
-      profile.ensureId();
-      profile.userOrder = order;
-      order++;
-      appended.push(profile);
-    }
-    return appended;
+  if (replace && imported.length === 0) {
+    return existing.slice();
   }
-  const result: Profile[] = [];
-  let order = 1;
+
+  // ids that imported profiles use as fallbacks
+  const fallbackIds: string[] = [];
   for (const profile of imported) {
-    for (const previous of existing) {
-      if (addressKey(previous) !== addressKey(profile)) {
+    if (profile.udpFallbackId.length > 0 && fallbackIds.indexOf(profile.udpFallbackId) < 0) {
+      fallbackIds.push(profile.udpFallbackId);
+    }
+  }
+
+  // an imported fallback that names a stored profile reuses that row
+  const reusedIds = new Map<string, string>();
+  const kept: Profile[] = [];
+  for (const profile of imported) {
+    if (!replace && fallbackIds.indexOf(profile.id) >= 0) {
+      // The standalone fallback entry in the same batch is a row too, so the
+      // batch is a candidate beside the stored list. Android sees every row
+      // after the batch exists and reuses the same one.
+      const match = findFallbackMatch(existing.concat(imported), profile, profile);
+      if (match !== null) {
+        reusedIds.set(profile.id, match.id);
         continue;
       }
-      // the same server, so what identifies it locally is kept: its id, which
-      // the selected-profile setting points at, and the traffic it has carried
-      profile.id = previous.id;
-      profile.tx = previous.tx;
-      profile.rx = previous.rx;
-      if (profile.name.length === 0 || profile.name === profile.host) {
+    }
+    kept.push(profile);
+  }
+
+  const result: Profile[] = replace ? [] : existing.slice();
+  let order = replace ? 1 : nextUserOrder(result);
+  const finalIds = new Map<string, string>();
+  const keptProfiles: Profile[] = [];
+  for (const profile of kept) {
+    const parsedId = profile.id;
+    // an imported profile belongs to no subscription, whatever it carried
+    profile.subscriptionId = '';
+    if (replace) {
+      const previous = findAddressMatch(existing, profile);
+      if (previous !== null) {
+        // the same server, so what identifies it locally is kept: its id, the
+        // name the user gave it, and the traffic it has carried
+        profile.id = previous.id;
+        profile.tx = previous.tx;
+        profile.rx = previous.rx;
         profile.name = previous.name;
       }
-      break;
     }
     profile.ensureId();
     profile.userOrder = order;
     order++;
+    if (parsedId.length > 0) {
+      finalIds.set(parsedId, profile.id);
+    }
+    keptProfiles.push(profile);
     result.push(profile);
+  }
+
+  // point every surviving main profile at its fallback's final id
+  for (const profile of keptProfiles) {
+    if (profile.udpFallbackId.length === 0) {
+      continue;
+    }
+    const finalId = finalIds.get(profile.udpFallbackId);
+    if (finalId !== undefined) {
+      profile.udpFallbackId = finalId;
+      continue;
+    }
+    const reused = reusedIds.get(profile.udpFallbackId);
+    if (reused !== undefined) {
+      profile.udpFallbackId = reused;
+    }
   }
   return result;
 }
 
+/** The active profile with this id, or null. */
+function findProfileById(profiles: Profile[], id: string): Profile | null {
+  if (id.length === 0) {
+    return null;
+  }
+  for (const profile of profiles) {
+    if (profile.id === id) {
+      return profile;
+    }
+  }
+  return null;
+}
+
 /**
  * The stored list as an exported file: a JSON array, pretty-printed, in the
- * shape shadowsocks-android's `serializeToJson` writes. `sip008` restricts it
- * to the four fields that format defines, for handing to another client.
+ * shape shadowsocks-android's `serializeToJson` writes. Obsolete profiles are
+ * left out. `sip008` restricts it to the four fields that format defines, for
+ * handing to another client.
+ *
+ * A null list gives null, which is the form a failed read takes.
  */
-export function exportProfiles(profiles: Profile[], sip008: boolean = false): string {
+export function exportProfiles(profiles: Profile[] | null, sip008: boolean = false): string | null {
+  if (profiles === null) {
+    return null;
+  }
+  const active = profiles.filter((p) => p.subscriptionStatus !== STATUS_OBSOLETE);
   const entries: ProfileJson[] = [];
-  for (const profile of profiles) {
+  for (const profile of active) {
     const entry: ProfileJson = {
       server: profile.host,
       server_port: profile.remotePort,
@@ -264,10 +609,39 @@ export function exportProfiles(profiles: Profile[], sip008: boolean = false): st
     entry.route = profile.route;
     entry.remote_dns = profile.remoteDns;
     entry.ipv6 = profile.ipv6;
+    entry.metered = profile.metered;
+    const proxyApps: ProxyAppsJson = { enabled: profile.proxyAppsEnabled };
+    if (profile.proxyAppsEnabled) {
+      proxyApps.bypass = profile.proxyAppsBypass;
+      proxyApps.android_list = namesOf(profile.proxyAppsList);
+    }
+    entry.proxy_apps = proxyApps;
     entry.udpdns = profile.udpdns;
-    entry.metered = false;
-    entry.proxy_apps = { enabled: false };
+    const fallback = findProfileById(active, profile.udpFallbackId);
+    if (fallback !== null && fallback.plugin.length === 0) {
+      entry.udp_fallback = {
+        server: fallback.host,
+        server_port: fallback.remotePort,
+        password: fallback.password,
+        method: fallback.method,
+      };
+    }
     entries.push(entry);
   }
   return JSON.stringify(entries, null, 2);
+}
+
+/**
+ * The active profiles as `ss://` URLs, one per line. This is the clipboard
+ * export.
+ */
+export function exportProfileUrls(profiles: Profile[]): string {
+  const urls: string[] = [];
+  for (const profile of profiles) {
+    if (profile.subscriptionStatus === STATUS_OBSOLETE) {
+      continue;
+    }
+    urls.push(profile.toUri());
+  }
+  return urls.join('\n');
 }

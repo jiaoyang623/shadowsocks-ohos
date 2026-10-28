@@ -41,11 +41,13 @@ export class JsonStore {
    * for one it failed to open, so a caller that seeds an empty store must ask
    * this first: overwriting a file it merely could not read would destroy the
    * records it holds.
+   *
+   * `fileIo.accessSync` answers with a boolean, so its result is the answer.
+   * A throw means the path is unusable, which is not a file to preserve.
    */
   static exists(context: common.Context, name: string): boolean {
     try {
-      fs.accessSync(JsonStore.pathFor(context, name));
-      return true;
+      return fs.accessSync(JsonStore.pathFor(context, name));
     } catch (e) {
       return false;
     }

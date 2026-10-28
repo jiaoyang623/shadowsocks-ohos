@@ -90,15 +90,15 @@
     },
     {
       "name": "index_import_from_file",
-      "value": "从文件导入"
+      "value": "从文件导入…"
     },
     {
       "name": "index_replace_from_file",
-      "value": "用文件替换"
+      "value": "用文件替换…"
     },
     {
       "name": "index_export_to_file",
-      "value": "导出到文件"
+      "value": "导出到文件…"
     },
     {
       "name": "index_copy_to_clipboard",
@@ -119,6 +119,14 @@
     {
       "name": "index_disconnect",
       "value": "断开"
+    },
+    {
+      "name": "index_edit_running",
+      "value": "断开连接后可以编辑正在使用的配置"
+    },
+    {
+      "name": "index_edit_failed",
+      "value": "无法打开配置编辑页"
     },
     {
       "name": "index_test_connection",
@@ -197,6 +205,10 @@
       "value": "启动 VPN 超时"
     },
     {
+      "name": "index_vpn_stop_timeout",
+      "value": "停止 VPN 超时"
+    },
+    {
       "name": "index_connection_lost",
       "value": "连接已断开"
     },
@@ -214,7 +226,7 @@
     },
     {
       "name": "index_nothing_to_import",
-      "value": "从%1$s中没有可导入的内容"
+      "value": "从 %s 中没有可导入的内容"
     },
     {
       "name": "index_imported_n",
@@ -390,7 +402,7 @@
     },
     {
       "name": "settings_proxy",
-      "value": "代理"
+      "value": "仅代理"
     },
     {
       "name": "settings_proxy_explainer",
@@ -406,7 +418,7 @@
     },
     {
       "name": "settings_socks_port",
-      "value": "SOCKS5 端口（%d）"
+      "value": "SOCKS5 代理端口"
     },
     {
       "name": "settings_connection_test_url",
@@ -602,7 +614,7 @@
     },
     {
       "name": "index_add_link_profile",
-      "value": "要添加链接里的档案吗？"
+      "value": "添加此 Shadowsocks 档案？"
     },
     {
       "name": "profile_edit_unsaved_title",
@@ -619,6 +631,606 @@
     {
       "name": "profile_edit_subscription_readonly",
       "value": "这个档案来自订阅。订阅更新会重写它的服务器字段，所以这里只读。"
+    },
+    {
+      "name": "drawer_navigation",
+      "value": "导航"
+    },
+    {
+      "name": "drawer_open",
+      "value": "打开导航抽屉"
+    },
+    {
+      "name": "drawer_profiles",
+      "value": "配置文件"
+    },
+    {
+      "name": "drawer_subscriptions",
+      "value": "订阅"
+    },
+    {
+      "name": "drawer_custom_rules",
+      "value": "自定义规则"
+    },
+    {
+      "name": "drawer_settings",
+      "value": "设置"
+    },
+    {
+      "name": "drawer_faq",
+      "value": "常见问题"
+    },
+    {
+      "name": "drawer_about",
+      "value": "关于"
+    },
+    {
+      "name": "drawer_faq_failed",
+      "value": "无法打开 %s"
+    },
+    {
+      "name": "service_stop",
+      "value": "停止"
+    },
+    {
+      "name": "service_permission_denied",
+      "value": "创建 VPN 服务的权限被拒绝"
+    },
+    {
+      "name": "service_no_profile",
+      "value": "请选择一个配置"
+    },
+    {
+      "name": "stats_connected_tap",
+      "value": "已连接，点击测试连接"
+    },
+    {
+      "name": "stats_success",
+      "value": "成功：HTTPS 握手耗时 %s"
+    },
+    {
+      "name": "stats_internet_unavailable",
+      "value": "网络不可用"
+    },
+    {
+      "name": "stats_error_code",
+      "value": "错误码：#%s"
+    },
+    {
+      "name": "stats_network_error",
+      "value": "无法检测网络连接：%s"
+    },
+    {
+      "name": "stats_shutting_down",
+      "value": "正在关闭…"
+    },
+    {
+      "name": "index_mode_changed",
+      "value": "服务模式已更改，请重新连接"
+    },
+    {
+      "name": "index_title_profiles",
+      "value": "配置文件"
+    },
+    {
+      "name": "index_row_share",
+      "value": "分享"
+    },
+    {
+      "name": "index_row_subscription",
+      "value": "订阅"
+    },
+    {
+      "name": "index_share_copy",
+      "value": "导出到剪贴板"
+    },
+    {
+      "name": "index_share_copied",
+      "value": "已复制配置链接"
+    },
+    {
+      "name": "index_removed",
+      "value": "已删除"
+    },
+    {
+      "name": "index_removed_n",
+      "value": "已删除 %d 项"
+    },
+    {
+      "name": "index_stopping",
+      "value": "正在断开…"
+    },
+    {
+      "name": "profile_edit_title",
+      "value": "服务器配置"
+    },
+    {
+      "name": "profile_edit_ipv6",
+      "value": "IPv6 路由"
+    },
+    {
+      "name": "profile_edit_ipv6_hint",
+      "value": "将 IPv6 流量转发到远程服务器"
+    },
+    {
+      "name": "profile_edit_metered",
+      "value": "按流量计费网络"
+    },
+    {
+      "name": "profile_edit_metered_hint",
+      "value": "告知系统此网络按流量计费"
+    },
+    {
+      "name": "profile_edit_udp_fallback",
+      "value": "UDP 备用服务器"
+    },
+    {
+      "name": "profile_edit_disabled",
+      "value": "已禁用"
+    },
+    {
+      "name": "profile_edit_remove",
+      "value": "移除"
+    },
+    {
+      "name": "profile_edit_remove_confirm",
+      "value": "确定要移除这个服务器吗？"
+    },
+    {
+      "name": "profile_edit_remove_failed",
+      "value": "无法移除服务器：%s"
+    },
+    {
+      "name": "profile_edit_load_failed",
+      "value": "无法读取服务器配置"
+    },
+    {
+      "name": "common_yes",
+      "value": "是"
+    },
+    {
+      "name": "common_no",
+      "value": "否"
+    },
+    {
+      "name": "index_add_profile",
+      "value": "添加配置文件"
+    },
+    {
+      "name": "index_export",
+      "value": "导出…"
+    },
+    {
+      "name": "index_export_to_clipboard",
+      "value": "导出到剪贴板"
+    },
+    {
+      "name": "index_import_from_clipboard",
+      "value": "从剪贴板导入"
+    },
+    {
+      "name": "index_manual_settings",
+      "value": "手动设置"
+    },
+    {
+      "name": "index_share",
+      "value": "分享"
+    },
+    {
+      "name": "index_qr_code",
+      "value": "二维码"
+    },
+    {
+      "name": "index_import_success",
+      "value": "导入成功！"
+    },
+    {
+      "name": "index_import_failed",
+      "value": "导入失败。"
+    },
+    {
+      "name": "index_export_success",
+      "value": "导出成功！"
+    },
+    {
+      "name": "index_export_failed",
+      "value": "导出失败。"
+    },
+    {
+      "name": "index_no_valid_profile_data",
+      "value": "未找到有效的档案数据。"
+    },
+    {
+      "name": "index_op_add_profile",
+      "value": "添加档案"
+    },
+    {
+      "name": "subscription_edit_title",
+      "value": "编辑订阅"
+    },
+    {
+      "name": "subscription_remove",
+      "value": "删除"
+    },
+    {
+      "name": "subscription_undo",
+      "value": "撤销"
+    },
+    {
+      "name": "subscription_removed",
+      "value": "已删除"
+    },
+    {
+      "name": "subscription_removed_n",
+      "value": "已删除 %d 项"
+    },
+    {
+      "name": "subscription_refresh",
+      "value": "从订阅刷新服务器"
+    },
+    {
+      "name": "subscription_syncing_n",
+      "value": "正在同步订阅…（%d/%d）"
+    },
+    {
+      "name": "subscription_finishing",
+      "value": "正在收尾…"
+    },
+    {
+      "name": "subscription_stop",
+      "value": "停止"
+    },
+    {
+      "name": "subscription_service",
+      "value": "订阅服务"
+    },
+    {
+      "name": "subscription_cleartext_warning",
+      "value": "明文 HTTP 流量不安全"
+    },
+    {
+      "name": "subscription_url_no_protocol",
+      "value": "缺少协议：%s"
+    },
+    {
+      "name": "subscription_url_unknown_protocol",
+      "value": "未知协议：%s"
+    },
+    {
+      "name": "subscription_parse_failed",
+      "value": "订阅解析失败：%s"
+    },
+    {
+      "name": "custom_rules_add_rules",
+      "value": "添加规则…"
+    },
+    {
+      "name": "custom_rules_manual_settings",
+      "value": "手动设置"
+    },
+    {
+      "name": "custom_rules_gfw_list",
+      "value": "GFW 列表"
+    },
+    {
+      "name": "custom_rules_edit_rule",
+      "value": "编辑规则"
+    },
+    {
+      "name": "custom_rules_template_generic",
+      "value": "网段或主机名 PCRE 表达式"
+    },
+    {
+      "name": "custom_rules_template_domain",
+      "value": "域名及其所有子域名"
+    },
+    {
+      "name": "custom_rules_template_url",
+      "value": "在线配置的 URL"
+    },
+    {
+      "name": "custom_rules_domain_invalid",
+      "value": "请输入有效的域名"
+    },
+    {
+      "name": "custom_rules_url_invalid",
+      "value": "请输入带协议的 URL"
+    },
+    {
+      "name": "custom_rules_cleartext_warning",
+      "value": "明文 HTTP 流量不安全"
+    },
+    {
+      "name": "custom_rules_exported",
+      "value": "导出成功！"
+    },
+    {
+      "name": "custom_rules_export_failed",
+      "value": "导出失败。"
+    },
+    {
+      "name": "custom_rules_import_failed",
+      "value": "导入失败。"
+    },
+    {
+      "name": "app_picker_title",
+      "value": "应用 VPN 模式"
+    },
+    {
+      "name": "app_picker_mode",
+      "value": "模式"
+    },
+    {
+      "name": "app_picker_mode_off",
+      "value": "关闭"
+    },
+    {
+      "name": "app_picker_mode_on",
+      "value": "开启"
+    },
+    {
+      "name": "app_picker_mode_bypass",
+      "value": "绕过"
+    },
+    {
+      "name": "app_picker_search",
+      "value": "搜索应用"
+    },
+    {
+      "name": "app_picker_clear",
+      "value": "清除"
+    },
+    {
+      "name": "app_picker_add_hint",
+      "value": "包名，例如 com.example.app"
+    },
+    {
+      "name": "app_picker_add",
+      "value": "添加"
+    },
+    {
+      "name": "app_picker_menu",
+      "value": "更多选项"
+    },
+    {
+      "name": "app_picker_apply_all",
+      "value": "应用到所有配置"
+    },
+    {
+      "name": "app_picker_export",
+      "value": "导出到剪贴板"
+    },
+    {
+      "name": "app_picker_import",
+      "value": "从剪贴板导入"
+    },
+    {
+      "name": "app_picker_apply_done",
+      "value": "已应用到所有配置"
+    },
+    {
+      "name": "app_picker_export_ok",
+      "value": "导出成功！"
+    },
+    {
+      "name": "app_picker_export_fail",
+      "value": "导出失败。"
+    },
+    {
+      "name": "app_picker_import_ok",
+      "value": "导入成功！"
+    },
+    {
+      "name": "app_picker_import_fail",
+      "value": "导入失败。"
+    },
+    {
+      "name": "app_picker_empty",
+      "value": "未选择应用"
+    },
+    {
+      "name": "app_picker_query_unavailable",
+      "value": "此设备无法列出应用。请手动添加包名。"
+    },
+    {
+      "name": "app_picker_query_denied",
+      "value": "缺少应用查询权限。请手动添加包名。"
+    },
+    {
+      "name": "app_picker_query_failed",
+      "value": "应用查询失败。请手动添加包名。"
+    },
+    {
+      "name": "app_picker_not_installed",
+      "value": "未安装"
+    },
+    {
+      "name": "app_picker_client_app",
+      "value": "Shadowsocks 应用始终不经过隧道。"
+    },
+    {
+      "name": "app_picker_invalid_name",
+      "value": "请输入有效的包名。"
+    },
+    {
+      "name": "app_picker_not_found",
+      "value": "没有已安装的应用使用此包名。"
+    },
+    {
+      "name": "app_picker_limit",
+      "value": "最多可选择 %d 个应用。"
+    },
+    {
+      "name": "profile_edit_proxy_apps",
+      "value": "应用 VPN 模式"
+    },
+    {
+      "name": "profile_edit_proxy_apps_off",
+      "value": "关闭"
+    },
+    {
+      "name": "profile_edit_proxy_apps_on",
+      "value": "开启，%d 个应用"
+    },
+    {
+      "name": "profile_edit_proxy_apps_bypass",
+      "value": "绕过，%d 个应用"
+    },
+    {
+      "name": "profile_edit_proxy_apps_vpn_only",
+      "value": "仅限 VPN 服务模式"
+    },
+    {
+      "name": "profile_edit_plugin_category",
+      "value": "插件"
+    },
+    {
+      "name": "profile_edit_plugin_configure",
+      "value": "配置…"
+    },
+    {
+      "name": "profile_edit_plugin_disabled",
+      "value": "禁用"
+    },
+    {
+      "name": "profile_edit_plugin_unknown",
+      "value": "未知插件 %s"
+    },
+    {
+      "name": "plugin_label_simple_obfs",
+      "value": "simple-obfs"
+    },
+    {
+      "name": "plugin_label_v2ray",
+      "value": "v2ray-plugin"
+    },
+    {
+      "name": "plugin_options_control_chars",
+      "value": "不允许控制字符。"
+    },
+    {
+      "name": "plugin_options_obfs_mode",
+      "value": "obfs 选项必须是 http 或 tls"
+    },
+    {
+      "name": "plugin_options_v2ray_mode",
+      "value": "仅支持 websocket 模式"
+    },
+    {
+      "name": "index_profile_plugin",
+      "value": "插件：%s"
+    },
+    {
+      "name": "settings_auto_connect",
+      "value": "自动连接"
+    },
+    {
+      "name": "settings_auto_connect_summary",
+      "value": "如果之前正在运行，则在启动或应用更新时启用 Shadowsocks"
+    },
+    {
+      "name": "settings_local_dns_port",
+      "value": "本地 DNS 端口"
+    },
+    {
+      "name": "settings_advanced",
+      "value": "高级"
+    },
+    {
+      "name": "settings_not_set",
+      "value": "未设置"
+    },
+    {
+      "name": "settings_port_number",
+      "value": "端口号"
+    },
+    {
+      "name": "index_scan_qr_code",
+      "value": "扫描二维码"
+    },
+    {
+      "name": "index_import_qr_image",
+      "value": "导入二维码图片"
+    },
+    {
+      "name": "index_op_scan",
+      "value": "二维码扫描"
+    },
+    {
+      "name": "qr_no_profiles",
+      "value": "此二维码中没有服务器。"
+    },
+    {
+      "name": "qr_import_success",
+      "value": "导入成功！"
+    },
+    {
+      "name": "qr_import_failed",
+      "value": "导入失败。"
+    },
+    {
+      "name": "about_app_version",
+      "value": "应用版本"
+    },
+    {
+      "name": "about_body_notice",
+      "value": "版权所有 (C) 2017 Max Lv <max.c.lv@gmail.com>\n\n版权所有 (C) 2017 Mygod Studio <contact-shadowsocks-android@mygod.be>\n\n本程序是自由软件：你可以根据自由软件基金会发布的 GNU 通用公共许可证第 3 版或任何更新版本的条款，重新发布或修改本程序。\n\n本程序按希望其有用的方式发布，但不提供任何担保，也不提供适销性或特定用途适用性的默示担保。详情请参阅 GNU 通用公共许可证。\n\n你应该已随本程序收到 GNU 通用公共许可证的副本。如果没有，请访问 http://www.gnu.org/licenses/。"
+    },
+    {
+      "name": "about_heading_licences",
+      "value": "开源许可证"
+    },
+    {
+      "name": "about_link_shadowsocks",
+      "value": "Shadowsocks"
+    },
+    {
+      "name": "about_link_max_lv",
+      "value": "max.c.lv@gmail.com"
+    },
+    {
+      "name": "about_link_mygod",
+      "value": "contact-shadowsocks-android@mygod.be"
+    },
+    {
+      "name": "about_link_gnu",
+      "value": "http://www.gnu.org/licenses/"
+    },
+    {
+      "name": "about_link_redsocks",
+      "value": "redsocks: APL 2.0"
+    },
+    {
+      "name": "about_link_libevent",
+      "value": "libevent: BSD"
+    },
+    {
+      "name": "about_link_tun2socks",
+      "value": "tun2socks: BSD"
+    },
+    {
+      "name": "about_link_shadowsocks_rust",
+      "value": "shadowsocks-rust: MIT"
+    },
+    {
+      "name": "about_link_libsodium",
+      "value": "libsodium: ISC"
+    },
+    {
+      "name": "about_link_openssl",
+      "value": "OpenSSL：OpenSSL 许可证"
+    },
+    {
+      "name": "about_link_other",
+      "value": "其他许可证"
+    },
+    {
+      "name": "about_other_licences_unavailable",
+      "value": "此设备上无法查看其他许可证列表。"
+    },
+    {
+      "name": "notification_stop",
+      "value": "停止"
     }
   ]
 }

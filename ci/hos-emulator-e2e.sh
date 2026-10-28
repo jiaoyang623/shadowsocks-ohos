@@ -49,6 +49,9 @@ HVIGORW="$HOS_TOOLS/bin/hvigorw"
 
 WORK="$(mktemp -d)"
 PIDS=()
+# Start time for the a01 run log. The report contract wants the time the run
+# began, not the time it ended.
+EXECUTED_AT="${EXECUTED_AT:-$(date -Iseconds)}"
 
 cleanup() {
     local status=$?
@@ -80,8 +83,13 @@ step "2/6 build and sign both HAPs"
 "$HVIGORW" --no-daemon assembleHap --mode module -p module=entry@ohosTest -p product=default -p buildMode=debug
 APP_HAP="entry/build/default/outputs/default/entry-default-unsigned.hap"
 TEST_HAP="entry/build/default/outputs/ohosTest/entry-ohosTest-unsigned.hap"
-native/sign-hap-debug.sh "$APP_HAP"
-native/sign-hap-debug.sh "$TEST_HAP"
+# Sign to separate names. hvigorw also writes entry-default-signed.hap with
+# the DevEco signing config, and that is the HAP a real phone accepts. The
+# OpenHarmony sample certificate here is only good for the emulator.
+APP_HAP_EMULATOR="entry/build/default/outputs/default/entry-default-emulator.hap"
+TEST_HAP_EMULATOR="entry/build/default/outputs/ohosTest/entry-ohosTest-emulator.hap"
+native/sign-hap-debug.sh "$APP_HAP" "$APP_HAP_EMULATOR"
+native/sign-hap-debug.sh "$TEST_HAP" "$TEST_HAP_EMULATOR"
 
 # --------------------------------------------------------------------------
 step "3/6 host-side shadowsocks server and marker page"
@@ -146,8 +154,8 @@ PIDS+=($!)
 "$HDC" -t "$HOS_TARGET" shell "uinput -T -m 660 2400 660 900 200" >/dev/null
 sleep 2
 
-"$HDC" -t "$HOS_TARGET" install -r "${APP_HAP%-unsigned.hap}-signed.hap"
-"$HDC" -t "$HOS_TARGET" install -r "${TEST_HAP%-unsigned.hap}-signed.hap"
+"$HDC" -t "$HOS_TARGET" install -r "$APP_HAP_EMULATOR"
+"$HDC" -t "$HOS_TARGET" install -r "$TEST_HAP_EMULATOR"
 
 # --------------------------------------------------------------------------
 step "6/6 run the on-device suites"
@@ -174,6 +182,20 @@ grep -qE "OHOS_REPORT_RESULT: stream=Tests run: [1-9]" "$RESULT" \
 echo ""
 echo "host-side ssserver saw:"
 grep -c "established tcp tunnel" "$WORK/ssserver.log" || true
+
+# The a01 run log is written here, during the run, from the transcript this
+# run produced. A caller that asks for it also gets the HTML report through
+# scripts/e2e-report.py.
+if [[ -n "${E2E_STEPS_JSON:-}" ]]; then
+    python3 ci/e2e-steps.py --aa-log "$RESULT" --output "$E2E_STEPS_JSON" \
+        --change-id "${E2E_CHANGE_ID:-local}" \
+        --baseline "${E2E_BASELINE:-$(git rev-parse --short HEAD 2>/dev/null || echo working-tree)}" \
+        --command "ci/hos-emulator-e2e.sh (SKIP_EMULATOR=${SKIP_EMULATOR:-})" \
+        --executed-at "$EXECUTED_AT" \
+        --environment "HarmonyOS 6.1.1 API 24 emulator, x86_64, hdc $HOS_TARGET" \
+        --title "HarmonyOS on-device suites: NAPI surface and SOCKS tunnel"
+fi
+
 echo ""
 echo "========================================"
 echo "  HarmonyOS on-device e2e PASSED"

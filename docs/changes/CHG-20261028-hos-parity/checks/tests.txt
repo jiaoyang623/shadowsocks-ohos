@@ -1,0 +1,49 @@
+# Test report
+
+命令: `./test-arkts-host.sh`
+时间: 2026-10-28T14:20:00+11:00
+基线: `e123804+dirty` (working tree with the 5.4.0 parity batch)
+用例数: 500
+通过: 500
+失败: 0
+
+The full output is in `host-tests.txt`. It has 0 TypeScript diagnostics.
+
+## Layers
+
+| Layer | Command | Result |
+| --- | --- | --- |
+| Host unit and integration | `./test-arkts-host.sh` | 500 passed, 0 failed |
+| HAP build (ArkTS, resources, native link) | `hvigorw clean` then `hvigorw assembleHap --mode module -p product=default -p buildMode=debug` | BUILD SUCCESSFUL, 0 errors |
+| Rust core unit and e2e | `cargo test --workspace` (as `w2h`) | 39 passed, 0 failed |
+| OHOS cross check | `cargo check --target aarch64-unknown-linux-ohos` | finished, 0 errors |
+| On-device suites | `ci/hos-emulator-e2e.sh` with `SKIP_EMULATOR=1` | 5 run, 5 passed |
+| Spec consistency | `node docs/versions/5.4.0/tools/check-specs.mjs --root docs/versions/5.4.0` | PASS, 0 failures, 3 warnings |
+
+## Suites
+
+The 500 cases are the 241 existing model specs plus 259 parity cases:
+ParitySeam 13, U01 28, U02 23, U03 16, U04 28, U05 31, U06 21, U07 27,
+U08 18, U09 19, U10 18, U11 12, plus the model suites the fixes extended.
+The exact total is what `./test-arkts-host.sh` prints.
+
+## Build output
+
+`build-final.txt` records the clean build after `hvigorw clean`. The signed HAP
+is `entry/build/default/outputs/default/entry-default-signed.hap`. It carries
+both `libs/arm64-v8a/libsslocal.so` and `libs/x86_64/libsslocal.so`.
+
+## Device suites
+
+`entry/src/ohosTest` ran on the HVPhone emulator (HarmonyOS 6.1.1, API 24,
+x86_64) through `ci/hos-emulator-e2e.sh`:
+
+- `SslocalNativeTest`: 3 tests. NAPI surface and `startTunFd` rejection paths.
+- `SocksE2eTest`: 2 tests. The core starts in SOCKS mode and fetches a marker
+  page through the tunnel, addressed as `127.0.0.1:18800` so only the host-side
+  `ssserver` can serve it; the second test asserts the guest cannot reach the
+  marker directly.
+
+Result: `Tests run: 5, Failure: 0, Error: 0, Pass: 5, Ignore: 0`. The host
+`ssserver` logged one established tunnel. `VpnE2eTest` stays a real-device
+test because the emulator does not deliver guest traffic to `vpn-tun`.

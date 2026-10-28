@@ -2,8 +2,11 @@
 #
 # Ad-hoc (local) signing of a debug HAP using the OpenHarmony sample signing
 # materials that ship with the SDK — no Huawei developer account required.
-# This is the same local-signing scheme DevEco Studio uses for emulator/device
-# debug runs.
+# The emulator accepts this signature. A Huawei phone does not: it rejects the
+# HAP with "fail to verify pkcs7 file". For a phone, use the HAP that hvigor
+# signs with the signingConfigs in the root build-profile.json5 (DevEco
+# automatic signing), and give this script an explicit output path so that
+# HAP stays in place.
 #
 # Usage:
 #   sign-hap-debug.sh <unsigned.hap> [output-signed.hap]

@@ -1,0 +1,15 @@
+change_id: CHG-20261028-hos-parity
+skill: a01
+version: 1
+baseline: e123804
+scope: "HarmonyOS 5.4.0 Android parity: implement the 5.4.0 development backlog"
+paths:
+  requirements: docs/versions/5.4.0/requirements
+  design: docs/changes/CHG-20261028-hos-parity
+  oracles: docs/oracles
+  review: docs/review/CHG-20261028-hos-parity
+  tests:
+    - entry/src/test
+    - entry/src/ohosTest
+    - native/sslocal-ffi/tests
+status: open

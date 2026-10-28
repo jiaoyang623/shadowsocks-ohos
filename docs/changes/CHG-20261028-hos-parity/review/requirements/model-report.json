@@ -1,0 +1,582 @@
+{
+  "rounds": 1,
+  "figures": [
+    {
+      "id": "F-01",
+      "view": "problem",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-02",
+      "view": "scope",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-03",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-04",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-05",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-06",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-07",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-08",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-09",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-10",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-11",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-12",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-13",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-14",
+      "view": "journey",
+      "px": 16,
+      "warnings": []
+    },
+    {
+      "id": "F-15",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-16",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-17",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-18",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-19",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-20",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-21",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-22",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-23",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-24",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-25",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-26",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-27",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-28",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-29",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-30",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-31",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-32",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-33",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-34",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-35",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-36",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-37",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-38",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-39",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-40",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-41",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-42",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-43",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-44",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-45",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-46",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-47",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-48",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-49",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-50",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-51",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-52",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-53",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-54",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-55",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-56",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-57",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-58",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-59",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-60",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-61",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-62",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-63",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-64",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-65",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-66",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-67",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-68",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-69",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-70",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-71",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-72",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-73",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-74",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-75",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-76",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-77",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-78",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-79",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-80",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-81",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-82",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-83",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-84",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-85",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-86",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-87",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-88",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-89",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-90",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-91",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-92",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-93",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    },
+    {
+      "id": "F-94",
+      "view": "acceptance",
+      "px": null,
+      "warnings": []
+    }
+  ],
+  "failed": [],
+  "triggers": {
+    "state": [],
+    "concept": false,
+    "ui": [],
+    "reasons": {
+      "state": "The 51 state machines are recorded in the requirements document and in the unit specs. This model keeps only the flows needed for the requirement coverage check.",
+      "concept": "The system has no persistent entity model beyond the profile record. The profile fields are part of the requirements and the control tree.",
+      "ui": "The 48 screens and dialogs are recorded in android/INDEX.md and the unit specs. The model does not duplicate the control tree."
+    }
+  },
+  "rendered": true,
+  "hints": []
+}

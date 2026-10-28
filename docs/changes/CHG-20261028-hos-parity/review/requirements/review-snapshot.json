@@ -1,0 +1,5572 @@
+{
+  "skill_version": "a01",
+  "title": "Shadowsocks HarmonyOS 5.4.0 Android parity · requirements",
+  "scope": "Reverse-engineered requirements, control tree and E2E cases for the Android mobile module at v5.3.5-nightly.",
+  "baseline": "e123804+dirty",
+  "stage": "requirements",
+  "design": [
+    {
+      "id": "R-UA-01",
+      "layer": "requirements",
+      "title": "The service button shows the stopped icon for Idle and Stopped, connecting for Connecting, connected for Connected, stopping for Stopping.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service button shows the stopped icon for Idle and Stopped, connecting for Connecting, connected for Connected, stopping for Stopping."
+      ],
+      "sources": [
+        "需求条目 U01 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UA-02",
+      "layer": "requirements",
+      "title": "A tap on the service button stops the service when state.canStop is true and starts it otherwise.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tap on the service button stops the service when state.canStop is true and starts it otherwise."
+      ],
+      "sources": [
+        "需求条目 U01 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UA-03",
+      "layer": "requirements",
+      "title": "The service button is enabled only when the state can stop or the state is Stopped. On API 24 and later the pointer icon is a hand when the button is enabled and a wait icon when it is disabled.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service button is enabled only when the state can stop or the state is Stopped. On API 24 and later the pointer icon is a hand when the button is enabled and a wait icon when it is disabled."
+      ],
+      "sources": [
+        "需求条目 U01 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UA-04",
+      "layer": "requirements",
+      "title": "The service button is checked, and therefore drawn with the green background, only when the state is Connected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service button is checked, and therefore drawn with the green background, only when the state is Connected."
+      ],
+      "sources": [
+        "需求条目 U01 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UA-05",
+      "layer": "requirements",
+      "title": "The service button content description and tooltip read Stop when the state can stop, and Connect otherwise.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service button content description and tooltip read Stop when the state can stop, and Connect otherwise."
+      ],
+      "sources": [
+        "需求条目 U01 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UA-06",
+      "layer": "requirements",
+      "title": "In Connecting the progress ring shows as indeterminate after the medium animation time plus one second, once the activity is started. The delay runs first and does not pause. An activity that starts after the delay sees the ring at once.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "In Connecting the progress ring shows as indeterminate after the medium animation time plus one second, once the activity is started. The delay runs first and does not pause. An activity that starts after the delay sees the ring at once."
+      ],
+      "sources": [
+        "需求条目 U01 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UA-07",
+      "layer": "requirements",
+      "title": "On Connected the progress ring animates to full and hides when the spring animation ends.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "On Connected the progress ring animates to full and hides when the spring animation ends."
+      ],
+      "sources": [
+        "需求条目 U01 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UA-08",
+      "layer": "requirements",
+      "title": "Starting in VPN mode asks for system consent only when VpnService.prepare returns an intent, and a denied consent shows the permission denied snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Starting in VPN mode asks for system consent only when VpnService.prepare returns an intent, and a denied consent shows the permission denied snackbar."
+      ],
+      "sources": [
+        "需求条目 U01 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UA-09",
+      "layer": "requirements",
+      "title": "The stats bar is shown only while the state is Connected; it hides when the list scrolls up and returns when the list scrolls down.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The stats bar is shown only while the state is Connected; it hides when the list scrolls up and returns when the list scrolls down."
+      ],
+      "sources": [
+        "需求条目 U01 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UA-10",
+      "layer": "requirements",
+      "title": "While not connected the stats bar status reads Connecting…, Shutting down… or Not connected, chosen by the state.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "While not connected the stats bar status reads Connecting…, Shutting down… or Not connected, chosen by the state."
+      ],
+      "sources": [
+        "需求条目 U01 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UA-11",
+      "layer": "requirements",
+      "title": "While connected the status text follows the HTTPS test: idle, testing, success with elapsed milliseconds, or failure.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "While connected the status text follows the HTTPS test: idle, testing, success with elapsed milliseconds, or failure."
+      ],
+      "sources": [
+        "需求条目 U01 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UA-12",
+      "layer": "requirements",
+      "title": "A tap on the stats bar starts the HTTPS connection test only when the state is Connected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tap on the stats bar starts the HTTPS connection test only when the state is Connected."
+      ],
+      "sources": [
+        "需求条目 U01 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UA-13",
+      "layer": "requirements",
+      "title": "Traffic totals read ▲ and ▼ with formatted sizes, rates read size per second, and all four reset to zero when the state leaves Connected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Traffic totals read ▲ and ▼ with formatted sizes, rates read size per second, and all four reset to zero when the state leaves Connected."
+      ],
+      "sources": [
+        "需求条目 U01 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UA-14",
+      "layer": "requirements",
+      "title": "The toolbar navigation icon opens the navigation drawer from the start edge.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The toolbar navigation icon opens the navigation drawer from the start edge."
+      ],
+      "sources": [
+        "需求条目 U01 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UA-15",
+      "layer": "requirements",
+      "title": "Back press closes the drawer while it is open and does not leave the activity.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Back press closes the drawer while it is open and does not leave the activity."
+      ],
+      "sources": [
+        "需求条目 U01 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UA-16",
+      "layer": "requirements",
+      "title": "Selecting a checkable drawer item that is unchecked replaces the content fragment, checks the item and closes the drawer.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selecting a checkable drawer item that is unchecked replaces the content fragment, checks the item and closes the drawer."
+      ],
+      "sources": [
+        "需求条目 U01 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UA-17",
+      "layer": "requirements",
+      "title": "Selecting the already checked drawer item only closes the drawer.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selecting the already checked drawer item only closes the drawer."
+      ],
+      "sources": [
+        "需求条目 U01 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UA-18",
+      "layer": "requirements",
+      "title": "The FAQ drawer item opens the FAQ URL in a custom tab and is not checkable; it leaves the drawer open.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The FAQ drawer item opens the FAQ URL in a custom tab and is not checkable; it leaves the drawer open."
+      ],
+      "sources": [
+        "需求条目 U01 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UA-19",
+      "layer": "requirements",
+      "title": "The menu declares checkableBehavior=single for the main and misc groups. Material 1.13.0's NavigationMenuPresenter calls setExclusiveCheckable(false) on every checkable item and keeps one checked item for the whole drawer. Selecting About checks About and unchecks Profiles.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The menu declares checkableBehavior=single for the main and misc groups. Material 1.13.0's NavigationMenuPresenter calls setExclusiveCheckable(false) on every checkable item and keeps one checked item for the whole drawer. Selecting About checks About and unchecks Profiles."
+      ],
+      "sources": [
+        "需求条目 U01 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UA-20",
+      "layer": "requirements",
+      "title": "A service mode change disconnects the activity from the old service class and binds to the new class. The new service reports its own state, which can be Connecting, Connected, Stopping or Stopped. The activity renders that state and does not set Idle.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A service mode change disconnects the activity from the old service class and binds to the new class. The new service reports its own state, which can be Connecting, Connected, Stopping or Stopped. The activity renders that state and does not set Idle."
+      ],
+      "sources": [
+        "需求条目 U01 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UA-21",
+      "layer": "requirements",
+      "title": "A state change carrying a message shows it as a snackbar; onServiceDisconnected resets the UI to Idle, while onBinderDied only rebinds.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A state change carrying a message shows it as a snackbar; onServiceDisconnected resets the UI to Idle, while onBinderDied only rebinds."
+      ],
+      "sources": [
+        "需求条目 U01 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UA-22",
+      "layer": "requirements",
+      "title": "Ctrl+G runs toggle: it stops the service when state.canStop is true, otherwise it launches the StartService contract. The service accepts the start only when its own state is Stopped. Ctrl+T runs the connection test.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Ctrl+G runs toggle: it stops the service when state.canStop is true, otherwise it launches the StartService contract. The service accepts the start only when its own state is Stopped. Ctrl+T runs the connection test."
+      ],
+      "sources": [
+        "需求条目 U01 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UA-23",
+      "layer": "requirements",
+      "title": "Only the aggregate traffic sample with profile id zero updates the stats bar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Only the aggregate traffic sample with profile id zero updates the stats bar."
+      ],
+      "sources": [
+        "需求条目 U01 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UA-24",
+      "layer": "requirements",
+      "title": "Snackbars anchor above the service button and last for the long duration.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Snackbars anchor above the service button and last for the long duration."
+      ],
+      "sources": [
+        "需求条目 U01 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UA-25",
+      "layer": "requirements",
+      "title": "The service button keeps a bottom margin equal to the navigation bar inset plus the Material FAB margin.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service button keeps a bottom margin equal to the navigation bar inset plus the Material FAB margin."
+      ],
+      "sources": [
+        "需求条目 U01 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UA-26",
+      "layer": "requirements",
+      "title": "A stop request while the service is already Stopping is ignored.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A stop request while the service is already Stopping is ignored."
+      ],
+      "sources": [
+        "需求条目 U01 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UA-27",
+      "layer": "requirements",
+      "title": "The service accepts a start command only when its state is Stopped. With no selected profile it stops at once with the message Please select a profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service accepts a start command only when its state is Stopped. With no selected profile it stops at once with the message Please select a profile."
+      ],
+      "sources": [
+        "需求条目 U01 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UA-28",
+      "layer": "requirements",
+      "title": "A start failure reports Failed to connect the remote server followed by the readable exception message.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A start failure reports Failed to connect the remote server followed by the readable exception message."
+      ],
+      "sources": [
+        "需求条目 U01 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UA-29",
+      "layer": "requirements",
+      "title": "The UI asks the bound service for traffic samples every 500 ms while started and stops asking when stopped.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The UI asks the bound service for traffic samples every 500 ms while started and stops asking when stopped."
+      ],
+      "sources": [
+        "需求条目 U01 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UA-30",
+      "layer": "requirements",
+      "title": "The drawer selection survives a saved state. NavigationView saves the checked item through NavigationMenuPresenter, and DrawerLayout saves the open state. MainActivity checks Profiles only when savedInstanceState is null.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The drawer selection survives a saved state. NavigationView saves the checked item through NavigationMenuPresenter, and DrawerLayout saves the open state. MainActivity checks Profiles only when savedInstanceState is null."
+      ],
+      "sources": [
+        "需求条目 U01 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UB-01",
+      "layer": "requirements",
+      "title": "The list shows profiles whose subscription status is not Obsolete, in ascending userOrder.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The list shows profiles whose subscription status is not Obsolete, in ascending userOrder."
+      ],
+      "sources": [
+        "需求条目 U02 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UB-03",
+      "layer": "requirements",
+      "title": "A row tap is accepted when the service state is Stopped, Connecting, or Connected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A row tap is accepted when the service state is Stopped, Connecting, or Connected."
+      ],
+      "sources": [
+        "需求条目 U02 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UB-04",
+      "layer": "requirements",
+      "title": "Drag reorder uses the same enable condition as a row tap.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Drag reorder uses the same enable condition as a row tap."
+      ],
+      "sources": [
+        "需求条目 U02 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UB-05",
+      "layer": "requirements",
+      "title": "The edit icon and swipe delete are enabled when the service is Stopped or the profile is not active.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The edit icon and swipe delete are enabled when the service is Stopped or the profile is not active."
+      ],
+      "sources": [
+        "需求条目 U02 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UB-06",
+      "layer": "requirements",
+      "title": "The active profile id covers the selected profile and its UDP fallback profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The active profile id covers the selected profile and its UDP fallback profile."
+      ],
+      "sources": [
+        "需求条目 U02 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UB-07",
+      "layer": "requirements",
+      "title": "The row title shows the profile name, or host:port when the name is empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The row title shows the profile name, or host:port when the name is empty."
+      ],
+      "sources": [
+        "需求条目 U02 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UB-08",
+      "layer": "requirements",
+      "title": "The secondary line shows the address only when a name exists.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The secondary line shows the address only when a name exists."
+      ],
+      "sources": [
+        "需求条目 U02 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UB-09",
+      "layer": "requirements",
+      "title": "The secondary line adds Plugin: with the plugin id when the profile has a plugin.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The secondary line adds Plugin: with the plugin id when the profile has a plugin."
+      ],
+      "sources": [
+        "需求条目 U02 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UB-10",
+      "layer": "requirements",
+      "title": "The secondary and traffic texts hide themselves when their text is empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The secondary and traffic texts hide themselves when their text is empty."
+      ],
+      "sources": [
+        "需求条目 U02 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UB-11",
+      "layer": "requirements",
+      "title": "The traffic line appears only when tx or rx is positive.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The traffic line appears only when tx or rx is positive."
+      ],
+      "sources": [
+        "需求条目 U02 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UB-12",
+      "layer": "requirements",
+      "title": "The traffic line adds cached live session stats to the stored counters for the running profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The traffic line adds cached live session stats to the stored counters for the running profile."
+      ],
+      "sources": [
+        "需求条目 U02 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UB-13",
+      "layer": "requirements",
+      "title": "A row is marked selected only when its id equals the selected profile id.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A row is marked selected only when its id equals the selected profile id."
+      ],
+      "sources": [
+        "需求条目 U02 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UB-14",
+      "layer": "requirements",
+      "title": "A row tap calls Core.switchProfile with the row id, refreshes the previous row, and marks the tapped row selected in place.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A row tap calls Core.switchProfile with the row id, refreshes the previous row, and marks the tapped row selected in place."
+      ],
+      "sources": [
+        "需求条目 U02 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UB-15",
+      "layer": "requirements",
+      "title": "A row tap broadcasts a service reload when the service state can stop.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A row tap broadcasts a service reload when the service state can stop."
+      ],
+      "sources": [
+        "需求条目 U02 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UB-16",
+      "layer": "requirements",
+      "title": "The edit icon reloads the profile, serializes it, and opens the profile editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The edit icon reloads the profile, serializes it, and opens the profile editor."
+      ],
+      "sources": [
+        "需求条目 U02 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UB-17",
+      "layer": "requirements",
+      "title": "The edit icon force-unwraps the database lookup, so a deleted profile crashes the tap.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The edit icon force-unwraps the database lookup, so a deleted profile crashes the tap."
+      ],
+      "sources": [
+        "需求条目 U02 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UB-18",
+      "layer": "requirements",
+      "title": "An Active subscription profile hides the edit icon and shows the subscription icon.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An Active subscription profile hides the edit icon and shows the subscription icon."
+      ],
+      "sources": [
+        "需求条目 U02 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UB-19",
+      "layer": "requirements",
+      "title": "The subscription icon refreshes the profile and opens the same profile editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The subscription icon refreshes the profile and opens the same profile editor."
+      ],
+      "sources": [
+        "需求条目 U02 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UB-20",
+      "layer": "requirements",
+      "title": "The share icon opens a popup menu with QR code and Export to Clipboard.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The share icon opens a popup menu with QR code and Export to Clipboard."
+      ],
+      "sources": [
+        "需求条目 U02 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UB-21",
+      "layer": "requirements",
+      "title": "The QR code item encodes the profile's ss:// URI as a 264dp image.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The QR code item encodes the profile's ss:// URI as a 264dp image."
+      ],
+      "sources": [
+        "需求条目 U02 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UB-22",
+      "layer": "requirements",
+      "title": "The QR encoder requests UTF 8 only when the profile URI is not ISO 8859-1 encodable.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The QR encoder requests UTF 8 only when the profile URI is not ISO 8859-1 encodable."
+      ],
+      "sources": [
+        "需求条目 U02 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UB-23",
+      "layer": "requirements",
+      "title": "A QR encoding failure shows the message in a snackbar and dismisses the dialog.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A QR encoding failure shows the message in a snackbar and dismisses the dialog."
+      ],
+      "sources": [
+        "需求条目 U02 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UB-24",
+      "layer": "requirements",
+      "title": "The popup Export to Clipboard copies the profile ss:// URI as sensitive text.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The popup Export to Clipboard copies the profile ss:// URI as sensitive text."
+      ],
+      "sources": [
+        "需求条目 U02 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UB-25",
+      "layer": "requirements",
+      "title": "A clipboard write failure shows \"Failed to export.\" in the snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A clipboard write failure shows \"Failed to export.\" in the snackbar."
+      ],
+      "sources": [
+        "需求条目 U02 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UB-26",
+      "layer": "requirements",
+      "title": "A swipe toward the start edge removes the row at once and shows an undo snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A swipe toward the start edge removes the row at once and shows an undo snackbar."
+      ],
+      "sources": [
+        "需求条目 U02 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UB-27",
+      "layer": "requirements",
+      "title": "The swipe is refused when the profile is active and the service is not Stopped.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The swipe is refused when the profile is active and the service is not Stopped."
+      ],
+      "sources": [
+        "需求条目 U02 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UB-28",
+      "layer": "requirements",
+      "title": "The undo snackbar shows Removed for one item and a count for more items.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The undo snackbar shows Removed for one item and a count for more items."
+      ],
+      "sources": [
+        "需求条目 U02 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UB-29",
+      "layer": "requirements",
+      "title": "Undo reinserts each removed row at its original index and clears the recycle bin.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Undo reinserts each removed row at its original index and clears the recycle bin."
+      ],
+      "sources": [
+        "需求条目 U02 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UB-30",
+      "layer": "requirements",
+      "title": "The app deletes each swiped profile from the database only when the snackbar dismisses without Undo.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The app deletes each swiped profile from the database only when the snackbar dismisses without Undo."
+      ],
+      "sources": [
+        "需求条目 U02 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UB-31",
+      "layer": "requirements",
+      "title": "A second swipe joins the recycle bin, and the snackbar shows the total count.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A second swipe joins the recycle bin, and the snackbar shows the total count."
+      ],
+      "sources": [
+        "需求条目 U02 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UB-32",
+      "layer": "requirements",
+      "title": "Adding a profile, the first row crossover of a drag, or destroying the view flushes the snackbar and commits pending deletions.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Adding a profile, the first row crossover of a drag, or destroying the view flushes the snackbar and commits pending deletions."
+      ],
+      "sources": [
+        "需求条目 U02 第 32 条"
+      ]
+    },
+    {
+      "id": "R-UB-33",
+      "layer": "requirements",
+      "title": "A committed swipe delete leaves the selected profile id unchanged because the listener finds no row.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A committed swipe delete leaves the selected profile id unchanged because the listener finds no row."
+      ],
+      "sources": [
+        "需求条目 U02 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UB-34",
+      "layer": "requirements",
+      "title": "A drag rewrites userOrder across the crossed range and saves each changed profile on drop.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A drag rewrites userOrder across the crossed range and saves each changed profile on drop."
+      ],
+      "sources": [
+        "需求条目 U02 第 34 条"
+      ]
+    },
+    {
+      "id": "R-UB-35",
+      "layer": "requirements",
+      "title": "Search filters by case-insensitive substring of name or host.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Search filters by case-insensitive substring of name or host."
+      ],
+      "sources": [
+        "需求条目 U02 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UB-36",
+      "layer": "requirements",
+      "title": "An empty query restores every profile from the database in stored order.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An empty query restores every profile from the database in stored order."
+      ],
+      "sources": [
+        "需求条目 U02 第 36 条"
+      ]
+    },
+    {
+      "id": "R-UB-37",
+      "layer": "requirements",
+      "title": "Search changes only the adapter list, so the selected profile id stays the same.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Search changes only the adapter list, so the selected profile id stays the same."
+      ],
+      "sources": [
+        "需求条目 U02 第 37 条"
+      ]
+    },
+    {
+      "id": "R-UB-38",
+      "layer": "requirements",
+      "title": "An empty database gets one default profile, created and selected, when the screen opens.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An empty database gets one default profile, created and selected, when the screen opens."
+      ],
+      "sources": [
+        "需求条目 U02 第 38 条"
+      ]
+    },
+    {
+      "id": "R-UB-39",
+      "layer": "requirements",
+      "title": "The Search action expands a SearchView with the hint Search.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Search action expands a SearchView with the hint Search."
+      ],
+      "sources": [
+        "需求条目 U02 第 39 条"
+      ]
+    },
+    {
+      "id": "R-UB-40",
+      "layer": "requirements",
+      "title": "Scan QR code starts the scanner activity.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Scan QR code starts the scanner activity."
+      ],
+      "sources": [
+        "需求条目 U02 第 40 条"
+      ]
+    },
+    {
+      "id": "R-UB-41",
+      "layer": "requirements",
+      "title": "Import from Clipboard parses ss:// URLs, copies feature settings, and creates each profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import from Clipboard parses ss:// URLs, copies feature settings, and creates each profile."
+      ],
+      "sources": [
+        "需求条目 U02 第 41 条"
+      ]
+    },
+    {
+      "id": "R-UB-42",
+      "layer": "requirements",
+      "title": "Import from Clipboard shows \"Failed to import.\" when no URL parses or the clipboard read throws.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import from Clipboard shows \"Failed to import.\" when no URL parses or the clipboard read throws."
+      ],
+      "sources": [
+        "需求条目 U02 第 42 条"
+      ]
+    },
+    {
+      "id": "R-UB-43",
+      "layer": "requirements",
+      "title": "Import from file appends parsed profiles. Replace from file clears the stored profiles when it creates the first profile from a file.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import from file appends parsed profiles. Replace from file clears the stored profiles when it creates the first profile from a file."
+      ],
+      "sources": [
+        "需求条目 U02 第 43 条"
+      ]
+    },
+    {
+      "id": "R-UB-44",
+      "layer": "requirements",
+      "title": "Replace copies tx and rx from an existing profile with the same formatted address.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Replace copies tx and rx from an existing profile with the same formatted address."
+      ],
+      "sources": [
+        "需求条目 U02 第 44 条"
+      ]
+    },
+    {
+      "id": "R-UB-45",
+      "layer": "requirements",
+      "title": "Manual Settings creates a profile with the current profile's feature settings and opens its editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Manual Settings creates a profile with the current profile's feature settings and opens its editor."
+      ],
+      "sources": [
+        "需求条目 U02 第 45 条"
+      ]
+    },
+    {
+      "id": "R-UB-46",
+      "layer": "requirements",
+      "title": "Export to Clipboard joins all active profiles' ss:// URIs with newlines.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to Clipboard joins all active profiles' ss:// URIs with newlines."
+      ],
+      "sources": [
+        "需求条目 U02 第 46 条"
+      ]
+    },
+    {
+      "id": "R-UB-47",
+      "layer": "requirements",
+      "title": "Export to file writes the profile JSON array through the system save picker, and writes nothing when the picker returns no document or the profiles cannot be read.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to file writes the profile JSON array through the system save picker, and writes nothing when the picker returns no document or the profiles cannot be read."
+      ],
+      "sources": [
+        "需求条目 U02 第 47 条"
+      ]
+    },
+    {
+      "id": "R-UB-48",
+      "layer": "requirements",
+      "title": "A missing or refusing file manager shows \"Please install a file manager like MiXplorer\" without a trailing period.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A missing or refusing file manager shows \"Please install a file manager like MiXplorer\" without a trailing period."
+      ],
+      "sources": [
+        "需求条目 U02 第 48 条"
+      ]
+    },
+    {
+      "id": "R-UB-49",
+      "layer": "requirements",
+      "title": "A profile import read or parse failure, and an export write failure, show the exception message in a snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A profile import read or parse failure, and an export write failure, show the exception message in a snackbar."
+      ],
+      "sources": [
+        "需求条目 U02 第 49 条"
+      ]
+    },
+    {
+      "id": "R-UB-50",
+      "layer": "requirements",
+      "title": "The list scrolls to the selected profile when the screen opens.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The list scrolls to the selected profile when the screen opens."
+      ],
+      "sources": [
+        "需求条目 U02 第 50 条"
+      ]
+    },
+    {
+      "id": "R-UB-51",
+      "layer": "requirements",
+      "title": "A search query re-reads the database, so a profile whose removal is pending returns to the list while its Undo is still offered.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A search query re-reads the database, so a profile whose removal is pending returns to the list while its Undo is still offered."
+      ],
+      "sources": [
+        "需求条目 U02 第 51 条"
+      ]
+    },
+    {
+      "id": "R-UC-01",
+      "layer": "requirements",
+      "title": "The profile list serializes the profile into the private draft store before it starts the editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The profile list serializes the profile into the private draft store before it starts the editor."
+      ],
+      "sources": [
+        "需求条目 U03 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UC-02",
+      "layer": "requirements",
+      "title": "The editor closes at once when the intent profile id is neither -1 nor the stored editing id.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The editor closes at once when the intent profile id is neither -1 nor the stored editing id."
+      ],
+      "sources": [
+        "需求条目 U03 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UC-03",
+      "layer": "requirements",
+      "title": "Every draft field except Apps VPN mode marks the draft dirty when its value changes.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Every draft field except Apps VPN mode marks the draft dirty when its value changes."
+      ],
+      "sources": [
+        "需求条目 U03 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UC-04",
+      "layer": "requirements",
+      "title": "The draft stays in the private store until Apply copies it into the profile row.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The draft stays in the private store until Apply copies it into the profile row."
+      ],
+      "sources": [
+        "需求条目 U03 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UC-05",
+      "layer": "requirements",
+      "title": "Apply deserializes the draft into the profile row, refreshes the list row, and closes the editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Apply deserializes the draft into the profile row, refreshes the list row, and closes the editor."
+      ],
+      "sources": [
+        "需求条目 U03 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UC-06",
+      "layer": "requirements",
+      "title": "Saving copies every draft field into the profile row, including route, IPv6, metered, per-app list, plugin, and fallback.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Saving copies every draft field into the profile row, including route, IPv6, metered, per-app list, plugin, and fallback."
+      ],
+      "sources": [
+        "需求条目 U03 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UC-07",
+      "layer": "requirements",
+      "title": "Saving trims spaces from the host and replaces a port outside 1 through 65535 with 8388.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Saving trims spaces from the host and replaces a port outside 1 through 65535 with 8388."
+      ],
+      "sources": [
+        "需求条目 U03 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UC-08",
+      "layer": "requirements",
+      "title": "The Password row summary shows one bullet for each stored password character.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Password row summary shows one bullet for each stored password character."
+      ],
+      "sources": [
+        "需求条目 U03 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UC-09",
+      "layer": "requirements",
+      "title": "The Remote Port dialog starts with the stored port and the cursor at the end, accepts digits only, and stops at five characters.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Remote Port dialog starts with the stored port and the cursor at the end, accepts digits only, and stops at five characters."
+      ],
+      "sources": [
+        "需求条目 U03 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UC-10",
+      "layer": "requirements",
+      "title": "The Encrypt Method menu lists 22 entries and stores the lowercase value of the chosen entry.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Encrypt Method menu lists 22 entries and stores the lowercase value of the chosen entry."
+      ],
+      "sources": [
+        "需求条目 U03 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UC-11",
+      "layer": "requirements",
+      "title": "The Route menu lists seven routes and stores the route token, including custom-rules.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Route menu lists seven routes and stores the route token, including custom-rules."
+      ],
+      "sources": [
+        "需求条目 U03 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UC-12",
+      "layer": "requirements",
+      "title": "IPv6 Route is enabled only when the service mode is VPN.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "IPv6 Route is enabled only when the service mode is VPN."
+      ],
+      "sources": [
+        "需求条目 U03 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UC-13",
+      "layer": "requirements",
+      "title": "Apps VPN mode is enabled only when the service mode is VPN.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Apps VPN mode is enabled only when the service mode is VPN."
+      ],
+      "sources": [
+        "需求条目 U03 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UC-14",
+      "layer": "requirements",
+      "title": "Changing Apps VPN mode opens the app list screen on every change and marks the draft dirty only when it turns on. When it turns off, AppManager.onCreate sets proxyApps back to true and marks the draft dirty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Changing Apps VPN mode opens the app list screen on every change and marks the draft dirty only when it turns on. When it turns off, AppManager.onCreate sets proxyApps back to true and marks the draft dirty."
+      ],
+      "sources": [
+        "需求条目 U03 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UC-15",
+      "layer": "requirements",
+      "title": "Metered Hint exists only on API 28 and later, and is enabled only in VPN mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Metered Hint exists only on API 28 and later, and is enabled only in VPN mode."
+      ],
+      "sources": [
+        "需求条目 U03 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UC-16",
+      "layer": "requirements",
+      "title": "A profile whose subscription status is Active disables name, host, port, password, method, plugin, plugin options, and fallback.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A profile whose subscription status is Active disables name, host, port, password, method, plugin, plugin options, and fallback."
+      ],
+      "sources": [
+        "需求条目 U03 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UC-17",
+      "layer": "requirements",
+      "title": "Choosing a plugin stores its id and options, updates the summary with the plugin's display label, enables Configure…, and marks the draft dirty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing a plugin stores its id and options, updates the summary with the plugin's display label, enables Configure…, and marks the draft dirty."
+      ],
+      "sources": [
+        "需求条目 U03 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UC-18",
+      "layer": "requirements",
+      "title": "Configure… is enabled only when the stored plugin id resolves to an entry other than Disabled.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Configure… is enabled only when the stored plugin id resolves to an entry other than Disabled."
+      ],
+      "sources": [
+        "需求条目 U03 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UC-19",
+      "layer": "requirements",
+      "title": "Choosing a plugin that is not trusted shows the untrusted-plugin warning snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing a plugin that is not trusted shows the untrusted-plugin warning snackbar."
+      ],
+      "sources": [
+        "需求条目 U03 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UC-20",
+      "layer": "requirements",
+      "title": "Configure… opens the plugin configuration activity when one resolves, and the built-in options editor otherwise.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Configure… opens the plugin configuration activity when one resolves, and the built-in options editor otherwise."
+      ],
+      "sources": [
+        "需求条目 U03 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UC-21",
+      "layer": "requirements",
+      "title": "Options text that contains a control character is rejected with a snackbar and the old options stay.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Options text that contains a control character is rejected with a snackbar and the old options stay."
+      ],
+      "sources": [
+        "需求条目 U03 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UC-22",
+      "layer": "requirements",
+      "title": "The options dialog shows the ? button only when the plugin resolves a help activity.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The options dialog shows the ? button only when the plugin resolves a help activity."
+      ],
+      "sources": [
+        "需求条目 U03 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UC-23",
+      "layer": "requirements",
+      "title": "The ? button opens plugin help and shows the returned message in a dialog titled ?.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The ? button opens plugin help and shows the returned message in a dialog titled ?."
+      ],
+      "sources": [
+        "需求条目 U03 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UC-24",
+      "layer": "requirements",
+      "title": "The Plugin row summary shows the selected plugin label, or Unknown plugin and the id when the id is unknown.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Plugin row summary shows the selected plugin label, or Unknown plugin and the id when the id is unknown."
+      ],
+      "sources": [
+        "需求条目 U03 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UC-25",
+      "layer": "requirements",
+      "title": "The plugin list is rebuilt when a package is installed or removed.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The plugin list is rebuilt when a package is installed or removed."
+      ],
+      "sources": [
+        "需求条目 U03 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UC-26",
+      "layer": "requirements",
+      "title": "The UDP Fallback row summary shows the fallback profile's formatted name, which is the name or host:port when the name is empty, or Disabled when none is set.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The UDP Fallback row summary shows the fallback profile's formatted name, which is the name or host:port when the name is empty, or Disabled when none is set."
+      ],
+      "sources": [
+        "需求条目 U03 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UC-27",
+      "layer": "requirements",
+      "title": "The fallback chooser lists every profile whose subscription status is not Obsolete, except the profile being edited and every profile whose plugin selection is not empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The fallback chooser lists every profile whose subscription status is not Obsolete, except the profile being edited and every profile whose plugin selection is not empty."
+      ],
+      "sources": [
+        "需求条目 U03 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UC-28",
+      "layer": "requirements",
+      "title": "The fallback chooser starts with a Disabled row that clears the fallback.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The fallback chooser starts with a Disabled row that clears the fallback."
+      ],
+      "sources": [
+        "需求条目 U03 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UC-29",
+      "layer": "requirements",
+      "title": "Tapping a fallback row stores its id, marks the draft dirty, and closes the chooser.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping a fallback row stores its id, marks the draft dirty, and closes the chooser."
+      ],
+      "sources": [
+        "需求条目 U03 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UC-30",
+      "layer": "requirements",
+      "title": "The fallback chooser scrolls to the current fallback entry when one is set.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The fallback chooser scrolls to the current fallback entry when one is set."
+      ],
+      "sources": [
+        "需求条目 U03 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UC-31",
+      "layer": "requirements",
+      "title": "The fallback chooser closes at once when the private store holds no editing id.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The fallback chooser closes at once when the private store holds no editing id."
+      ],
+      "sources": [
+        "需求条目 U03 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UC-32",
+      "layer": "requirements",
+      "title": "The Remove menu item asks for confirmation, deletes the profile row, and closes the editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Remove menu item asks for confirmation, deletes the profile row, and closes the editor."
+      ],
+      "sources": [
+        "需求条目 U03 第 32 条"
+      ]
+    },
+    {
+      "id": "R-UC-33",
+      "layer": "requirements",
+      "title": "Back with a dirty draft asks whether to save; Yes saves, No discards, and Cancel stays.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Back with a dirty draft asks whether to save; Yes saves, No discards, and Cancel stays."
+      ],
+      "sources": [
+        "需求条目 U03 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UC-34",
+      "layer": "requirements",
+      "title": "The back handler is enabled only while the draft is dirty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The back handler is enabled only while the draft is dirty."
+      ],
+      "sources": [
+        "需求条目 U03 第 34 条"
+      ]
+    },
+    {
+      "id": "R-UC-35",
+      "layer": "requirements",
+      "title": "The close icon finishes the editor immediately and ignores unsaved changes.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The close icon finishes the editor immediately and ignores unsaved changes."
+      ],
+      "sources": [
+        "需求条目 U03 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UC-36",
+      "layer": "requirements",
+      "title": "A profile added from Add Profile is written to the database before the editor opens.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A profile added from Add Profile is written to the database before the editor opens."
+      ],
+      "sources": [
+        "需求条目 U03 第 36 条"
+      ]
+    },
+    {
+      "id": "R-UC-37",
+      "layer": "requirements",
+      "title": "A new profile form starts from the code defaults for the transport fields: host example.shadowsocks.org, port 8388, password u1rRWTssNv0p, and method aes 256-cfb. R-UC 41 replaces the feature settings when a current profile exists.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A new profile form starts from the code defaults for the transport fields: host example.shadowsocks.org, port 8388, password u1rRWTssNv0p, and method aes 256-cfb. R-UC 41 replaces the feature settings when a current profile exists."
+      ],
+      "sources": [
+        "需求条目 U03 第 37 条"
+      ]
+    },
+    {
+      "id": "R-UC-38",
+      "layer": "requirements",
+      "title": "Saving the selected profile or its UDP fallback also updates Direct Boot storage when direct boot is enabled.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Saving the selected profile or its UDP fallback also updates Direct Boot storage when direct boot is enabled."
+      ],
+      "sources": [
+        "需求条目 U03 第 38 条"
+      ]
+    },
+    {
+      "id": "R-UC-40",
+      "layer": "requirements",
+      "title": "The editor and the fallback chooser share the private draft store, so a fallback choice survives until Apply.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The editor and the fallback chooser share the private draft store, so a fallback choice survives until Apply."
+      ],
+      "sources": [
+        "需求条目 U03 第 40 条"
+      ]
+    },
+    {
+      "id": "R-UC-41",
+      "layer": "requirements",
+      "title": "Add Profile creates the new profile as a default Profile() and then copies route, IPv6, metered, per-app list, bypass, individual, and UDP DNS from the current profile before the editor opens.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Add Profile creates the new profile as a default Profile() and then copies route, IPv6, metered, per-app list, bypass, individual, and UDP DNS from the current profile before the editor opens."
+      ],
+      "sources": [
+        "需求条目 U03 第 41 条"
+      ]
+    },
+    {
+      "id": "R-UD-01",
+      "layer": "requirements",
+      "title": "Import from Clipboard creates one profile for each valid ss:// URL in the primary clip.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import from Clipboard creates one profile for each valid ss:// URL in the primary clip."
+      ],
+      "sources": [
+        "需求条目 U04 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UD-02",
+      "layer": "requirements",
+      "title": "Import from Clipboard shows Failed to import. when no ss:// URL parses or the clipboard cannot be read. It shows the same message when a profile insert throws after some profiles were created.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import from Clipboard shows Failed to import. when no ss:// URL parses or the clipboard cannot be read. It shows the same message when a profile insert throws after some profiles were created."
+      ],
+      "sources": [
+        "需求条目 U04 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UD-03",
+      "layer": "requirements",
+      "title": "Each imported profile is inserted with createProfile and appended after the last userOrder.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Each imported profile is inserted with createProfile and appended after the last userOrder."
+      ],
+      "sources": [
+        "需求条目 U04 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UD-04",
+      "layer": "requirements",
+      "title": "An import does not change the selected profile; imported rows stay unselected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An import does not change the selected profile; imported rows stay unselected."
+      ],
+      "sources": [
+        "需求条目 U04 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UD-05",
+      "layer": "requirements",
+      "title": "Import from file… opens a picker for application/* and text/* and accepts several documents.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import from file… opens a picker for application/* and text/* and accepts several documents."
+      ],
+      "sources": [
+        "需求条目 U04 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UD-06",
+      "layer": "requirements",
+      "title": "Replace from file… uses the same picker as Import from file… and sets replace mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Replace from file… uses the same picker as Import from file… and sets replace mode."
+      ],
+      "sources": [
+        "需求条目 U04 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UD-07",
+      "layer": "requirements",
+      "title": "Replace mode deletes every profile when the first imported profile is created.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Replace mode deletes every profile when the first imported profile is created."
+      ],
+      "sources": [
+        "需求条目 U04 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UD-08",
+      "layer": "requirements",
+      "title": "Replace mode copies tx and rx from the existing profile with the same formattedAddress.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Replace mode copies tx and rx from the existing profile with the same formattedAddress."
+      ],
+      "sources": [
+        "需求条目 U04 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UD-09",
+      "layer": "requirements",
+      "title": "Replace mode takes feature settings from the stored profile whose id equals the selected profile id.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Replace mode takes feature settings from the stored profile whose id equals the selected profile id."
+      ],
+      "sources": [
+        "需求条目 U04 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UD-10",
+      "layer": "requirements",
+      "title": "A JSON object is a profile only when server, server_port, password and method are present and non-empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A JSON object is a profile only when server, server_port, password and method are present and non-empty."
+      ],
+      "sources": [
+        "需求条目 U04 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UD-11",
+      "layer": "requirements",
+      "title": "The JSON importer rejects a server_port that is zero or negative.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The JSON importer rejects a server_port that is zero or negative."
+      ],
+      "sources": [
+        "需求条目 U04 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UD-12",
+      "layer": "requirements",
+      "title": "A recognized profile object stops the recursive search; the importer does not look inside it.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A recognized profile object stops the recursive search; the importer does not look inside it."
+      ],
+      "sources": [
+        "需求条目 U04 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UD-13",
+      "layer": "requirements",
+      "title": "The JSON importer searches every object field and every array element for profiles.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The JSON importer searches every object field and every array element for profiles."
+      ],
+      "sources": [
+        "需求条目 U04 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UD-14",
+      "layer": "requirements",
+      "title": "Every imported JSON profile copies the current profile's route, IPv6, metered, per-app proxy settings and DNS over UDP setting.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Every imported JSON profile copies the current profile's route, IPv6, metered, per-app proxy settings and DNS over UDP setting."
+      ],
+      "sources": [
+        "需求条目 U04 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UD-15",
+      "layer": "requirements",
+      "title": "For a profile object that is not a udp_fallback, route, ipv6, metered, proxy_apps and udpdns in the JSON override the inherited values. remote_dns is not inherited, so an absent one keeps the new profile's default dns.google.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "For a profile object that is not a udp_fallback, route, ipv6, metered, proxy_apps and udpdns in the JSON override the inherited values. remote_dns is not inherited, so an absent one keeps the new profile's default dns.google."
+      ],
+      "sources": [
+        "需求条目 U04 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UD-16",
+      "layer": "requirements",
+      "title": "A udp_fallback object is parsed with the fallback flag. Of the feature fields, only plugin, remarks and route are read. The parse then returns before remote_dns, ipv6, metered, proxy_apps and udpdns.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A udp_fallback object is parsed with the fallback flag. Of the feature fields, only plugin, remarks and route are read. The parse then returns before remote_dns, ipv6, metered, proxy_apps and udpdns."
+      ],
+      "sources": [
+        "需求条目 U04 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UD-17",
+      "layer": "requirements",
+      "title": "A fallback reuses an existing profile with the same host, port, password, method and no plugin. When no profile matches, the fallback is created as a second profile and linked by udpFallback.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A fallback reuses an existing profile with the same host, port, password, method and no plugin. When no profile matches, the fallback is created as a second profile and linked by udpFallback."
+      ],
+      "sources": [
+        "需求条目 U04 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UD-18",
+      "layer": "requirements",
+      "title": "Export to Clipboard joins all active profiles' ss:// URLs with newline characters.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to Clipboard joins all active profiles' ss:// URLs with newline characters."
+      ],
+      "sources": [
+        "需求条目 U04 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UD-19",
+      "layer": "requirements",
+      "title": "Export to Clipboard marks the clipboard entry as sensitive on Android 7.0 and later.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to Clipboard marks the clipboard entry as sensitive on Android 7.0 and later."
+      ],
+      "sources": [
+        "需求条目 U04 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UD-20",
+      "layer": "requirements",
+      "title": "Export to Clipboard shows Failed to export. when the profile list is null or the clipboard write throws.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to Clipboard shows Failed to export. when the profile list is null or the clipboard write throws."
+      ],
+      "sources": [
+        "需求条目 U04 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UD-21",
+      "layer": "requirements",
+      "title": "Export to file… writes the active profiles as a pretty-printed JSON array.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to file… writes the active profiles as a pretty-printed JSON array."
+      ],
+      "sources": [
+        "需求条目 U04 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UD-22",
+      "layer": "requirements",
+      "title": "The save picker suggests profiles.json and the application/json type.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The save picker suggests profiles.json and the application/json type."
+      ],
+      "sources": [
+        "需求条目 U04 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UD-23",
+      "layer": "requirements",
+      "title": "Export to file shows no success message. A null serializeToJson result writes nothing. A thrown write shows the exception's readable message.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to file shows no success message. A null serializeToJson result writes nothing. A thrown write shows the exception's readable message."
+      ],
+      "sources": [
+        "需求条目 U04 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UD-24",
+      "layer": "requirements",
+      "title": "A cancelled export picker writes no file and shows no message.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A cancelled export picker writes no file and shows no message."
+      ],
+      "sources": [
+        "需求条目 U04 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UD-25",
+      "layer": "requirements",
+      "title": "Exported JSON carries plugin, plugin_opts, remarks, route, remote_dns, ipv6, metered, proxy_apps and udpdns.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Exported JSON carries plugin, plugin_opts, remarks, route, remote_dns, ipv6, metered, proxy_apps and udpdns."
+      ],
+      "sources": [
+        "需求条目 U04 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UD-26",
+      "layer": "requirements",
+      "title": "plugin and plugin_opts are written only when the plugin id is not empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "plugin and plugin_opts are written only when the plugin id is not empty."
+      ],
+      "sources": [
+        "需求条目 U04 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UD-27",
+      "layer": "requirements",
+      "title": "udp_fallback is written only when the fallback profile exists and has no plugin.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "udp_fallback is written only when the fallback profile exists and has no plugin."
+      ],
+      "sources": [
+        "需求条目 U04 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UD-28",
+      "layer": "requirements",
+      "title": "The export contains only active profiles; profiles with subscription status Obsolete are excluded.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The export contains only active profiles; profiles with subscription status Obsolete are excluded."
+      ],
+      "sources": [
+        "需求条目 U04 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UD-29",
+      "layer": "requirements",
+      "title": "Manual Settings creates a profile, copies the current feature settings, and opens the editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Manual Settings creates a profile, copies the current feature settings, and opens the editor."
+      ],
+      "sources": [
+        "需求条目 U04 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UD-30",
+      "layer": "requirements",
+      "title": "Manual Settings creates and stores the profile before it opens the editor. The editor's back arrow only finishes the activity and does not delete the row.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Manual Settings creates and stores the profile before it opens the editor. The editor's back arrow only finishes the activity and does not delete the row."
+      ],
+      "sources": [
+        "需求条目 U04 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UD-31",
+      "layer": "requirements",
+      "title": "The row share icon opens a popup with QR code and Export to Clipboard.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The row share icon opens a popup with QR code and Export to Clipboard."
+      ],
+      "sources": [
+        "需求条目 U04 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UD-32",
+      "layer": "requirements",
+      "title": "Export to Clipboard in the row popup copies only that profile's ss:// URL.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export to Clipboard in the row popup copies only that profile's ss:// URL."
+      ],
+      "sources": [
+        "需求条目 U04 第 32 条"
+      ]
+    },
+    {
+      "id": "R-UD-33",
+      "layer": "requirements",
+      "title": "The QR dialog encodes the profile's ss:// URL as a 264dp black and white bitmap.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The QR dialog encodes the profile's ss:// URL as a 264dp black and white bitmap."
+      ],
+      "sources": [
+        "需求条目 U04 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UD-34",
+      "layer": "requirements",
+      "title": "The QR encoder passes a UTF 8 hint only when the URL is not ISO 8859-1 encodable. Uri.Builder percent-encodes a non-ASCII name, so only a non-ASCII host can trigger the hint.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The QR encoder passes a UTF 8 hint only when the URL is not ISO 8859-1 encodable. Uri.Builder percent-encodes a non-ASCII name, so only a non-ASCII host can trigger the hint."
+      ],
+      "sources": [
+        "需求条目 U04 第 34 条"
+      ]
+    },
+    {
+      "id": "R-UD-35",
+      "layer": "requirements",
+      "title": "A WriterException shows the exception message in a snackbar and dismisses the dialog.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A WriterException shows the exception message in a snackbar and dismisses the dialog."
+      ],
+      "sources": [
+        "需求条目 U04 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UD-36",
+      "layer": "requirements",
+      "title": "A URL without user information is legacy base64 of method:password@host:port, and its plugin and name come from the query and the fragment.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A URL without user information is legacy base64 of method:password@host:port, and its plugin and name come from the query and the fragment."
+      ],
+      "sources": [
+        "需求条目 U04 第 36 条"
+      ]
+    },
+    {
+      "id": "R-UD-37",
+      "layer": "requirements",
+      "title": "A SIP002 URL decodes base64url user information into method and password.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A SIP002 URL decodes base64url user information into method and password."
+      ],
+      "sources": [
+        "需求条目 U04 第 37 条"
+      ]
+    },
+    {
+      "id": "R-UD-38",
+      "layer": "requirements",
+      "title": "A SIP002 URL takes method and password from the base64url user information. It takes host and port from the text after @ through java.net.URI. Brackets around an IPv6 literal are stripped. Its plugin comes from the query and its name from the fragment.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A SIP002 URL takes method and password from the base64url user information. It takes host and port from the text after @ through java.net.URI. Brackets around an IPv6 literal are stripped. Its plugin comes from the query and its name from the fragment."
+      ],
+      "sources": [
+        "需求条目 U04 第 38 条"
+      ]
+    },
+    {
+      "id": "R-UD-39",
+      "layer": "requirements",
+      "title": "An invalid base64 or URI drops that URL and keeps the other parsed URLs.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An invalid base64 or URI drops that URL and keeps the other parsed URLs."
+      ],
+      "sources": [
+        "需求条目 U04 第 39 条"
+      ]
+    },
+    {
+      "id": "R-UD-40",
+      "layer": "requirements",
+      "title": "UrlImportActivity answers only VIEW intents with scheme ss and is excluded from recents.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "UrlImportActivity answers only VIEW intents with scheme ss and is excluded from recents."
+      ],
+      "sources": [
+        "需求条目 U04 第 40 条"
+      ]
+    },
+    {
+      "id": "R-UD-41",
+      "layer": "requirements",
+      "title": "UrlImportActivity parses the link with the current profile as the feature source.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "UrlImportActivity parses the link with the current profile as the feature source."
+      ],
+      "sources": [
+        "需求条目 U04 第 41 条"
+      ]
+    },
+    {
+      "id": "R-UD-42",
+      "layer": "requirements",
+      "title": "The link dialog title is Add this Shadowsocks Profile? and lists one ss:// URL per line.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The link dialog title is Add this Shadowsocks Profile? and lists one ss:// URL per line."
+      ],
+      "sources": [
+        "需求条目 U04 第 42 条"
+      ]
+    },
+    {
+      "id": "R-UD-43",
+      "layer": "requirements",
+      "title": "Yes creates every listed profile; No or a dismiss finishes without creating any.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Yes creates every listed profile; No or a dismiss finishes without creating any."
+      ],
+      "sources": [
+        "需求条目 U04 第 43 条"
+      ]
+    },
+    {
+      "id": "R-UD-44",
+      "layer": "requirements",
+      "title": "A link with no valid profile shows the Toast No valid profile data found. and finishes.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A link with no valid profile shows the Toast No valid profile data found. and finishes."
+      ],
+      "sources": [
+        "需求条目 U04 第 44 条"
+      ]
+    },
+    {
+      "id": "R-UD-45",
+      "layer": "requirements",
+      "title": "Import and export menu items stay enabled in every service state.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import and export menu items stay enabled in every service state."
+      ],
+      "sources": [
+        "需求条目 U04 第 45 条"
+      ]
+    },
+    {
+      "id": "R-UD-46",
+      "layer": "requirements",
+      "title": "When no activity handles the file picker, the snackbar reads Please install a file manager like MiXplorer.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "When no activity handles the file picker, the snackbar reads Please install a file manager like MiXplorer."
+      ],
+      "sources": [
+        "需求条目 U04 第 46 条"
+      ]
+    },
+    {
+      "id": "R-UD-47",
+      "layer": "requirements",
+      "title": "The list seeds one default profile when the database is empty, before any import.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The list seeds one default profile when the database is empty, before any import."
+      ],
+      "sources": [
+        "需求条目 U04 第 47 条"
+      ]
+    },
+    {
+      "id": "R-UD-48",
+      "layer": "requirements",
+      "title": "Add Profile, Import from Clipboard, Import from file, Export… and Export to Clipboard declare the letter shortcuts n, v, o, s and c.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Add Profile, Import from Clipboard, Import from file, Export… and Export to Clipboard declare the letter shortcuts n, v, o, s and c."
+      ],
+      "sources": [
+        "需求条目 U04 第 48 条"
+      ]
+    },
+    {
+      "id": "R-UD-49",
+      "layer": "requirements",
+      "title": "Replace from file…, Manual Settings and Export to file… require Ctrl+Shift with o, n and s.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Replace from file…, Manual Settings and Export to file… require Ctrl+Shift with o, n and s."
+      ],
+      "sources": [
+        "需求条目 U04 第 49 条"
+      ]
+    },
+    {
+      "id": "R-UD-50",
+      "layer": "requirements",
+      "title": "The share icon stays enabled for every row, including the active profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The share icon stays enabled for every row, including the active profile."
+      ],
+      "sources": [
+        "需求条目 U04 第 50 条"
+      ]
+    },
+    {
+      "id": "R-UD-51",
+      "layer": "requirements",
+      "title": "A profile parsed from an ss:// URL copies the current profile's feature settings.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A profile parsed from an ss:// URL copies the current profile's feature settings."
+      ],
+      "sources": [
+        "需求条目 U04 第 51 条"
+      ]
+    },
+    {
+      "id": "R-UD-52",
+      "layer": "requirements",
+      "title": "The ss:// URL writer puts base64url method:password without padding into encodedAuthority. It brackets an IPv6 host. It adds ?plugin= with percent-encoded plugin options when a plugin is selected. It adds #name when the name is not empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The ss:// URL writer puts base64url method:password without padding into encodedAuthority. It brackets an IPv6 host. It adds ?plugin= with percent-encoded plugin options when a plugin is selected. It adds #name when the name is not empty."
+      ],
+      "sources": [
+        "需求条目 U04 第 52 条"
+      ]
+    },
+    {
+      "id": "R-UD-53",
+      "layer": "requirements",
+      "title": "The JSON importer builds plugin from plugin and plugin_opts as id;options, and sets the profile name from remarks.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The JSON importer builds plugin from plugin and plugin_opts as id;options, and sets the profile name from remarks."
+      ],
+      "sources": [
+        "需求条目 U04 第 53 条"
+      ]
+    },
+    {
+      "id": "R-UD-54",
+      "layer": "requirements",
+      "title": "A JSON error in one document keeps the profiles created before it, continues with the later documents, and rethrows the first error. A read error while advancing to a document stops the later documents. The created profiles stay in both cases.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A JSON error in one document keeps the profiles created before it, continues with the later documents, and rethrows the first error. A read error while advancing to a document stops the later documents. The created profiles stay in both cases."
+      ],
+      "sources": [
+        "需求条目 U04 第 54 条"
+      ]
+    },
+    {
+      "id": "R-UD-55",
+      "layer": "requirements",
+      "title": "A replace does not reset the selected profile id. The clear deletes the selected row and the new rows get new ids. No row is selected afterwards, so Core.currentProfile is null.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A replace does not reset the selected profile id. The clear deletes the selected row and the new rows get new ids. No row is selected afterwards, so Core.currentProfile is null."
+      ],
+      "sources": [
+        "需求条目 U04 第 55 条"
+      ]
+    },
+    {
+      "id": "R-UD-56",
+      "layer": "requirements",
+      "title": "A failure while importing a file is caught and shown in a snackbar with the exception's readable message.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A failure while importing a file is caught and shown in a snackbar with the exception's readable message."
+      ],
+      "sources": [
+        "需求条目 U04 第 56 条"
+      ]
+    },
+    {
+      "id": "R-UE-01",
+      "layer": "requirements",
+      "title": "The OK button stays enabled only while the field text parses as a URL.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The OK button stays enabled only while the field text parses as a URL."
+      ],
+      "sources": [
+        "需求条目 U05 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UE-02",
+      "layer": "requirements",
+      "title": "An http URL shows the cleartext warning and still allows OK.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An http URL shows the cleartext warning and still allows OK."
+      ],
+      "sources": [
+        "需求条目 U05 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UE-03",
+      "layer": "requirements",
+      "title": "A text that does not parse shows the platform message as the field error and disables OK.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A text that does not parse shows the platform message as the field error and disables OK."
+      ],
+      "sources": [
+        "需求条目 U05 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UE-04",
+      "layer": "requirements",
+      "title": "The URL check accepts any scheme with a handler, such as ftp or file, not only http and https.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The URL check accepts any scheme with a handler, such as ftp or file, not only http and https."
+      ],
+      "sources": [
+        "需求条目 U05 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UE-05",
+      "layer": "requirements",
+      "title": "The dialog title is Edit subscription when adding a URL as well as when editing one.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The dialog title is Edit subscription when adding a URL as well as when editing one."
+      ],
+      "sources": [
+        "需求条目 U05 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UE-06",
+      "layer": "requirements",
+      "title": "The Remove button appears only when the dialog was opened for a stored URL.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Remove button appears only when the dialog was opened for a stored URL."
+      ],
+      "sources": [
+        "需求条目 U05 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UE-07",
+      "layer": "requirements",
+      "title": "OK on an edited URL removes the old URL and inserts the edited one in sorted order.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "OK on an edited URL removes the old URL and inserts the edited one in sorted order."
+      ],
+      "sources": [
+        "需求条目 U05 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UE-08",
+      "layer": "requirements",
+      "title": "Remove deletes the URL immediately and shows an undo snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Remove deletes the URL immediately and shows an undo snackbar."
+      ],
+      "sources": [
+        "需求条目 U05 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UE-09",
+      "layer": "requirements",
+      "title": "A start swipe on a row deletes the URL immediately and shows an undo snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A start swipe on a row deletes the URL immediately and shows an undo snackbar."
+      ],
+      "sources": [
+        "需求条目 U05 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UE-10",
+      "layer": "requirements",
+      "title": "Undo re-adds all removed URLs in sorted order and persists the list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Undo re-adds all removed URLs in sorted order and persists the list."
+      ],
+      "sources": [
+        "需求条目 U05 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UE-11",
+      "layer": "requirements",
+      "title": "The subscription list is stored as newline-joined URL strings under the public store key subscription.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The subscription list is stored as newline-joined URL strings under the public store key subscription."
+      ],
+      "sources": [
+        "需求条目 U05 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UE-12",
+      "layer": "requirements",
+      "title": "Stored lines that do not parse as URLs are dropped when the list loads.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Stored lines that do not parse as URLs are dropped when the list loads."
+      ],
+      "sources": [
+        "需求条目 U05 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UE-13",
+      "layer": "requirements",
+      "title": "Rows are sorted by host, then port, then URL.file, then protocol. URL.file is the path plus the query string, so two URLs with equal paths and different queries sort by the query.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Rows are sorted by host, then port, then URL.file, then protocol. URL.file is the path plus the query string, so two URLs with equal paths and different queries sort by the query."
+      ],
+      "sources": [
+        "需求条目 U05 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UE-14",
+      "layer": "requirements",
+      "title": "Adding a URL that is already listed changes nothing. The sorted list replaces the equal item in place, keeps its size, inserts no row and writes no store entry.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Adding a URL that is already listed changes nothing. The sorted list replaces the equal item in place, keeps its size, inserts no row and writes no store entry."
+      ],
+      "sources": [
+        "需求条目 U05 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UE-15",
+      "layer": "requirements",
+      "title": "Refresh servers from subscription is enabled only while SubscriptionService.idle is true.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Refresh servers from subscription is enabled only while SubscriptionService.idle is true."
+      ],
+      "sources": [
+        "需求条目 U05 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UE-16",
+      "layer": "requirements",
+      "title": "A start request while the worker is fetching stops the service. The destroy cancels the job, so the run ends without creating profiles.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A start request while the worker is fetching stops the service. The destroy cancels the job, so the run ends without creating profiles."
+      ],
+      "sources": [
+        "需求条目 U05 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UE-17",
+      "layer": "requirements",
+      "title": "The notification shows a determinate bar from zero to N while downloads run and an indeterminate bar after the last one. The title counts finished downloads and then reads Finishing up.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The notification shows a determinate bar from zero to N while downloads run and an indeterminate bar after the last one. The title counts finished downloads and then reads Finishing up."
+      ],
+      "sources": [
+        "需求条目 U05 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UE-18",
+      "layer": "requirements",
+      "title": "Stop broadcasts Action.ABORT, which cancels the worker. A cancellation during fetching creates no profile. During Finishing up the merge has no suspension point, so a Stop tap cannot interrupt it and the profiles are still created and written.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Stop broadcasts Action.ABORT, which cancels the worker. A cancellation during fetching creates no profile. During Finishing up the merge has no suspension point, so a Stop tap cannot interrupt it and the profiles are still created and written."
+      ],
+      "sources": [
+        "需求条目 U05 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UE-19",
+      "layer": "requirements",
+      "title": "A failed download shows a long toast with the platform message and yields no body. The refresh continues with the other URLs, and the merge still marks every Active non-user profile Obsolete, so the profiles of that URL leave the profile list unless another body lists them.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A failed download shows a long toast with the platform message and yields no body. The refresh continues with the other URLs, and the merge still marks every Active non-user profile Obsolete, so the profiles of that URL leave the profile list unless another body lists them."
+      ],
+      "sources": [
+        "需求条目 U05 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UE-20",
+      "layer": "requirements",
+      "title": "A body that raises a JSON parse error shows a long toast and contributes no profiles. The other bodies still merge and the profiles of that URL become Obsolete unless another body lists them. A body of bare literals does not raise. The tokenizer returns strings or numbers, the parser ignores them, and no toast appears.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A body that raises a JSON parse error shows a long toast and contributes no profiles. The other bodies still merge and the profiles of that URL become Obsolete unless another body lists them. A body of bare literals does not raise. The tokenizer returns strings or numbers, the parser ignores them, and no toast appears."
+      ],
+      "sources": [
+        "需求条目 U05 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UE-21",
+      "layer": "requirements",
+      "title": "Every Active non-user profile that survives the duplicate check becomes Obsolete before the fetched profiles are applied. An Active duplicate is deleted in the preprocessing phase instead, so it never becomes Obsolete.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Every Active non-user profile that survives the duplicate check becomes Obsolete before the fetched profiles are applied. An Active duplicate is deleted in the preprocessing phase instead, so it never becomes Obsolete."
+      ],
+      "sources": [
+        "需求条目 U05 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UE-22",
+      "layer": "requirements",
+      "title": "A re-listed Obsolete profile keeps its id and takes the new password, method, plugin and UDP fallback.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A re-listed Obsolete profile keeps its id and takes the new password, method, plugin and UDP fallback."
+      ],
+      "sources": [
+        "需求条目 U05 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UE-23",
+      "layer": "requirements",
+      "title": "A new subscription profile is created Active. It starts from the current profile's route, ipv6, metered, proxy apps, bypass, individual and udpdns. A body key that is present overrides the copied value. remote_dns always comes from the body or the default 'dns.google'.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A new subscription profile is created Active. It starts from the current profile's route, ipv6, metered, proxy apps, bypass, individual and udpdns. A body key that is present overrides the copied value. remote_dns always comes from the body or the default 'dns.google'."
+      ],
+      "sources": [
+        "需求条目 U05 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UE-24",
+      "layer": "requirements",
+      "title": "In the preprocessing phase a non-user profile whose name-plus-address key is already taken is deleted. Deleting the current one resets the profile id to 0. User-configured profiles are skipped before the duplicate check, so they are never deleted and never take part in it.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "In the preprocessing phase a non-user profile whose name-plus-address key is already taken is deleted. Deleting the current one resets the profile id to 0. User-configured profiles are skipped before the duplicate check, so they are never deleted and never take part in it."
+      ],
+      "sources": [
+        "需求条目 U05 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UE-25",
+      "layer": "requirements",
+      "title": "An incoming profile that matches an Active profile is ignored and the stored profile is kept.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An incoming profile that matches an Active profile is ignored and the stored profile is kept."
+      ],
+      "sources": [
+        "需求条目 U05 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UE-26",
+      "layer": "requirements",
+      "title": "Deleting a subscription URL leaves the profiles it created in the database.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Deleting a subscription URL leaves the profiles it created in the database."
+      ],
+      "sources": [
+        "需求条目 U05 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UE-27",
+      "layer": "requirements",
+      "title": "Cancel dismisses the dialog without any result.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Cancel dismisses the dialog without any result."
+      ],
+      "sources": [
+        "需求条目 U05 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UE-28",
+      "layer": "requirements",
+      "title": "idle returns to true when a run finishes, including a run where every download failed, or when it is cancelled. A run with no stored URL or with every download failed still enters the merge, so it obsoletes every Active non-user profile before idle returns.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "idle returns to true when a run finishes, including a run where every download failed, or when it is cancelled. A run with no stored URL or with every download failed still enters the merge, so it obsoletes every Active non-user profile before idle returns."
+      ],
+      "sources": [
+        "需求条目 U05 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UE-29",
+      "layer": "requirements",
+      "title": "The service reads the subscription URL list once, when it starts.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service reads the subscription URL list once, when it starts."
+      ],
+      "sources": [
+        "需求条目 U05 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UF-01",
+      "layer": "requirements",
+      "title": "The drawer entry Custom rules opens the screen and closes the drawer.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The drawer entry Custom rules opens the screen and closes the drawer."
+      ],
+      "sources": [
+        "需求条目 U06 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UF-02",
+      "layer": "requirements",
+      "title": "Add rule(s) offers Manual Settings, Import from Clipboard, and GFW List.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Add rule(s) offers Manual Settings, Import from Clipboard, and GFW List."
+      ],
+      "sources": [
+        "需求条目 U06 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UF-03",
+      "layer": "requirements",
+      "title": "Manual Settings opens the dialog with the Generic template and an empty input.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Manual Settings opens the dialog with the Generic template and an empty input."
+      ],
+      "sources": [
+        "需求条目 U06 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UF-04",
+      "layer": "requirements",
+      "title": "OK is disabled while the current template rejects the current text.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "OK is disabled while the current template rejects the current text."
+      ],
+      "sources": [
+        "需求条目 U06 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UF-05",
+      "layer": "requirements",
+      "title": "The Generic template accepts a subnet or any text that compiles as a java.util.regex.Pattern through Kotlin String.toPattern(). The word PCRE appears only in the template label.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Generic template accepts a subnet or any text that compiles as a java.util.regex.Pattern through Kotlin String.toPattern(). The word PCRE appears only in the template label."
+      ],
+      "sources": [
+        "需求条目 U06 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UF-06",
+      "layer": "requirements",
+      "title": "A pattern syntax error shows the exception message under the input.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A pattern syntax error shows the exception message under the input."
+      ],
+      "sources": [
+        "需求条目 U06 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UF-07",
+      "layer": "requirements",
+      "title": "The Domain template accepts text that IDN.toASCII accepts with IDN.ALLOW_UNASSIGNED or IDN.USE_STD3_ASCII_RULES.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Domain template accepts text that IDN.toASCII accepts with IDN.ALLOW_UNASSIGNED or IDN.USE_STD3_ASCII_RULES."
+      ],
+      "sources": [
+        "需求条目 U06 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UF-08",
+      "layer": "requirements",
+      "title": "A domain rule is stored as (?:^|\\.) followed by the IDN ASCII name with every dot escaped and a trailing $, for example (?:^|\\.)example\\.com$. The trailing $ is required: without it the rule would also match example.com.evil.com and example.com.cn, and the Domain template read-back would fail.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A domain rule is stored as (?:^|\\.) followed by the IDN ASCII name with every dot escaped and a trailing $, for example (?:^|\\.)example\\.com$. The trailing $ is required: without it the rule would also match example.com.evil.com and example.com.cn, and the Domain template read-back would fail."
+      ],
+      "sources": [
+        "需求条目 U06 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UF-09",
+      "layer": "requirements",
+      "title": "The URL template requires a parseable URL and warns on cleartext http.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The URL template requires a parseable URL and warns on cleartext http."
+      ],
+      "sources": [
+        "需求条目 U06 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UF-10",
+      "layer": "requirements",
+      "title": "Opening an existing rule picks the template that matches its stored form.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Opening an existing rule picks the template that matches its stored form."
+      ],
+      "sources": [
+        "需求条目 U06 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UF-11",
+      "layer": "requirements",
+      "title": "The Remove button appears only when the dialog opened for a non-empty rule.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Remove button appears only when the dialog opened for a non-empty rule."
+      ],
+      "sources": [
+        "需求条目 U06 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UF-12",
+      "layer": "requirements",
+      "title": "OK saves the rule, removes the old one, and scrolls to the new row.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "OK saves the rule, removes the old one, and scrolls to the new row."
+      ],
+      "sources": [
+        "需求条目 U06 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UF-13",
+      "layer": "requirements",
+      "title": "Remove in the dialog deletes the rule and offers it back.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Remove in the dialog deletes the rule and offers it back."
+      ],
+      "sources": [
+        "需求条目 U06 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UF-14",
+      "layer": "requirements",
+      "title": "Cancel changes nothing. A dismissal counts as Cancel.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Cancel changes nothing. A dismissal counts as Cancel."
+      ],
+      "sources": [
+        "需求条目 U06 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UF-15",
+      "layer": "requirements",
+      "title": "A START swipe deletes that row and starts the undo snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A START swipe deletes that row and starts the undo snackbar."
+      ],
+      "sources": [
+        "需求条目 U06 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UF-16",
+      "layer": "requirements",
+      "title": "Swipe is off while a selection is active or while the swipe gate is blocked.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Swipe is off while a selection is active or while the swipe gate is blocked."
+      ],
+      "sources": [
+        "需求条目 U06 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UF-17",
+      "layer": "requirements",
+      "title": "A long press toggles the rule in the selection and starts the action mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A long press toggles the rule in the selection and starts the action mode."
+      ],
+      "sources": [
+        "需求条目 U06 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UF-18",
+      "layer": "requirements",
+      "title": "A tap while a selection is active toggles that rule instead of opening the dialog.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tap while a selection is active toggles that rule instead of opening the dialog."
+      ],
+      "sources": [
+        "需求条目 U06 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UF-19",
+      "layer": "requirements",
+      "title": "Select all selects every subnet, proxy hostname, and URL.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Select all selects every subnet, proxy hostname, and URL."
+      ],
+      "sources": [
+        "需求条目 U06 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UF-20",
+      "layer": "requirements",
+      "title": "Copy writes the selection as an ACL text with the bypass default.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Copy writes the selection as an ACL text with the bypass default."
+      ],
+      "sources": [
+        "需求条目 U06 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UF-21",
+      "layer": "requirements",
+      "title": "Cut copies the selection and then removes it, with one undo entry. The removal runs even when the clipboard write fails.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Cut copies the selection and then removes it, with one undo entry. The removal runs even when the clipboard write fails."
+      ],
+      "sources": [
+        "需求条目 U06 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UF-22",
+      "layer": "requirements",
+      "title": "Remove shows the plural removed message and an Undo action. The count is the recycle bin size, so a second removal while the snackbar shows reports the combined count.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Remove shows the plural removed message and an Undo action. The count is the recycle bin size, so a second removal while the snackbar shows reports the combined count."
+      ],
+      "sources": [
+        "需求条目 U06 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UF-23",
+      "layer": "requirements",
+      "title": "Undo restores every rule held in the recycle bin, newest removal first. Dismissing the snackbar without Undo keeps the removal.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Undo restores every rule held in the recycle bin, newest removal first. Dismissing the snackbar without Undo keeps the removal."
+      ],
+      "sources": [
+        "需求条目 U06 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UF-24",
+      "layer": "requirements",
+      "title": "Import parses the clipboard as ACL. It adds proxy hostnames and proxy URLs, and its subnets only when the parsed default is bypass. Bypass hostnames and bypass subnets are dropped. It reports failure when it adds nothing.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import parses the clipboard as ACL. It adds proxy hostnames and proxy URLs, and its subnets only when the parsed default is bypass. Bypass hostnames and bypass subnets are dropped. It reports failure when it adds nothing."
+      ],
+      "sources": [
+        "需求条目 U06 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UF-25",
+      "layer": "requirements",
+      "title": "GFW List reads the gfwlist ACL file from noBackupFilesDir and adds its subnets when its default is bypass, then its proxy hostnames and URLs. Core copies that file from the bundled asset, and AclSyncer can replace it from shadowsocks.org.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "GFW List reads the gfwlist ACL file from noBackupFilesDir and adds its subnets when its default is bypass, then its proxy hostnames and URLs. Core copies that file from the bundled asset, and AclSyncer can replace it from shadowsocks.org."
+      ],
+      "sources": [
+        "需求条目 U06 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UF-26",
+      "layer": "requirements",
+      "title": "Every change is written to custom-rules-user.acl after the list redraws.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Every change is written to custom-rules-user.acl after the list redraws."
+      ],
+      "sources": [
+        "需求条目 U06 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UF-27",
+      "layer": "requirements",
+      "title": "The Back key ends the selection action mode before it leaves the screen.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Back key ends the selection action mode before it leaves the screen."
+      ],
+      "sources": [
+        "需求条目 U06 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UF-28",
+      "layer": "requirements",
+      "title": "A start on the custom-rules route always reads the user file through the forced-bypass getter, flattens its imports ten deep, and saves the result as custom-rules.acl, whether or not the file has import URLs.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A start on the custom-rules route always reads the user file through the forced-bypass getter, flattens its imports ten deep, and saves the result as custom-rules.acl, whether or not the file has import URLs."
+      ],
+      "sources": [
+        "需求条目 U06 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UF-29",
+      "layer": "requirements",
+      "title": "A custom-rules profile always bypasses by default and lists proxied destinations.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A custom-rules profile always bypasses by default and lists proxied destinations."
+      ],
+      "sources": [
+        "需求条目 U06 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UF-30",
+      "layer": "requirements",
+      "title": "Leaving the screen flushes the undo snackbar and ends the action mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Leaving the screen flushes the undo snackbar and ends the action mode."
+      ],
+      "sources": [
+        "需求条目 U06 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UF-31",
+      "layer": "requirements",
+      "title": "AclSyncer schedules one refresh for the route with REPLACE, an unmetered-network and charging constraint, and a ten second delay. It returns without work while the user is locked.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "AclSyncer schedules one refresh for the route with REPLACE, an unmetered-network and charging constraint, and a ten second delay. It returns without work while the user is locked."
+      ],
+      "sources": [
+        "需求条目 U06 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UF-32",
+      "layer": "requirements",
+      "title": "AclSyncer fetches https://shadowsocks.org/acl/android/v1/<route>.acl and writes it over the route ACL file. An IOException retries until the run attempt count is more than five, then returns failure.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "AclSyncer fetches https://shadowsocks.org/acl/android/v1/<route>.acl and writes it over the route ACL file. An IOException retries until the run attempt count is more than five, then returns failure."
+      ],
+      "sources": [
+        "需求条目 U06 第 32 条"
+      ]
+    },
+    {
+      "id": "R-UF-33",
+      "layer": "requirements",
+      "title": "ProxyInstance schedules AclSyncer only for a route other than all and custom-rules.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "ProxyInstance schedules AclSyncer only for a route other than all and custom-rules."
+      ],
+      "sources": [
+        "需求条目 U06 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UF-34",
+      "layer": "requirements",
+      "title": "Core copies every bundled ACL asset into noBackupFilesDir when the package update time differs from the stored asset time. An IOException during the copy is logged and the copy is skipped.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Core copies every bundled ACL asset into noBackupFilesDir when the package update time differs from the stored asset time. An IOException during the copy is logged and the copy is skipped."
+      ],
+      "sources": [
+        "需求条目 U06 第 34 条"
+      ]
+    },
+    {
+      "id": "R-UF-35",
+      "layer": "requirements",
+      "title": "ProxyInstance starts the core with --acl <noBackupFilesDir>/<route>.acl for every route other than all.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "ProxyInstance starts the core with --acl <noBackupFilesDir>/<route>.acl for every route other than all."
+      ],
+      "sources": [
+        "需求条目 U06 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UG-01",
+      "layer": "requirements",
+      "title": "Tapping an app row toggles that app between selected and not selected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping an app row toggles that app between selected and not selected."
+      ],
+      "sources": [
+        "需求条目 U07 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UG-02",
+      "layer": "requirements",
+      "title": "The stored list holds newline-joined package names for every selected app.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The stored list holds newline-joined package names for every selected app."
+      ],
+      "sources": [
+        "需求条目 U07 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UG-03",
+      "layer": "requirements",
+      "title": "Selection uses the app UID, so packages that share a UID change together.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selection uses the app UID, so packages that share a UID change together."
+      ],
+      "sources": [
+        "需求条目 U07 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UG-04",
+      "layer": "requirements",
+      "title": "Opening the screen sets Apps VPN mode on and sets the shared dirty flag when the stored flag was off; the profile editor never delivers that state, because it rejects turning the entry switch off.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Opening the screen sets Apps VPN mode on and sets the shared dirty flag when the stored flag was off; the profile editor never delivers that state, because it rejects turning the entry switch off."
+      ],
+      "sources": [
+        "需求条目 U07 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UG-05",
+      "layer": "requirements",
+      "title": "The Mode group offers three exclusive choices: Off, On, and Bypass.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Mode group offers three exclusive choices: Off, On, and Bypass."
+      ],
+      "sources": [
+        "需求条目 U07 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UG-06",
+      "layer": "requirements",
+      "title": "Choosing Off turns Apps VPN mode off for the profile, closes the screen, and leaves the bypass flag and the stored package list unchanged.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing Off turns Apps VPN mode off for the profile, closes the screen, and leaves the bypass flag and the stored package list unchanged."
+      ],
+      "sources": [
+        "需求条目 U07 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UG-07",
+      "layer": "requirements",
+      "title": "Choosing On clears the bypass flag and keeps the selected app list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing On clears the bypass flag and keeps the selected app list."
+      ],
+      "sources": [
+        "需求条目 U07 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UG-08",
+      "layer": "requirements",
+      "title": "Choosing Bypass sets the bypass flag and keeps the selected app list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing Bypass sets the bypass flag and keeps the selected app list."
+      ],
+      "sources": [
+        "需求条目 U07 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UG-09",
+      "layer": "requirements",
+      "title": "The screen starts on On when the bypass flag is false, otherwise on Bypass.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The screen starts on On when the bypass flag is false, otherwise on Bypass."
+      ],
+      "sources": [
+        "需求条目 U07 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UG-10",
+      "layer": "requirements",
+      "title": "The scan lists installed packages and packages retained after uninstall, and keeps the ones that request the INTERNET permission plus the android package.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The scan lists installed packages and packages retained after uninstall, and keeps the ones that request the INTERNET permission plus the android package."
+      ],
+      "sources": [
+        "需求条目 U07 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UG-11",
+      "layer": "requirements",
+      "title": "The client package never appears in the app list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The client package never appears in the app list."
+      ],
+      "sources": [
+        "需求条目 U07 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UG-12",
+      "layer": "requirements",
+      "title": "Each row shows the app icon, the label, and the package name with UID.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Each row shows the app icon, the label, and the package name with UID."
+      ],
+      "sources": [
+        "需求条目 U07 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UG-13",
+      "layer": "requirements",
+      "title": "Selected apps sort before unselected apps, then by label, on each load.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selected apps sort before unselected apps, then by label, on each load."
+      ],
+      "sources": [
+        "需求条目 U07 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UG-14",
+      "layer": "requirements",
+      "title": "A row toggle refreshes the switches only, so the visible order stays fixed.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A row toggle refreshes the switches only, so the visible order stays fixed."
+      ],
+      "sources": [
+        "需求条目 U07 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UG-15",
+      "layer": "requirements",
+      "title": "Search keeps rows whose label or package name contains the query, ignoring case.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Search keeps rows whose label or package name contains the query, ignoring case."
+      ],
+      "sources": [
+        "需求条目 U07 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UG-16",
+      "layer": "requirements",
+      "title": "Search also keeps a row when the query matches part of its UID.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Search also keeps a row when the query matches part of its UID."
+      ],
+      "sources": [
+        "需求条目 U07 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UG-17",
+      "layer": "requirements",
+      "title": "An empty query lists every app, and the clear button restores the full list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An empty query lists every app, and the clear button restores the full list."
+      ],
+      "sources": [
+        "需求条目 U07 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UG-18",
+      "layer": "requirements",
+      "title": "Package installs and removals clear the cache and reload the list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Package installs and removals clear the cache and reload the list."
+      ],
+      "sources": [
+        "需求条目 U07 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UG-19",
+      "layer": "requirements",
+      "title": "A per-app change stays in the shared draft until a profile write stores it; a profile save and Apply Settings to All Profiles both write it, and the second needs no editor save.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A per-app change stays in the shared draft until a profile write stores it; a profile save and Apply Settings to All Profiles both write it, and the second needs no editor save."
+      ],
+      "sources": [
+        "需求条目 U07 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UG-20",
+      "layer": "requirements",
+      "title": "Apply Settings to All Profiles copies the package list and bypass flag to every profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Apply Settings to All Profiles copies the package list and bypass flag to every profile."
+      ],
+      "sources": [
+        "需求条目 U07 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UG-21",
+      "layer": "requirements",
+      "title": "Apply Settings to All Profiles leaves each profile's Apps VPN mode flag unchanged.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Apply Settings to All Profiles leaves each profile's Apps VPN mode flag unchanged."
+      ],
+      "sources": [
+        "需求条目 U07 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UG-22",
+      "layer": "requirements",
+      "title": "Export writes the bypass flag, a newline, and the package list to the clipboard.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Export writes the bypass flag, a newline, and the package list to the clipboard."
+      ],
+      "sources": [
+        "需求条目 U07 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UG-23",
+      "layer": "requirements",
+      "title": "Import reads the first line as the bypass flag and the rest as package names.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import reads the first line as the bypass flag and the rest as package names."
+      ],
+      "sources": [
+        "需求条目 U07 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UG-24",
+      "layer": "requirements",
+      "title": "Import without a newline treats the whole text as the flag and clears the list.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import without a newline treats the whole text as the flag and clears the list."
+      ],
+      "sources": [
+        "需求条目 U07 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UG-25",
+      "layer": "requirements",
+      "title": "Import reports failure and changes nothing when the clipboard is empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Import reports failure and changes nothing when the clipboard is empty."
+      ],
+      "sources": [
+        "需求条目 U07 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UG-26",
+      "layer": "requirements",
+      "title": "A VPN start in On mode with a non-empty list allows only the selected packages, so the other apps stay outside the tunnel.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A VPN start in On mode with a non-empty list allows only the selected packages, so the other apps stay outside the tunnel."
+      ],
+      "sources": [
+        "需求条目 U07 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UG-27",
+      "layer": "requirements",
+      "title": "A VPN start in Bypass mode disallows the selected packages and the client package.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A VPN start in Bypass mode disallows the selected packages and the client package."
+      ],
+      "sources": [
+        "需求条目 U07 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UG-28",
+      "layer": "requirements",
+      "title": "A package that is not installed is skipped at VPN start, and the others still apply.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A package that is not installed is skipped at VPN start, and the others still apply."
+      ],
+      "sources": [
+        "需求条目 U07 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UG-29",
+      "layer": "requirements",
+      "title": "An empty list adds no allowed package, so in On mode the VPN applies to every app; in Bypass mode only the client package is disallowed, so every other app is proxied.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An empty list adds no allowed package, so in On mode the VPN applies to every app; in Bypass mode only the client package is disallowed, so every other app is proxied."
+      ],
+      "sources": [
+        "需求条目 U07 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UG-30",
+      "layer": "requirements",
+      "title": "The spinner shows until the app scan finishes, then the list fades in.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The spinner shows until the app scan finishes, then the list fades in."
+      ],
+      "sources": [
+        "需求条目 U07 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UG-31",
+      "layer": "requirements",
+      "title": "The dirty flag is one shared DataStore boolean: a mode, selection, or import change sets it, opening a profile in the editor clears it when Profile.serialize runs, and a save does not clear it.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The dirty flag is one shared DataStore boolean: a mode, selection, or import change sets it, opening a profile in the editor clears it when Profile.serialize runs, and a save does not clear it."
+      ],
+      "sources": [
+        "需求条目 U07 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UG-33",
+      "layer": "requirements",
+      "title": "Profile JSON always carries proxy_apps; the object holds enabled, and it holds bypass and android_list only when enabled is true.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Profile JSON always carries proxy_apps; the object holds enabled, and it holds bypass and android_list only when enabled is true."
+      ],
+      "sources": [
+        "需求条目 U07 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UG-35",
+      "layer": "requirements",
+      "title": "Apply Settings uses Ctrl+Shift+A, Export uses Ctrl+C, and Import uses Ctrl+V.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Apply Settings uses Ctrl+Shift+A, Export uses Ctrl+C, and Import uses Ctrl+V."
+      ],
+      "sources": [
+        "需求条目 U07 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UG-36",
+      "layer": "requirements",
+      "title": "The menu key toggles the overflow menu.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The menu key toggles the overflow menu."
+      ],
+      "sources": [
+        "需求条目 U07 第 36 条"
+      ]
+    },
+    {
+      "id": "R-UH-01",
+      "layer": "requirements",
+      "title": "The Plugin row summary shows the selected plugin label, or Unknown plugin with the stored value.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Plugin row summary shows the selected plugin label, or Unknown plugin with the stored value."
+      ],
+      "sources": [
+        "需求条目 U08 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UH-02",
+      "layer": "requirements",
+      "title": "When the row initializes, the Plugin row icon is the icon of the selected plugin, and empty when the value is Disabled or an unknown id. A later picker selection does not refresh it (R-UH 09).",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "When the row initializes, the Plugin row icon is the icon of the selected plugin, and empty when the value is Disabled or an unknown id. A later picker selection does not refresh it (R-UH 09)."
+      ],
+      "sources": [
+        "需求条目 U08 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UH-03",
+      "layer": "requirements",
+      "title": "Tapping the Plugin row opens a bottom sheet that lists Disabled and every exported native plugin provider.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping the Plugin row opens a bottom sheet that lists Disabled and every exported native plugin provider."
+      ],
+      "sources": [
+        "需求条目 U08 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UH-04",
+      "layer": "requirements",
+      "title": "When the current value resolves, the picker moves it to the first row, skips it at its discovery position, and draws its label bold. The id line is shown and bold only when the id is non-empty and differs from the label.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "When the current value resolves, the picker moves it to the first row, skips it at its discovery position, and draws its label bold. The id line is shown and bold only when the id is non-empty and differs from the label."
+      ],
+      "sources": [
+        "需求条目 U08 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UH-05",
+      "layer": "requirements",
+      "title": "A plugin row shows its id below the label only when the id is non-empty and differs from the label.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A plugin row shows its id below the label only when the id is non-empty and differs from the label."
+      ],
+      "sources": [
+        "需求条目 U08 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UH-06",
+      "layer": "requirements",
+      "title": "The unlock warning icon shows when the plugin is not direct-boot aware, Auto Connect is on, and the API level is 24 or higher.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The unlock warning icon shows when the plugin is not direct-boot aware, Auto Connect is on, and the API level is 24 or higher."
+      ],
+      "sources": [
+        "需求条目 U08 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UH-07",
+      "layer": "requirements",
+      "title": "Tapping a row closes the sheet and reports the plugin id only when it differs from the current value.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping a row closes the sheet and reports the plugin id only when it differs from the current value."
+      ],
+      "sources": [
+        "需求条目 U08 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UH-08",
+      "layer": "requirements",
+      "title": "Long-pressing an installed plugin row opens the system application details screen of that plugin package.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Long-pressing an installed plugin row opens the system application details screen of that plugin package."
+      ],
+      "sources": [
+        "需求条目 U08 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UH-09",
+      "layer": "requirements",
+      "title": "Selecting a plugin writes the new plugin string, marks the profile dirty, updates the Configure… row, and refreshes the summary. The row icon is not refreshed on this path; it keeps the icon set when the editor opened.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selecting a plugin writes the new plugin string, marks the profile dirty, updates the Configure… row, and refreshes the summary. The row icon is not refreshed on this path; it keeps the icon set when the editor opened."
+      ],
+      "sources": [
+        "需求条目 U08 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UH-10",
+      "layer": "requirements",
+      "title": "Picking Disabled disables Configure…, and picking a known plugin enables it.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Picking Disabled disables Configure…, and picking a known plugin enables it."
+      ],
+      "sources": [
+        "需求条目 U08 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UH-11",
+      "layer": "requirements",
+      "title": "Configure… stays disabled when the stored plugin id resolves to no installed plugin.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Configure… stays disabled when the stored plugin id resolves to no installed plugin."
+      ],
+      "sources": [
+        "需求条目 U08 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UH-12",
+      "layer": "requirements",
+      "title": "Selecting a plugin that is not signed by a trusted source shows the warning snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selecting a plugin that is not signed by a trusted source shows the warning snackbar."
+      ],
+      "sources": [
+        "需求条目 U08 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UH-13",
+      "layer": "requirements",
+      "title": "Tapping Configure… starts the plugin ACTION_CONFIGURE activity, or the built-in editor when none resolves.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping Configure… starts the plugin ACTION_CONFIGURE activity, or the built-in editor when none resolves."
+      ],
+      "sources": [
+        "需求条目 U08 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UH-14",
+      "layer": "requirements",
+      "title": "RESULT_OK from the configuration activity replaces the stored options for the selected plugin, and clears them when the result carries no EXTRA_OPTIONS.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "RESULT_OK from the configuration activity replaces the stored options for the selected plugin, and clears them when the result carries no EXTRA_OPTIONS."
+      ],
+      "sources": [
+        "需求条目 U08 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UH-15",
+      "layer": "requirements",
+      "title": "RESULT_FALLBACK from the configuration activity opens the built-in options editor.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "RESULT_FALLBACK from the configuration activity opens the built-in options editor."
+      ],
+      "sources": [
+        "需求条目 U08 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UH-16",
+      "layer": "requirements",
+      "title": "Options that contain a control character are rejected and the previous options are kept.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Options that contain a control character are rejected and the previous options are kept."
+      ],
+      "sources": [
+        "需求条目 U08 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UH-17",
+      "layer": "requirements",
+      "title": "The built-in editor shows the options of the selected plugin in a monospace field: the stored options, or the default config when none is stored.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The built-in editor shows the options of the selected plugin in a monospace field: the stored options, or the default config when none is stored."
+      ],
+      "sources": [
+        "需求条目 U08 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UH-18",
+      "layer": "requirements",
+      "title": "The ? button appears only when the plugin resolves ACTION_HELP, and it passes the current text.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The ? button appears only when the plugin resolves ACTION_HELP, and it passes the current text."
+      ],
+      "sources": [
+        "需求条目 U08 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UH-19",
+      "layer": "requirements",
+      "title": "A help callback result shows its message in an alert dialog titled ?. A RESULT_OK without EXTRA_HELP_MESSAGE still opens the alert, with an empty message.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A help callback result shows its message in an alert dialog titled ?. A RESULT_OK without EXTRA_HELP_MESSAGE still opens the alert, with an empty message."
+      ],
+      "sources": [
+        "需求条目 U08 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UH-20",
+      "layer": "requirements",
+      "title": "The plugin id and options are saved into the profile and written to ss URLs and JSON.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The plugin id and options are saved into the profile and written to ss URLs and JSON."
+      ],
+      "sources": [
+        "需求条目 U08 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UH-21",
+      "layer": "requirements",
+      "title": "A newly selected plugin without stored options takes the plugin's default config as its options.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A newly selected plugin without stored options takes the plugin's default config as its options."
+      ],
+      "sources": [
+        "需求条目 U08 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UH-22",
+      "layer": "requirements",
+      "title": "Opening a profile owned by an active subscription disables the Plugin and Configure… rows. A later package install or removal re-runs initPlugins and can enable Configure… again from the plugin value while the Plugin row stays disabled.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Opening a profile owned by an active subscription disables the Plugin and Configure… rows. A later package install or removal re-runs initPlugins and can enable Configure… again from the plugin value while the Plugin row stays disabled."
+      ],
+      "sources": [
+        "需求条目 U08 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UH-23",
+      "layer": "requirements",
+      "title": "Plugin discovery is cached and rebuilt after any package install or removal.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Plugin discovery is cached and rebuilt after any package install or removal."
+      ],
+      "sources": [
+        "需求条目 U08 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UH-24",
+      "layer": "requirements",
+      "title": "Two providers declaring the same plugin id produce a conflict toast that names both packages, and the list build throws IllegalStateException. For an alias collision the toast names only the later plugin's package.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Two providers declaring the same plugin id produce a conflict toast that names both packages, and the list build throws IllegalStateException. For an alias collision the toast names only the later plugin's package."
+      ],
+      "sources": [
+        "需求条目 U08 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UH-25",
+      "layer": "requirements",
+      "title": "Starting with a plugin id that has no provider fails with Unknown plugin and stops the service.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Starting with a plugin id that has no provider fails with Unknown plugin and stops the service."
+      ],
+      "sources": [
+        "需求条目 U08 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UH-26",
+      "layer": "requirements",
+      "title": "A profile with a plugin runs TCP only, and a UDP fallback profile with a plugin is refused.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A profile with a plugin runs TCP only, and a UDP fallback profile with a plugin is refused."
+      ],
+      "sources": [
+        "需求条目 U08 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UH-27",
+      "layer": "requirements",
+      "title": "The profile list row adds a Plugin line with the plugin id when the profile has one.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The profile list row adds a Plugin line with the plugin id when the profile has one."
+      ],
+      "sources": [
+        "需求条目 U08 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UH-28",
+      "layer": "requirements",
+      "title": "Selecting a plugin configured under an alias keeps those options and selects that alias id.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Selecting a plugin configured under an alias keeps those options and selects that alias id."
+      ],
+      "sources": [
+        "需求条目 U08 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UH-29",
+      "layer": "requirements",
+      "title": "Each plugin keeps its own options entry while another plugin is selected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Each plugin keeps its own options entry while another plugin is selected."
+      ],
+      "sources": [
+        "需求条目 U08 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UH-30",
+      "layer": "requirements",
+      "title": "Options use semicolons, equals signs, and backslash escapes; bare words become flag keys.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Options use semicolons, equals signs, and backslash escapes; bare words become flag keys."
+      ],
+      "sources": [
+        "需求条目 U08 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UI-01",
+      "layer": "requirements",
+      "title": "The screen lists six rows in this order: Auto Connect, Allow Toggling in Lock Screen, Service mode, SOCKS5 proxy port, Local DNS port, Transproxy port.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The screen lists six rows in this order: Auto Connect, Allow Toggling in Lock Screen, Service mode, SOCKS5 proxy port, Local DNS port, Transproxy port."
+      ],
+      "sources": [
+        "需求条目 U09 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UI-02",
+      "layer": "requirements",
+      "title": "While collapsed, the list shows only Auto Connect and Allow Toggling in Lock Screen, then the Advanced button.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "While collapsed, the list shows only Auto Connect and Allow Toggling in Lock Screen, then the Advanced button."
+      ],
+      "sources": [
+        "需求条目 U09 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UI-03",
+      "layer": "requirements",
+      "title": "Tapping Advanced shows the four hidden rows and removes the Advanced button.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping Advanced shows the four hidden rows and removes the Advanced button."
+      ],
+      "sources": [
+        "需求条目 U09 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UI-04",
+      "layer": "requirements",
+      "title": "The Advanced summary lists the hidden row titles joined by commas.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Advanced summary lists the hidden row titles joined by commas."
+      ],
+      "sources": [
+        "需求条目 U09 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UI-05",
+      "layer": "requirements",
+      "title": "The expansion lasts only while the screen is open, and reopening shows the first two rows again.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The expansion lasts only while the screen is open, and reopening shows the first two rows again."
+      ],
+      "sources": [
+        "需求条目 U09 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UI-06",
+      "layer": "requirements",
+      "title": "The Allow Toggling in Lock Screen row is absent below API 24 and present from API 24.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Allow Toggling in Lock Screen row is absent below API 24 and present from API 24."
+      ],
+      "sources": [
+        "需求条目 U09 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UI-07",
+      "layer": "requirements",
+      "title": "The Auto Connect switch stores the boolean isAutoConnect in the public preference store.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Auto Connect switch stores the boolean isAutoConnect in the public preference store."
+      ],
+      "sources": [
+        "需求条目 U09 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UI-08",
+      "layer": "requirements",
+      "title": "Turning Auto Connect on enables the boot receiver component, and turning it off disables that component.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Turning Auto Connect on enables the boot receiver component, and turning it off disables that component."
+      ],
+      "sources": [
+        "需求条目 U09 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UI-09",
+      "layer": "requirements",
+      "title": "When isAutoConnect is absent, the switch shows the boot receiver state and stores that value.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "When isAutoConnect is absent, the switch shows the boot receiver state and stores that value."
+      ],
+      "sources": [
+        "需求条目 U09 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UI-10",
+      "layer": "requirements",
+      "title": "Starting the service sets the boot receiver enabled state to the stored isAutoConnect value.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Starting the service sets the boot receiver enabled state to the stored isAutoConnect value."
+      ],
+      "sources": [
+        "需求条目 U09 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UI-11",
+      "layer": "requirements",
+      "title": "Stopping the service without restart disables the boot receiver while isAutoConnect keeps its stored value.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Stopping the service without restart disables the boot receiver while isAutoConnect keeps its stored value."
+      ],
+      "sources": [
+        "需求条目 U09 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UI-12",
+      "layer": "requirements",
+      "title": "The Allow Toggling in Lock Screen switch stores the boolean directBootAware in the public store.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Allow Toggling in Lock Screen switch stores the boolean directBootAware in the public store."
+      ],
+      "sources": [
+        "需求条目 U09 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UI-13",
+      "layer": "requirements",
+      "title": "Turning the lock-screen switch on copies the selected profile to device-protected storage only when direct boot is supported.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Turning the lock-screen switch on copies the selected profile to device-protected storage only when direct boot is supported."
+      ],
+      "sources": [
+        "需求条目 U09 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UI-14",
+      "layer": "requirements",
+      "title": "Turning the switch on without direct boot support, or turning it off, deletes the device-protected profile copy and its config files.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Turning the switch on without direct boot support, or turning it off, deletes the device-protected profile copy and its config files."
+      ],
+      "sources": [
+        "需求条目 U09 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UI-15",
+      "layer": "requirements",
+      "title": "Tapping the enabled Service mode row opens a simple menu with the three mode entries.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping the enabled Service mode row opens a simple menu with the three mode entries."
+      ],
+      "sources": [
+        "需求条目 U09 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UI-16",
+      "layer": "requirements",
+      "title": "The service mode menu marks the entry that matches the stored value.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The service mode menu marks the entry that matches the stored value."
+      ],
+      "sources": [
+        "需求条目 U09 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UI-17",
+      "layer": "requirements",
+      "title": "Choosing a menu entry stores one of proxy, vpn or transproxy under serviceMode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing a menu entry stores one of proxy, vpn or transproxy under serviceMode."
+      ],
+      "sources": [
+        "需求条目 U09 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UI-18",
+      "layer": "requirements",
+      "title": "The Service mode summary shows the stored entry, VPN when no value is stored, and Not set when the value matches no entry.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Service mode summary shows the stored entry, VPN when no value is stored, and Not set when the value matches no entry."
+      ],
+      "sources": [
+        "需求条目 U09 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UI-19",
+      "layer": "requirements",
+      "title": "The Service mode row is enabled only while the service state is Stopped.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Service mode row is enabled only while the service state is Stopped."
+      ],
+      "sources": [
+        "需求条目 U09 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UI-20",
+      "layer": "requirements",
+      "title": "The SOCKS5 proxy port and Local DNS port rows are enabled only while the service state is Stopped.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The SOCKS5 proxy port and Local DNS port rows are enabled only while the service state is Stopped."
+      ],
+      "sources": [
+        "需求条目 U09 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UI-21",
+      "layer": "requirements",
+      "title": "The Transproxy port row is enabled only when the service is Stopped and the stored mode is transproxy.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Transproxy port row is enabled only when the service is Stopped and the stored mode is transproxy."
+      ],
+      "sources": [
+        "需求条目 U09 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UI-22",
+      "layer": "requirements",
+      "title": "Choosing Transproxy enables the Transproxy port row at once, without leaving the screen.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Choosing Transproxy enables the Transproxy port row at once, without leaving the screen."
+      ],
+      "sources": [
+        "需求条目 U09 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UI-23",
+      "layer": "requirements",
+      "title": "A serviceMode change makes the main screen rebind its service connection to the new mode's service class.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A serviceMode change makes the main screen rebind its service connection to the new mode's service class."
+      ],
+      "sources": [
+        "需求条目 U09 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UI-24",
+      "layer": "requirements",
+      "title": "The state gating follows live service state only while the settings screen is open.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The state gating follows live service state only while the settings screen is open."
+      ],
+      "sources": [
+        "需求条目 U09 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UI-25",
+      "layer": "requirements",
+      "title": "Tapping an enabled port row opens a dialog titled with the row title and holding the stored text.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping an enabled port row opens a dialog titled with the row title and holding the stored text."
+      ],
+      "sources": [
+        "需求条目 U09 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UI-26",
+      "layer": "requirements",
+      "title": "The port field takes digits only, holds at most five characters, and places the cursor at the end.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The port field takes digits only, holds at most five characters, and places the cursor at the end."
+      ],
+      "sources": [
+        "需求条目 U09 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UI-27",
+      "layer": "requirements",
+      "title": "OK stores the typed text unchanged in the port key, and Cancel stores nothing.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "OK stores the typed text unchanged in the port key, and Cancel stores nothing."
+      ],
+      "sources": [
+        "需求条目 U09 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UI-28",
+      "layer": "requirements",
+      "title": "A port row shows its stored text as the summary, and shows Not set when the text is empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A port row shows its stored text as the summary, and shows Not set when the text is empty."
+      ],
+      "sources": [
+        "需求条目 U09 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UI-29",
+      "layer": "requirements",
+      "title": "A stored port below 1025 or above 65535 is replaced by the default when the core reads it.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A stored port below 1025 or above 65535 is replaced by the default when the core reads it."
+      ],
+      "sources": [
+        "需求条目 U09 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UI-30",
+      "layer": "requirements",
+      "title": "The default ports are 1080 for SOCKS5, 5450 for local DNS and 8200 for transproxy, each plus the calling user index.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The default ports are 1080 for SOCKS5, 5450 for local DNS and 8200 for transproxy, each plus the calling user index."
+      ],
+      "sources": [
+        "需求条目 U09 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UI-31",
+      "layer": "requirements",
+      "title": "Opening the screen writes default strings for absent port keys and for an absent isAutoConnect key.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Opening the screen writes default strings for absent port keys and for an absent isAutoConnect key."
+      ],
+      "sources": [
+        "需求条目 U09 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UI-32",
+      "layer": "requirements",
+      "title": "The local DNS port becomes the dnsgw address that the core uses in VPN mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The local DNS port becomes the dnsgw address that the core uses in VPN mode."
+      ],
+      "sources": [
+        "需求条目 U09 第 32 条"
+      ]
+    },
+    {
+      "id": "R-UI-33",
+      "layer": "requirements",
+      "title": "The SOCKS5 port is the local listener in proxy and VPN modes and the redsocks upstream in transproxy mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The SOCKS5 port is the local listener in proxy and VPN modes and the redsocks upstream in transproxy mode."
+      ],
+      "sources": [
+        "需求条目 U09 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UI-34",
+      "layer": "requirements",
+      "title": "The Transproxy port is the local redsocks port used in transproxy mode.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Transproxy port is the local redsocks port used in transproxy mode."
+      ],
+      "sources": [
+        "需求条目 U09 第 34 条"
+      ]
+    },
+    {
+      "id": "R-UI-35",
+      "layer": "requirements",
+      "title": "Opening the screen writes directBootAware false when the key is absent.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Opening the screen writes directBootAware false when the key is absent."
+      ],
+      "sources": [
+        "需求条目 U09 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UJ-01",
+      "layer": "requirements",
+      "title": "The scanner asks for the CAMERA permission each time the activity is created.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The scanner asks for the CAMERA permission each time the activity is created."
+      ],
+      "sources": [
+        "需求条目 U10 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UJ-02",
+      "layer": "requirements",
+      "title": "A granted permission binds the back camera, or the front camera when the device has no back camera.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A granted permission binds the back camera, or the front camera when the device has no back camera."
+      ],
+      "sources": [
+        "需求条目 U10 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UJ-03",
+      "layer": "requirements",
+      "title": "A denied camera permission shows the permission toast and then opens the image picker.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A denied camera permission shows the permission toast and then opens the image picker."
+      ],
+      "sources": [
+        "需求条目 U10 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UJ-04",
+      "layer": "requirements",
+      "title": "A camera bind failure opens the image picker without showing the permission toast.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A camera bind failure opens the image picker without showing the permission toast."
+      ],
+      "sources": [
+        "需求条目 U10 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UJ-05",
+      "layer": "requirements",
+      "title": "The analyzer decodes QR codes only and keeps the latest frame.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The analyzer decodes QR codes only and keeps the latest frame."
+      ],
+      "sources": [
+        "需求条目 U10 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UJ-06",
+      "layer": "requirements",
+      "title": "Each ss:// URL in the decoded text creates one new profile, in text order.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Each ss:// URL in the decoded text creates one new profile, in text order."
+      ],
+      "sources": [
+        "需求条目 U10 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UJ-07",
+      "layer": "requirements",
+      "title": "A new profile copies route, IPv6, metered, proxy-app and UDP-DNS settings from the current profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A new profile copies route, IPv6, metered, proxy-app and UDP-DNS settings from the current profile."
+      ],
+      "sources": [
+        "需求条目 U10 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UJ-08",
+      "layer": "requirements",
+      "title": "A malformed or unknown ss:// URL is skipped while other URLs in the same text still import.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A malformed or unknown ss:// URL is skipped while other URLs in the same text still import."
+      ],
+      "sources": [
+        "需求条目 U10 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UJ-09",
+      "layer": "requirements",
+      "title": "A scan that creates at least one profile clears the analyzer and closes the scanner.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A scan that creates at least one profile clears the analyzer and closes the scanner."
+      ],
+      "sources": [
+        "需求条目 U10 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UJ-10",
+      "layer": "requirements",
+      "title": "A scan that creates no profile leaves the scanner open and keeps analyzing.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A scan that creates no profile leaves the scanner open and keeps analyzing."
+      ],
+      "sources": [
+        "需求条目 U10 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UJ-11",
+      "layer": "requirements",
+      "title": "The scanner navigates up at most once per opening.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The scanner navigates up at most once per opening."
+      ],
+      "sources": [
+        "需求条目 U10 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UJ-12",
+      "layer": "requirements",
+      "title": "The up action recreates the parent task when the scanner is the task root.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The up action recreates the parent task when the scanner is the task root."
+      ],
+      "sources": [
+        "需求条目 U10 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UJ-13",
+      "layer": "requirements",
+      "title": "The menu item Import from file… opens a multi-image picker for image/*.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The menu item Import from file… opens a multi-image picker for image/*."
+      ],
+      "sources": [
+        "需求条目 U10 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UJ-14",
+      "layer": "requirements",
+      "title": "Cancelling the menu picker keeps the scanner open, while cancelling the fallback picker closes it.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Cancelling the menu picker keeps the scanner open, while cancelling the fallback picker closes it."
+      ],
+      "sources": [
+        "需求条目 U10 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UJ-15",
+      "layer": "requirements",
+      "title": "A file import closes the scanner before it processes the chosen images.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A file import closes the scanner before it processes the chosen images."
+      ],
+      "sources": [
+        "需求条目 U10 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UJ-16",
+      "layer": "requirements",
+      "title": "A file import creates a profile for each ss:// URL found in each chosen image.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A file import creates a profile for each ss:// URL found in each chosen image."
+      ],
+      "sources": [
+        "需求条目 U10 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UJ-17",
+      "layer": "requirements",
+      "title": "A successful file import shows Successfully import!, and a failed one shows Failed to import.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A successful file import shows Successfully import!, and a failed one shows Failed to import."
+      ],
+      "sources": [
+        "需求条目 U10 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UJ-18",
+      "layer": "requirements",
+      "title": "An exception during a file import shows the readable message in a long toast.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An exception during a file import shows the readable message in a long toast."
+      ],
+      "sources": [
+        "需求条目 U10 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UJ-19",
+      "layer": "requirements",
+      "title": "The launcher shortcut Scan QR code starts the scanner directly.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The launcher shortcut Scan QR code starts the scanner directly."
+      ],
+      "sources": [
+        "需求条目 U10 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UJ-20",
+      "layer": "requirements",
+      "title": "The scanner reports the scan shortcut as used on API 25 and later.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The scanner reports the scan shortcut as used on API 25 and later."
+      ],
+      "sources": [
+        "需求条目 U10 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UJ-22",
+      "layer": "requirements",
+      "title": "About renders about.html as HTML with a line break after each list item.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "About renders about.html as HTML with a line break after each list item."
+      ],
+      "sources": [
+        "需求条目 U10 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UJ-23",
+      "layer": "requirements",
+      "title": "An About link whose URL starts with # opens the Google Play OSS licences screen.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An About link whose URL starts with # opens the Google Play OSS licences screen."
+      ],
+      "sources": [
+        "需求条目 U10 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UJ-24",
+      "layer": "requirements",
+      "title": "An About mailto link opens an email chooser titled Send email.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "An About mailto link opens an email chooser titled Send email."
+      ],
+      "sources": [
+        "需求条目 U10 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UJ-25",
+      "layer": "requirements",
+      "title": "Any other About link opens a Custom Tab, and a missing handler shows the URL in a snackbar.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Any other About link opens a Custom Tab, and a missing handler shows the URL in a snackbar."
+      ],
+      "sources": [
+        "需求条目 U10 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UJ-26",
+      "layer": "requirements",
+      "title": "The About body is selectable text and hides itself when the text is empty.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The About body is selectable text and hides itself when the text is empty."
+      ],
+      "sources": [
+        "需求条目 U10 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UJ-27",
+      "layer": "requirements",
+      "title": "The About toolbar navigation icon opens the navigation drawer.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The About toolbar navigation icon opens the navigation drawer."
+      ],
+      "sources": [
+        "需求条目 U10 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UJ-28",
+      "layer": "requirements",
+      "title": "The About body keeps the navigation bar inset as bottom padding.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The About body keeps the navigation bar inset as bottom padding."
+      ],
+      "sources": [
+        "需求条目 U10 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UK-01",
+      "layer": "requirements",
+      "title": "The notification content title is the running profile's formatted name.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The notification content title is the running profile's formatted name."
+      ],
+      "sources": [
+        "需求条目 U11 第 01 条"
+      ]
+    },
+    {
+      "id": "R-UK-02",
+      "layer": "requirements",
+      "title": "The notification uses ticker Shadowsocks started., icon ic_service_active, category service and no timestamp.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The notification uses ticker Shadowsocks started., icon ic_service_active, category service and no timestamp."
+      ],
+      "sources": [
+        "需求条目 U11 第 02 条"
+      ]
+    },
+    {
+      "id": "R-UK-03",
+      "layer": "requirements",
+      "title": "Each traffic sample sets the content text to the rates and the subtext to the totals.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Each traffic sample sets the content text to the rates and the subtext to the totals."
+      ],
+      "sources": [
+        "需求条目 U11 第 03 条"
+      ]
+    },
+    {
+      "id": "R-UK-04",
+      "layer": "requirements",
+      "title": "The notification registers the traffic callback when the screen is interactive at creation or on a screen-on while Connected, and unregisters it on a screen-off while Connected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The notification registers the traffic callback when the screen is interactive at creation or on a screen-on while Connected, and unregisters it on a screen-off while Connected."
+      ],
+      "sources": [
+        "需求条目 U11 第 04 条"
+      ]
+    },
+    {
+      "id": "R-UK-05",
+      "layer": "requirements",
+      "title": "Screen on and off events change the callback only while the service is Connected.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Screen on and off events change the callback only while the service is Connected."
+      ],
+      "sources": [
+        "需求条目 U11 第 05 条"
+      ]
+    },
+    {
+      "id": "R-UK-06",
+      "layer": "requirements",
+      "title": "A traffic sample whose profile id is not zero does not update the notification.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A traffic sample whose profile id is not zero does not update the notification."
+      ],
+      "sources": [
+        "需求条目 U11 第 06 条"
+      ]
+    },
+    {
+      "id": "R-UK-07",
+      "layer": "requirements",
+      "title": "The Stop action sends the app-scoped Action.CLOSE broadcast, requires authentication and shows no UI.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Stop action sends the app-scoped Action.CLOSE broadcast, requires authentication and shows no UI."
+      ],
+      "sources": [
+        "需求条目 U11 第 07 条"
+      ]
+    },
+    {
+      "id": "R-UK-08",
+      "layer": "requirements",
+      "title": "Below API 24 the Stop action is a visible button; from API 24 it is an invisible action.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Below API 24 the Stop action is a visible button; from API 24 it is an invisible action."
+      ],
+      "sources": [
+        "需求条目 U11 第 08 条"
+      ]
+    },
+    {
+      "id": "R-UK-09",
+      "layer": "requirements",
+      "title": "The notification priority is minimum when visible is false and low otherwise.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The notification priority is minimum when visible is false and low otherwise."
+      ],
+      "sources": [
+        "需求条目 U11 第 09 条"
+      ]
+    },
+    {
+      "id": "R-UK-10",
+      "layer": "requirements",
+      "title": "Tapping the notification opens MainActivity reordered to the front.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tapping the notification opens MainActivity reordered to the front."
+      ],
+      "sources": [
+        "需求条目 U11 第 10 条"
+      ]
+    },
+    {
+      "id": "R-UK-11",
+      "layer": "requirements",
+      "title": "Stopping the service destroys the notification and removes the foreground state.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Stopping the service destroys the notification and removes the foreground state."
+      ],
+      "sources": [
+        "需求条目 U11 第 11 条"
+      ]
+    },
+    {
+      "id": "R-UK-12",
+      "layer": "requirements",
+      "title": "Each service mode has its own notification channel: VPN Service, Proxy Service or Transproxy Service.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Each service mode has its own notification channel: VPN Service, Proxy Service or Transproxy Service."
+      ],
+      "sources": [
+        "需求条目 U11 第 12 条"
+      ]
+    },
+    {
+      "id": "R-UK-13",
+      "layer": "requirements",
+      "title": "The VPN channel has minimum importance on API 28+ and low importance below.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The VPN channel has minimum importance on API 28+ and low importance below."
+      ],
+      "sources": [
+        "需求条目 U11 第 13 条"
+      ]
+    },
+    {
+      "id": "R-UK-14",
+      "layer": "requirements",
+      "title": "A tile tap stops the service when Connecting or Connected, because canStop is true.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tile tap stops the service when Connecting or Connected, because canStop is true."
+      ],
+      "sources": [
+        "需求条目 U11 第 14 条"
+      ]
+    },
+    {
+      "id": "R-UK-15",
+      "layer": "requirements",
+      "title": "A tile tap starts the service only from the Stopped state.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tile tap starts the service only from the Stopped state."
+      ],
+      "sources": [
+        "需求条目 U11 第 15 条"
+      ]
+    },
+    {
+      "id": "R-UK-16",
+      "layer": "requirements",
+      "title": "A tile tap before the service binds is remembered and replayed on connection.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tile tap before the service binds is remembered and replayed on connection."
+      ],
+      "sources": [
+        "需求条目 U11 第 16 条"
+      ]
+    },
+    {
+      "id": "R-UK-17",
+      "layer": "requirements",
+      "title": "A tap on a locked device requests unlock first unless lock-screen toggling is allowed.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A tap on a locked device requests unlock first unless lock-screen toggling is allowed."
+      ],
+      "sources": [
+        "需求条目 U11 第 17 条"
+      ]
+    },
+    {
+      "id": "R-UK-18",
+      "layer": "requirements",
+      "title": "The tile label is the profile name only when Connected and the device is unlocked.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The tile label is the profile name only when Connected and the device is unlocked."
+      ],
+      "sources": [
+        "需求条目 U11 第 18 条"
+      ]
+    },
+    {
+      "id": "R-UK-19",
+      "layer": "requirements",
+      "title": "Tile states map Connecting to active, Connected to active, Stopping to unavailable and Stopped to inactive.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tile states map Connecting to active, Connected to active, Stopping to unavailable and Stopped to inactive."
+      ],
+      "sources": [
+        "需求条目 U11 第 19 条"
+      ]
+    },
+    {
+      "id": "R-UK-20",
+      "layer": "requirements",
+      "title": "The tile update rejects the Idle state with an IllegalStateException error.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The tile update rejects the Idle state with an IllegalStateException error."
+      ],
+      "sources": [
+        "需求条目 U11 第 20 条"
+      ]
+    },
+    {
+      "id": "R-UK-21",
+      "layer": "requirements",
+      "title": "The tile binds to the service while listening and unbinds when listening stops.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The tile binds to the service while listening and unbinds when listening stops."
+      ],
+      "sources": [
+        "需求条目 U11 第 21 条"
+      ]
+    },
+    {
+      "id": "R-UK-22",
+      "layer": "requirements",
+      "title": "The Toggle shortcut stops a stoppable service, starts a stopped one and then finishes.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Toggle shortcut stops a stoppable service, starts a stopped one and then finishes."
+      ],
+      "sources": [
+        "需求条目 U11 第 22 条"
+      ]
+    },
+    {
+      "id": "R-UK-23",
+      "layer": "requirements",
+      "title": "A launcher create-shortcut request returns a Toggle shortcut and finishes without toggling.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A launcher create-shortcut request returns a Toggle shortcut and finishes without toggling."
+      ],
+      "sources": [
+        "需求条目 U11 第 23 条"
+      ]
+    },
+    {
+      "id": "R-UK-24",
+      "layer": "requirements",
+      "title": "The boot receiver component is disabled at install and follows the Auto Connect preference.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The boot receiver component is disabled at install and follows the Auto Connect preference."
+      ],
+      "sources": [
+        "需求条目 U11 第 24 条"
+      ]
+    },
+    {
+      "id": "R-UK-25",
+      "layer": "requirements",
+      "title": "On a boot broadcast with Auto Connect off the receiver disables itself and returns.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "On a boot broadcast with Auto Connect off the receiver disables itself and returns."
+      ],
+      "sources": [
+        "需求条目 U11 第 25 条"
+      ]
+    },
+    {
+      "id": "R-UK-26",
+      "layer": "requirements",
+      "title": "BOOT_COMPLETED starts only without direct boot; LOCKED_BOOT_COMPLETED starts only with direct boot.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "BOOT_COMPLETED starts only without direct boot; LOCKED_BOOT_COMPLETED starts only with direct boot."
+      ],
+      "sources": [
+        "需求条目 U11 第 26 条"
+      ]
+    },
+    {
+      "id": "R-UK-27",
+      "layer": "requirements",
+      "title": "A normal stop disables the boot receiver so it does not fire on the next boot.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A normal stop disables the boot receiver so it does not fire on the next boot."
+      ],
+      "sources": [
+        "需求条目 U11 第 27 条"
+      ]
+    },
+    {
+      "id": "R-UK-28",
+      "layer": "requirements",
+      "title": "Direct boot is active only when the device supports it and lock-screen toggling is allowed.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Direct boot is active only when the device supports it and lock-screen toggling is allowed."
+      ],
+      "sources": [
+        "需求条目 U11 第 28 条"
+      ]
+    },
+    {
+      "id": "R-UK-29",
+      "layer": "requirements",
+      "title": "Direct boot writes the expanded profile to noBackupFilesDir and deletes it on clean.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Direct boot writes the expanded profile to noBackupFilesDir and deletes it on clean."
+      ],
+      "sources": [
+        "需求条目 U11 第 29 条"
+      ]
+    },
+    {
+      "id": "R-UK-30",
+      "layer": "requirements",
+      "title": "A shutdown persists the traffic counters; after the user unlocks, the dirty device-profile copy is flushed into the database.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A shutdown persists the traffic counters; after the user unlocks, the dirty device-profile copy is flushed into the database."
+      ],
+      "sources": [
+        "需求条目 U11 第 30 条"
+      ]
+    },
+    {
+      "id": "R-UK-31",
+      "layer": "requirements",
+      "title": "Tasker settings default switch_on to true and profile_id to -1, accepting a long or an int.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Tasker settings default switch_on to true and profile_id to -1, accepting a long or an int."
+      ],
+      "sources": [
+        "需求条目 U11 第 31 条"
+      ]
+    },
+    {
+      "id": "R-UK-32",
+      "layer": "requirements",
+      "title": "A fired Tasker setting switches the profile, then starts with reload or stops.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A fired Tasker setting switches the profile, then starts with reload or stops."
+      ],
+      "sources": [
+        "需求条目 U11 第 32 条"
+      ]
+    },
+    {
+      "id": "R-UK-33",
+      "layer": "requirements",
+      "title": "A Tasker row tap stores the switch state and profile id and returns RESULT_OK.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A Tasker row tap stores the switch state and profile id and returns RESULT_OK."
+      ],
+      "sources": [
+        "需求条目 U11 第 33 条"
+      ]
+    },
+    {
+      "id": "R-UK-34",
+      "layer": "requirements",
+      "title": "Toggling the Tasker switch alone does not save; only a row tap saves both values.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Toggling the Tasker switch alone does not save; only a row tap saves both values."
+      ],
+      "sources": [
+        "需求条目 U11 第 34 条"
+      ]
+    },
+    {
+      "id": "R-UK-35",
+      "layer": "requirements",
+      "title": "The Tasker editor lists Use the current profile first, then every active profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Tasker editor lists Use the current profile first, then every active profile."
+      ],
+      "sources": [
+        "需求条目 U11 第 35 条"
+      ]
+    },
+    {
+      "id": "R-UK-36",
+      "layer": "requirements",
+      "title": "The Tasker blurb reads Connect to name, Switch to name, Connect to the current server or Stop.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The Tasker blurb reads Connect to name, Switch to name, Connect to the current server or Stop."
+      ],
+      "sources": [
+        "需求条目 U11 第 36 条"
+      ]
+    },
+    {
+      "id": "R-UK-37",
+      "layer": "requirements",
+      "title": "A start with no profile posts an empty-name notification, then stops with Please select a profile.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A start with no profile posts an empty-name notification, then stops with Please select a profile."
+      ],
+      "sources": [
+        "需求条目 U11 第 37 条"
+      ]
+    },
+    {
+      "id": "R-UK-38",
+      "layer": "requirements",
+      "title": "Starting the service writes the boot receiver enabled state from the Auto Connect preference.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "Starting the service writes the boot receiver enabled state from the Auto Connect preference."
+      ],
+      "sources": [
+        "需求条目 U11 第 38 条"
+      ]
+    },
+    {
+      "id": "R-UK-39",
+      "layer": "requirements",
+      "title": "A RELOAD broadcast restarts a running service; no receiver exists while the service is stopped.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A RELOAD broadcast restarts a running service; no receiver exists while the service is stopped."
+      ],
+      "sources": [
+        "需求条目 U11 第 39 条"
+      ]
+    },
+    {
+      "id": "R-UK-40",
+      "layer": "requirements",
+      "title": "The tile is a toggleable tile that requires BIND_QUICK_SETTINGS_TILE and runs directBootAware.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The tile is a toggleable tile that requires BIND_QUICK_SETTINGS_TILE and runs directBootAware."
+      ],
+      "sources": [
+        "需求条目 U11 第 40 条"
+      ]
+    },
+    {
+      "id": "R-UK-41",
+      "layer": "requirements",
+      "title": "A long press on the tile launches MainActivity through the QS_TILE_PREFERENCES intent filter; MainActivity declares the filter but has no tile-preference handling.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "A long press on the tile launches MainActivity through the QS_TILE_PREFERENCES intent filter; MainActivity declares the filter but has no tile-preference handling."
+      ],
+      "sources": [
+        "需求条目 U11 第 41 条"
+      ]
+    },
+    {
+      "id": "R-UK-42",
+      "layer": "requirements",
+      "title": "MainActivity declares the app shortcuts through the android.app.shortcuts metadata.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "MainActivity declares the app shortcuts through the android.app.shortcuts metadata."
+      ],
+      "sources": [
+        "需求条目 U11 第 42 条"
+      ]
+    },
+    {
+      "id": "R-UK-43",
+      "layer": "requirements",
+      "title": "The app declares two static shortcuts: Toggle to QuickToggleShortcut and Scan QR code to ScannerActivity.",
+      "status": "ready",
+      "depends_on": [],
+      "content": [
+        "The app declares two static shortcuts: Toggle to QuickToggleShortcut and Scan QR code to ScannerActivity."
+      ],
+      "sources": [
+        "需求条目 U11 第 43 条"
+      ]
+    }
+  ],
+  "oracles": [
+    {
+      "id": "O-JOURNEY-01",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Main shell, navigation drawer, connect control, stats bar",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UA-01"
+      ],
+      "trigger": "The phone user opens Main shell, navigation drawer, connect control, stats bar on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-02",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Profile list, row layout, search, reorder, delete, share popup",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UB-01"
+      ],
+      "trigger": "The phone user opens Profile list, row layout, search, reorder, delete, share popup on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-03",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Profile editor and UDP fallback",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UC-01"
+      ],
+      "trigger": "The phone user opens Profile editor and UDP fallback on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-04",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Import and export flows",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UD-01"
+      ],
+      "trigger": "The phone user opens Import and export flows on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-05",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Subscriptions: URL list, add/edit/remove dialog, refresh service and profile merge",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UE-01"
+      ],
+      "trigger": "The phone user opens Subscriptions: URL list, add/edit/remove dialog, refresh service and profile merge on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-06",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Custom rules and ACL",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UF-01"
+      ],
+      "trigger": "The phone user opens Custom rules and ACL on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-07",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Per-app proxy, Apps VPN mode",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UG-01"
+      ],
+      "trigger": "The phone user opens Per-app proxy, Apps VPN mode on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-08",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Plugin picker and plugin options",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UH-01"
+      ],
+      "trigger": "The phone user opens Plugin picker and plugin options on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-09",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "Global settings",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UI-01"
+      ],
+      "trigger": "The phone user opens Global settings on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-10",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "QR scanner and About",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UJ-01"
+      ],
+      "trigger": "The phone user opens QR scanner and About on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    },
+    {
+      "id": "O-JOURNEY-11",
+      "level": "journey",
+      "introduced_at": "requirements",
+      "title": "System surfaces: notification, tile, shortcuts, boot, Tasker",
+      "status": "ready",
+      "parent_ids": [],
+      "design_ids": [
+        "R-UK-01"
+      ],
+      "trigger": "The phone user opens System surfaces: notification, tile, shortcuts, boot, Tasker on HarmonyOS.",
+      "observe": "Visible controls, screen text, persisted state and service state.",
+      "expected": [
+        "The HarmonyOS screen matches the Android baseline.",
+        "Each operation produces the expected result.",
+        "A failure shows a message and leaves the screen usable."
+      ],
+      "failure_message": "The screen differs from the Android baseline or an operation fails silently.",
+      "sources": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ]
+    }
+  ],
+  "tests": [],
+  "open_questions": []
+}

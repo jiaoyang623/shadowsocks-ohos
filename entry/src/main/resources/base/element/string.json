@@ -90,15 +90,15 @@
     },
     {
       "name": "index_import_from_file",
-      "value": "Import from file"
+      "value": "Import from file…"
     },
     {
       "name": "index_replace_from_file",
-      "value": "Replace from file"
+      "value": "Replace from file…"
     },
     {
       "name": "index_export_to_file",
-      "value": "Export to file"
+      "value": "Export to file…"
     },
     {
       "name": "index_copy_to_clipboard",
@@ -119,6 +119,14 @@
     {
       "name": "index_disconnect",
       "value": "Disconnect"
+    },
+    {
+      "name": "index_edit_running",
+      "value": "Disconnect to edit the running profile"
+    },
+    {
+      "name": "index_edit_failed",
+      "value": "Could not open the profile editor"
     },
     {
       "name": "index_test_connection",
@@ -195,6 +203,10 @@
     {
       "name": "index_vpn_start_timeout",
       "value": "Timed out starting the VPN"
+    },
+    {
+      "name": "index_vpn_stop_timeout",
+      "value": "Timed out stopping the VPN"
     },
     {
       "name": "index_connection_lost",
@@ -390,7 +402,7 @@
     },
     {
       "name": "settings_proxy",
-      "value": "Proxy"
+      "value": "Proxy only"
     },
     {
       "name": "settings_proxy_explainer",
@@ -406,7 +418,7 @@
     },
     {
       "name": "settings_socks_port",
-      "value": "SOCKS5 port (%d)"
+      "value": "SOCKS5 proxy port"
     },
     {
       "name": "settings_connection_test_url",
@@ -502,7 +514,7 @@
     },
     {
       "name": "subscription_add_subscription",
-      "value": "Add subscription"
+      "value": "Add a subscription"
     },
     {
       "name": "subscription_never_updated",
@@ -602,7 +614,7 @@
     },
     {
       "name": "index_add_link_profile",
-      "value": "Add the profile in this link?"
+      "value": "Add this Shadowsocks Profile?"
     },
     {
       "name": "profile_edit_unsaved_title",
@@ -619,6 +631,606 @@
     {
       "name": "profile_edit_subscription_readonly",
       "value": "This profile comes from a subscription. An update rewrites its server fields, so they are read-only here."
+    },
+    {
+      "name": "drawer_navigation",
+      "value": "Navigation"
+    },
+    {
+      "name": "drawer_open",
+      "value": "Open navigation drawer"
+    },
+    {
+      "name": "drawer_profiles",
+      "value": "Profiles"
+    },
+    {
+      "name": "drawer_subscriptions",
+      "value": "Subscriptions"
+    },
+    {
+      "name": "drawer_custom_rules",
+      "value": "Custom rules"
+    },
+    {
+      "name": "drawer_settings",
+      "value": "Settings"
+    },
+    {
+      "name": "drawer_faq",
+      "value": "FAQ"
+    },
+    {
+      "name": "drawer_about",
+      "value": "About"
+    },
+    {
+      "name": "drawer_faq_failed",
+      "value": "Could not open %s"
+    },
+    {
+      "name": "service_stop",
+      "value": "Stop"
+    },
+    {
+      "name": "service_permission_denied",
+      "value": "Permission denied to create a VPN service"
+    },
+    {
+      "name": "service_no_profile",
+      "value": "Please select a profile"
+    },
+    {
+      "name": "stats_connected_tap",
+      "value": "Connected, tap to check connection"
+    },
+    {
+      "name": "stats_success",
+      "value": "Success: HTTPS handshake took %s"
+    },
+    {
+      "name": "stats_internet_unavailable",
+      "value": "Internet Unavailable"
+    },
+    {
+      "name": "stats_error_code",
+      "value": "Error code: #%s"
+    },
+    {
+      "name": "stats_network_error",
+      "value": "Fail to detect internet connection: %s"
+    },
+    {
+      "name": "stats_shutting_down",
+      "value": "Shutting down…"
+    },
+    {
+      "name": "index_mode_changed",
+      "value": "Service mode changed, connect again"
+    },
+    {
+      "name": "index_title_profiles",
+      "value": "Profiles"
+    },
+    {
+      "name": "index_row_share",
+      "value": "Share"
+    },
+    {
+      "name": "index_row_subscription",
+      "value": "Subscription"
+    },
+    {
+      "name": "index_share_copy",
+      "value": "Export to Clipboard"
+    },
+    {
+      "name": "index_share_copied",
+      "value": "Copied the profile link"
+    },
+    {
+      "name": "index_removed",
+      "value": "Removed"
+    },
+    {
+      "name": "index_removed_n",
+      "value": "%d items removed"
+    },
+    {
+      "name": "index_stopping",
+      "value": "Disconnecting…"
+    },
+    {
+      "name": "profile_edit_title",
+      "value": "Profile config"
+    },
+    {
+      "name": "profile_edit_ipv6",
+      "value": "IPv6 route"
+    },
+    {
+      "name": "profile_edit_ipv6_hint",
+      "value": "Redirect IPv6 traffic to the remote server"
+    },
+    {
+      "name": "profile_edit_metered",
+      "value": "Metered network"
+    },
+    {
+      "name": "profile_edit_metered_hint",
+      "value": "Tell the system this network is metered"
+    },
+    {
+      "name": "profile_edit_udp_fallback",
+      "value": "UDP fallback"
+    },
+    {
+      "name": "profile_edit_disabled",
+      "value": "Disabled"
+    },
+    {
+      "name": "profile_edit_remove",
+      "value": "Remove"
+    },
+    {
+      "name": "profile_edit_remove_confirm",
+      "value": "Are you sure you want to remove this profile?"
+    },
+    {
+      "name": "profile_edit_remove_failed",
+      "value": "Could not remove the profile: %s"
+    },
+    {
+      "name": "profile_edit_load_failed",
+      "value": "Could not load the profile"
+    },
+    {
+      "name": "common_yes",
+      "value": "Yes"
+    },
+    {
+      "name": "common_no",
+      "value": "No"
+    },
+    {
+      "name": "index_add_profile",
+      "value": "Add profile"
+    },
+    {
+      "name": "index_export",
+      "value": "Export…"
+    },
+    {
+      "name": "index_export_to_clipboard",
+      "value": "Export to Clipboard"
+    },
+    {
+      "name": "index_import_from_clipboard",
+      "value": "Import from Clipboard"
+    },
+    {
+      "name": "index_manual_settings",
+      "value": "Manual Settings"
+    },
+    {
+      "name": "index_share",
+      "value": "Share"
+    },
+    {
+      "name": "index_qr_code",
+      "value": "QR code"
+    },
+    {
+      "name": "index_import_success",
+      "value": "Successfully import!"
+    },
+    {
+      "name": "index_import_failed",
+      "value": "Failed to import."
+    },
+    {
+      "name": "index_export_success",
+      "value": "Successfully export!"
+    },
+    {
+      "name": "index_export_failed",
+      "value": "Failed to export."
+    },
+    {
+      "name": "index_no_valid_profile_data",
+      "value": "No valid profile data found."
+    },
+    {
+      "name": "index_op_add_profile",
+      "value": "Add profile"
+    },
+    {
+      "name": "subscription_edit_title",
+      "value": "Edit subscription"
+    },
+    {
+      "name": "subscription_remove",
+      "value": "Remove"
+    },
+    {
+      "name": "subscription_undo",
+      "value": "Undo"
+    },
+    {
+      "name": "subscription_removed",
+      "value": "Removed"
+    },
+    {
+      "name": "subscription_removed_n",
+      "value": "%d items removed"
+    },
+    {
+      "name": "subscription_refresh",
+      "value": "Refresh servers from subscription"
+    },
+    {
+      "name": "subscription_syncing_n",
+      "value": "Syncing subscriptions… (%d of %d)"
+    },
+    {
+      "name": "subscription_finishing",
+      "value": "Finishing up…"
+    },
+    {
+      "name": "subscription_stop",
+      "value": "Stop"
+    },
+    {
+      "name": "subscription_service",
+      "value": "Subscription Service"
+    },
+    {
+      "name": "subscription_cleartext_warning",
+      "value": "Cleartext HTTP traffic is insecure"
+    },
+    {
+      "name": "subscription_url_no_protocol",
+      "value": "No protocol: %s"
+    },
+    {
+      "name": "subscription_url_unknown_protocol",
+      "value": "Unknown protocol: %s"
+    },
+    {
+      "name": "subscription_parse_failed",
+      "value": "Subscription parse failed: %s"
+    },
+    {
+      "name": "custom_rules_add_rules",
+      "value": "Add rule(s)…"
+    },
+    {
+      "name": "custom_rules_manual_settings",
+      "value": "Manual Settings"
+    },
+    {
+      "name": "custom_rules_gfw_list",
+      "value": "GFW List"
+    },
+    {
+      "name": "custom_rules_edit_rule",
+      "value": "Edit rule"
+    },
+    {
+      "name": "custom_rules_template_generic",
+      "value": "Subnet or Hostname PCRE pattern"
+    },
+    {
+      "name": "custom_rules_template_domain",
+      "value": "Domain name and all its subdomain names"
+    },
+    {
+      "name": "custom_rules_template_url",
+      "value": "URL to online config"
+    },
+    {
+      "name": "custom_rules_domain_invalid",
+      "value": "Enter a valid domain name"
+    },
+    {
+      "name": "custom_rules_url_invalid",
+      "value": "Enter a valid URL with a scheme"
+    },
+    {
+      "name": "custom_rules_cleartext_warning",
+      "value": "Cleartext HTTP traffic is insecure"
+    },
+    {
+      "name": "custom_rules_exported",
+      "value": "Successfully export!"
+    },
+    {
+      "name": "custom_rules_export_failed",
+      "value": "Failed to export."
+    },
+    {
+      "name": "custom_rules_import_failed",
+      "value": "Failed to import."
+    },
+    {
+      "name": "app_picker_title",
+      "value": "Apps VPN mode"
+    },
+    {
+      "name": "app_picker_mode",
+      "value": "Mode"
+    },
+    {
+      "name": "app_picker_mode_off",
+      "value": "Off"
+    },
+    {
+      "name": "app_picker_mode_on",
+      "value": "On"
+    },
+    {
+      "name": "app_picker_mode_bypass",
+      "value": "Bypass"
+    },
+    {
+      "name": "app_picker_search",
+      "value": "Search apps"
+    },
+    {
+      "name": "app_picker_clear",
+      "value": "Clear"
+    },
+    {
+      "name": "app_picker_add_hint",
+      "value": "Bundle name, for example com.example.app"
+    },
+    {
+      "name": "app_picker_add",
+      "value": "Add"
+    },
+    {
+      "name": "app_picker_menu",
+      "value": "More options"
+    },
+    {
+      "name": "app_picker_apply_all",
+      "value": "Apply Settings to All Profiles"
+    },
+    {
+      "name": "app_picker_export",
+      "value": "Export to Clipboard"
+    },
+    {
+      "name": "app_picker_import",
+      "value": "Import from Clipboard"
+    },
+    {
+      "name": "app_picker_apply_done",
+      "value": "Applied to all profiles"
+    },
+    {
+      "name": "app_picker_export_ok",
+      "value": "Successfully export!"
+    },
+    {
+      "name": "app_picker_export_fail",
+      "value": "Failed to export."
+    },
+    {
+      "name": "app_picker_import_ok",
+      "value": "Successfully import!"
+    },
+    {
+      "name": "app_picker_import_fail",
+      "value": "Failed to import."
+    },
+    {
+      "name": "app_picker_empty",
+      "value": "No apps selected"
+    },
+    {
+      "name": "app_picker_query_unavailable",
+      "value": "The app list is unavailable on this device. Add bundle names manually."
+    },
+    {
+      "name": "app_picker_query_denied",
+      "value": "The app query permission is missing. Add bundle names manually."
+    },
+    {
+      "name": "app_picker_query_failed",
+      "value": "The app query failed. Add bundle names manually."
+    },
+    {
+      "name": "app_picker_not_installed",
+      "value": "Not installed"
+    },
+    {
+      "name": "app_picker_client_app",
+      "value": "The Shadowsocks app always stays outside the tunnel."
+    },
+    {
+      "name": "app_picker_invalid_name",
+      "value": "Enter a valid bundle name."
+    },
+    {
+      "name": "app_picker_not_found",
+      "value": "No installed app has this bundle name."
+    },
+    {
+      "name": "app_picker_limit",
+      "value": "Up to %d apps can be selected."
+    },
+    {
+      "name": "profile_edit_proxy_apps",
+      "value": "Apps VPN mode"
+    },
+    {
+      "name": "profile_edit_proxy_apps_off",
+      "value": "Off"
+    },
+    {
+      "name": "profile_edit_proxy_apps_on",
+      "value": "On, %d apps"
+    },
+    {
+      "name": "profile_edit_proxy_apps_bypass",
+      "value": "Bypass, %d apps"
+    },
+    {
+      "name": "profile_edit_proxy_apps_vpn_only",
+      "value": "VPN service mode only"
+    },
+    {
+      "name": "profile_edit_plugin_category",
+      "value": "Plugin"
+    },
+    {
+      "name": "profile_edit_plugin_configure",
+      "value": "Configure…"
+    },
+    {
+      "name": "profile_edit_plugin_disabled",
+      "value": "Disabled"
+    },
+    {
+      "name": "profile_edit_plugin_unknown",
+      "value": "Unknown plugin %s"
+    },
+    {
+      "name": "plugin_label_simple_obfs",
+      "value": "simple-obfs"
+    },
+    {
+      "name": "plugin_label_v2ray",
+      "value": "v2ray-plugin"
+    },
+    {
+      "name": "plugin_options_control_chars",
+      "value": "No control characters allowed."
+    },
+    {
+      "name": "plugin_options_obfs_mode",
+      "value": "The obfs option must be http or tls"
+    },
+    {
+      "name": "plugin_options_v2ray_mode",
+      "value": "Only the websocket mode is supported"
+    },
+    {
+      "name": "index_profile_plugin",
+      "value": "Plugin: %s"
+    },
+    {
+      "name": "settings_auto_connect",
+      "value": "Auto Connect"
+    },
+    {
+      "name": "settings_auto_connect_summary",
+      "value": "Enable Shadowsocks on startup/app update if it was running before"
+    },
+    {
+      "name": "settings_local_dns_port",
+      "value": "Local DNS port"
+    },
+    {
+      "name": "settings_advanced",
+      "value": "Advanced"
+    },
+    {
+      "name": "settings_not_set",
+      "value": "Not set"
+    },
+    {
+      "name": "settings_port_number",
+      "value": "Port number"
+    },
+    {
+      "name": "index_scan_qr_code",
+      "value": "Scan QR code"
+    },
+    {
+      "name": "index_import_qr_image",
+      "value": "Import QR image"
+    },
+    {
+      "name": "index_op_scan",
+      "value": "QR scan"
+    },
+    {
+      "name": "qr_no_profiles",
+      "value": "No profile found in this code."
+    },
+    {
+      "name": "qr_import_success",
+      "value": "Successfully import!"
+    },
+    {
+      "name": "qr_import_failed",
+      "value": "Failed to import."
+    },
+    {
+      "name": "about_app_version",
+      "value": "App version"
+    },
+    {
+      "name": "about_body_notice",
+      "value": "Copyright (C) 2017 by Max Lv <max.c.lv@gmail.com>\n\nCopyright (C) 2017 by Mygod Studio <contact-shadowsocks-android@mygod.be>\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/."
+    },
+    {
+      "name": "about_heading_licences",
+      "value": "Open Source Licenses"
+    },
+    {
+      "name": "about_link_shadowsocks",
+      "value": "Shadowsocks"
+    },
+    {
+      "name": "about_link_max_lv",
+      "value": "max.c.lv@gmail.com"
+    },
+    {
+      "name": "about_link_mygod",
+      "value": "contact-shadowsocks-android@mygod.be"
+    },
+    {
+      "name": "about_link_gnu",
+      "value": "http://www.gnu.org/licenses/"
+    },
+    {
+      "name": "about_link_redsocks",
+      "value": "redsocks: APL 2.0"
+    },
+    {
+      "name": "about_link_libevent",
+      "value": "libevent: BSD"
+    },
+    {
+      "name": "about_link_tun2socks",
+      "value": "tun2socks: BSD"
+    },
+    {
+      "name": "about_link_shadowsocks_rust",
+      "value": "shadowsocks-rust: MIT"
+    },
+    {
+      "name": "about_link_libsodium",
+      "value": "libsodium: ISC"
+    },
+    {
+      "name": "about_link_openssl",
+      "value": "OpenSSL: OpenSSL License"
+    },
+    {
+      "name": "about_link_other",
+      "value": "Other licenses"
+    },
+    {
+      "name": "about_other_licences_unavailable",
+      "value": "The other license list is not available on this device."
+    },
+    {
+      "name": "notification_stop",
+      "value": "Stop"
     }
   ]
 }

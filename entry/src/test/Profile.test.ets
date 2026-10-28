@@ -135,7 +135,7 @@ export default function profileTest() {
 
       // the tun answers queries itself, through the resolver it is given
       expect(config['locals'][0]['tun_interface_address']).assertEqual('172.19.0.1/30');
-      expect(config['locals'][0]['dns_gateway']).assertEqual('127.0.0.1:5453');
+      expect(config['locals'][0]['dns_gateway']).assertEqual('127.0.0.1:5450');
 
       // that resolver is a loopback listener, and resolves through the proxy
       // over TCP only: the server does not relay UDP, so racing a UDP query
@@ -143,7 +143,7 @@ export default function profileTest() {
       const dns: object = config['locals'][1];
       expect(dns['protocol']).assertEqual('dns');
       expect(dns['local_address']).assertEqual('127.0.0.1');
-      expect(dns['local_port']).assertEqual(5453);
+      expect(dns['local_port']).assertEqual(5450);
       expect(dns['local_dns_address']).assertEqual('1.1.1.1');
       // the profile's own resolver, which defaults to the same one
       // shadowsocks-android uses

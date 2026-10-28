@@ -1,0 +1,23 @@
+# Red record
+
+命令: `A01_SPEC=<suite> ./test-arkts-host.sh` in a clean copy of baseline `e123804`.
+时间: 2026-10-28T12:05:01+11:00
+基线: `e123804` (git archive HEAD, no working-tree changes)
+
+## Result
+
+| Suite | Passed | Failed | Valid Red |
+| --- | ---: | ---: | --- |
+| Profile | 18 | 1 | The DNS gateway test expects the configured local port 5450. The baseline returns the fixed 5453. |
+| Subscription | 4 | 1 | The garbage-body test expects a thrown `SubscriptionParseError`. The baseline returns an empty list. |
+| CustomRules | 6 | 4 | The new storage and import rules fail on the baseline: anchored domains, one-row removal, proxy-only import, duplicate rejection. |
+
+The raw output is in `red-baseline.txt`.
+
+## Scope note
+
+These three suites cover the changed behavior of existing modules. The eleven new parity
+suites and the new model modules did not exist on the baseline, so a Red run for them would
+fail at import, which is not a valid Red. The batch wrote the implementation and the new
+specs in the same wave to meet the delivery date. This process deviation is recorded in
+`flow.json` under `risks` and in `completion.md`.

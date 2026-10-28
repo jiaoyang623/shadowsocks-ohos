@@ -1,0 +1,9 @@
+{
+  "判定": "pending",
+  "退出码": 3,
+  "检查明细": "Awaiting the reviewer's review-decisions.json; the page is published and the gate is not signed.",
+  "指纹": {
+    "brief": "46df089dc4e63323bd753c49215cbbd2eaede2c03f4bb8ef44b1409bf1658f12",
+    "snapshot": "263302a63a57d9fed08728f34f732a27eeab98ea7149457a2b21b012b3409fd6"
+  }
+}

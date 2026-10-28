@@ -13,6 +13,15 @@ function profile(host: string, port: number, name: string): Profile {
   return profile;
 }
 
+/** The export text, or a failure when the export returned null. */
+function exportText(entries: Profile[], sip008: boolean = false): string {
+  const text = exportProfiles(entries, sip008);
+  if (text === null) {
+    throw new Error('exportProfiles returned null');
+  }
+  return text;
+}
+
 export default function profilesFileTest() {
   describe('ProfilesFileTest', () => {
     it('exports the fields android exports', 0, () => {
@@ -22,7 +31,7 @@ export default function profilesFileTest() {
       exported.remoteDns = '9.9.9.9';
       exported.userOrder = 3;
 
-      const entries = JSON.parse(exportProfiles([exported])) as ProfileJson[];
+      const entries = JSON.parse(exportText([exported])) as ProfileJson[];
       expect(entries.length).assertEqual(1);
       expect(entries[0].server).assertEqual('example.com');
       expect(entries[0].server_port).assertEqual(8388);
@@ -41,7 +50,7 @@ export default function profilesFileTest() {
       const exported = profile('example.com', 8388, 'Example');
       exported.plugin = 'v2ray-plugin';
 
-      const entries = JSON.parse(exportProfiles([exported], true)) as ProfileJson[];
+      const entries = JSON.parse(exportText([exported], true)) as ProfileJson[];
       expect(entries[0].server).assertEqual('example.com');
       expect(entries[0].plugin === undefined).assertTrue();
       expect(entries[0].remarks === undefined).assertTrue();
@@ -53,7 +62,7 @@ export default function profilesFileTest() {
       original.remoteDns = '1.1.1.1';
       original.ipv6 = true;
 
-      const parsed = parseProfilesText(exportProfiles([original]));
+      const parsed = parseProfilesText(exportText([original]));
       expect(parsed.length).assertEqual(1);
       expect(parsed[0].host).assertEqual('example.com');
       expect(parsed[0].remotePort).assertEqual(8388);

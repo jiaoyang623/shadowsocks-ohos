@@ -1,0 +1,2584 @@
+{
+  "unit": "U08",
+  "title": "Plugin picker and plugin options",
+  "sources_read": [
+    "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt",
+    "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt",
+    "mobile/src/main/res/layout/icon_list_item_2.xml",
+    "mobile/src/main/res/layout/layout_profile_config.xml",
+    "mobile/src/main/res/layout/layout_profile.xml",
+    "mobile/src/main/res/xml/pref_profile.xml",
+    "mobile/src/main/res/values/dimen.xml",
+    "mobile/src/main/AndroidManifest.xml",
+    "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/UdpFallbackProfileActivity.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/Plugin.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/PluginConfiguration.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/ResolvedPlugin.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/NativePlugin.kt",
+    "core/src/main/java/com/github/shadowsocks/plugin/NoPlugin.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/PluginOptions.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/PluginContract.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/ConfigurationActivity.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/OptionsCapableActivity.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/HelpActivity.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/HelpCallback.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/fragment/AlertDialogFragment.kt",
+    "plugin/src/main/java/com/github/shadowsocks/plugin/fragment/Utils.kt",
+    "plugin/src/test/java/com/github/shadowsocks/plugin/PluginOptionsTest.kt",
+    "plugin/src/main/res/values/strings.xml",
+    "plugin/src/main/AndroidManifest.xml",
+    "plugin/doc.md",
+    "core/src/main/res/values/strings.xml",
+    "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt",
+    "core/src/main/java/com/github/shadowsocks/BootReceiver.kt",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfilesFile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/zh_CN/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/native/sslocal-ffi/src/plugin.rs",
+    "/opt/git/github/shadowsocks-ohos/native/sslocal-ffi/src/lib.rs",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md"
+  ],
+  "controls": [
+    {
+      "id": "C-U08-001",
+      "type": "screen",
+      "label": "Profile config",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always when the profile editor is open",
+      "enabled_when": "always",
+      "action": "Hosts the preference screen that contains the Plugin category. U03 specifies this screen as C-U03-001.",
+      "navigates_to": "U03",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:56"
+    },
+    {
+      "id": "C-U08-002",
+      "type": "text",
+      "label": "Plugin",
+      "android_id": "",
+      "parent": "C-U08-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Category header above the plugin rows",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:73"
+    },
+    {
+      "id": "C-U08-003",
+      "type": "preference",
+      "label": "Plugin",
+      "android_id": "plugin",
+      "parent": "C-U08-001",
+      "visible_when": "always",
+      "enabled_when": "the profile subscription status is not Active",
+      "action": "Opens the plugin picker bottom sheet",
+      "navigates_to": "Plugin picker",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:75"
+    },
+    {
+      "id": "C-U08-004",
+      "type": "image",
+      "label": "<selected plugin icon>",
+      "android_id": "",
+      "parent": "C-U08-003",
+      "visible_when": "the plugin selected when the row initializes declares an icon. The preference icon is set to null, so the row has no image when that value is Disabled or an unknown id",
+      "enabled_when": "always",
+      "action": "Shows the selected plugin app icon on the preference row",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:39"
+    },
+    {
+      "id": "C-U08-005",
+      "type": "text",
+      "label": "<selected plugin label>",
+      "android_id": "",
+      "parent": "C-U08-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the selected plugin label, or Unknown plugin with the stored value",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:33"
+    },
+    {
+      "id": "C-U08-006",
+      "type": "preference",
+      "label": "Configure…",
+      "android_id": "plugin.configure",
+      "parent": "C-U08-001",
+      "visible_when": "always",
+      "enabled_when": "the selected plugin entry exists and is not Disabled, and the profile subscription status is not Active",
+      "action": "Launches the plugin configuration activity, or the built-in options editor when none resolves",
+      "navigates_to": "Plugin configuration activity or plugin options editor",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:80"
+    },
+    {
+      "id": "C-U08-007",
+      "type": "text",
+      "label": "<plugin options string>",
+      "android_id": "",
+      "parent": "C-U08-006",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the options of the selected plugin, without the plugin id. A plugin with no stored options shows its default config here",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:184"
+    },
+    {
+      "id": "C-U08-008",
+      "type": "dialog",
+      "label": "Plugin picker",
+      "android_id": "",
+      "parent": "C-U08-001",
+      "visible_when": "the Plugin row is tapped",
+      "enabled_when": "always",
+      "action": "Shows the selectable plugins in a bottom sheet with vertical 8dp padding",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:118"
+    },
+    {
+      "id": "C-U08-009",
+      "type": "list",
+      "label": "Plugin list",
+      "android_id": "",
+      "parent": "C-U08-008",
+      "visible_when": "always while the picker is open",
+      "enabled_when": "always",
+      "action": "Lists Disabled and every installed native plugin",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:121"
+    },
+    {
+      "id": "C-U08-010",
+      "type": "row",
+      "label": "Disabled",
+      "android_id": "",
+      "parent": "C-U08-009",
+      "visible_when": "always, first in discovery order",
+      "enabled_when": "always",
+      "action": "Selects no plugin and closes the sheet",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt:30"
+    },
+    {
+      "id": "C-U08-011",
+      "type": "row",
+      "label": "<plugin label>",
+      "android_id": "",
+      "parent": "C-U08-009",
+      "visible_when": "one row per exported content provider that answers ACTION_NATIVE_PLUGIN",
+      "enabled_when": "always",
+      "action": "Selects that plugin and closes the sheet",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt:31"
+    },
+    {
+      "id": "C-U08-012",
+      "type": "image",
+      "label": "<plugin icon>",
+      "android_id": "android:id/icon",
+      "parent": "C-U08-011",
+      "visible_when": "always; the ImageView is inflated for every row and its drawable is null when the plugin declares no icon",
+      "enabled_when": "always",
+      "action": "Shows the 52dp plugin icon",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/icon_list_item_2.xml:10"
+    },
+    {
+      "id": "C-U08-013",
+      "type": "text",
+      "label": "<plugin label>",
+      "android_id": "android:id/text1",
+      "parent": "C-U08-011",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the plugin label in bold when the row is the selected plugin",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:74"
+    },
+    {
+      "id": "C-U08-014",
+      "type": "text",
+      "label": "<plugin id>",
+      "android_id": "android:id/text2",
+      "parent": "C-U08-011",
+      "visible_when": "the plugin id is non-empty and differs from the label",
+      "enabled_when": "always",
+      "action": "Shows the plugin id in bold when the row is the selected plugin",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:76"
+    },
+    {
+      "id": "C-U08-015",
+      "type": "image",
+      "label": "Auto Connect unlock warning",
+      "android_id": "unlock",
+      "parent": "C-U08-011",
+      "visible_when": "the plugin is not direct-boot aware, Auto Connect is on, and the API level is 24 or higher",
+      "enabled_when": "always",
+      "action": "Shows the amber lock-open icon and the tooltip This plugin might not work with Auto Connect",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/icon_list_item_2.xml:34"
+    },
+    {
+      "id": "C-U08-016",
+      "type": "dialog",
+      "label": "Configure…",
+      "android_id": "",
+      "parent": "C-U08-001",
+      "visible_when": "Configure… is tapped and no configuration activity resolves, or the activity returns RESULT_FALLBACK",
+      "enabled_when": "always",
+      "action": "Edits the SIP003 options string in the built-in editor",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+    },
+    {
+      "id": "C-U08-017",
+      "type": "input",
+      "label": "Plugin options",
+      "android_id": "android.R.id.edit",
+      "parent": "C-U08-016",
+      "visible_when": "the options dialog is open",
+      "enabled_when": "always",
+      "action": "Accepts the options string in a monospace EditText prefilled with the options of the selected plugin, or its default config when none is stored",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:57"
+    },
+    {
+      "id": "C-U08-018",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U08-016",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Parses the text and stores it as the options of the selected plugin",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+    },
+    {
+      "id": "C-U08-019",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U08-016",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Closes the dialog without changing the stored options",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+    },
+    {
+      "id": "C-U08-020",
+      "type": "button",
+      "label": "?",
+      "android_id": "android.R.id.button3",
+      "parent": "C-U08-016",
+      "visible_when": "the selected plugin resolves an ACTION_HELP activity",
+      "enabled_when": "always",
+      "action": "Launches plugin help with the current options text. The stock AlertDialog also dismisses the options editor on this click and discards the typed edit",
+      "navigates_to": "Plugin help",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:50"
+    },
+    {
+      "id": "C-U08-021",
+      "type": "dialog",
+      "label": "?",
+      "android_id": "",
+      "parent": "C-U08-020",
+      "visible_when": "the help activity returns RESULT_OK",
+      "enabled_when": "always",
+      "action": "Shows the message from EXTRA_HELP_MESSAGE. A RESULT_OK without the extra opens the dialog with an empty message",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:79"
+    },
+    {
+      "id": "C-U08-022",
+      "type": "screen",
+      "label": "Plugin configuration activity",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "the selected plugin declares an ACTION_CONFIGURE activity",
+      "enabled_when": "always",
+      "action": "Lets the plugin edit its options and returns RESULT_OK, RESULT_FALLBACK, or RESULT_CANCELED",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:263"
+    },
+    {
+      "id": "C-U08-023",
+      "type": "screen",
+      "label": "App info",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "an installed plugin row is long-pressed and the system settings activity resolves",
+      "enabled_when": "always",
+      "action": "Opens the Android application details settings of the plugin package",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:87"
+    },
+    {
+      "id": "C-U08-024",
+      "type": "snackbar",
+      "label": "Warning: This plugin does not seem to come from a known trusted source.",
+      "android_id": "",
+      "parent": "C-U08-001",
+      "visible_when": "the newly selected plugin is not signed by a trusted key",
+      "enabled_when": "always",
+      "action": "Warns for the long snackbar duration",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:186"
+    },
+    {
+      "id": "C-U08-025",
+      "type": "snackbar",
+      "label": "<options parse error message>",
+      "android_id": "",
+      "parent": "C-U08-001",
+      "visible_when": "the options text fails to parse",
+      "enabled_when": "always",
+      "action": "Shows the exception message and refuses the change",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:246"
+    },
+    {
+      "id": "C-U08-026",
+      "type": "snackbar",
+      "label": "Conflicting plugins found from: <packages>",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "two providers declare the same plugin id, or a plugin declares an alias that another plugin already uses",
+      "enabled_when": "always",
+      "action": "Builds the message from the providers whose id equals the later plugin's id, so a duplicate id names both packages while an alias conflict names only the later plugin's package. The list build then throws IllegalStateException",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt:42"
+    },
+    {
+      "id": "C-U08-027",
+      "type": "text",
+      "label": "Plugin: <id>",
+      "android_id": "android:id/text2",
+      "parent": "",
+      "visible_when": "the profile's plugin id is non-empty",
+      "enabled_when": "always",
+      "action": "Appends the plugin id line to the profile row details",
+      "navigates_to": "U02",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:168"
+    },
+    {
+      "id": "C-U08-028",
+      "type": "snackbar",
+      "label": "Failed to connect the remote server: <message>",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "the service stops with a failure message, such as Unknown plugin <id> or UDP fallback cannot have plugins",
+      "enabled_when": "always",
+      "action": "Reports the start failure and leaves the service stopped",
+      "navigates_to": "U01",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:111"
+    },
+    {
+      "id": "C-U08-029",
+      "type": "image",
+      "label": "<settings icon>",
+      "android_id": "",
+      "parent": "C-U08-006",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the static settings icon that the Configure… row declares",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_profile.xml:82"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UH-01",
+      "statement": "The Plugin row summary shows the selected plugin label, or Unknown plugin with the stored value.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:33",
+      "examples": [
+        {
+          "given": "obfs-local is installed and selected",
+          "when": "the profile editor draws the Plugin row",
+          "then": "the summary reads the label the plugin app declares",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored plugin id is kcptun and no package declares it",
+          "when": "the profile editor draws the Plugin row",
+          "then": "the summary reads Unknown plugin kcptun",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-02",
+      "statement": "When the row initializes, the Plugin row icon is the icon of the selected plugin, and empty when the value is Disabled or an unknown id. A later picker selection does not refresh it (R-UH-09).",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:39",
+      "examples": [
+        {
+          "given": "obfs-local is selected when the row initializes",
+          "when": "the Plugin row is drawn",
+          "then": "the row shows the obfs-local app icon",
+          "polarity": "positive"
+        },
+        {
+          "given": "Disabled is the value when the row initializes",
+          "when": "the Plugin row is drawn",
+          "then": "the row shows no icon",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-03",
+      "statement": "Tapping the Plugin row opens a bottom sheet that lists Disabled and every exported native plugin provider.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt:30",
+      "examples": [
+        {
+          "given": "two native plugin packages are installed",
+          "when": "the user taps the Plugin row",
+          "then": "the sheet lists Disabled and both plugins",
+          "polarity": "positive"
+        },
+        {
+          "given": "no package exports a native plugin provider",
+          "when": "the user taps the Plugin row",
+          "then": "the sheet lists only Disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-04",
+      "statement": "When the current value resolves, the picker moves it to the first row, skips it at its discovery position, and draws its label bold. The id line is shown and bold only when the id is non-empty and differs from the label.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:101",
+      "examples": [
+        {
+          "given": "obfs-local is the current plugin and sits at index 1",
+          "when": "the picker opens",
+          "then": "row 0 shows obfs-local in bold, obfs-local appears only once, and the other rows follow in discovery order",
+          "polarity": "positive"
+        },
+        {
+          "given": "the current value is Disabled",
+          "when": "the picker opens",
+          "then": "row 0 shows Disabled in bold with no id line, and the installed plugins follow in discovery order",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the stored plugin id is unknown",
+          "when": "the picker opens",
+          "then": "no row is moved and discovery order is kept",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-05",
+      "statement": "A plugin row shows its id below the label only when the id is non-empty and differs from the label.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:76",
+      "examples": [
+        {
+          "given": "a plugin whose label differs from its id",
+          "when": "its row is drawn",
+          "then": "the second line shows the id",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Disabled row with an empty id",
+          "when": "its row is drawn",
+          "then": "the second line is hidden",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-06",
+      "statement": "The unlock warning icon shows when the plugin is not direct-boot aware, Auto Connect is on, and the API level is 24 or higher.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:78",
+      "examples": [
+        {
+          "given": "Auto Connect is on and the plugin provider is not directBootAware",
+          "when": "its row is drawn",
+          "then": "the amber lock-open icon is visible",
+          "polarity": "positive"
+        },
+        {
+          "given": "Auto Connect is off",
+          "when": "its row is drawn",
+          "then": "the icon is gone",
+          "polarity": "negative"
+        },
+        {
+          "given": "Auto Connect is on and the device runs API 23",
+          "when": "its row is drawn",
+          "then": "the icon never shows because directBootAware is true below API 24",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-07",
+      "statement": "Tapping a row closes the sheet and reports the plugin id only when it differs from the current value.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:134",
+      "examples": [
+        {
+          "given": "obfs-local is current",
+          "when": "the user taps v2ray-plugin",
+          "then": "the sheet closes and the editor receives v2ray-plugin",
+          "polarity": "positive"
+        },
+        {
+          "given": "obfs-local is current",
+          "when": "the user taps the first row that shows obfs-local",
+          "then": "the sheet closes and no result is sent",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-08",
+      "statement": "Long-pressing an installed plugin row opens the system application details screen of that plugin package.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:86",
+      "examples": [
+        {
+          "given": "an installed plugin row",
+          "when": "the user long-presses it",
+          "then": "App info for the plugin package opens",
+          "polarity": "positive"
+        },
+        {
+          "given": "no activity handles application details",
+          "when": "the user long-presses a row",
+          "then": "the long press returns false and nothing opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-09",
+      "statement": "Selecting a plugin writes the new plugin string, marks the profile dirty, updates the Configure… row, and refreshes the summary. The row icon is not refreshed on this path; it keeps the icon set when the editor opened.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:180",
+      "examples": [
+        {
+          "given": "obfs-local is selected",
+          "when": "the user picks v2ray-plugin",
+          "then": "the draft plugin string changes, the profile is dirty, the summary shows the v2ray-plugin label, and the row still shows the obfs-local icon until the editor is reopened",
+          "polarity": "positive"
+        },
+        {
+          "given": "a known plugin is selected",
+          "when": "the user picks Disabled",
+          "then": "the summary reads Disabled, Configure… is disabled, and the row still shows the previous plugin icon until the editor is reopened",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-10",
+      "statement": "Picking Disabled disables Configure…, and picking a known plugin enables it.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:183",
+      "examples": [
+        {
+          "given": "a known plugin is selected",
+          "when": "the user picks Disabled",
+          "then": "Configure… becomes disabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "Disabled is selected",
+          "when": "the user picks obfs-local",
+          "then": "Configure… becomes enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored plugin id is unknown, so Configure… is disabled",
+          "when": "the user picks Disabled",
+          "then": "Configure… stays disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-11",
+      "statement": "Configure… stays disabled when the stored plugin id resolves to no installed plugin.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201",
+      "examples": [
+        {
+          "given": "the stored id is kcptun and no package provides it",
+          "when": "the editor opens",
+          "then": "Configure… is disabled",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the stored id is obfs-local and the installed provider declares it",
+          "when": "the editor opens",
+          "then": "Configure… is enabled",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-12",
+      "statement": "Selecting a plugin that is not signed by a trusted source shows the warning snackbar.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:185",
+      "examples": [
+        {
+          "given": "an untrusted plugin app is installed",
+          "when": "the user selects it",
+          "then": "the warning snackbar appears",
+          "polarity": "positive"
+        },
+        {
+          "given": "Disabled or a trusted plugin",
+          "when": "the user selects it",
+          "then": "no warning appears",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-13",
+      "statement": "Tapping Configure… starts the plugin ACTION_CONFIGURE activity, or the built-in editor when none resolves.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:260",
+      "examples": [
+        {
+          "given": "the plugin resolves ACTION_CONFIGURE",
+          "when": "Configure… is tapped",
+          "then": "the plugin activity opens with the options extra",
+          "polarity": "positive"
+        },
+        {
+          "given": "no activity resolves",
+          "when": "Configure… is tapped",
+          "then": "the built-in options editor opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-14",
+      "statement": "RESULT_OK from the configuration activity replaces the stored options for the selected plugin, and clears them when the result carries no EXTRA_OPTIONS.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:274",
+      "examples": [
+        {
+          "given": "the plugin activity returns RESULT_OK with obfs=http",
+          "when": "the result arrives",
+          "then": "the stored options become obfs=http",
+          "polarity": "positive"
+        },
+        {
+          "given": "the plugin activity returns RESULT_OK with a control character",
+          "when": "the result arrives",
+          "then": "the change is refused and the error snackbar shows",
+          "polarity": "negative"
+        },
+        {
+          "given": "the plugin activity returns RESULT_OK with no EXTRA_OPTIONS, or with a null data Intent",
+          "when": "the result arrives",
+          "then": "the stored options are cleared and the Configure… summary is empty",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-15",
+      "statement": "RESULT_FALLBACK from the configuration activity opens the built-in options editor.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:279",
+      "examples": [
+        {
+          "given": "the plugin activity returns RESULT_FALLBACK",
+          "when": "the result arrives",
+          "then": "the built-in editor opens with the stored options",
+          "polarity": "positive"
+        },
+        {
+          "given": "the plugin activity returns RESULT_CANCELED",
+          "when": "the result arrives",
+          "then": "the built-in editor does not open and the stored options stay",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-16",
+      "statement": "Options that contain a control character are rejected and the previous options are kept.",
+      "kind": "validation",
+      "source": "plugin/src/main/java/com/github/shadowsocks/plugin/PluginOptions.kt:41",
+      "examples": [
+        {
+          "given": "the field holds obfs=tls",
+          "when": "the user enters a newline and taps OK",
+          "then": "a snackbar reads No control characters allowed. and the old options stay",
+          "polarity": "negative"
+        },
+        {
+          "given": "the field holds obfs=tls",
+          "when": "the user taps OK",
+          "then": "the options are stored",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-17",
+      "statement": "The built-in editor shows the options of the selected plugin in a monospace field: the stored options, or the default config when none is stored.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginConfiguration.kt:55",
+      "examples": [
+        {
+          "given": "obfs-local is selected with obfs=tls",
+          "when": "the built-in editor opens",
+          "then": "the monospace field shows obfs=tls",
+          "polarity": "positive"
+        },
+        {
+          "given": "obfs-local is selected with no stored options, and it declares default_config obfs=tls",
+          "when": "the built-in editor opens",
+          "then": "the monospace field shows obfs=tls",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-18",
+      "statement": "The ? button appears only when the plugin resolves ACTION_HELP, and it passes the current text.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:47",
+      "examples": [
+        {
+          "given": "the plugin resolves ACTION_HELP",
+          "when": "the editor opens",
+          "then": "a ? neutral button is shown",
+          "polarity": "positive"
+        },
+        {
+          "given": "no help activity resolves",
+          "when": "the editor opens",
+          "then": "no ? button is shown",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-19",
+      "statement": "A help callback result shows its message in an alert dialog titled ?. A RESULT_OK without EXTRA_HELP_MESSAGE still opens the alert, with an empty message.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:76",
+      "examples": [
+        {
+          "given": "the help activity returns RESULT_OK with a message",
+          "when": "the user returns",
+          "then": "an alert titled ? shows the message",
+          "polarity": "positive"
+        },
+        {
+          "given": "the help activity returns RESULT_CANCELED",
+          "when": "the user returns",
+          "then": "no alert is shown",
+          "polarity": "negative"
+        },
+        {
+          "given": "the help activity returns RESULT_OK without EXTRA_HELP_MESSAGE",
+          "when": "the user returns",
+          "then": "an alert titled ? opens with an empty message",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-20",
+      "statement": "The plugin id and options are saved into the profile and written to ss URLs and JSON.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:294",
+      "examples": [
+        {
+          "given": "plugin v2ray-plugin with mode=websocket",
+          "when": "the profile is exported",
+          "then": "the URL carries the plugin query and the JSON carries plugin and plugin_opts",
+          "polarity": "positive"
+        },
+        {
+          "given": "no plugin is selected",
+          "when": "the profile is exported",
+          "then": "no plugin query or JSON field is written",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-21",
+      "statement": "A newly selected plugin without stored options takes the plugin's default config as its options.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginConfiguration.kt:52",
+      "examples": [
+        {
+          "given": "a plugin declares default_config obfs=tls and has no stored options",
+          "when": "the user selects it",
+          "then": "the Configure… text shows obfs=tls",
+          "polarity": "positive"
+        },
+        {
+          "given": "a plugin declares no default config",
+          "when": "the user selects it",
+          "then": "the Configure… text is empty",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-22",
+      "statement": "Opening a profile owned by an active subscription disables the Plugin and Configure… rows. A later package install or removal re-runs initPlugins and can enable Configure… again from the plugin value while the Plugin row stays disabled.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:158",
+      "examples": [
+        {
+          "given": "an active subscription profile with a known plugin stored",
+          "when": "the editor opens",
+          "then": "the Plugin and Configure… rows are disabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "a manual profile whose stored plugin resolves to an installed plugin",
+          "when": "the editor opens",
+          "then": "both rows are enabled",
+          "polarity": "negative"
+        },
+        {
+          "given": "a manual profile whose plugin value is Disabled",
+          "when": "the editor opens",
+          "then": "the Plugin row is enabled and the Configure… row is disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-23",
+      "statement": "Plugin discovery is cached and rebuilt after any package install or removal.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:103",
+      "examples": [
+        {
+          "given": "a plugin package is installed while the editor is open",
+          "when": "the package broadcast arrives",
+          "then": "the plugin list is rebuilt and the row refreshes",
+          "polarity": "positive"
+        },
+        {
+          "given": "nothing changed",
+          "when": "the list is requested again",
+          "then": "the cached list is returned",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-24",
+      "statement": "Two providers declaring the same plugin id produce a conflict toast that names both packages, and the list build throws IllegalStateException. For an alias collision the toast names only the later plugin's package.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt:36",
+      "examples": [
+        {
+          "given": "two packages declare plugin id obfs-local",
+          "when": "the list is built",
+          "then": "a toast names both packages and IllegalStateException is thrown",
+          "polarity": "negative"
+        },
+        {
+          "given": "a plugin declares the alias obfs-local while another plugin uses obfs-local as its id",
+          "when": "the list is built",
+          "then": "the toast names only the later plugin's package and IllegalStateException is thrown",
+          "polarity": "boundary"
+        },
+        {
+          "given": "two installed providers declare different plugin ids",
+          "when": "the list is built",
+          "then": "both plugins are listed and no conflict toast appears",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-25",
+      "statement": "Starting with a plugin id that has no provider fails with Unknown plugin and stops the service.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:129",
+      "examples": [
+        {
+          "given": "the profile plugin is kcptun and no provider declares it",
+          "when": "the service starts",
+          "then": "a snackbar reads Failed to connect the remote server: Unknown plugin kcptun",
+          "polarity": "negative"
+        },
+        {
+          "given": "the plugin id is empty",
+          "when": "the service starts",
+          "then": "no plugin loads and the tunnel runs directly",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-26",
+      "statement": "A profile with a plugin runs TCP only, and a UDP fallback profile with a plugin is refused.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:250",
+      "examples": [
+        {
+          "given": "a profile with a plugin and no UDP fallback",
+          "when": "the proxy starts",
+          "then": "the mode is tcp_only",
+          "polarity": "positive"
+        },
+        {
+          "given": "a UDP fallback profile with a plugin",
+          "when": "the service starts",
+          "then": "the start fails with UDP fallback cannot have plugins",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-27",
+      "statement": "The profile list row adds a Plugin line with the plugin id when the profile has one.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:167",
+      "examples": [
+        {
+          "given": "a profile with plugin obfs-local",
+          "when": "the list row is drawn",
+          "then": "the details read Plugin: obfs-local",
+          "polarity": "positive"
+        },
+        {
+          "given": "a profile without a plugin",
+          "when": "the row is drawn",
+          "then": "no plugin line appears",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-28",
+      "statement": "Selecting a plugin configured under an alias keeps those options and selects that alias id.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:176",
+      "examples": [
+        {
+          "given": "options are stored under alias simple-obfs",
+          "when": "the user picks the plugin whose id is obfs-local",
+          "then": "the alias entry is selected and its options stay",
+          "polarity": "boundary"
+        },
+        {
+          "given": "options are stored under the plugin id obfs-local",
+          "when": "the user picks the plugin whose id is obfs-local",
+          "then": "the obfs-local entry is selected and its options stay",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-29",
+      "statement": "Each plugin keeps its own options entry while another plugin is selected.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginConfiguration.kt:57",
+      "examples": [
+        {
+          "given": "obfs-local has obfs=tls and v2ray-plugin has mode=websocket",
+          "when": "the user switches between them",
+          "then": "each Configure… summary shows its own options",
+          "polarity": "positive"
+        },
+        {
+          "given": "obfs-local has obfs=tls stored, and v2ray-plugin has no stored entry and no default config",
+          "when": "the user switches from obfs-local to v2ray-plugin and back",
+          "then": "v2ray-plugin shows an empty summary, and obfs-local still shows obfs=tls",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UH-30",
+      "statement": "Options use semicolons, equals signs, and backslash escapes; bare words become flag keys.",
+      "kind": "validation",
+      "source": "plugin/src/main/java/com/github/shadowsocks/plugin/PluginOptions.kt:37",
+      "examples": [
+        {
+          "given": "the text obfs=http;obfs-host=x",
+          "when": "it is parsed",
+          "then": "obfs=http and obfs-host=x are stored",
+          "polarity": "positive"
+        },
+        {
+          "given": "the text a;b",
+          "when": "it is parsed as options without an id",
+          "then": "a and b become flag keys with null values",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the text mode=websocket;tls;host=example.com",
+          "when": "it is parsed, stored, and serialized again",
+          "then": "the entries come out in hash-map order, for example mode=websocket;host=example.com;tls",
+          "polarity": "boundary"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "Plugin value of the profile draft",
+      "states": [
+        "disabled",
+        "known plugin",
+        "unknown plugin id"
+      ],
+      "transitions": [
+        {
+          "from": "disabled",
+          "to": "known plugin",
+          "event": "the user picks an installed plugin in the picker",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:173"
+        },
+        {
+          "from": "known plugin",
+          "to": "known plugin",
+          "event": "the user picks another installed plugin",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:179"
+        },
+        {
+          "from": "known plugin",
+          "to": "disabled",
+          "event": "the user picks Disabled",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:179"
+        },
+        {
+          "from": "known plugin",
+          "to": "unknown plugin id",
+          "event": "the plugin package is removed and the list refreshes",
+          "producer": "ProfileConfigFragment.initPlugins from the package change receiver",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:226"
+        },
+        {
+          "from": "unknown plugin id",
+          "to": "known plugin",
+          "event": "an installed package declares the stored id and the list refreshes",
+          "producer": "ProfileConfigFragment.initPlugins from the package change receiver",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:226"
+        },
+        {
+          "from": "unknown plugin id",
+          "to": "known plugin",
+          "event": "the user picks an installed plugin",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:173"
+        },
+        {
+          "from": "unknown plugin id",
+          "to": "disabled",
+          "event": "the user picks Disabled",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:179"
+        }
+      ]
+    },
+    {
+      "object": "Configure… row enabled state",
+      "states": [
+        "enabled",
+        "disabled: no plugin",
+        "disabled: unknown plugin",
+        "disabled: subscription profile"
+      ],
+      "transitions": [
+        {
+          "from": "disabled: no plugin",
+          "to": "enabled",
+          "event": "the user picks a known plugin",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:183"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled: no plugin",
+          "event": "the user picks Disabled",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:183"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled: unknown plugin",
+          "event": "the plugin package is removed and the list refreshes",
+          "producer": "ProfileConfigFragment.initPlugins after a package change",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201"
+        },
+        {
+          "from": "disabled: unknown plugin",
+          "to": "enabled",
+          "event": "the user picks an installed plugin",
+          "producer": "ProfileConfigFragment plugin fragment result listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:183"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled: subscription profile",
+          "event": "the user opens a profile owned by an active subscription with a known plugin stored",
+          "producer": "ProfileConfigFragment.onCreatePreferences",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:164"
+        },
+        {
+          "from": "disabled: subscription profile",
+          "to": "enabled",
+          "event": "the subscription ends with a known plugin stored and the editor is reopened",
+          "producer": "ProfileConfigFragment.initPlugins on the reopened editor",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201"
+        },
+        {
+          "from": "disabled: subscription profile",
+          "to": "disabled: no plugin",
+          "event": "the subscription ends with Disabled stored and the editor is reopened",
+          "producer": "ProfileConfigFragment.initPlugins on the reopened editor",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201"
+        },
+        {
+          "from": "disabled: subscription profile",
+          "to": "disabled: unknown plugin",
+          "event": "the subscription ends with an id that resolves to no installed plugin and the editor is reopened",
+          "producer": "ProfileConfigFragment.initPlugins on the reopened editor",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201"
+        },
+        {
+          "from": "disabled: subscription profile",
+          "to": "enabled",
+          "event": "a package install or removal refreshes the list with a known plugin stored; initPlugins re-enables Configure… while the Plugin row stays disabled",
+          "producer": "ProfileConfigFragment.initPlugins from the package change receiver",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201"
+        }
+      ]
+    },
+    {
+      "object": "Plugin options editor",
+      "states": [
+        "closed",
+        "built-in editor open",
+        "configuration activity open",
+        "help activity open"
+      ],
+      "transitions": [
+        {
+          "from": "closed",
+          "to": "built-in editor open",
+          "event": "Configure… is tapped and no ACTION_CONFIGURE activity resolves",
+          "producer": "ProfileConfigFragment.onDisplayPreferenceDialog",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:262"
+        },
+        {
+          "from": "closed",
+          "to": "configuration activity open",
+          "event": "Configure… is tapped and ACTION_CONFIGURE resolves",
+          "producer": "ProfileConfigFragment.onDisplayPreferenceDialog",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:263"
+        },
+        {
+          "from": "built-in editor open",
+          "to": "closed",
+          "event": "OK is pressed with parseable options",
+          "producer": "EditTextPreferenceDialogFragmentCompat and ProfileConfigFragment.onPreferenceChange",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:238"
+        },
+        {
+          "from": "built-in editor open",
+          "to": "closed",
+          "event": "Cancel is pressed",
+          "producer": "EditTextPreferenceDialogFragmentCompat",
+          "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+        },
+        {
+          "from": "built-in editor open",
+          "to": "closed",
+          "event": "OK is pressed with a control character and the change is refused",
+          "producer": "ProfileConfigFragment.onPreferenceChange",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:245"
+        },
+        {
+          "from": "built-in editor open",
+          "to": "closed",
+          "event": "the dialog is dismissed by back or an outside tap and the edit is discarded",
+          "producer": "PreferenceDialogFragmentCompat.onDismiss",
+          "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+        },
+        {
+          "from": "built-in editor open",
+          "to": "help activity open",
+          "event": "the ? button is pressed; the stock dialog dismisses the editor and discards the typed edit before the help activity starts",
+          "producer": "PluginConfigurationDialogFragment neutral button",
+          "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:51"
+        },
+        {
+          "from": "help activity open",
+          "to": "closed",
+          "event": "the help activity returns; the ? alert shows its message and the options editor is not restored",
+          "producer": "ProfileConfigActivity pluginHelp launcher",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:79"
+        },
+        {
+          "from": "configuration activity open",
+          "to": "closed",
+          "event": "the activity returns RESULT_OK and the options apply. A missing EXTRA_OPTIONS clears the stored options",
+          "producer": "ProfileConfigFragment configurePlugin launcher",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:274"
+        },
+        {
+          "from": "configuration activity open",
+          "to": "closed",
+          "event": "the activity returns RESULT_CANCELED",
+          "producer": "ProfileConfigFragment configurePlugin launcher",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:271"
+        },
+        {
+          "from": "configuration activity open",
+          "to": "built-in editor open",
+          "event": "the activity returns RESULT_FALLBACK",
+          "producer": "ProfileConfigFragment configurePlugin launcher",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:279"
+        }
+      ]
+    },
+    {
+      "object": "Plugin discovery cache",
+      "states": [
+        "empty",
+        "cached",
+        "invalidated"
+      ],
+      "transitions": [
+        {
+          "from": "empty",
+          "to": "cached",
+          "event": "fetchPlugins is called and builds a PluginList",
+          "producer": "PluginManager.fetchPlugins",
+          "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:110"
+        },
+        {
+          "from": "cached",
+          "to": "cached",
+          "event": "fetchPlugins is called again",
+          "producer": "PluginManager.fetchPlugins",
+          "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:111"
+        },
+        {
+          "from": "cached",
+          "to": "invalidated",
+          "event": "a package is added or removed",
+          "producer": "PluginManager package change receiver",
+          "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:104"
+        },
+        {
+          "from": "invalidated",
+          "to": "cached",
+          "event": "the next fetchPlugins rebuilds the list",
+          "producer": "PluginManager.fetchPlugins",
+          "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:110"
+        }
+      ]
+    },
+    {
+      "object": "Plugin picker dialog",
+      "states": [
+        "closed",
+        "open"
+      ],
+      "transitions": [
+        {
+          "from": "closed",
+          "to": "open",
+          "event": "the Plugin row is tapped",
+          "producer": "ProfileConfigFragment.onDisplayPreferenceDialog",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:256"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "a row different from the current plugin is tapped and the id is reported",
+          "producer": "PluginPreferenceDialogFragment.onDialogClosed",
+          "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:137"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "the current plugin row is tapped and no result is reported",
+          "producer": "PluginPreferenceDialogFragment.onDialogClosed",
+          "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:136"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "the sheet is dismissed by back or an outside tap",
+          "producer": "PluginPreferenceDialogFragment.onDialogClosed",
+          "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:134"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U08-01",
+      "name": "Select a plugin from the picker",
+      "steps": [
+        {
+          "label": "actor: opens a profile in Profile config",
+          "type": "start",
+          "next": "system: shows the Plugin row with the current plugin label and icon",
+          "exception": false
+        },
+        {
+          "label": "system: shows the Plugin row with the current plugin label and icon",
+          "type": "step",
+          "next": "actor: taps the Plugin row",
+          "exception": false
+        },
+        {
+          "label": "actor: taps the Plugin row",
+          "type": "step",
+          "next": "system: opens the plugin bottom sheet with Disabled and every installed plugin",
+          "exception": false
+        },
+        {
+          "label": "system: opens the plugin bottom sheet with Disabled and every installed plugin",
+          "type": "step",
+          "next": "decision: is the current value a known plugin? yes -> it moves to the first row and its label is bold; no -> the list keeps discovery order",
+          "exception": false
+        },
+        {
+          "label": "decision: is the current value a known plugin? yes -> it moves to the first row and its label is bold; no -> the list keeps discovery order",
+          "type": "decision",
+          "next": "yes: the current plugin moves to the first row and its label is bold | no: the list keeps discovery order",
+          "exception": false
+        },
+        {
+          "label": "yes: the current plugin moves to the first row and its label is bold",
+          "type": "step",
+          "next": "actor: taps a row, dismisses the sheet, or long-presses a row",
+          "exception": false
+        },
+        {
+          "label": "no: the list keeps discovery order",
+          "type": "step",
+          "next": "actor: taps a row, dismisses the sheet, or long-presses a row",
+          "exception": false
+        },
+        {
+          "label": "actor: taps a row, dismisses the sheet, or long-presses a row",
+          "type": "step",
+          "next": "decision: did the actor tap a row? yes -> the row is compared with the current value; no -> the sheet was dismissed or a row was long-pressed",
+          "exception": false
+        },
+        {
+          "label": "decision: did the actor tap a row? yes -> the row is compared with the current value; no -> the sheet was dismissed or a row was long-pressed",
+          "type": "decision",
+          "next": "yes: the tapped row is compared with the current value | no: decision: was the row long-pressed? yes -> the app info screen opens; no -> the sheet closes with no result",
+          "exception": false
+        },
+        {
+          "label": "yes: the tapped row is compared with the current value",
+          "type": "step",
+          "next": "decision: is the tapped row the current value? yes -> no result is sent; no -> the id is sent to the editor",
+          "exception": false
+        },
+        {
+          "label": "decision: was the row long-pressed? yes -> the app info screen opens; no -> the sheet closes with no result",
+          "type": "decision",
+          "next": "long-press: the app info screen opens, or the press returns false when no activity handles it | dismiss: the sheet closes with no result",
+          "exception": false
+        },
+        {
+          "label": "long-press: the app info screen opens, or the press returns false when no activity handles it",
+          "type": "step",
+          "next": "system: the picker is shown again",
+          "exception": false
+        },
+        {
+          "label": "dismiss: the sheet closes with no result",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: the picker is shown again",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "decision: is the tapped row the current value? yes -> no result is sent; no -> the id is sent to the editor",
+          "type": "decision",
+          "next": "yes: no result is sent | no: the id is sent to the editor",
+          "exception": false
+        },
+        {
+          "label": "yes: no result is sent",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the id is sent to the editor",
+          "type": "step",
+          "next": "system: stores the plugin, its options and the dirty flag",
+          "exception": false
+        },
+        {
+          "label": "system: stores the plugin, its options and the dirty flag",
+          "type": "step",
+          "next": "system: the summary and Configure… update",
+          "exception": false
+        },
+        {
+          "label": "system: the summary and Configure… update",
+          "type": "step",
+          "next": "decision: is the plugin trusted? yes -> the flow ends; no -> the warning snackbar appears after the row updates",
+          "exception": false
+        },
+        {
+          "label": "decision: is the plugin trusted? yes -> the flow ends; no -> the warning snackbar appears after the row updates",
+          "type": "decision",
+          "next": "yes: the selection is complete | no: the warning snackbar appears",
+          "exception": false
+        },
+        {
+          "label": "yes: the selection is complete",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the warning snackbar appears",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The plugin package is removed while the sheet is open: the next package broadcast rebuilds the list. A row bound from the old list then sends an id that the new lookup does not contain, and the result listener throws NoSuchElementException; without a tap the row refreshes to Unknown plugin.",
+        "Two providers declare the same plugin id or alias: a toast names the packages that share the later plugin's id, and PluginList throws IllegalStateException.",
+        "The system has no activity for application details: the long press returns false and the sheet stays open."
+      ]
+    },
+    {
+      "id": "F-U08-02",
+      "name": "Edit options in the built-in editor",
+      "steps": [
+        {
+          "label": "actor: taps Configure… with a known plugin selected",
+          "type": "start",
+          "next": "decision: does ACTION_CONFIGURE resolve? yes -> the plugin activity opens (F-U08-03); no -> the built-in editor opens",
+          "exception": false
+        },
+        {
+          "label": "decision: does ACTION_CONFIGURE resolve? yes -> the plugin activity opens (F-U08-03); no -> the built-in editor opens",
+          "type": "decision",
+          "next": "system: opens the options dialog titled Configure… with the stored options in a monospace field",
+          "exception": false
+        },
+        {
+          "label": "system: opens the options dialog titled Configure… with the stored options in a monospace field",
+          "type": "step",
+          "next": "decision: does ACTION_HELP resolve? yes -> the ? button shows; no -> the ? button is absent",
+          "exception": false
+        },
+        {
+          "label": "decision: does ACTION_HELP resolve? yes -> the ? button shows; no -> the ? button is absent",
+          "type": "decision",
+          "next": "system: shows the ? neutral button",
+          "exception": false
+        },
+        {
+          "label": "system: shows the ? neutral button",
+          "type": "step",
+          "next": "actor: edits the options and taps OK, Cancel, or ?",
+          "exception": false
+        },
+        {
+          "label": "no: the ? neutral button is absent",
+          "type": "step",
+          "next": "actor: edits the options and taps OK, Cancel, or ?",
+          "exception": false
+        },
+        {
+          "label": "actor: edits the options and taps OK, Cancel, or ?",
+          "type": "step",
+          "next": "decision: which button? OK -> the text is parsed; Cancel -> the dialog closes; ? -> the dialog is dismissed and plugin help opens (F-U08-06)",
+          "exception": false
+        },
+        {
+          "label": "decision: which button? OK -> the text is parsed; Cancel -> the dialog closes; ? -> the dialog is dismissed and plugin help opens (F-U08-06)",
+          "type": "decision",
+          "next": "system: parses the text as SIP003 options",
+          "exception": false
+        },
+        {
+          "label": "Cancel: the dialog closes with no change",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "? -> the options dialog is dismissed, the edit is discarded, and plugin help opens (F-U08-06)",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "dismiss: the dialog is closed by back or an outside tap and the edit is discarded",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: parses the text as SIP003 options",
+          "type": "step",
+          "next": "decision: does the text contain a control character? yes -> the error snackbar shows; no -> the options are stored",
+          "exception": false
+        },
+        {
+          "label": "decision: does the text contain a control character? yes -> the error snackbar shows; no -> the options are stored",
+          "type": "decision",
+          "next": "system: stores the options and marks the profile dirty",
+          "exception": false
+        },
+        {
+          "label": "yes: the error snackbar shows and the change is refused",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "system: stores the options and marks the profile dirty",
+          "type": "step",
+          "next": "system: updates the Configure… summary",
+          "exception": false
+        },
+        {
+          "label": "system: updates the Configure… summary",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "A trailing backslash consumes the appended terminator: the last key/value pair is dropped, no exception is thrown, and the change is accepted with that pair missing.",
+        "Any RuntimeException from the change listener refuses the change and shows its message."
+      ]
+    },
+    {
+      "id": "F-U08-03",
+      "name": "Configure through the plugin's own configuration activity",
+      "steps": [
+        {
+          "label": "actor: taps Configure… and ACTION_CONFIGURE resolves",
+          "type": "start",
+          "next": "system: launches the plugin activity with plugin://com.github.shadowsocks/<id> and EXTRA_OPTIONS",
+          "exception": false
+        },
+        {
+          "label": "system: launches the plugin activity with plugin://com.github.shadowsocks/<id> and EXTRA_OPTIONS",
+          "type": "step",
+          "next": "actor: edits the options in the plugin screen",
+          "exception": false
+        },
+        {
+          "label": "actor: edits the options in the plugin screen",
+          "type": "step",
+          "next": "decision: result code? RESULT_OK -> the options apply; RESULT_FALLBACK -> the built-in editor opens; RESULT_CANCELED -> nothing changes",
+          "exception": false
+        },
+        {
+          "label": "decision: result code? RESULT_OK -> the options apply; RESULT_FALLBACK -> the built-in editor opens; RESULT_CANCELED -> nothing changes",
+          "type": "decision",
+          "next": "system: reads EXTRA_OPTIONS (null when the result carries none) and applies it",
+          "exception": false
+        },
+        {
+          "label": "system: reads EXTRA_OPTIONS (null when the result carries none) and applies it",
+          "type": "step",
+          "next": "decision: does the result carry EXTRA_OPTIONS? yes -> the returned text is parsed; no -> the stored options are cleared",
+          "exception": false
+        },
+        {
+          "label": "decision: does the result carry EXTRA_OPTIONS? yes -> the returned text is parsed; no -> the stored options are cleared",
+          "type": "decision",
+          "next": "yes: the returned text is parsed | no: RESULT_OK without EXTRA_OPTIONS clears the stored options",
+          "exception": false
+        },
+        {
+          "label": "yes: the returned text is parsed",
+          "type": "step",
+          "next": "decision: do the options parse? yes -> stored; no -> the error snackbar shows and nothing is stored",
+          "exception": false
+        },
+        {
+          "label": "decision: do the options parse? yes -> stored; no -> the error snackbar shows and nothing is stored",
+          "type": "decision",
+          "next": "yes: the options are stored | no: the error snackbar shows and nothing is stored",
+          "exception": false
+        },
+        {
+          "label": "yes: the options are stored",
+          "type": "step",
+          "next": "system: stores the options and updates the Configure… row",
+          "exception": false
+        },
+        {
+          "label": "no: RESULT_OK without EXTRA_OPTIONS clears the stored options",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: stores the options and updates the Configure… row",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the error snackbar shows and nothing is stored",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "RESULT_FALLBACK: the built-in editor opens",
+          "type": "step",
+          "next": "system: the editor shows the stored options",
+          "exception": false
+        },
+        {
+          "label": "system: the editor shows the stored options",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "RESULT_CANCELED: nothing changes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The configuration activity crashes or never returns: the result is treated as canceled and the options stay.",
+        "The activity is missing even though resolveActivity succeeded: the launch throws and no result arrives."
+      ]
+    },
+    {
+      "id": "F-U08-04",
+      "name": "Discover plugins and refresh after a package change",
+      "steps": [
+        {
+          "label": "system: fetchPlugins is called for the first time",
+          "type": "start",
+          "next": "system: builds PluginList from exported native plugin providers",
+          "exception": false
+        },
+        {
+          "label": "system: builds PluginList from exported native plugin providers",
+          "type": "step",
+          "next": "decision: duplicate id or alias? yes -> a toast names the packages that share the later plugin's id; no -> the list is cached",
+          "exception": false
+        },
+        {
+          "label": "decision: duplicate id or alias? yes -> a toast names the packages that share the later plugin's id; no -> the list is cached",
+          "type": "decision",
+          "next": "system: the list is cached and returned",
+          "exception": false
+        },
+        {
+          "label": "yes: a toast names the packages that share the later plugin's id and IllegalStateException is thrown",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "system: the list is cached and returned",
+          "type": "step",
+          "next": "system: the picker shows Disabled and the cached plugins",
+          "exception": false
+        },
+        {
+          "label": "system: the picker shows Disabled and the cached plugins",
+          "type": "step",
+          "next": "decision: did a package get installed or removed? yes -> the cache is cleared; no -> the cache is reused",
+          "exception": false
+        },
+        {
+          "label": "decision: did a package get installed or removed? yes -> the cache is cleared; no -> the cache is reused",
+          "type": "decision",
+          "next": "yes: clears the cache and re-inits the plugin rows",
+          "exception": false
+        },
+        {
+          "label": "yes: clears the cache and re-inits the plugin rows",
+          "type": "step",
+          "next": "system: the next fetch rebuilds the list",
+          "exception": false
+        },
+        {
+          "label": "no: the cache is reused",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: the next fetch rebuilds the list",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "A provider without the plugin id metadata throws a NullPointerException while the list is built."
+      ]
+    },
+    {
+      "id": "F-U08-05",
+      "name": "Start a session with the selected plugin",
+      "steps": [
+        {
+          "label": "actor: connects a profile",
+          "type": "start",
+          "next": "system: reads the stored plugin string",
+          "exception": false
+        },
+        {
+          "label": "system: reads the stored plugin string",
+          "type": "step",
+          "next": "decision: is the plugin id empty? yes -> the core runs without a plugin; no -> the provider is queried",
+          "exception": false
+        },
+        {
+          "label": "decision: is the plugin id empty? yes -> the core runs without a plugin; no -> the provider is queried",
+          "type": "decision",
+          "next": "no: the provider is queried for plugin://com.github.shadowsocks/<id>",
+          "exception": false
+        },
+        {
+          "label": "yes: the core runs without a plugin",
+          "type": "step",
+          "next": "system: the tunnel starts directly",
+          "exception": false
+        },
+        {
+          "label": "system: the tunnel starts directly",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the provider is queried for plugin://com.github.shadowsocks/<id>",
+          "type": "step",
+          "next": "decision: how many providers match? none -> PluginNotFoundException; many -> a toast and an exception; one -> the executable loads",
+          "exception": false
+        },
+        {
+          "label": "decision: how many providers match? none -> PluginNotFoundException; many -> a toast and an exception; one -> the executable loads",
+          "type": "decision",
+          "next": "system: loads the entry path and the options, filling absent options from default_config",
+          "exception": false
+        },
+        {
+          "label": "none: PluginNotFoundException is thrown",
+          "type": "step",
+          "next": "system: the service stops with the message",
+          "exception": false
+        },
+        {
+          "label": "many: a toast names the packages and IllegalStateException is thrown",
+          "type": "step",
+          "next": "system: the service stops with the message",
+          "exception": false
+        },
+        {
+          "label": "system: the service stops with the message",
+          "type": "step",
+          "next": "system: a snackbar reports the failure",
+          "exception": true
+        },
+        {
+          "label": "system: a snackbar reports the failure",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "system: loads the entry path and the options, filling absent options from default_config",
+          "type": "step",
+          "next": "decision: does the UDP fallback profile carry a plugin? yes -> the start fails; no -> the core starts",
+          "exception": false
+        },
+        {
+          "label": "decision: does the UDP fallback profile carry a plugin? yes -> the start fails; no -> the core starts",
+          "type": "decision",
+          "next": "system: starts the core with plugin and plugin_opts in tcp_only mode",
+          "exception": false
+        },
+        {
+          "label": "yes: the start fails with UDP fallback cannot have plugins",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "system: starts the core with plugin and plugin_opts in tcp_only mode",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The plugin executable cannot run: the start fails and the service reports the message.",
+        "UDP through a SIP003 plugin times out because neither built-in plugin carries UDP."
+      ]
+    },
+    {
+      "id": "F-U08-06",
+      "name": "Ask the plugin for help",
+      "steps": [
+        {
+          "label": "actor: taps ? in the options editor, which dismisses the editor and discards the typed edit",
+          "type": "start",
+          "next": "system: launches ACTION_HELP with plugin://com.github.shadowsocks/<id> and EXTRA_OPTIONS",
+          "exception": false
+        },
+        {
+          "label": "system: launches ACTION_HELP with plugin://com.github.shadowsocks/<id> and EXTRA_OPTIONS",
+          "type": "step",
+          "next": "decision: what does the help activity return? RESULT_OK -> the alert shows its message, empty when the extra is absent; RESULT_CANCELED or a visible screen -> no alert",
+          "exception": false
+        },
+        {
+          "label": "decision: what does the help activity return? RESULT_OK -> the alert shows its message, empty when the extra is absent; RESULT_CANCELED or a visible screen -> no alert",
+          "type": "decision",
+          "next": "system: an alert titled ? shows the help message, empty when the extra is absent",
+          "exception": false
+        },
+        {
+          "label": "system: an alert titled ? shows the help message, empty when the extra is absent",
+          "type": "step",
+          "next": "actor: dismisses the alert",
+          "exception": false
+        },
+        {
+          "label": "actor: dismisses the alert",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "RESULT_CANCELED or a visible help screen: no alert appears",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The plugin declares no help activity: the ? button is never added to the editor.",
+        "The help activity crashes: the result is treated as canceled."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U08-01",
+      "title": "The Plugin row shows the selected plugin label and icon",
+      "preconditions": [
+        "A profile with plugin obfs-local and options obfs=tls is open in the profile editor",
+        "The obfs-local plugin package is installed"
+      ],
+      "steps": [
+        "Look at the Plugin category",
+        "Read the Plugin row"
+      ],
+      "expected": [
+        "The category holds the Plugin row and the Configure… row",
+        "The Plugin row shows the label the plugin app declares, that app icon, and is enabled"
+      ],
+      "control_path": "C-U08-001 > C-U08-002 > C-U08-003 > C-U08-004 > C-U08-005",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreference.kt:33"
+    },
+    {
+      "id": "TC-U08-02",
+      "title": "A plugin id that resolves to no installed plugin reads Unknown plugin",
+      "preconditions": [
+        "A profile imported from an ss link carries plugin kcptun",
+        "No plugin package declares kcptun"
+      ],
+      "steps": [
+        "Open the profile editor",
+        "Read the Plugin row summary",
+        "Tap Configure…",
+        "Install a plugin package that declares kcptun while the editor stays open",
+        "Read the Configure… row",
+        "Tap the Plugin row and pick the installed kcptun plugin",
+        "Tap the Plugin row and pick Disabled"
+      ],
+      "expected": [
+        "The Plugin row reads Unknown plugin kcptun and shows no icon",
+        "Configure… is disabled",
+        "Nothing opens",
+        "The package change re-resolves the stored id and Configure… becomes enabled with no pick",
+        "The summary shows the installed plugin label and Configure… stays enabled",
+        "The value becomes the plugin id and the summary keeps the label",
+        "The summary reads Disabled and Configure… becomes disabled"
+      ],
+      "control_path": "C-U08-001 > C-U08-003 > C-U08-005 > C-U08-006 > C-U08-008 > C-U08-011",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:201"
+    },
+    {
+      "id": "TC-U08-03",
+      "title": "The picker moves the current plugin first, and dismissing changes nothing",
+      "preconditions": [
+        "obfs-local is the current plugin",
+        "obfs-local and v2ray-plugin are installed"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Press back",
+        "Tap the Plugin row again",
+        "Look at the first row",
+        "Tap the first row",
+        "Read the Plugin row"
+      ],
+      "expected": [
+        "The plugin bottom sheet opens",
+        "The sheet closes with no change",
+        "The sheet opens again",
+        "The first row shows obfs-local in bold with its icon and id; Disabled and v2ray-plugin follow without bold, and obfs-local appears only once",
+        "The sheet closes",
+        "The summary, icon and dirty state are unchanged"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-009 > C-U08-011",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:101"
+    },
+    {
+      "id": "TC-U08-04",
+      "title": "Picking Disabled clears the plugin and disables Configure…",
+      "preconditions": [
+        "obfs-local is selected with options obfs=tls"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Tap Disabled",
+        "Read the Plugin row",
+        "Tap Configure…",
+        "Tap the Plugin row and pick obfs-local"
+      ],
+      "expected": [
+        "The picker opens with obfs-local moved to the first row",
+        "The sheet closes, the summary becomes Disabled, and the row keeps the obfs-local icon until the editor is reopened",
+        "Configure… is disabled",
+        "Nothing opens",
+        "The Configure… row shows obfs=tls again and is enabled"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-010 > C-U08-006",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:183"
+    },
+    {
+      "id": "TC-U08-05",
+      "title": "Picking a different plugin enables Configure… and shows its own options",
+      "preconditions": [
+        "obfs-local is selected with options obfs=tls",
+        "v2ray-plugin is installed and was previously configured with mode=websocket"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Tap the v2ray-plugin row",
+        "Read the Configure… row",
+        "Tap the Plugin row and pick obfs-local"
+      ],
+      "expected": [
+        "The picker opens with obfs-local moved to the first row",
+        "The sheet closes and the summary becomes the v2ray-plugin label",
+        "Configure… is enabled and its summary shows mode=websocket",
+        "The summary shows the obfs-local label and obfs=tls returns"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-011 > C-U08-006 > C-U08-007",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:173"
+    },
+    {
+      "id": "TC-U08-06",
+      "title": "An untrusted plugin shows the warning snackbar",
+      "preconditions": [
+        "A plugin package signed by an unknown key is installed"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Tap the untrusted plugin row",
+        "Read the screen"
+      ],
+      "expected": [
+        "The picker lists the untrusted plugin",
+        "The sheet closes and the plugin becomes selected",
+        "A long snackbar reads Warning: This plugin does not seem to come from a known trusted source."
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-011 > C-U08-024",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:185"
+    },
+    {
+      "id": "TC-U08-07",
+      "title": "Long-pressing a plugin row opens its app info screen",
+      "preconditions": [
+        "obfs-local is installed"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Long-press the obfs-local row",
+        "Press back"
+      ],
+      "expected": [
+        "The picker opens",
+        "The system App info screen of the plugin package opens",
+        "The picker is shown again"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-011 > C-U08-023",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:86"
+    },
+    {
+      "id": "TC-U08-08",
+      "title": "The unlock warning shows for a non-direct-boot plugin with Auto Connect on",
+      "preconditions": [
+        "Auto Connect is on",
+        "The plugin provider is not directBootAware",
+        "Android 7.0 or later"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Long-press the unlock icon",
+        "Turn Auto Connect off and reopen the picker"
+      ],
+      "expected": [
+        "The plugin row shows the amber lock-open icon at its end",
+        "A tooltip reads This plugin might not work with Auto Connect",
+        "The icon is gone"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-011 > C-U08-015",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginPreferenceDialogFragment.kt:78"
+    },
+    {
+      "id": "TC-U08-09",
+      "title": "The built-in editor stores a valid options string on OK",
+      "preconditions": [
+        "v2ray-plugin is selected with options mode=websocket",
+        "v2ray-plugin has no configuration activity"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Type mode=websocket;tls;host=example.com",
+        "Tap OK",
+        "Read the Configure… row and reopen the dialog",
+        "Leave the profile editor and open it again, then tap Configure…"
+      ],
+      "expected": [
+        "The options dialog opens with mode=websocket in a monospace field",
+        "The dialog closes and the Configure… summary keeps the typed text mode=websocket;tls;host=example.com",
+        "The reopened field shows the typed text mode=websocket;tls;host=example.com",
+        "After the profile editor is reopened, the field shows mode=websocket;host=example.com;tls because the stored options are serialized from a hash map"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-017 > C-U08-018 > C-U08-007",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:238"
+    },
+    {
+      "id": "TC-U08-10",
+      "title": "A control character in the options is rejected",
+      "preconditions": [
+        "obfs-local is selected with obfs=tls",
+        "No configuration activity resolves"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Paste text that contains a newline",
+        "Tap OK",
+        "Read the Configure… row"
+      ],
+      "expected": [
+        "The options dialog opens with obfs=tls",
+        "The field holds the pasted text",
+        "A long snackbar reads No control characters allowed. and the dialog closes",
+        "The summary still reads obfs=tls"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-017 > C-U08-018 > C-U08-025",
+      "parity": "implemented",
+      "source": "plugin/src/main/java/com/github/shadowsocks/plugin/PluginOptions.kt:41"
+    },
+    {
+      "id": "TC-U08-11",
+      "title": "Cancel in the options editor discards the edit",
+      "preconditions": [
+        "obfs-local is selected with obfs=tls"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Replace the text with obfs=http",
+        "Tap Cancel",
+        "Reopen Configure…"
+      ],
+      "expected": [
+        "The dialog opens with obfs=tls",
+        "The field shows obfs=http",
+        "The dialog closes with no snackbar and no change to the profile",
+        "The field still shows obfs=tls"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-017 > C-U08-019",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+    },
+    {
+      "id": "TC-U08-12",
+      "title": "The plugin's configuration activity returns new options, and a second run is cancelled",
+      "preconditions": [
+        "obfs-local is selected",
+        "The plugin declares an ACTION_CONFIGURE activity"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Change the options in the plugin screen and save",
+        "Return to the profile editor",
+        "Tap Configure… again and cancel in the plugin screen"
+      ],
+      "expected": [
+        "The plugin activity opens with the current options in EXTRA_OPTIONS",
+        "The activity returns RESULT_OK with EXTRA_OPTIONS",
+        "The Configure… summary shows the returned options",
+        "The activity returns RESULT_CANCELED and the summary is unchanged"
+      ],
+      "control_path": "C-U08-006 > C-U08-022 > C-U08-007",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:271"
+    },
+    {
+      "id": "TC-U08-13",
+      "title": "The plugin's activity can request the fallback editor",
+      "preconditions": [
+        "The selected plugin's configuration activity returns RESULT_FALLBACK"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Choose the plugin action that requests the fallback editor"
+      ],
+      "expected": [
+        "The plugin activity opens",
+        "The built-in options dialog opens with the stored options"
+      ],
+      "control_path": "C-U08-006 > C-U08-022 > C-U08-016",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:279"
+    },
+    {
+      "id": "TC-U08-14",
+      "title": "The ? button opens plugin help and shows the returned message",
+      "preconditions": [
+        "The selected plugin resolves ACTION_HELP",
+        "No configuration activity resolves"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Tap ?",
+        "Read the dialog",
+        "Dismiss the dialog"
+      ],
+      "expected": [
+        "The options dialog shows a ? neutral button",
+        "Tapping ? dismisses the options dialog and discards any typed text",
+        "The plugin help activity opens with the current options text",
+        "An alert titled ? shows the help message after the help activity returns",
+        "The options dialog is not shown again"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-020 > C-U08-021",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:50"
+    },
+    {
+      "id": "TC-U08-15",
+      "title": "Connecting with an unknown plugin fails",
+      "preconditions": [
+        "The selected profile carries plugin kcptun",
+        "No plugin package provides kcptun"
+      ],
+      "steps": [
+        "Tap the connect button",
+        "Wait for the service to stop",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The service tries to start with the profile",
+        "The service stops",
+        "A snackbar reads Failed to connect the remote server: Unknown plugin kcptun"
+      ],
+      "control_path": "C-U08-028",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:129"
+    },
+    {
+      "id": "TC-U08-16",
+      "title": "A subscription-owned profile locks the plugin controls",
+      "preconditions": [
+        "The profile belongs to an active subscription",
+        "The profile stores a plugin that resolves to an installed plugin"
+      ],
+      "steps": [
+        "Open the profile editor",
+        "Look at the Plugin row",
+        "Look at the Configure… row",
+        "Open a manual profile whose stored plugin resolves to an installed plugin"
+      ],
+      "expected": [
+        "The Plugin category is shown",
+        "The Plugin row is disabled",
+        "The Configure… row is disabled",
+        "Both rows are enabled on that manual profile"
+      ],
+      "control_path": "C-U08-001 > C-U08-003 > C-U08-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:158"
+    },
+    {
+      "id": "TC-U08-17",
+      "title": "Installing or removing a plugin package refreshes the list and the summary",
+      "preconditions": [
+        "The profile editor is open with obfs-local selected",
+        "obfs-local is installed"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Install a second plugin package and return",
+        "Open the plugin picker again",
+        "Remove the obfs-local package and return",
+        "Read the Plugin row",
+        "Tap the Plugin row"
+      ],
+      "expected": [
+        "The picker lists Disabled, obfs-local and the currently installed plugins",
+        "The editor is still open",
+        "The new plugin is listed",
+        "The list is rebuilt",
+        "The summary reads Unknown plugin obfs-local and Configure… is disabled",
+        "The picker lists Disabled and the remaining plugins with no bold row"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-009 > C-U08-011 > C-U08-005 > C-U08-006",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginManager.kt:103"
+    },
+    {
+      "id": "TC-U08-18",
+      "title": "The plugin id and options round-trip through ss and JSON",
+      "preconditions": [
+        "A profile has plugin v2ray-plugin and options mode=websocket;tls"
+      ],
+      "steps": [
+        "Read the Configure… row",
+        "Export the profile as an ss URL",
+        "Read the JSON export",
+        "Import the URL again"
+      ],
+      "expected": [
+        "The Configure… summary reads mode=websocket;tls",
+        "The URL carries the percent-encoded plugin query with the id and options",
+        "The JSON carries plugin v2ray-plugin and plugin_opts mode=websocket;tls",
+        "The imported profile has the same plugin and options"
+      ],
+      "control_path": "C-U08-001 > C-U08-006 > C-U08-007",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:294"
+    },
+    {
+      "id": "TC-U08-19",
+      "title": "First selection of a plugin prefills its default config",
+      "preconditions": [
+        "obfs-local declares default_config obfs=tls",
+        "obfs-local has no stored options"
+      ],
+      "steps": [
+        "Tap the Plugin row",
+        "Tap obfs-local",
+        "Read the Configure… row"
+      ],
+      "expected": [
+        "The picker opens",
+        "The sheet closes and the plugin becomes selected",
+        "The Configure… summary reads obfs=tls"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-011 > C-U08-006 > C-U08-007",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginConfiguration.kt:52"
+    },
+    {
+      "id": "TC-U08-20",
+      "title": "The profile list row shows the plugin id",
+      "preconditions": [
+        "A profile has plugin obfs-local"
+      ],
+      "steps": [
+        "Open the profile list",
+        "Read the profile row"
+      ],
+      "expected": [
+        "The row shows the profile name and details",
+        "The details include Plugin: obfs-local"
+      ],
+      "control_path": "C-U08-027",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:167"
+    },
+    {
+      "id": "TC-U08-21",
+      "title": "Two providers with the same plugin id show a conflict toast and fail the list build",
+      "preconditions": [
+        "Two installed packages declare plugin id obfs-local",
+        "The profile editor is open"
+      ],
+      "steps": [
+        "Tap the Plugin row"
+      ],
+      "expected": [
+        "A long toast reads Conflicting plugins found from: <package A>, <package B>",
+        "The list build throws IllegalStateException",
+        "The plugin picker does not open"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-026",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/PluginList.kt:41"
+    },
+    {
+      "id": "TC-U08-22",
+      "title": "A plugin profile runs TCP only, and a UDP fallback profile with a plugin is refused",
+      "preconditions": [
+        "A profile selects plugin obfs-local",
+        "A second profile without a plugin is set as the UDP fallback"
+      ],
+      "steps": [
+        "Connect the plugin profile",
+        "Read the transport mode the service starts",
+        "Set plugin obfs-local on the UDP fallback profile",
+        "Connect again",
+        "Read the snackbar"
+      ],
+      "expected": [
+        "The core starts with tcp_only",
+        "A snackbar reads Failed to connect the remote server: UDP fallback cannot have plugins",
+        "The service stays stopped"
+      ],
+      "control_path": "C-U08-028",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:250"
+    },
+    {
+      "id": "TC-U08-23",
+      "title": "Option text uses semicolons, equals signs, backslash escapes, and bare flags",
+      "preconditions": [
+        "v2ray-plugin is selected and has no configuration activity"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Type obfs=http;obfs-host=example.com and tap OK",
+        "Reopen Configure…",
+        "Type a;b and tap OK",
+        "Reopen Configure…",
+        "Type obfs=va\\;lue and tap OK"
+      ],
+      "expected": [
+        "The Configure… summary reads obfs=http;obfs-host=example.com",
+        "The reopened field reads obfs=http;obfs-host=example.com",
+        "The Configure… summary reads a;b for the two bare flags",
+        "The Configure… summary reads obfs=va\\;lue with the escaped semicolon"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-017 > C-U08-018 > C-U08-007",
+      "parity": "implemented",
+      "source": "plugin/src/main/java/com/github/shadowsocks/plugin/PluginOptions.kt:42"
+    },
+    {
+      "id": "TC-U08-24",
+      "title": "A plugin without ACTION_HELP shows no ? button",
+      "preconditions": [
+        "The selected plugin resolves neither ACTION_CONFIGURE nor ACTION_HELP"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Read the options dialog"
+      ],
+      "expected": [
+        "The built-in options editor opens with OK and Cancel",
+        "No ? button is shown"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-020",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:50"
+    },
+    {
+      "id": "TC-U08-25",
+      "title": "A canceled or crashed help activity shows no alert",
+      "preconditions": [
+        "The selected plugin resolves ACTION_HELP",
+        "No configuration activity resolves"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Tap ?",
+        "Cancel the help activity or leave it without a result",
+        "Read the screen"
+      ],
+      "expected": [
+        "Tapping ? dismisses the options dialog",
+        "The help activity returns RESULT_CANCELED",
+        "No ? alert appears"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-020 > C-U08-021",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:78"
+    },
+    {
+      "id": "TC-U08-26",
+      "title": "A configuration activity that crashes is treated as canceled",
+      "preconditions": [
+        "The selected plugin declares an ACTION_CONFIGURE activity"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Make the plugin activity crash or finish without a result",
+        "Read the Configure… row"
+      ],
+      "expected": [
+        "The plugin activity opens",
+        "The result is treated as RESULT_CANCELED",
+        "The Configure… summary keeps the stored options"
+      ],
+      "control_path": "C-U08-006 > C-U08-022 > C-U08-007",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:271"
+    },
+    {
+      "id": "TC-U08-27",
+      "title": "RESULT_OK without EXTRA_OPTIONS clears the stored options",
+      "preconditions": [
+        "The selected plugin declares an ACTION_CONFIGURE activity",
+        "The plugin has stored options obfs=tls"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Return RESULT_OK without EXTRA_OPTIONS",
+        "Read the Configure… row"
+      ],
+      "expected": [
+        "The Configure… summary becomes empty",
+        "The stored options are cleared",
+        "The profile stays dirty and saves the cleared options"
+      ],
+      "control_path": "C-U08-006 > C-U08-022 > C-U08-007",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigFragment.kt:275"
+    },
+    {
+      "id": "TC-U08-28",
+      "title": "A provider without the plugin id metadata breaks discovery",
+      "preconditions": [
+        "An installed package exports a native plugin provider with no plugin id metadata"
+      ],
+      "steps": [
+        "Open the profile editor and tap the Plugin row"
+      ],
+      "expected": [
+        "The list build reads the missing id and throws NullPointerException",
+        "No plugin picker opens"
+      ],
+      "control_path": "C-U08-003 > C-U08-008 > C-U08-009",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/plugin/ResolvedPlugin.kt:35"
+    },
+    {
+      "id": "TC-U08-29",
+      "title": "A help result without a message shows an empty ? alert",
+      "preconditions": [
+        "The selected plugin resolves ACTION_HELP",
+        "No configuration activity resolves"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Tap ?",
+        "Return RESULT_OK from the help activity without EXTRA_HELP_MESSAGE"
+      ],
+      "expected": [
+        "The options dialog is dismissed",
+        "An alert titled ? opens with an empty message"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-020 > C-U08-021",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfileConfigActivity.kt:80"
+    },
+    {
+      "id": "TC-U08-30",
+      "title": "Back or an outside tap discards the options edit",
+      "preconditions": [
+        "obfs-local is selected with obfs=tls"
+      ],
+      "steps": [
+        "Tap Configure…",
+        "Replace the text with obfs=http",
+        "Press back or tap outside the dialog",
+        "Reopen Configure…"
+      ],
+      "expected": [
+        "The dialog opens with obfs=tls",
+        "The dialog is dismissed and the edit is discarded",
+        "The field still shows obfs=tls"
+      ],
+      "control_path": "C-U08-006 > C-U08-016 > C-U08-017",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/preference/PluginConfigurationDialogFragment.kt:33"
+    }
+  ],
+  "parity_summary": {
+    "implemented": 10,
+    "partial": 6,
+    "missing": 0,
+    "android_only": 14
+  },
+  "notes": "All 12 listed files exist. mobile/src/main/res/values/strings.xml does not exist: the mobile module has no strings of its own, so every label comes from core/src/main/res/values/strings.xml lines 152-159. The Plugin category is declared in mobile/src/main/res/xml/pref_profile.xml lines 72-95, which the unit map assigns to U03; this spec covers its Plugin and Configure… rows and leaves the UDP Fallback row to U03. U03 also specifies the rows and the editor as C-U03-019, C-U03-020 and C-U03-041 to C-U03-049; where the two units differ, the fields here are the source-verified ones, including the subscription lock on Configure… and its re-enable after a package change. C-U08-001 is the U03 profile editor screen, included here as the root of the plugin controls; C-U08-027 is the plugin line inside the U02 profile row. The stock dialog buttons and the EditText carry framework ids (android.R.id.button1, button2, button3, edit), not custom layout ids. The ? button is the neutral button. A click on any stock AlertDialog button dismisses the dialog, so the ? click closes the options editor and discards the typed text before the help activity starts. The help alert opens on RESULT_OK alone and is empty when EXTRA_HELP_MESSAGE is absent. The picker bottom sheet has no title, so C-U08-008 is named for the screen it represents; C-U08-016 takes its title from the Configure… preference; the help button and help dialog use the literal string ? and are not resources. The Plugin row icon is set by PluginPreference.init() and by its internal change listener only, so a picker selection leaves the previous drawable until the editor is reopened; the Configure… row carries a static settings icon (C-U08-029). The options are a HashMap, so the stored and exported string order can differ from the typed order; the live dialog, the Configure… summary and an immediate reopen keep the typed text because EditTextPreferenceDialogFragmentCompat sets the preference text to the field value. The conflict message is a Toast; the schema has no toast type, so it is recorded as a snackbar. It lists the providers whose id equals the later plugin's id, so a duplicate id names both packages and an alias conflict names one. Android discovers plugins as external APKs through content providers, so trust, app-info, package changes, configuration activities and help activities depend on Android package surfaces. HarmonyOS has no external plugins: it offers two built-in in-process plugins (native/sslocal-ffi/src/plugin.rs lines 129-131) behind a plain Select of none, obfs-local and v2ray-plugin plus the imported name (entry/src/main/ets/pages/ProfileEdit.ets lines 43 and 104-108), and a free-text options field with fixed placeholder hints (lines 310-326). Plugin and options persist in model/Profile.ets and model/ProfilesFile.ets and are written to ss URLs (Profile.ets lines 350-352), the SOCKS config (lines 499-501) and the tun config (lines 577-579). Unknown names fail at start in the core with SSLOCAL_ERR_BAD_CONFIG (native/sslocal-ffi/src/lib.rs line 201). The legacy kcptun command-line line parser (PluginConfiguration.kt lines 31-50) is Android compatibility only and has no HarmonyOS counterpart. The HarmonyOS select and options field are disabled for subscription-owned profiles (ProfileEdit.ets lines 111, 314 and 324), which matches the Android lock."
+}

@@ -8,6 +8,18 @@ import subscriptionTest from './Subscription.test';
 import diagnosticsTest from './Diagnostics.test';
 import settingsTest from './Settings.test';
 import qrCodeTest from './QrCode.test';
+import paritySeamTest from './ParitySeam.test';
+import parityU01Test from './ParityU01.test';
+import parityU02Test from './ParityU02.test';
+import parityU03Test from './ParityU03.test';
+import parityU04Test from './ParityU04.test';
+import parityU05Test from './ParityU05.test';
+import parityU06Test from './ParityU06.test';
+import parityU07Test from './ParityU07.test';
+import parityU08Test from './ParityU08.test';
+import parityU09Test from './ParityU09.test';
+import parityU10Test from './ParityU10.test';
+import parityU11Test from './ParityU11.test';
 
 export default function testsuite() {
   profileTest();
@@ -20,4 +32,16 @@ export default function testsuite() {
   diagnosticsTest();
   settingsTest();
   qrCodeTest();
+  paritySeamTest();
+  parityU01Test();
+  parityU02Test();
+  parityU03Test();
+  parityU04Test();
+  parityU05Test();
+  parityU06Test();
+  parityU07Test();
+  parityU08Test();
+  parityU09Test();
+  parityU10Test();
+  parityU11Test();
 }

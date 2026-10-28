@@ -1,0 +1,111 @@
+{
+  "items": [
+    {
+      "title": "Notification traffic and totals lines drop their format arguments",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:233",
+      "severity": "high",
+      "dimension": "interface-consumers",
+      "reason": "showConnected now takes detail and the new totals as ResourceStr (ConnectionNotification.ets:208-216), and the extension passes $r('app.string.notification_traffic', ...) for both at SsVpnExtensionAbility.ets:568-570. resolve() at ConnectionNotification.ets:233-237 calls getStringSync(value.id) and discards the Resource params, so the notification text and additionalText show the literal '%s up, %s down' (or the publish is refused) instead of rates and totals. R-UK-03 and HLD C-07 ('traffic values') are therefore not met on screen."
+    },
+    {
+      "title": "Subscription merge overwrites a corrupt profile store because it reads with getAll",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:366",
+      "severity": "high",
+      "dimension": "interface-consumers",
+      "reason": "SubscriptionRefresh.mergeRun reads the stored list with ProfileStore.getAll (:366) and writes the merge result with saveAll (:387). getAll maps a present-but-unparseable profiles.json to [] (ProfileStore.ets:113-116), indistinguishable from an empty list, while the newly added getAllOrNull (:117-121) exists for callers that write back what they read. On a corrupt file, mergeSubscriptionRun receives existing=[] and the save replaces the whole file with only the fresh subscription profiles. The store error branch never fires and the page reports success; manually configured profiles are lost."
+    },
+    {
+      "title": "Export's new null branch is unreachable; a corrupt store exports as success",
+      "anchor": "entry/src/main/ets/pages/Index.ets:829",
+      "severity": "medium",
+      "dimension": "interface-consumers",
+      "reason": "exportProfiles now returns string|null and Index handles null at :842-845 and :859-861, but readActiveProfiles (:829-835) obtains the list from ProfileStore.getAll, which returns [] for a corrupt file instead of throwing, so the catch and the null result never occur. A corrupt profiles.json is copied to the clipboard as empty and reported as success (:847-848), or written to the export file as '[]' (:858-862). ProfileStore.getAllOrNull (:117-121) is the read that tells corrupt from empty, and this consumer does not use it."
+    },
+    {
+      "title": "Subscription list writes have no error branch",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:159",
+      "severity": "medium",
+      "dimension": "interface-consumers",
+      "reason": "applyResult (:159), remove (:172) and undo (:202) await SubscriptionStore.saveAll with no try/catch, and their callers (dialog onResult, swipe onAction, undo button) do not await or catch. SubscriptionStore.saveAll writes through JsonStore.write (JsonStore.ets:71-87), whose fs calls can throw. A failed write becomes an unhandled rejection: no message, no rollback, and reload() at :160, :175, :204 never runs. Every other page that writes a store wraps the call (ProfileEdit.save, Settings.persist, AppPicker.applyToAllProfiles, CustomRules.change)."
+    },
+    {
+      "title": "New Index messages pass formatted resources to an id-only resolver",
+      "anchor": "entry/src/main/ets/pages/Index.ets:297",
+      "severity": "medium",
+      "dimension": "interface-consumers",
+      "reason": "Index.text (:297-301) resolves a ResourceStr with getStringSync(value.id), dropping format params. Three call sites added by this batch pass resources with arguments: drawer_faq_failed with FAQ_URL (:437), stats_error_code with the HTTP code (:1513) and stats_network_error with the reason (:1515). The user sees 'Could not open %s', 'Error code: #%s' or 'Fail to detect internet connection: %s'. The older index_could_not_start_proxy call (:1150) has the same defect."
+    },
+    {
+      "title": "Settings page does not consume the new row and menu contract",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:431",
+      "severity": "low",
+      "dimension": "interface-consumers",
+      "reason": "Diagnostics exports SERVICE_MODE_CHOICES (Diagnostics.ets:128) and settingsRows (Diagnostics.ets:222) as the settings page's row and menu contract, but no product file references either. Settings.ets builds the menu from two hardcoded MenuItem calls (:431-443) and the rows from hardcoded SettingsRow calls (:469-486). Behavior matches today, but the exported contract is dead in production and the page will not follow a change to the model's row set or order (LLD 6275-6277 and 6470 name these helpers as the page's source of truth)."
+    }
+  ],
+  "coverage": {
+    "dimension": "interface-consumers",
+    "result": "issues_found",
+    "scanned_files": [
+      "entry/src/main/ets/pages/Index.ets",
+      "entry/src/main/ets/pages/ProfileEdit.ets",
+      "entry/src/main/ets/pages/ProfileQr.ets",
+      "entry/src/main/ets/pages/QrDialog.ets",
+      "entry/src/main/ets/pages/Subscription.ets",
+      "entry/src/main/ets/pages/CustomRules.ets",
+      "entry/src/main/ets/pages/Settings.ets",
+      "entry/src/main/ets/pages/About.ets",
+      "entry/src/main/ets/pages/AppPicker.ets",
+      "entry/src/main/ets/pages/UdpFallback.ets",
+      "entry/src/main/ets/model/Profile.ets",
+      "entry/src/main/ets/model/ProfilesFile.ets",
+      "entry/src/main/ets/model/ProfileStore.ets",
+      "entry/src/main/ets/model/Settings.ets",
+      "entry/src/main/ets/model/Diagnostics.ets",
+      "entry/src/main/ets/model/Subscription.ets",
+      "entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "entry/src/main/ets/model/ConnectionNotification.ets",
+      "entry/src/main/ets/model/NotificationContent.ets",
+      "entry/src/main/ets/model/TrafficStats.ets",
+      "entry/src/main/ets/model/AppContext.ets",
+      "entry/src/main/ets/model/Acl.ets",
+      "entry/src/main/ets/model/AclSync.ets",
+      "entry/src/main/ets/model/CustomRules.ets",
+      "entry/src/main/ets/model/PerApp.ets",
+      "entry/src/main/ets/model/AppCatalog.ets",
+      "entry/src/main/ets/model/PluginOptions.ets",
+      "entry/src/main/ets/model/QrImport.ets",
+      "entry/src/main/ets/model/QrScanner.ets",
+      "entry/src/main/ets/model/UdpFallback.ets",
+      "entry/src/main/ets/model/UndoRemoval.ets",
+      "entry/src/main/ets/model/MainShell.ets",
+      "entry/src/main/ets/model/AboutLinks.ets",
+      "entry/src/main/ets/model/AboutOpener.ets",
+      "entry/src/main/ets/model/JsonStore.ets",
+      "entry/src/main/ets/model/SessionTraffic.ets",
+      "entry/src/main/ets/model/ProxyService.ets",
+      "entry/src/main/ets/model/VpnStatus.ets",
+      "entry/src/main/ets/model/Transfer.ets",
+      "entry/src/main/ets/model/Routes.ets",
+      "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "entry/src/main/ets/entryability/EntryAbility.ets",
+      "entry/src/main/cpp/types/libsslocal/Index.d.ts",
+      "entry/src/main/module.json5",
+      "entry/src/main/resources/base/profile/main_pages.json",
+      "entry/src/main/resources/base/element/string.json",
+      "entry/src/main/resources/zh_CN/element/string.json"
+    ],
+    "note": "The NAPI surface (entry/src/main/cpp) is unchanged by this batch; every sslocal call site matches Index.d.ts. No interface change without a persisted-data migration was found: profiles.json gains pluginConfigs, metered, proxyAppsEnabled/Bypass/List and ProfileStore.fromJson defaults them and normalizes plugin options; settings.json's numeric proxyPort is converted to text and the new localDnsPort and autoConnect keys are defaulted by settingsFromJson/settingsNeedSeed (LLD 6634-6638). Other changed interfaces were checked and their consumers match: showStarting/showConnected/clear and ACTION_OPEN/ACTION_DISCONNECT (EntryAbility), toTunConfig's dnsPort (only the extension calls it), getAllOrNull (AppPicker handles null), loadSeeded (Settings page), exportProfiles/parseProfilesText/collectProfiles/parseProfileUrls (Index and QrImport), pluginError (ProxyService throws and Index catches; the extension sets this.failed on refusal), per-app lists to VpnConfig trusted/blocked applications, and the AppPickerParams/UdpFallbackParams/QrParams page parameters. The working tree was edited by another process during the review (files changed at 12:35-12:37); all findings were re-verified at 12:40 AEDT. Two earlier observations were fixed during that window and are not reported: the extension's plugin-refusal branch missing this.failed = true, and QrImport not copying metered/per-app feature settings."
+  },
+  "inputs": [
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/cpp/"
+  ]
+}

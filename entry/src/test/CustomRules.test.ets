@@ -2,7 +2,7 @@ import { describe, expect, it } from '@ohos/hypium';
 import { parseAcl } from '../main/ets/model/Acl';
 import {
   RULE_KIND_DOMAIN, RULE_KIND_SUBNET, RULE_KIND_URL, addRule, addRulesFromText,
-  composeCustomRules, removeRule, removeRules,
+  composeCustomRules, domainRule, removeRule, removeRules,
 } from '../main/ets/model/CustomRules';
 
 export default function customRulesTest() {
@@ -29,6 +29,21 @@ export default function customRulesTest() {
       expect(composed.proxyEntries.length).assertEqual(0);
     });
 
+    it('reads an absent or empty user file as no rules, not as proxy everything', 0, () => {
+      // readUserRules returns '' both for a missing file and for an empty one.
+      // The composed file must keep that meaning: [bypass_all] with no lists,
+      // so no destination is proxied. A torn or truncated read must never turn
+      // into a file that proxies every destination.
+      const texts: string[] = ['', '\n', '# nothing yet\n'];
+      for (const text of texts) {
+        const composed = parseAcl(composeCustomRules(text));
+        expect(composed.bypass).assertTrue();
+        expect(composed.proxyEntries.length).assertEqual(0);
+        expect(composed.bypassEntries.length).assertEqual(0);
+        expect(composed.urls.length).assertEqual(0);
+      }
+    });
+
     it('adds a domain, a subnet and an import', 0, () => {
       let text = addRule('', RULE_KIND_DOMAIN, 'example.com');
       text = addRule(text, RULE_KIND_SUBNET, '10.0.0.0/8');
@@ -36,7 +51,8 @@ export default function customRulesTest() {
 
       const doc = parseAcl(text);
       expect(doc.proxyEntries.length).assertEqual(2);
-      expect(doc.proxyEntries[0]).assertEqual('example.com');
+      // a Domain rule is stored as its anchored pattern
+      expect(doc.proxyEntries[0]).assertEqual(domainRule('example.com'));
       expect(doc.proxyEntries[1]).assertEqual('10.0.0.0/8');
       expect(doc.urls.length).assertEqual(1);
       expect(doc.urls[0]).assertEqual('https://a.example/list');
@@ -63,11 +79,12 @@ export default function customRulesTest() {
       let text = addRule('', RULE_KIND_DOMAIN, 'a.test');
       text = addRule(text, RULE_KIND_DOMAIN, 'b.test');
       text = addRule(text, RULE_KIND_DOMAIN, 'c.test');
-      const left = parseAcl(removeRules(text, ['a.test', 'c.test']));
+      // the selection holds the stored forms, which is what the rows show
+      const left = parseAcl(removeRules(text, [domainRule('a.test'), domainRule('c.test')]));
       expect(left.proxyEntries.length).assertEqual(1);
-      expect(left.proxyEntries[0]).assertEqual('b.test');
+      expect(left.proxyEntries[0]).assertEqual(domainRule('b.test'));
       // and one at a time is the same thing
-      expect(parseAcl(removeRule(text, 'b.test')).proxyEntries.length).assertEqual(2);
+      expect(parseAcl(removeRule(text, domainRule('b.test'))).proxyEntries.length).assertEqual(2);
     });
 
     it('takes the entries of another list and nothing else', 0, () => {
@@ -80,22 +97,30 @@ export default function customRulesTest() {
       expect(doc.proxyEntries[0]).assertEqual('proxied.test');
       expect(doc.bypassEntries.length).assertEqual(0);
       expect(doc.urls[0]).assertEqual('https://a.example/list');
+      // a proxy_all list drops its subnets, because their meaning belongs to it
+      const fromProxyAll = parseAcl(addRulesFromText('',
+        '[proxy_all]\n\n[proxy_list]\n10.7.0.0/16\nkept.test\n'));
+      expect(fromProxyAll.proxyEntries.length).assertEqual(1);
+      expect(fromProxyAll.proxyEntries[0]).assertEqual('kept.test');
     });
 
     it('takes a list with no sections as a list to proxy', 0, () => {
-      // the entries of such a text land in the bypass list, since that is the
-      // list a file starts with, and a pasted list still means "these"
-      const doc = parseAcl(addRulesFromText('', 'a.test\nb.test\n'));
-      expect(doc.proxyEntries.length).assertEqual(2);
+      // the entries of such a text land in the proxy list, since the import
+      // reads it with a bypass default, and a pasted list still means "these"
+      const doc = parseAcl(addRulesFromText('', 'a.test\nb.test\n10.7.0.0/16\n'));
+      expect(doc.proxyEntries.length).assertEqual(3);
       expect(doc.proxyEntries[0]).assertEqual('a.test');
+      // a plain list keeps its subnets
+      expect(doc.proxyEntries[2]).assertEqual('10.7.0.0/16');
     });
 
     it('does not add a rule it already has', 0, () => {
       // an entry a sectioned list bypasses is not a rule to add
       expect(parseAcl(addRulesFromText('', '[proxy_all]\n\n[bypass_list]\na.test\n'))
         .proxyEntries.length).assertEqual(0);
+      // the target list holds the stored form, so the same form is a duplicate
       const twice = addRulesFromText(addRule('', RULE_KIND_DOMAIN, 'a.test'),
-        '[bypass_all]\n\n[proxy_list]\na.test\n');
+        `[bypass_all]\n\n[proxy_list]\n${domainRule('a.test')}\n`);
       expect(parseAcl(twice).proxyEntries.length).assertEqual(1);
     });
   });

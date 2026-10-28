@@ -1,0 +1,3 @@
+=== ArkTS model specs (host) ===
+
+500 passed, 0 failed

@@ -1,0 +1,85 @@
+{
+  "items": [
+    {
+      "title": "The UI starts the next tunnel on a `stopped` status written before teardown",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:325",
+      "severity": "high",
+      "dimension": "concurrency-and-timing",
+      "reason": "onDestroy writes the `stopped` status before it calls teardown. The platform can cut teardown off at its first await, so the old core can outlive that status. Index.waitForVpnStopped returns on the status, and reloadTunnel then settles the sample and starts the new profile. The new start can call sslocal.startTunFd before the old core is gone, and the single-instance core returns ALREADY_RUNNING. Teardown can also clear the traffic file during that window, so settleSessionTraffic reads no sample and the session counters never reach the profile."
+    },
+    {
+      "title": "A poll tick reads the previous session's status during a new connect",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1297",
+      "severity": "high",
+      "dimension": "concurrency-and-timing",
+      "reason": "The status file is never removed, so it still holds `stopped` or `failed` when a new connect starts. connect() starts the health poll before it starts the extension, so the first tick can read that old record before the extension writes `starting`. pollTick applies the old state and does not compare its timestamp with connectingSince. A `stopped` record sets PHASE_IDLE and stops the poll. A `failed` record sets PHASE_FAILED and shows the old reason. The extension then comes up while the page shows Idle or an old failure and no longer polls."
+    },
+    {
+      "title": "No timeout covers a start that stays in `starting`",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1307",
+      "severity": "medium",
+      "dimension": "concurrency-and-timing",
+      "reason": "pollTick checks CONNECT_TIMEOUT_MS only while the status file is absent. A `starting` record falls through the VPN_STATE_RUNNING test at this line with no elapsed check. The extension writes `starting` before it awaits connection.create and protectProcessNet, and neither call has a timeout. A create() call can wait on the system consent dialog or on a stuck VPN service. Either wait leaves the page in Connecting with no failure."
+    },
+    {
+      "title": "The VPN start retry can create a second extension instance",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1071",
+      "severity": "medium",
+      "dimension": "concurrency-and-timing",
+      "reason": "The catch retries startVpnExtensionAbility for every failure. It does not check that the first start failed because of the authorization. The first call can deliver the start and still reject, for example on a timeout. The retry then asks for a second start, and the platform can create a second extension instance. Both instances call sslocal.startTunFd, and the loser writes a failed status over the winner's running status. The page then reports a failure over a live tunnel."
+    },
+    {
+      "title": "A health poll can be installed after its page is destroyed",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1493",
+      "severity": "low",
+      "dimension": "concurrency-and-timing",
+      "reason": "aboutToAppear and onPageShow call resumeStatus without await. resumeStatus reads the settings, the status file, and the traffic sample before it calls startHealthPolling. aboutToDisappear clears the interval that exists at that moment. It cannot clear the interval that the pending resumeStatus installs afterwards. The new interval then reads the store files and writes page state for the life of the process."
+    }
+  ],
+  "coverage": {
+    "dimension": "concurrency-and-timing",
+    "result": "issues_found",
+    "scanned_files": [
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/QrDialog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/VpnStatus.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/TrafficStats.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SessionTraffic.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectivityProbe.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Latency.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Throughput.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/MainShell.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/NotificationContent.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppCatalog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/QrScanner.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PerApp.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/UndoRemoval.ets"
+    ],
+    "note": "Checked every timer and its lifecycle owner, every cross-process store writer and reader, the connect, stop, and switch sequences, the awaited network and platform calls, and the retry paths. Degradation is present for a failed stat endpoint, a refused notification permission, a missing ACL file, and a probe without counters. The five findings cover the requested classes."
+  },
+  "inputs": [
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md"
+  ]
+}

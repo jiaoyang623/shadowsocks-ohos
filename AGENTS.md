@@ -8,7 +8,7 @@ directory is `harmony/` in that repo) and shares the same Rust core
 (`shadowsocks-rust`) with the Android app through a C ABI + NAPI bridge.
 
 - **App layer**: ArkTS/ArkUI, Stage model, API 12+ (`compatibleSdkVersion
-  5.0.0(12)`), bundle `com.xbt.project`, version 5.3.5,
+  5.0.0(12)`), bundle `com.xbt.project`, version 5.4.0,
   GPL-3.0-or-later.
 - **Native layer**: the Rust crate `native/sslocal-ffi` depends on a vendored
   `shadowsocks-service` (`native/sslocal-ffi/vendor/shadowsocks-service`),
@@ -26,18 +26,27 @@ directory is `harmony/` in that repo) and shares the same Rust core
 ```
 AppScope/app.json5            application-level config (bundle name, version)
 entry/                        main (and only) HAP module
-  build-profile.json5         stageMode; external native build via CMake, arm64-v8a only
+  build-profile.json5         stageMode; external native build via CMake,
+                              arm64-v8a for devices and x86_64 for the emulator
   src/main/
     module.json5              EntryAbility + SsVpnExtensionAbility (type: vpn),
-                              permissions: INTERNET, GET_NETWORK_INFO
+                              permissions: INTERNET, GET_NETWORK_INFO,
+                              GET_BUNDLE_INFO (resolves an app-picker bundle
+                              name, normal grant, no runtime prompt)
     ets/entryability/         EntryAbility.ets — UIAbility entry; registers the
                               ability context in AppStorage (see AppContext.ets)
     ets/pages/                Index.ets (profile list + connect + stats bar,
-                              with search, drag-to-reorder and undoable delete),
+                              the navigation drawer, search, drag-to-reorder,
+                              undoable delete, QR scan and image import),
                               ProfileEdit.ets (profile form, method/route/plugin
-                              pickers, remote resolver, and the profile's QR
-                              code), ProfileQr.ets (that code, drawn on a
-                              Canvas), Subscription.ets
+                              pickers, UDP fallback, Apps VPN mode entry, remote
+                              resolver, and the profile's QR code),
+                              ProfileQr.ets (that code, drawn on a Canvas),
+                              QrDialog.ets (the share dialog that draws the same
+                              code), AppPicker.ets (Apps VPN mode: Off, On and
+                              Bypass, search, bundle rows, manual add, clipboard
+                              import and export), UdpFallback.ets (chooser for
+                              the UDP fallback profile), Subscription.ets
                               (subscription management), CustomRules.ets (the
                               rules for the custom-rules route), Settings.ets,
                               About.ets, VpnGrant.ts (undocumented
@@ -52,9 +61,9 @@ entry/                        main (and only) HAP module
                               user's own rules), QrCode.ets (a QR encoder that
                               reproduces zxing's output) with its generated
                               QrTables.ets, ConnectionNotification.ets (the
-                              ongoing notification, its disconnect action, and
-                              the notification permission the app must ask for
-                              before any of it can be published),
+                              ongoing notification, its body tap and Stop
+                              action, and the notification permission the app
+                              must ask for before any of it can be published),
                               Network.ets (the platform's resolver),
                               ProfileStore.ets (multi-profile
                               list + selection), Subscription.ets (subscription
@@ -63,6 +72,21 @@ entry/                        main (and only) HAP module
                               TrafficStats.ets (cross-process stats bridge),
                               SessionTraffic.ets (adds a finished session's
                               counters to the profile that ran it),
+                              MainShell.ets (drawer, service button and
+                              stats-bar decisions), PerApp.ets (Apps VPN mode
+                              rules and the editor draft), AppCatalog.ets
+                              (bundle-name query for the app picker),
+                              PluginOptions.ets (plugin catalogue and option
+                              syntax), UndoRemoval.ets (pending profile
+                              deletes), UdpFallback.ets (UDP fallback
+                              eligibility and handoff),
+                              NotificationContent.ets (notification text
+                              and traffic rates), QrImport.ets /
+                              QrScanner.ets (profiles from scanned text and
+                              the Scan Kit adapter), AboutLinks.ets /
+                              AboutOpener.ets (About page links),
+                              SubscriptionRefresh.ets (one batch subscription
+                              refresh),
                               JsonStore.ets (JSON-file persistence), AppContext.ets
     ets/vpnability/           SsVpnExtensionAbility.ets — VpnExtensionAbility
                               that drives the native core in tun mode; deploys
@@ -82,7 +106,9 @@ entry/                        main (and only) HAP module
                               serialization (incl. ACL injection, plugin
                               fields), subscription body parsing, and the QR
                               encoder against zxing's own matrices
-                              (QrVectors.ets, generated — see `tools/qr-oracle`)
+                              (QrVectors.ets, generated — see `tools/qr-oracle`),
+                              and the parity suites (`ParityU01.test.ets` to
+                              `ParityU11.test.ets`, see Testing)
   src/ohosTest/               on-device tests: NAPI surface (incl. startTunFd),
                               SOCKS tunnel e2e (emulator-capable, run by CI),
                               VPN/tun e2e (real devices only)
@@ -117,8 +143,10 @@ native/
   vendor-shadowsocks-service.sh  re-copy the vendored crate from the pinned
                               core checkout and re-apply the patch
   build-ohos.sh               cross-compile the Rust core for
-                              aarch64-unknown-linux-ohos; installs the staticlib
-                              into entry/libs/arm64-v8a/
+                              aarch64-unknown-linux-ohos and install the
+                              staticlib into entry/libs/arm64-v8a/; set
+                              TARGET=x86_64-unknown-linux-ohos ABI=x86_64
+                              for the emulator's staticlib
   sign-hap-debug.sh           ad-hoc debug signing with the OpenHarmony sample
                               signing materials (no Huawei account)
   ohos-cc-wrapper.sh          zig cc shim so `cargo check` works without the
@@ -136,7 +164,7 @@ ci/
                               bucket from R2_API_TOKEN + R2_ENDPOINT
 test-e2e-host.sh              host-side verification entry point (see Testing)
 test-arkts-host.sh            runs the model-layer ArkTS specs on the host with
-                              node (see Testing)
+                              node. A01_SPEC selects one spec file (see Testing)
 tools/arkts-host/             the shims that makes that possible: hypium, the
                               @kit stand-ins, and the runner entry point
 tools/qr-oracle/              regenerates the QR tables and the golden matrices
@@ -172,15 +200,17 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
 - **DNS**: the core answers it inside the tun, because relaying it as UDP only
   works when the server relays UDP and plenty do not — and a client that picks
   its own resolver (a browser, typically) then cannot resolve anything at all.
-  `toTunConfig` gives the tun local a `dns_gateway` of `127.0.0.1:5453` and runs
-  the core's own resolver there, and every port-53 packet entering the tun goes
-  to it on the transport it arrived on. Clients are told to use `172.19.0.2` —
-  the *other* end of the tun's /30, so their queries go out through the
-  interface; a query to the tun's own address would be delivered to the local
-  socket stack and never reach the core. Resolution goes through the proxy over
-  TCP (`remote_dns_protocol: tcp_only`), so it cannot be poisoned by whatever
-  the local network's DNS says, and the first lookup of a name costs about a
-  round trip. This is a downstream patch to `shadowsocks-service`; see
+  `toTunConfig` gives the tun local a `dns_gateway` of `127.0.0.1:<local DNS
+  port>` and runs the core's own resolver there. The local DNS port comes from
+  the Settings page and defaults to 5450. Every port-53 packet entering the tun
+  goes to it on the transport it arrived on. Clients are told to use
+  `172.19.0.2` — the *other* end of the tun's /30, so their queries go out
+  through the interface; a query to the tun's own address would be delivered
+  to the local socket stack and never reach the core. Resolution goes through
+  the proxy over TCP (`remote_dns_protocol: tcp_only`), so it cannot be
+  poisoned by whatever the local network's DNS says, and the first lookup of a
+  name costs about a round trip. This is a downstream patch to
+  `shadowsocks-service`; see
   `native/sslocal-ffi/vendor/shadowsocks-service.PATCH.md`.
 - **Policy routes**: each profile carries a `route` (the same constants as
   shadowsocks-android's `Acl`: `all`, `bypass-lan`, `bypass-china`,
@@ -189,6 +219,12 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
   copied from shadowsocks-android) to `filesDir/acl/` and injects it as the
   core config's top-level `acl` field; the core then connects matching
   destinations directly instead of through the tunnel.
+- **Apps VPN mode**: a profile can select bundle names for the tunnel. The VPN
+  extension passes the list to `VpnConfig.trustedApplications` (On) or
+  `VpnConfig.blockedApplications` (Bypass), and it never sets both. The client
+  bundle stays outside the tunnel, and the list is capped at 64 names. The
+  platform reads the lists at `create()`, so an edit applies on the next
+  connect.
 - **Traffic stats**: the core (built with `local-flow-stat`) reports
   cumulative tx/rx counters to a loopback TCP endpoint every 500 ms (16-byte
   little-endian u64 pair, the wire format shadowsocks-android's
@@ -198,16 +234,31 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
   `TrafficStatsStore`; the UI process polls it once a second and computes
   rates from consecutive samples, and shows them on the status bar and on each
   profile row.
+- **Connection notification**: the title is the profile name, the text is the
+  current rates, and the additional line is the session totals. A body tap
+  opens the main screen, and the Stop button starts `EntryAbility` to stop the
+  tunnel, because the platform has no app-scoped broadcast. Updates pause while
+  the screen is off. A failed publish is logged and does not stop the tunnel.
+- **QR scanning**: `Index.ets` opens the system Scan Kit UI
+  (`scanBarcode.startScanForResult`) for a live scan, and decodes picked
+  images with `detectBarcode.decode`. Scan Kit owns the camera and its
+  permission, so the app declares no `ohos.permission.CAMERA`. `QrImport`
+  turns the returned text into profiles with the same `ss://` parser as a link
+  import.
 - **Session accounting and profile switches**: the core reads the profile once,
   when it starts, so tapping another profile while the tunnel is up stops the
-  extension, waits for its status to say `stopped`, and starts it again —
-  otherwise traffic keeps leaving through the old server. The counters are
-  settled by the process that stops the tunnel (`model/SessionTraffic.ets`),
-  not by the extension: the platform kills the extension process at the first
-  `await` in `onDestroy`, so a teardown that reads the sample never finishes.
-  The status file keeps the profile id through `stopped` for exactly this
-  reason, and the sample is cleared after it is added so a session cannot be
-  counted twice.
+  extension, waits for it to be gone, and starts it again — otherwise traffic
+  keeps leaving through the old server. The counters are settled by the UI
+  process (`model/SessionTraffic.ets`), not by the extension: the platform
+  kills the extension process at the first `await` in `onDestroy`, so a
+  teardown that reads the record never finishes. The extension writes a
+  session record (`model/TrafficStats.ets`) that carries the profile id, a
+  per-start token, and `closed`/`settled` flags, and it never deletes that
+  record. The settler claims the record before it adds the counters, so a
+  second settle or a late write from the dying extension cannot add the same
+  traffic twice. A record that a finished session left behind is settled at
+  the next connect, and a dead extension is detected by the record staleness
+  rule.
 - **Server-connection bypass**: `VpnConnection.protectProcessNet()` (API 22+)
   keeps every socket the VPN-extension process creates (the native core
   included) outside the tunnel. On API < 22 there is no per-socket hook; the
@@ -259,7 +310,8 @@ Generated/ignored paths: `entry/libs/` (Rust staticlib output), `**/build`,
 Prerequisites:
 
 - DevEco Studio 5.x with the HarmonyOS NEXT SDK (API 12+)
-- Rust with `rustup target add aarch64-unknown-linux-ohos`
+- Rust with `rustup target add aarch64-unknown-linux-ohos` (add
+  `x86_64-unknown-linux-ohos` to build the emulator's staticlib)
 - OpenHarmony native SDK: `export OHOS_NDK_HOME=…/ohos-sdk/native`
   (or `…/command-line-tools/sdk/default/openharmony/native`)
 
@@ -277,12 +329,18 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
    ```
 
    Output: `entry/build/default/outputs/default/entry-default-unsigned.hap`.
-4. Debug-sign without a Huawei account:
-   `native/sign-hap-debug.sh <unsigned.hap>` → `entry-default-signed.hap`.
-   Release signing / store distribution needs a Huawei developer account;
-   third-party VPN apps also need Huawei's approval for the VPN extension
-   capability.
-5. Install/run: `hdc -t <target> install entry-default-signed.hap`.
+4. Signing. `hvigorw` signs the HAP with the `signingConfigs` in the root
+   `build-profile.json5` when one is configured. That is DevEco's automatic
+   signing, and its HAP (`entry-default-signed.hap`) is the one a real phone
+   accepts. Without a Huawei account, `native/sign-hap-debug.sh
+   <unsigned.hap> [out.hap]` signs with the OpenHarmony sample materials,
+   which only the emulator accepts: a phone rejects that HAP with "fail to
+   verify pkcs7 file". Pass an explicit output path, so the DevEco-signed HAP
+   stays in place. Release signing / store distribution needs a Huawei
+   developer account; third-party VPN apps also need Huawei's approval for
+   the VPN extension capability.
+5. Install/run: `hdc -t <target> install entry-default-signed.hap`. On a
+   phone, use the HAP that step 4 signed with the DevEco config.
 
 ## Testing
 
@@ -358,7 +416,8 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
 
 - **ArkTS unit tests** — `entry/src/test` (hypium): `ss://` URL parsing and
   writing, both SOCKS and tun config serialization (including ACL injection),
-  subscription body parsing, the QR encoder. Run from DevEco Studio or headless:
+  subscription body parsing, the QR encoder, and the `ParityU01` to `ParityU11`
+  suites. Run the registered specs from DevEco Studio or headless:
   `hvigorw test --mode module -p module=entry -p product=default`
   (failures show up as `Error in <test name>` lines).
 - **`./test-arkts-host.sh`** — those same spec files, on the host, in about a
@@ -368,7 +427,9 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   specs with the TypeScript compiler (from the DevEco tools, or `TSC=`) and runs
   them on node, with `tools/arkts-host` standing in for `@ohos/hypium` and the
   `@kit.*` modules. Only what needs no native API can run there, which is the
-  parsing, serialisation and arithmetic the model layer is made of.
+  parsing, serialisation and arithmetic the model layer is made of. The parity
+  suites are not in `List.test.ets`, which the device runner shares. Run one
+  by name: `A01_SPEC=ParityU07.test ./test-arkts-host.sh`.
 - **`tools/qr-oracle/run.sh`** — regenerates what that QR spec compares against.
   The app cannot link zxing, so `QrCode.ets` is a translation of it, and a
   translation needs the original to check against: this runs zxing itself and
@@ -381,7 +442,12 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   HOS_IMAGES=~/Library/Huawei/Sdk ci/hos-emulator-e2e.sh`), which builds and
   signs both HAPs, boots + unlocks the emulator, installs, starts a host-side
   `ssserver` and marker page, and runs the suites. `SKIP_EMULATOR=1` reuses an
-  already-running emulator, `KEEP_EMULATOR=1` leaves it up.
+  already-running emulator, `KEEP_EMULATOR=1` leaves it up. The emulator is
+  `x86_64`, so the HAP must carry that ABI (it does). Run the emulator with a
+  window on an X display: with `-noWindow` its display service stays invalid
+  and `uitest dumpLayout`, `snapshot_display` and the screen unlock fail. Set
+  `E2E_STEPS_JSON=<path>` to write the a01 run log (`ci/e2e-steps.py`) during
+  the run; `scripts/e2e-report.py` turns it into the HTML report.
   - `SslocalNativeTest` — NAPI surface, including `startTunFd` rejection paths.
   - `SocksE2eTest` — the emulator-capable e2e: the core is started in SOCKS
     mode and a marker page is fetched *through* the tunnel, addressed as
@@ -491,17 +557,26 @@ Steps (order matters — the CMake build fails if the staticlib is missing):
   rejected (external plugin processes cannot be spawned on HarmonyOS). UDP
   does not pass through plugins (neither plugin supports UDP upstream either);
   with a plugin active, UDP associations time out.
-- The custom-rules editor has no per-rule edit dialog: a rule is added, copied
-  or deleted, and changed by deleting and adding it again. Android's opens a
-  dialog with the three templates on a tap. Android's one-tap import of the
-  bundled gfwlist is missing as well, though that list comes in through the
-  clipboard import. Editing is not gated on the current profile using the
-  custom-rules route, which Android does.
-- No QR code scanning: the SDK ships no barcode decoder. Displaying one is
-  implemented, and reproduces zxing's output module for module (see Testing).
-- No launcher shortcuts and no connect-at-boot. The platform exposes
-  `BOOT_COMPLETED` and a `STATIC_SUBSCRIBER` extension type, but the ability
-  class is not in the public SDK, so this needs a device experiment.
+- The custom-rules editor opens a per-rule dialog with the three templates and
+  imports the bundled gfwlist. Editing is not gated on the current profile
+  using the custom-rules route, which Android does. The swipe gate follows the
+  route and the service state.
+- Apps VPN mode selects by bundle name. The picker lists the names the profile
+  stores and accepts a manual name. It cannot enumerate installed apps, because
+  `GET_INSTALLED_BUNDLE_LIST` is a system-basic permission. The declared
+  `GET_BUNDLE_INFO` only resolves a name. A row therefore shows the bundle name
+  alone, with no icon and no localized label.
+- QR scanning needs HMS Scan Kit. The public OpenHarmony SDK has no barcode
+  decoder, and the OpenHarmony emulator image has no HMS, so the scan paths
+  need a HarmonyOS device. Displaying a code reproduces zxing's output module
+  for module (see Testing).
+- No launcher shortcuts and no Quick Settings tile. Static shortcuts start at
+  API 20, and the public SDK exposes no tile API.
+- No connect-at-boot. `StaticSubscriberExtensionAbility` is not in the public
+  SDK, so the Auto Connect setting stores its value with no startup hook to
+  consume it.
+- No Tasker or Locale plugin. HarmonyOS has no automation host, so the app
+  exports no automation action.
 - The model layer's own failure reasons are English: the probe, latency and
   throughput modules hand the UI a plain `reason` string, which the host-side
   specs assert on. Translating them means giving each one a code the page maps

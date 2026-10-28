@@ -14,6 +14,7 @@
 # the project's dependencies.
 #
 # Usage:  ./test-arkts-host.sh        (NODE=…, TSC=… to override either tool)
+#         A01_SPEC=ParityU06.test ./test-arkts-host.sh   (run one spec file only)
 #
 set -euo pipefail
 
@@ -85,7 +86,22 @@ done
 for file in "$SPECS"/*.ets; do
     rewrite "$file" > "$WORK/test/$(basename "${file%.ets}").ts"
 done
-cp "$SHIMS/hypium.ts" "$SHIMS/stubs.ts" "$SHIMS/run.ts" "$WORK/"
+cp "$SHIMS/hypium.ts" "$SHIMS/stubs.ts" "$WORK/"
+# A01_SPEC names one spec module without the extension. It lets several agents
+# run their own suites at the same time without editing List.test.ets, which is
+# the one file every suite would otherwise share.
+SPEC_NAME="${A01_SPEC:-}"
+if [[ -n "$SPEC_NAME" ]]; then
+    cat > "$WORK/run.ts" <<EOF
+import testsuite from './test/${SPEC_NAME}';
+import { report, run } from './hypium';
+
+testsuite();
+run().then(report);
+EOF
+else
+    cp "$SHIMS/run.ts" "$WORK/"
+fi
 
 # Type errors are reported but do not stop the run: the model layer is checked
 # by the ArkTS compiler in the build, and what matters here is that the logic

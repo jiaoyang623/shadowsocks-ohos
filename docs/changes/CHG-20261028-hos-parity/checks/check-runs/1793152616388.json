@@ -1,0 +1,140 @@
+{
+  "root": "/opt/git/github/shadowsocks-ohos",
+  "flow": "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/flow.json",
+  "counts": {
+    "upstream-missing": 14,
+    "step-skip": 1
+  },
+  "findings": [
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-01 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-01 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-02 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-02 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/architecture/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-03 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-03 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/hld/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-04 的 human-verdict（docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：L-04 的 review-decisions（docs/changes/CHG-20261028-hos-parity/review/lld/review-decisions.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：I-06 的 e2e-run-log（docs/changes/CHG-20261028-hos-parity/checks/e2e-steps.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：I-06 的 e2e-report（docs/changes/CHG-20261028-hos-parity/checks/e2e/index.html）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：I-06 的 e2e-published（docs/changes/CHG-20261028-hos-parity/checks/e2e-published.txt）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：I-06 的 ui-restoration-evidence（docs/changes/CHG-20261028-hos-parity/checks/ui-restoration.json）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：I-06 的 ui-restoration-report（docs/changes/CHG-20261028-hos-parity/checks/ui-restoration/index.html）"
+    },
+    {
+      "code": "upstream-missing",
+      "level": "P0",
+      "detail": "当前步 I-07 的上游产物缺失：I-06 的 ui-restoration-published（docs/changes/CHG-20261028-hos-parity/checks/ui-restoration-published.txt）"
+    },
+    {
+      "code": "step-skip",
+      "level": "P0",
+      "detail": "当前步 I-07 的前置步骤 I-06 不在已完成集合"
+    }
+  ],
+  "coverage": {
+    "processes": 15,
+    "registryIssues": 0,
+    "stepsClaimed": 19,
+    "artifactsChecked": 99,
+    "artifactsMissing": 14,
+    "branchesOpen": 0,
+    "skipped": []
+  },
+  "incomplete": [],
+  "reminders": [],
+  "confirmations": [
+    {
+      "gate": "requirements",
+      "step": "L-01",
+      "confirmed": false,
+      "by": null,
+      "evidence": "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json",
+      "why": "没有审查者导出的结论文件 /opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json"
+    },
+    {
+      "gate": "architecture",
+      "step": "L-02",
+      "confirmed": false,
+      "by": null,
+      "evidence": "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/architecture/review-decisions.json",
+      "why": "没有审查者导出的结论文件 /opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/architecture/review-decisions.json"
+    },
+    {
+      "gate": "hld",
+      "step": "L-03",
+      "confirmed": false,
+      "by": null,
+      "evidence": "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/hld/review-decisions.json",
+      "why": "没有审查者导出的结论文件 /opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/hld/review-decisions.json"
+    },
+    {
+      "gate": "lld",
+      "step": "L-04",
+      "confirmed": false,
+      "by": null,
+      "evidence": "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/lld/review-decisions.json",
+      "why": "没有审查者导出的结论文件 /opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/review/lld/review-decisions.json"
+    },
+    {
+      "gate": "result",
+      "step": "C-02",
+      "confirmed": false,
+      "by": null,
+      "evidence": null,
+      "why": "状态文件里没有结果层（result）的确认记录",
+      "quote": null,
+      "at": null
+    }
+  ]
+}

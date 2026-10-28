@@ -2,6 +2,7 @@ import { describe, expect, it } from '@ohos/hypium';
 import {
   parseSubscriptionBody,
   Subscription,
+  SubscriptionParseError,
   SubscriptionStore,
 } from '../main/ets/model/Subscription';
 
@@ -39,7 +40,17 @@ export default function subscriptionTest() {
     it('rejects garbage bodies', 0, () => {
       expect(parseSubscriptionBody('', 's').length).assertEqual(0);
       expect(parseSubscriptionBody('not a subscription at all !!!', 's').length).assertEqual(0);
-      expect(parseSubscriptionBody('{invalid json', 's').length).assertEqual(0);
+      // A body that starts with `{` is JSON, so a syntax error is an error.
+      // The host shim has no assertThrow, so a flag records the throw.
+      let raised = false;
+      try {
+        parseSubscriptionBody('{invalid json', 's');
+      } catch (e) {
+        raised = true;
+        expect(e instanceof SubscriptionParseError).assertTrue();
+        expect((e as Error).message.startsWith('Invalid subscription JSON:')).assertTrue();
+      }
+      expect(raised).assertTrue();
     });
 
     it('skips malformed entries instead of aborting the body', 0, () => {
@@ -54,6 +65,30 @@ export default function subscriptionTest() {
       expect(profiles[0].host).assertEqual('a.example.com');
       expect(profiles[1].host).assertEqual('b.example.com');
       expect(profiles[2].host).assertEqual('c.example.com');
+    });
+
+    it('tells an empty stored list from an unreadable one', 0, () => {
+      // An empty text is the absent-file read, which is an empty list.
+      const empty = SubscriptionStore.parseStored('');
+      expect(empty === null).assertFalse();
+      if (empty !== null) {
+        expect(empty.length).assertEqual(0);
+      }
+      // A file that cannot be parsed gives null. A caller that writes back
+      // must stop there instead of replacing every stored URL with [].
+      expect(SubscriptionStore.parseStored('not json') === null).assertTrue();
+      expect(SubscriptionStore.parseStored('{"url":') === null).assertTrue();
+      expect(SubscriptionStore.parseStored('{}') === null).assertTrue();
+      // A valid stored list comes back normalized and sorted.
+      const list = SubscriptionStore.parseStored(
+        '[{"id":"s1","url":"https://b.example/sub","updatedAt":1},' +
+          '{"id":"s2","url":"https://a.example/sub","updatedAt":2}]');
+      expect(list === null).assertFalse();
+      if (list !== null) {
+        expect(list.length).assertEqual(2);
+        expect(list[0].url).assertEqual('https://a.example/sub');
+        expect(list[1].url).assertEqual('https://b.example/sub');
+      }
     });
 
     it('revives stored subscriptions into usable instances', 0, () => {

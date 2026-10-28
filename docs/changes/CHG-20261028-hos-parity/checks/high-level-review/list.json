@@ -1,0 +1,2342 @@
+{
+  "schema": "high-level-review/1",
+  "meta": {
+    "change_id": "CHG-20261028-hos-parity",
+    "baseline": "e123804+dirty",
+    "created_at": "2026-10-28T12:45:00+11:00",
+    "reviewer_contexts": [
+      {
+        "agent": "requirement-coverage",
+        "dimensions": [
+          "requirement-coverage"
+        ],
+        "inputs": [
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "entry/src/main/ets/model/MainShell.ets",
+          "entry/src/main/ets/model/Settings.ets",
+          "entry/src/main/ets/model/Diagnostics.ets",
+          "entry/src/main/ets/model/TrafficStats.ets",
+          "entry/src/main/ets/pages/Index.ets",
+          "entry/src/main/ets/model/Profile.ets",
+          "entry/src/main/ets/model/ProfilesFile.ets",
+          "entry/src/main/ets/model/Transfer.ets",
+          "entry/src/main/ets/model/ProfileStore.ets",
+          "entry/src/main/ets/pages/ProfileEdit.ets",
+          "entry/src/main/ets/model/UdpFallback.ets",
+          "entry/src/main/ets/pages/UdpFallback.ets",
+          "entry/src/main/ets/model/PluginOptions.ets",
+          "entry/src/main/ets/model/PerApp.ets",
+          "entry/src/main/ets/pages/AppPicker.ets",
+          "entry/src/main/ets/model/Subscription.ets",
+          "entry/src/main/ets/model/SubscriptionRefresh.ets",
+          "entry/src/main/ets/pages/Subscription.ets",
+          "entry/src/main/ets/model/Routes.ets",
+          "entry/src/main/ets/model/Acl.ets",
+          "entry/src/main/ets/model/CustomRules.ets",
+          "entry/src/main/ets/pages/CustomRules.ets",
+          "entry/src/main/ets/model/AclSync.ets",
+          "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+          "entry/src/main/ets/model/ConnectionNotification.ets",
+          "entry/src/main/ets/model/NotificationContent.ets",
+          "entry/src/main/ets/entryability/EntryAbility.ets",
+          "entry/src/main/ets/model/AppContext.ets",
+          "entry/src/main/ets/pages/Settings.ets",
+          "entry/src/main/ets/pages/About.ets",
+          "entry/src/main/ets/model/AboutLinks.ets",
+          "entry/src/main/ets/model/AboutOpener.ets",
+          "entry/src/main/ets/model/QrScanner.ets",
+          "entry/src/main/ets/model/QrImport.ets",
+          "entry/src/main/ets/pages/QrDialog.ets",
+          "entry/src/main/ets/pages/ProfileQr.ets",
+          "entry/src/main/ets/model/QrCode.ets",
+          "entry/src/main/ets/model/ProxyService.ets",
+          "entry/src/main/ets/model/SessionTraffic.ets",
+          "entry/src/main/ets/model/VpnStatus.ets",
+          "entry/src/main/ets/model/AppCatalog.ets",
+          "entry/src/main/ets/model/UndoRemoval.ets",
+          "entry/src/main/ets/model/Network.ets",
+          "entry/src/main/ets/model/ConnectivityProbe.ets",
+          "entry/src/main/ets/model/Throughput.ets",
+          "entry/src/main/ets/model/Latency.ets",
+          "entry/src/main/ets/pages/VpnGrant.ts",
+          "entry/src/main/cpp/napi_init.cpp",
+          "entry/src/main/cpp/types/libsslocal/Index.d.ts"
+        ]
+      },
+      {
+        "agent": "hld-contract-coverage",
+        "dimensions": [
+          "hld-contract-coverage"
+        ],
+        "inputs": [
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md",
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "entry/src/main/ets/model/Profile.ets",
+          "entry/src/main/ets/model/ProfileStore.ets",
+          "entry/src/main/ets/model/Subscription.ets",
+          "entry/src/main/ets/model/SubscriptionRefresh.ets",
+          "entry/src/main/ets/model/Acl.ets",
+          "entry/src/main/ets/model/AclSync.ets",
+          "entry/src/main/ets/model/CustomRules.ets",
+          "entry/src/main/ets/model/Routes.ets",
+          "entry/src/main/ets/model/ConnectionNotification.ets",
+          "entry/src/main/ets/model/NotificationContent.ets",
+          "entry/src/main/ets/model/TrafficStats.ets",
+          "entry/src/main/ets/model/SessionTraffic.ets",
+          "entry/src/main/ets/model/VpnStatus.ets",
+          "entry/src/main/ets/model/PerApp.ets",
+          "entry/src/main/ets/model/AppCatalog.ets",
+          "entry/src/main/ets/model/ProxyService.ets",
+          "entry/src/main/ets/model/JsonStore.ets",
+          "entry/src/main/ets/model/Settings.ets",
+          "entry/src/main/ets/model/Diagnostics.ets",
+          "entry/src/main/ets/pages/Index.ets",
+          "entry/src/main/ets/pages/ProfileEdit.ets",
+          "entry/src/main/ets/pages/Subscription.ets",
+          "entry/src/main/ets/pages/AppPicker.ets",
+          "entry/src/main/ets/pages/About.ets",
+          "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+          "entry/src/main/ets/entryability/EntryAbility.ets",
+          "entry/src/main/cpp/napi_init.cpp",
+          "entry/src/main/cpp/types/libsslocal/Index.d.ts",
+          "entry/src/main/resources/base/element/string.json",
+          "entry/src/main/resources/zh_CN/element/string.json"
+        ]
+      },
+      {
+        "agent": "journey-branches",
+        "dimensions": [
+          "journey-branches"
+        ],
+        "inputs": [
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md",
+          "entry/src/main/ets/pages/",
+          "entry/src/main/ets/model/",
+          "entry/src/main/ets/vpnability/",
+          "entry/src/main/ets/entryability/"
+        ]
+      },
+      {
+        "agent": "reverse-enumeration",
+        "dimensions": [
+          "reverse-enumeration"
+        ],
+        "inputs": [
+          "entry/src/main/ets/pages",
+          "entry/src/main/ets/model",
+          "entry/src/main/ets/vpnability",
+          "entry/src/main/ets/entryability",
+          "entry/src/main/cpp",
+          "AppScope",
+          "entry/build/default/outputs/default/entry-default-signed.hap",
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md"
+        ]
+      },
+      {
+        "agent": "state-and-persistence",
+        "dimensions": [
+          "state-and-persistence"
+        ],
+        "inputs": [
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "entry/src/main/ets/model",
+          "entry/src/main/ets/pages",
+          "entry/src/main/ets/vpnability",
+          "entry/src/main/ets/entryability"
+        ]
+      },
+      {
+        "agent": "concurrency-and-timing",
+        "dimensions": [
+          "concurrency-and-timing"
+        ],
+        "inputs": [
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md",
+          "docs/versions/5.4.0/requirements/requirements.md"
+        ]
+      },
+      {
+        "agent": "non-functional",
+        "dimensions": [
+          "non-functional"
+        ],
+        "inputs": [
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md"
+        ]
+      },
+      {
+        "agent": "interface-consumers",
+        "dimensions": [
+          "interface-consumers"
+        ],
+        "inputs": [
+          "docs/changes/CHG-20261028-hos-parity/hld.md",
+          "docs/changes/CHG-20261028-hos-parity/lld.md",
+          "docs/changes/CHG-20261028-hos-parity/architecture.md",
+          "docs/versions/5.4.0/requirements/requirements.md",
+          "entry/src/main/ets/pages/",
+          "entry/src/main/ets/model/",
+          "entry/src/main/ets/vpnability/",
+          "entry/src/main/ets/entryability/",
+          "entry/src/main/cpp/"
+        ]
+      }
+    ],
+    "inputs_declared": [
+      "docs/versions/5.4.0/requirements/requirements.md",
+      "docs/changes/CHG-20261028-hos-parity/architecture.md",
+      "docs/changes/CHG-20261028-hos-parity/hld.md",
+      "entry/src/main/ets/model/MainShell.ets",
+      "entry/src/main/ets/model/Settings.ets",
+      "entry/src/main/ets/model/Diagnostics.ets",
+      "entry/src/main/ets/model/TrafficStats.ets",
+      "entry/src/main/ets/pages/Index.ets",
+      "entry/src/main/ets/model/Profile.ets",
+      "entry/src/main/ets/model/ProfilesFile.ets",
+      "entry/src/main/ets/model/Transfer.ets",
+      "entry/src/main/ets/model/ProfileStore.ets",
+      "entry/src/main/ets/pages/ProfileEdit.ets",
+      "entry/src/main/ets/model/UdpFallback.ets",
+      "entry/src/main/ets/pages/UdpFallback.ets",
+      "entry/src/main/ets/model/PluginOptions.ets",
+      "entry/src/main/ets/model/PerApp.ets",
+      "entry/src/main/ets/pages/AppPicker.ets",
+      "entry/src/main/ets/model/Subscription.ets",
+      "entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "entry/src/main/ets/pages/Subscription.ets",
+      "entry/src/main/ets/model/Routes.ets",
+      "entry/src/main/ets/model/Acl.ets",
+      "entry/src/main/ets/model/CustomRules.ets",
+      "entry/src/main/ets/pages/CustomRules.ets",
+      "entry/src/main/ets/model/AclSync.ets",
+      "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "entry/src/main/ets/model/ConnectionNotification.ets",
+      "entry/src/main/ets/model/NotificationContent.ets",
+      "entry/src/main/ets/entryability/EntryAbility.ets",
+      "entry/src/main/ets/model/AppContext.ets",
+      "entry/src/main/ets/pages/Settings.ets",
+      "entry/src/main/ets/pages/About.ets",
+      "entry/src/main/ets/model/AboutLinks.ets",
+      "entry/src/main/ets/model/AboutOpener.ets",
+      "entry/src/main/ets/model/QrScanner.ets",
+      "entry/src/main/ets/model/QrImport.ets",
+      "entry/src/main/ets/pages/QrDialog.ets",
+      "entry/src/main/ets/pages/ProfileQr.ets",
+      "entry/src/main/ets/model/QrCode.ets",
+      "entry/src/main/ets/model/ProxyService.ets",
+      "entry/src/main/ets/model/SessionTraffic.ets",
+      "entry/src/main/ets/model/VpnStatus.ets",
+      "entry/src/main/ets/model/AppCatalog.ets",
+      "entry/src/main/ets/model/UndoRemoval.ets",
+      "entry/src/main/ets/model/Network.ets",
+      "entry/src/main/ets/model/ConnectivityProbe.ets",
+      "entry/src/main/ets/model/Throughput.ets",
+      "entry/src/main/ets/model/Latency.ets",
+      "entry/src/main/ets/pages/VpnGrant.ts",
+      "entry/src/main/cpp/napi_init.cpp",
+      "entry/src/main/cpp/types/libsslocal/Index.d.ts",
+      "docs/changes/CHG-20261028-hos-parity/lld.md",
+      "entry/src/main/ets/model/JsonStore.ets",
+      "entry/src/main/resources/base/element/string.json",
+      "entry/src/main/resources/zh_CN/element/string.json",
+      "entry/src/main/ets/pages/",
+      "entry/src/main/ets/model/",
+      "entry/src/main/ets/vpnability/",
+      "entry/src/main/ets/entryability/",
+      "entry/src/main/ets/pages",
+      "entry/src/main/ets/model",
+      "entry/src/main/ets/vpnability",
+      "entry/src/main/ets/entryability",
+      "entry/src/main/cpp",
+      "AppScope",
+      "entry/build/default/outputs/default/entry-default-signed.hap",
+      "entry/src/main/cpp/"
+    ],
+    "inputs_forbidden_checked": [
+      "No docs/oracles file appears in any reviewer input list.",
+      "No entry/src/test file appears in any reviewer input list.",
+      "No entry/src/ohosTest file appears in any reviewer input list.",
+      "No review page, review brief or review snapshot appears in any reviewer input list."
+    ]
+  },
+  "items": [
+    {
+      "dimension": "requirement-coverage",
+      "title": "The connect control is also enabled in Idle and Failed, so R-UA-03 is only partly present.",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:136",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "serviceButtonEnabled returns canStop or canStart, and canStart is true for idle and failed. Android enables the button only when the state can stop or is Stopped. No hand or wait pointer is rendered either.",
+      "id": "HLR-001"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The checked fill also applies to the probe-failed phase, not only Connected (R-UA-04).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:141",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "serviceButtonChecked returns true for PHASE_CONNECTED and PHASE_PROBE_FAILED. The requirement reserves the green checked state for Connected.",
+      "id": "HLR-002"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The stats bar is also visible when the probe failed, not only while Connected (R-UA-09).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:282",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "statsVisible returns true for connected and probe-failed. The scroll hide and show behavior is present, but the phase gate is wider than the requirement.",
+      "id": "HLR-003"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A stats-bar tap starts the connection test in probe-failed as well as Connected (R-UA-12).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:347",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "statsTapAction returns test whenever statsVisible is true, which includes probe-failed. The requirement allows the test only while Connected.",
+      "id": "HLR-004"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "VPN start never performs the prepare-intent check that R-UA-08 describes.",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1051",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "startVpn always calls startVpnExtensionAbility, with a self-grant and one retry. HarmonyOS has no VpnService.prepare equivalent, so the conditional consent path has no code representation.",
+      "id": "HLR-005"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A service-mode change stops the tunnel instead of rebinding to the new service (R-UA-20).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1445",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "reconcileServiceMode calls disconnect and shows a mode-changed message. It does not render the new service's reported state or rebind a connection.",
+      "id": "HLR-006"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Traffic samples are polled once per second, not requested every 500 ms (R-UA-29).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:77",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. STATS_POLL_INTERVAL_MS is 1000, and startHealthPolling uses it at line 1240. The core reports every 500 ms, but the UI does not ask at that cadence.",
+      "id": "HLR-007"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Drawer selection is reset on every appearance, so a saved selection and open state are not restored (R-UA-30).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:224",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "aboutToAppear and onPageShow assign defaultDrawerSelection. The open flag is an AppStorage link, but the selected destination is not persisted.",
+      "id": "HLR-008"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A start is accepted from Failed as well as Stopped, so R-UA-27 is only partly present.",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:128",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Failed is a terminal UI phase whose service state is Stopped: no tunnel runs in it. A start from Failed performs the same stopped-service start as a start from Idle, so R-UA-27's rule (no start while a service runs) holds. The failed reason stays on screen until the next start. canStart returns true for PHASE_IDLE and PHASE_FAILED. The requirement accepts a start only from Stopped. The no-profile message path exists at Index.ets:1020.",
+      "id": "HLR-009"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The connecting ring delay is a fixed 1200 ms, not Android's medium-animation time plus one second (R-UA-06).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:110",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. RING_DELAY_MS is 1200. The late-activity behavior exists through the onPageShow check, but the timing value is not derived from the animation policy.",
+      "id": "HLR-010"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Snackbars use a fixed 4000 ms timeout rather than Android's long duration (R-UA-24).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:114",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. SNACKBAR_DURATION_MS is 4000. The snackbar is drawn above the service button, so the anchor half of the requirement is present.",
+      "id": "HLR-011"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No service-connection callback resets the UI to Idle or distinguishes binder death (R-UA-21).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1600",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The page shows a failure snackbar and derives phases from the status file. There is no onServiceDisconnected or onBinderDied equivalent because the app does not bind a service.",
+      "id": "HLR-012"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The service-button glyphs do not match Android's per-state icons (R-UA-01).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:157",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. Connecting and verifying return the stop glyph, and connected returns a check glyph. Android shows a connecting glyph while Connecting and a green checked state only when Connected.",
+      "id": "HLR-013"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A row tap is accepted in Idle and Failed as well as the three Android states (R-UB-03).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:411",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "isEnabled returns true for every phase except stopping. The row tap therefore also selects a profile while failed, idle, or lost.",
+      "id": "HLR-014"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The editor path has no private draft store, so R-UB-16, R-UC-01, and R-UC-04 are only partly present.",
+      "anchor": "entry/src/main/ets/pages/Index.ets:493",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "openEditor reloads the list and routes with a profile id. ProfileEdit keeps form state in component state and saves directly to the store. No serialized draft survives between the list and the editor.",
+      "id": "HLR-015"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The subscription icon opens the Subscription page instead of refreshing the profile and opening its editor (R-UB-19).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1777",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. The row callback routes to pages/Subscription. The requirement says the icon refreshes the profile and opens the same profile editor.",
+      "id": "HLR-016"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Clipboard writes are marked local-device only because HarmonyOS has no sensitive flag (R-UB-24, R-UD-19).",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:106",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. writeClipboard sets ShareOption.LOCALDEVICE. The requirement asks for a sensitive clipboard entry, which this platform does not expose.",
+      "id": "HLR-017"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The swipe action is attached to the end side, while the requirement places it on the start edge (R-UB-26, R-UF-15).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1994",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "swipeOptions defines an end action. CustomRules.ets:454 also defines an end action. Both still remove the row and offer Undo.",
+      "id": "HLR-018"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A committed swipe delete reassigns the selection instead of leaving the selected id unchanged (R-UB-33).",
+      "anchor": "entry/src/main/ets/model/ProfileStore.ets:249",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "remove deletes the row and, when it was current, writes the first remaining profile id at line 254. Android's listener finds no row and leaves the selected id as it was.",
+      "id": "HLR-019"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Search filters the in-memory list and never re-reads the database (R-UB-51).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:351",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "shown passes this.profiles and the pending id list to ProfileStore.filter. A profile whose removal is pending stays hidden during a search, so it cannot return while Undo is offered.",
+      "id": "HLR-020"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Search is an always-visible text field with no Search action or expansion (R-UB-39).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1755",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The toolbar has no Search action. The TextInput is always present with a profile-search placeholder.",
+      "id": "HLR-021"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The force-unwrap crash on a deleted profile is deliberately not reproduced (R-UB-17).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:493",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "openEditor checks the stored list and reloads when the id is absent. The Android case where the tap crashes has no matching code path.",
+      "id": "HLR-022"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Import and export failures show generic operation-failed toasts rather than the required literal messages (R-UB-25, R-UB-42, R-UB-48, R-UD-46).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:523",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. reportFailure builds a localized operation-failed message. The specific Failed to export, Failed to import, and Please install a file manager texts have no code path.",
+      "id": "HLR-023"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The document picker applies no application/* or text/* type filter (R-UD-05).",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:35",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. pickTextFiles sets only maxSelectNumber. Multi-document selection is present, but the MIME restriction is absent.",
+      "id": "HLR-024"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No letter or Ctrl+Shift menu shortcuts are declared (R-UD-48, R-UD-49).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1920",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The key handler covers Ctrl+G and Ctrl+T only. The n, v, o, s, c and Ctrl+Shift variants for profile commands have no code path.",
+      "id": "HLR-025"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A QR encoding failure is reported by toast, not the required snackbar (R-UB-23, R-UD-35).",
+      "anchor": "entry/src/main/ets/pages/QrDialog.ets:79",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. fail reports the message through onError and closes the dialog. The page turns that into a toast at Index.ets:509.",
+      "id": "HLR-026"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Metered Hint has no editor row and buildProfile never writes metered (R-UC-06, R-UC-15).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:283",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. Profile carries a metered field at Profile.ets:207. The editor has no control for it, and buildProfile copies no metered value. An existing value survives only because the profile object is edited in place.",
+      "id": "HLR-027"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The encryption-method picker offers six AEAD methods plus Custom, not the 22-entry Android menu (R-UC-10).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:42",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "METHODS lists six AEAD names. A Custom entry allows other text. The lower-case storage rule is present through select handling.",
+      "id": "HLR-028"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A new manual profile uses aes-256-gcm rather than the required aes-256-cfb default (R-UC-37).",
+      "anchor": "entry/src/main/ets/model/Profile.ets:48",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "MANUAL_HOST, port 8388, and the password match the requirement. The method differs because the bundled core rejects aes-256-cfb.",
+      "id": "HLR-029"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The Apps VPN draft participates in dirty detection even though R-UC-03 excludes it.",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:205",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "formSnapshot joins PerAppDraft.snapshot. Any per-app change therefore makes the form dirty.",
+      "id": "HLR-030"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no untrusted-plugin warning because the plugin catalogue is fixed and built in (R-UC-19, R-UH-12).",
+      "anchor": "entry/src/main/ets/model/PluginOptions.ets:84",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. BUILTIN_PLUGINS holds obfs-local and v2ray-plugin only. There is no signature, trust, or provider concept to warn about.",
+      "id": "HLR-031"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no plugin help button or help dialog (R-UC-22, R-UC-23, R-UH-18, R-UH-19).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:791",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. PluginOptionsDialog has a monospace field and Cancel/OK only. No question-mark control or help callback exists.",
+      "id": "HLR-032"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Configure always opens the built-in options editor and never starts a plugin configuration activity (R-UC-20, R-UH-13).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:490",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "openOptionsEditor opens the local dialog. HarmonyOS cannot resolve an Android plugin ACTION_CONFIGURE, so the fallback path is the only path.",
+      "id": "HLR-033"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The plugin list is static and is not rebuilt on package install or removal (R-UC-25, R-UH-23).",
+      "anchor": "entry/src/main/ets/model/PluginOptions.ets:84",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The catalogue is a module constant. No package event, discovery cache, or rebuild path exists.",
+      "id": "HLR-034"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No Direct Boot storage copy is written when a selected profile or fallback is saved (R-UC-38).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:306",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. save upserts the JSON profile store only. There is no device-protected or noBackupFilesDir profile copy.",
+      "id": "HLR-035"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The port field has no cursor-at-end placement and is inline rather than a dialog (R-UC-09).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:595",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The TextInput uses InputType.Number and maxLength 5. Cursor placement is not controlled.",
+      "id": "HLR-036"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The password row is a masked input, not a summary that shows one bullet per stored character (R-UC-08).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:600",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The form uses InputType.Password. The platform draws the mask, so there is no explicit per-character summary.",
+      "id": "HLR-037"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "ss:// VIEW links are handled by EntryAbility rather than a dedicated UrlImportActivity excluded from recents (R-UD-40).",
+      "anchor": "entry/src/main/ets/entryability/EntryAbility.ets:32",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "takeImportUri reads want.uri and accepts ss://. The dedicated activity, VIEW-only filter, and recents exclusion have no code path.",
+      "id": "HLR-038"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "After a replace removes the selected profile, the UI falls back to the first profile instead of reporting no current profile (R-UD-55).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:439",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "currentProfile returns the first profile when no id matches. The Android behavior is a null Core.currentProfile and no selected row.",
+      "id": "HLR-039"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The save picker suggests a .json suffix but no application/json type (R-UD-22).",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:65",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. EXPORT_FILE_NAME is profiles.json and fileSuffixChoices is .json. The picker call sets no MIME type.",
+      "id": "HLR-040"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Subscriptions are stored as JSON objects under `subscriptions`, not newline-joined URLs under the public `subscription` key (R-UE-11).",
+      "anchor": "entry/src/main/ets/model/Subscription.ets:377",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. SubscriptionStore reads and writes JSON records with id, url, and updatedAt. The Android store shape and key name are not reproduced.",
+      "id": "HLR-041"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The refresh notification has no determinate or indeterminate progress bar (R-UE-17).",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:266",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. publishProgress sends a basic text notification with a count title. The two progress-bar modes have no code path.",
+      "id": "HLR-042"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A cancel received before the merge window suppresses the profile write, while R-UE-18 says a stop during finishing cannot interrupt the merge.",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:124",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "beginMerge returns false when cancelled, and the caller then skips mergeRun. Android still writes profiles once Finishing up has begun.",
+      "id": "HLR-043"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A refresh start is ignored while one runs and never stops the service (R-UE-16).",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:212",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "start returns when a run exists. There is no tunnel stop and no second-run replacement, so the cancelled-job behavior is only partly present.",
+      "id": "HLR-044"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Invalid subscription URLs show app-composed messages rather than the platform's parse message (R-UE-03).",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:401",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "validate selects the no-protocol or unknown-protocol resource. The Android field error comes from the platform URL parser.",
+      "id": "HLR-045"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "AclSyncer has no scheduled, constrained refresh, and refresh runs only at VPN start (R-UF-31).",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:110",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. refreshAcl is called from deployAcl. There is no worker, unmetered or charging constraint, ten-second delay, or locked-user return.",
+      "id": "HLR-046"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "ACL import fetches make one attempt and do not retry to five (R-UF-32).",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:86",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "fetchText issues one HTTP GET. flattenAcl skips a failed list. No IOException retry loop exists.",
+      "id": "HLR-047"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The import refresh also runs for the custom-rules route, not only the presets (R-UF-33).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:454",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. deployAcl calls refreshAcl for every route that has a file, including custom-rules. Android schedules AclSyncer only for routes other than all and custom-rules.",
+      "id": "HLR-048"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The bundled ACL is redeployed on every start instead of comparing the package update time (R-UF-34).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:414",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "deployAcl reads the rawfile or cached copy and writes it on every start. There is no stored asset time or update-time comparison.",
+      "id": "HLR-049"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The GFW list is read from filesDir/acl-cache or the rawfile, not noBackupFilesDir (R-UF-25).",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:40",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "cacheDir resolves under filesDir. The one-tap import path exists at CustomRules.ets:307, but the storage location differs.",
+      "id": "HLR-050"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The URL rule template accepts only http and https URLs, not any parseable URL (R-UF-09).",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:207",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "isUrlRule matches only ^https?://. The cleartext warning for http is present.",
+      "id": "HLR-051"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Domain validation lacks the IDN.ALLOW_UNASSIGNED and USE_STD3_ASCII_RULES distinctions (R-UF-07).",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:430",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. toAsciiDomain applies a local label rule plus Punycode. The two Android IDN flags have no equivalent.",
+      "id": "HLR-052"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Per-app selection keys on bundle name because HarmonyOS exposes no app UID (R-UG-03).",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:29",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The module comment records the substitution. Packages that share a UID cannot change together.",
+      "id": "HLR-053"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no installed-package scan, so R-UG-10, R-UG-17, and R-UG-18 have no code path.",
+      "anchor": "entry/src/main/ets/model/AppCatalog.ets:25",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The picker resolves names the profile already stores and accepts typed names. It does not list installed packages, filter by INTERNET permission, or reload on package events.",
+      "id": "HLR-054"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "App rows show only a label, without icon, package name, or UID (R-UG-12).",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:335",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. AppRow renders entry.label and a switch. The not-installed tag is the only other text.",
+      "id": "HLR-055"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Search has no UID match because the model has no UID (R-UG-16).",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:145",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. matchesQuery compares the label and bundle name only.",
+      "id": "HLR-056"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Opening the app picker marks the draft dirty and the editor later saves that state, unlike R-UG-04.",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:295",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "ensureEnabled sets enabled and dirty. ProfileEdit.buildProfile reads PerAppDraft.enabled at line 299, so the editor does deliver the state that Android never delivers.",
+      "id": "HLR-057"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The shared dirty flag is not cleared by serialization and the page does not consult it for save decisions (R-UG-31).",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:270",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "PerAppDraft.dirty is set by setters and cleared only by clear. ProfileEdit uses formSnapshot instead of this flag.",
+      "id": "HLR-058"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There are no Ctrl+Shift+A, Ctrl+C, or Ctrl+V app-picker shortcuts (R-UG-35).",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:288",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The page exposes Apply All, Export, and Import through an overflow menu only. No key handler exists.",
+      "id": "HLR-059"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The app list shows a spinner but no fade-in transition (R-UG-30).",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:409",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "LoadingProgress is replaced by the list when loading ends. No animation accompanies the swap.",
+      "id": "HLR-060"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Plugin rows render no icon, no plugin-id second line, and no unlock-warning icon (R-UH-02, R-UH-05, R-UH-06).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:675",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The Plugin row is a text label plus summary and chevron. There is no icon slot, id line, or warning badge.",
+      "id": "HLR-061"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A long press on a plugin row does not open the system application details screen (R-UH-08).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:540",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "PluginPickerSheet has a tap handler only. Built-in plugins have no package to open.",
+      "id": "HLR-062"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Configure is enabled from the built-in catalogue rather than from an installed provider (R-UH-11).",
+      "anchor": "entry/src/main/ets/model/Profile.ets:283",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "canConfigurePlugin checks canEditPlugin and pluginState known. The known state comes from the static catalogue.",
+      "id": "HLR-063"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no configuration-activity result contract or RESULT_FALLBACK path (R-UH-14, R-UH-15).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:499",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "commitPluginOptions accepts dialog text. No plugin activity result, EXTRA_OPTIONS, or fallback result is handled.",
+      "id": "HLR-064"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The Settings screen has four rows and omits Allow Toggling in Lock Screen and the Transproxy port (R-UI-01, R-UI-02, R-UI-06, R-UI-21).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:121",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The row keys are auto-connect, service-mode, proxy-port, and local-dns-port. The collapsed view shows Auto Connect only.",
+      "id": "HLR-065"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Auto Connect only persists a boolean and has no boot receiver to enable or disable (R-UI-08, R-UI-10, R-UI-11).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:148",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The field comment says no HarmonyOS startup hook exists. No receiver component state is written on start or stop.",
+      "id": "HLR-066"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No direct-boot copy, cleanup, or directBootAware key exists (R-UI-12, R-UI-13, R-UI-14, R-UI-35).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:139",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. AppSettings has no directBootAware field. No device-protected profile copy path exists.",
+      "id": "HLR-067"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The service-mode menu offers only proxy and VPN, with no transproxy entry (R-UI-15, R-UI-17, R-UI-22).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:128",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. SERVICE_MODE_CHOICES is [proxy, vpn]. The Settings menu renders those two entries. Transparent proxy is not offered.",
+      "id": "HLR-068"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Auto Connect is stored as a JSON `autoConnect` key, not as the public `isAutoConnect` preference (R-UI-07).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:149",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The value lives in store/settings.json. The platform preference store is not used anywhere.",
+      "id": "HLR-069"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Port defaults omit the per-user index and the transproxy 8200 default (R-UI-30).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:109",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. DEFAULT_PROXY_PORT is 1080 and DEFAULT_LOCAL_DNS_PORT is 5450. No user-index offset and no transproxy default exist.",
+      "id": "HLR-070"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The SOCKS5 port is used only in proxy mode and never as a VPN-mode listener (R-UI-33).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1029",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "connect branches to connectProxy only in proxy mode. VPN mode hands the tun fd to the core and opens no SOCKS listener.",
+      "id": "HLR-071"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The port dialog has no cursor-at-end placement (R-UI-26).",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:577",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. PortDialog uses InputType.Number, maxLength 5, and sanitizePortInput. Cursor position is not set.",
+      "id": "HLR-072"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "QR scanning delegates camera, permission, and analyzer behavior to Scan Kit (R-UJ-01 to R-UJ-05).",
+      "anchor": "entry/src/main/ets/model/QrScanner.ets:59",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. startScanForResult owns the preview and permission. The app has no CAMERA permission flow, permission toast, camera-bind fallback, or image-picker fallback on denial.",
+      "id": "HLR-073"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A scan with no profile reopens the system scanner up to three times instead of leaving one scanner open (R-UJ-10).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:768",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "scanQrCode loops while the system UI is dismissed with no profiles, then shows a message after three empty results.",
+      "id": "HLR-074"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Scanned profiles copy route, IPv6, UDP DNS, and remote DNS but not metered or the per-app settings (R-UJ-07).",
+      "anchor": "entry/src/main/ets/model/QrImport.ets:44",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. copyFeatureSettings copies four fields and its comment incorrectly says metered and proxy_apps are not Profile fields. Both fields exist at Profile.ets:207 and Profile.ets:210.",
+      "id": "HLR-075"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no launcher Scan QR code shortcut and no shortcut-usage report (R-UJ-19, R-UJ-20).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:461",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The scan entry is a menu item inside Index.ets. No shortcut resource, shortcut handler, or usage report exists. The built HAP is absent, so packaged shortcut declarations cannot be verified either.",
+      "id": "HLR-076"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The About body is plain split paragraphs, not about.html rendered with list-item breaks (R-UJ-22).",
+      "anchor": "entry/src/main/ets/pages/About.ets:81",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "About concatenates two resources and splitAboutBody splits on blank lines. No HTML renderer or list-item line breaks exist.",
+      "id": "HLR-077"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The # link shows an unavailable message instead of opening the OSS licences screen (R-UJ-23).",
+      "anchor": "entry/src/main/ets/model/AboutOpener.ets:50",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. classifyAboutLink marks the anchor as unsupported and the page shows a toast. No licence screen exists.",
+      "id": "HLR-078"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A mailto link opens a generic send-to-data want without a Send email chooser title (R-UJ-24).",
+      "anchor": "entry/src/main/ets/model/AboutOpener.ets:53",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The want uses ohos.want.action.sendToData. No title is set, and the chooser is owned by the system.",
+      "id": "HLR-079"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The About page has a back control rather than a drawer navigation icon (R-UJ-27).",
+      "anchor": "entry/src/main/ets/pages/About.ets:160",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The toolbar calls router.back. No drawer or navigation icon exists on this page.",
+      "id": "HLR-080"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The About bottom padding is a fixed 16 vp, not the navigation-bar inset (R-UJ-28).",
+      "anchor": "entry/src/main/ets/pages/About.ets:226",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The scroll content uses padding bottom 16. Index reads the inset, but About does not.",
+      "id": "HLR-081"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The notification sets no ticker, icon, category, timestamp, or priority (R-UK-02, R-UK-09).",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:133",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The request carries content, id, tapDismissed, isOngoing, a slot type, and action buttons. The listed Android fields have no equivalent.",
+      "id": "HLR-082"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The notification uses one content-information slot and has no per-mode channels or importance settings (R-UK-12, R-UK-13).",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:145",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. notificationSlotType is CONTENT_INFORMATION for every mode. No VPN, Proxy, or Transproxy channel is created.",
+      "id": "HLR-083"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The Stop action starts EntryAbility and shows the app rather than sending a silent app-scoped broadcast (R-UK-07, R-UK-08).",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:71",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "disconnectAgent builds a START_ABILITY want. The app opens and stops the extension from EntryAbility.handleAction. No API-level visible or invisible action variant exists.",
+      "id": "HLR-084"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Screen state is sampled per traffic tick instead of registering and unregistering a traffic callback on screen events (R-UK-04, R-UK-05).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:543",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "updateNotification calls power.isActive each time and trafficUpdate resets the baseline when inactive. No screen event listener exists.",
+      "id": "HLR-085"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No sample carries a profile id, so R-UK-06's aggregate-only filter has no code path.",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:576",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "onStatConnection reads one 16-byte tx/rx pair from the core. The endpoint reports one aggregate stream, so there is no per-profile sample to filter.",
+      "id": "HLR-086"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no Quick Settings tile, so tile taps, states, binding, label, long press, and preferences are absent (R-UK-14 to R-UK-21, R-UK-40, R-UK-41).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:489",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. No tile ability, tile service, or tile preference handler exists in the product. The built HAP is absent, so a packaged tile declaration cannot be checked either.",
+      "id": "HLR-087"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "There is no launcher shortcut for Toggle or Scan QR code and no create-shortcut request handler (R-UK-22, R-UK-23, R-UK-42, R-UK-43).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:517",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. No shortcut resource, shortcut executor, or shortcut metadata exists in the product. EntryAbility handles only actions and ss:// wants.",
+      "id": "HLR-088"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No boot receiver exists, so boot broadcasts, direct-boot variants, and boot-state persistence are absent (R-UK-24 to R-UK-30, R-UK-38).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:499",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The only boot-related product state is the autoConnect boolean in Settings. No receiver, BOOT_COMPLETED handler, LOCKED_BOOT_COMPLETED handler, or device-protected profile flush exists.",
+      "id": "HLR-089"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No Tasker plugin editor or setting handler exists (R-UK-31 to R-UK-36).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:506",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. There is no Tasker row, editor, setting bundle receiver, or switch and profile-id storage path.",
+      "id": "HLR-090"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "No RELOAD broadcast receiver restarts a running service (R-UK-39).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:514",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Platform decision recorded in the unit LLD and the case parity tag. No public HarmonyOS API exists for this surface. The only common-event subscriber in the product is the subscription abort event in SubscriptionRefresh.ets. No reload action is handled.",
+      "id": "HLR-091"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "A start with no profile shows a starting notification then a failed status, not an empty-name notification followed by a stop message (R-UK-37).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:175",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "onCreate calls showStarting with the app name, marks failed with No profile configured, and clears the notification. It does not post an empty-name notification.",
+      "id": "HLR-092"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The main page adds a speed test and a per-profile latency probe that no requirement item describes.",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1870",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The speed-test button calls measureThroughput, and the row test control calls measureLatency at Index.ets:2226. Neither appears in the requirement tables.",
+      "id": "HLR-093"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "Settings exposes probe and speed-test URL overrides and a share-over-LAN switch that no requirement item describes.",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:505",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The page edits probeUrl, speedTestUrl, and shareOverLan. The requirement rows cover the URLs no further than the connection test and cover no LAN-sharing switch.",
+      "id": "HLR-094"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The app adds a standalone QR page with a copy-URL action that the requirements do not mention.",
+      "anchor": "entry/src/main/ets/pages/ProfileQr.ets:169",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "Requirements describe a QR dialog on the profile list and in the editor. ProfileQr is a separate page with a copy button.",
+      "id": "HLR-095"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The app picker lets the user type a bundle name, an entry path with no Android requirement.",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:441",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "addBundle validates and appends a typed name. The requirement rows describe selecting from an installed-app list only.",
+      "id": "HLR-096"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The subscription page shows per-URL profile counts and update dates that no requirement item requires.",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:317",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "profileCounts is computed from profile subscription ids. The requirement rows describe the URL list, not per-URL profile counts.",
+      "id": "HLR-097"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The connection probe also requires the core's receive counter to move, which no requirement item states.",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:498",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "interpretProbe reports not-tunnelled when rxAfter is not greater than rxBefore. The Android requirement describes only the HTTPS test result.",
+      "id": "HLR-098"
+    },
+    {
+      "dimension": "requirement-coverage",
+      "title": "The app self-grants VPN authorization through an undocumented API, a path with no requirement.",
+      "anchor": "entry/src/main/ets/pages/VpnGrant.ts:46",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "grantVpnAuthorization calls vpnExtension.updateVpnAuthorizedState. The requirement set assumes the system consent dialog and has no self-grant item.",
+      "id": "HLR-099"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-02 start call returns before the tun is ready",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:287",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. C-02 says the call returns after the listener or tun is ready or after the start fails. The teardown comment at line 362 states that startTunFd returns as soon as the tokio runtime spawns. It does not wait for run_local to build the local server. Line 303 then writes the running status on code 0. The page can read running while the core is already dead. The 3 s liveness check at line 339 is the only guard.",
+      "id": "HLR-100"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "Profile-switch stop timeout is not reported and does not block the new start",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1217",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. The profile-switch failure clause says a stop timeout is reported and the new profile does not start. waitForVpnStopped writes a hilog warning at line 1217 and returns. reloadTunnel then settles the counters and starts the new profile at lines 1195-1203. The user sees no timeout message. The new start can meet ALREADY_RUNNING when the old core is still alive.",
+      "id": "HLR-101"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "Custom-rules ACL deploy prefers a stale cache over the user's edits",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:441",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. deployAcl prefers cachedAcl over the freshly composed text at line 441. refreshAcl rewrites the cache only when the composed text contains an IMPORT_URL, see AclSync.ets:111. After the user removes the last URL rule the old flattened cache is deployed on every start. Other rule edits deploy one start late. The core receives an ACL that does not match the user file.",
+      "id": "HLR-102"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "A failed ACL import overwrites the cached file",
+      "anchor": "entry/src/main/ets/model/Acl.ets:190",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. C-06 says an import failure keeps the cached file. flattenAcl skips the failed URL at line 190. refreshAcl writes the partial result over the cache at AclSync.ets:115-125. The next start deploys a list that lacks the entries of the failed import.",
+      "id": "HLR-103"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-05 error clause: a failed or malformed body still changes the profile list",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:386",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "The HLD clause conflicts with requirements R-UE-19 and R-UE-20. The requirements are authoritative. C-05 says a malformed body returns an error and keeps the old list. mergeRun merges the successful bodies against the full stored list at line 386. Every Active profile that is not re-listed becomes obsolete at Subscription.ets:695-697, and ProfileStore.visible hides it at ProfileStore.ets:179. A body with no ss:// line that fails base64 decoding returns an empty list with no error at Subscription.ets:489-494. Requirements R-UE-19 and R-UE-20 describe the current behavior, so the HLD clause and the requirements disagree.",
+      "id": "HLR-104"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-07 code 110004 has no handling path",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:154",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. C-07 says code 110004 means the notification permission is off, and the app asks once and retries. publish catches every error at line 154 and writes a warning only. No code reads the error code. ensureEnabled asks before the start at line 222, not in response to 110004. The 2 s traffic update repeats the publish but does not ask again.",
+      "id": "HLR-105"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-08 unavailable app query returns the stored names and no reason",
+      "anchor": "entry/src/main/ets/model/AppCatalog.ets:152",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. C-08 says an unavailable app query returns an empty list and a reason. installedNames returns the input unchanged at line 152 and drops the ResolvedApp reason. The extension calls it at SsVpnExtensionAbility.ets:205 and reports no reason. On API 12 and 13 the query is always unavailable because QUERY_MIN_API is 14.",
+      "id": "HLR-106"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-01 missing port is not rejected before save",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:272",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "The HLD clause conflicts with R-UC-07 and the LLD, which define the 8388 fallback for a missing port. C-01 says a missing host, port or password is rejected before save. isComplete checks the host, the password and the method only. normalizeRemotePort replaces an invalid or empty port with 8388 at Profile.ets:110-111. Requirement R-UC-07 and LLD line 2009 define that substitution. The HLD clause conflicts with them.",
+      "id": "HLR-107"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-04 missing stat endpoint clears the sample and fails the UI phase",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:271",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. C-04 says a missing endpoint leaves the previous sample. The extension clears the store at line 271 and then treats a failed stat server as a warning at lines 278-280. The page uses the sample as the tunnel liveness signal. With no sample it sets PROBE_FAILED after 6 s at Index.ets:1325-1329, even while the tunnel carries traffic.",
+      "id": "HLR-108"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-04 sample lifecycle clears before settlement",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:403",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. The data design clears traffic.json after settlement. The extension clears it on start at line 271 and on teardown at line 403. connect() does not settle first at Index.ets:1014-1048. A sample left by a crashed session is discarded, and the profile counters lose that traffic. The teardown clear also races the UI settlement in SessionTraffic.ets:38-47.",
+      "id": "HLR-109"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "Session settlement rejection has no handler",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1149",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. settleSessionTraffic writes the profile list through JsonStore, and a write error rejects the call. disconnect() awaits it at line 1149 without a catch. The page then stays in PHASE_STOPPING with health polling stopped. EntryAbility.handleAction awaits it at EntryAbility.ets:59 without a catch. The notification Stop action then never stops the extension.",
+      "id": "HLR-110"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "C-02 stat address has no proxy-mode path",
+      "anchor": "entry/src/main/ets/model/ProxyService.ets:72",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "C-02 lists a stat address as a start input. Only the VPN extension calls setStatAddress at SsVpnExtensionAbility.ets:274. ProxyService.start calls sslocal.start with the config alone at line 72. Proxy mode writes no traffic sample and the stats bar shows zeros. LLD U01 line 53 records proxy-mode counters as partial.",
+      "id": "HLR-111"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "HLD data-design store names have no matching code",
+      "anchor": "entry/src/main/ets/model/VpnStatus.ets:24",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The data design names store/status.json and store/traffic.json and puts the selection in profiles.json. The code uses vpn_status.json at VpnStatus.ets:24, traffic_stats.json at TrafficStats.ets:23 and a separate current_profile_id.json at ProfileStore.ets:25-26. The persistence layout in the HLD does not match the files the app writes.",
+      "id": "HLR-112"
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "title": "A page calls the native bridge directly",
+      "anchor": "entry/src/main/ets/pages/About.ets:96",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "The architecture allowed-dependencies rule says no page calls the native bridge directly. About.ets imports libsslocal.so at line 23 and calls sslocal.version() at line 96. The version read has no model wrapper.",
+      "id": "HLR-113"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "An abandoned probe leaves probeInFlight set, so every later session stays Connecting",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1402",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. runProbe clears probeRunning and probeInFlight only when seq still equals probeSeq. disconnect (line 1127) and reloadTunnel (lines 1181 and 1200) bump probeSeq while a probe can be in flight, because the service button accepts Disconnect during VERIFYING. The abandoned probe returns at line 1378 and the finally at 1402 skips the reset. probeInFlight then stays true, so the automatic probe at line 1331 returns at 1346 for every later session. The page never reaches CONNECTED, and the Test Connection button stays disabled with the Testing label. Only a restart of the app resets the flag. Ctrl+T clears it, but a phone has no keyboard.",
+      "id": "HLR-114"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "The custom-rules route deploys a stale cached ACL, and a deleted rule list can stay in force",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:441",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. For route custom-rules, deployAcl composes the user file into rawText and then prefers a cached copy from an earlier start. refreshAcl writes that cache whenever the composed text holds an #IMPORT_URL line (AclSync.ets:110). From then on a connect deploys the previous rules and not the current file. refreshAcl writes nothing when the user removes the last URL rule, so deleted rules remain in acl-cache/custom-rules.acl and every later connect deploys them. The requirement for the custom-rules service file says each connect re-reads the user file and rewrites the copy. An edit made in CustomRules has no effect on the connect that follows it.",
+      "id": "HLR-115"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "A stop timeout is logged only, and the profile switch starts the next profile anyway",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1217",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. waitForVpnStopped reports the 5 s timeout only to hilog. disconnect (line 1145) and reloadTunnel (line 1192) then continue as if the old tunnel had stopped. disconnect settles the counters and shows Idle, and reloadTunnel starts the new profile. The HLD profile-switch sequence says the page reports the timeout and does not start the new profile. If the old extension still runs, the new start fails with ALREADY_RUNNING and the page shows a failure over a live tunnel. The timeout itself has no user-visible outcome.",
+      "id": "HLR-116"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "A failed session settle rejects disconnect and leaves the page in PHASE_STOPPING",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1149",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. disconnect awaits settleSessionTraffic before it resets the phase to IDLE. settleSessionTraffic awaits ProfileStore.addTraffic, which reaches JsonStore.write and can reject (SessionTraffic.ets:45). disconnect has no catch. A rejection skips lines 1150 to 1159, so the phase stays PHASE_STOPPING and health polling stays stopped. serviceButtonEnabled and isEnabled both reject that phase, so the page can neither start nor stop. resumeStatus returns at once for PHASE_STOPPING, so returning to the page does not recover it.",
+      "id": "HLR-117"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "The notification Stop action can skip the stop when the settle rejects",
+      "anchor": "entry/src/main/ets/entryability/EntryAbility.ets:59",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. handleAction awaits settleSessionTraffic before it calls stopVpnExtensionAbility at line 60. A rejection from the profile write skips the stop call. onCreate (line 72) and onNewWant (line 79) call handleAction without await or catch, so nothing shows and the tunnel and its notification keep running. The Stop button then has no visible effect. The settle can reject for the same reason as the disconnect finding.",
+      "id": "HLR-118"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "A status stuck in starting never times out",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1307",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. pollTick applies CONNECT_TIMEOUT_MS only when the status file is absent (lines 1279 to 1286). A status of starting returns at line 1307 with no age check. If the extension dies or stalls after markStarting, for example inside VpnConnection.create behind the consent dialog, the page stays in PHASE_CONNECTING for as long as it is open. Diagnostics.ets:71 documents CONNECT_TIMEOUT_MS as the budget for a start that sits in starting. No failure text appears and no automatic recovery runs.",
+      "id": "HLR-119"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "An Active subscription profile has no path to the editor, so the read-only form is unreachable",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1778",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The subscription row control pushes pages/Subscription. The only pushes to pages/ProfileEdit are openEditor (line 499) and addManualProfile (line 539). openEditor runs only when subscriptionActive is false. An Active subscription profile therefore never reaches ProfileEdit, so the readOnly branch at ProfileEdit.ets:583 never runs. The user cannot change the route, remote DNS, IPv6 or per-app settings of such a profile. R-UB-19 expects the subscription icon to refresh the profile and open the same editor.",
+      "id": "HLR-120"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "With a stale selected id, Connect starts the first profile instead of asking for one",
+      "anchor": "entry/src/main/ets/pages/Index.ets:441",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. A replace import keeps the selected id (R-UD-55), and a subscription merge can reset it to an empty string (Subscription.ets:690 and 727). Both leave currentId naming no row. currentProfile falls back to profiles[0], and ProfileStore.getCurrent falls back the same way (ProfileStore.ets:273). Connect then starts an unselected profile while no row shows a check mark. The R-UA-27 branch that stops with Please select a profile has no code path when the list is not empty. ProfileStore.remove can also point currentId at an obsolete profile, which visible() hides.",
+      "id": "HLR-121"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "An early extension failure is overwritten with stopped before the page polls it",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:186",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. The no-profile branch (line 176) and the plugin-error branch (line 186) write a failed status and return without setting this.failed. onDestroy (lines 324 to 326) writes stopped when this.failed is false. If the system destroys the extension after onCreate returns, the failed record is replaced before the page polls it once per second. The page then shows IDLE and no reason. The plugin branch is reachable from Connect because Index.connect never calls pluginError().",
+      "id": "HLR-122"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "A QR scan import drops the per-app and metered feature settings",
+      "anchor": "entry/src/main/ets/model/QrImport.ets:48",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. copyFeatureSettings copies route, ipv6, udpdns and remoteDns only. R-UJ-07 also requires metered and the proxy-app settings. Profile has proxyAppsEnabled, proxyAppsBypass and proxyAppsList (Profile.ets:210 to 214), and the VPN extension reads the list at SsVpnExtensionAbility.ets:204. A scan made while Apps VPN mode is on therefore creates a profile that tunnels every app. The comment at QrImport.ets:41 is stale. No message tells the user that the setting was dropped.",
+      "id": "HLR-123"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "Proxy mode's manual connection test always reports Not connected",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1350",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. runProbe returns with the Not connected toast when lastStatus is null. connectProxy never sets lastStatus because no extension runs (lines 1094 to 1119), yet it sets PHASE_CONNECTED. The stats bar is visible for that phase, and the Test Connection button is enabled at line 1867. A tap on the bar or the button always shows Not connected and runs no test. R-UA-12's test branch has no working path in proxy mode. The bar also shows zero traffic for the whole session.",
+      "id": "HLR-124"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "A failed file picker never shows the file-manager message",
+      "anchor": "entry/src/main/ets/pages/Index.ets:740",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. importFromFiles catches a picker failure and shows readableMessage(e). Transfer.pickTextFiles constructs the picker and lets every rejection escape to that generic handler. No branch maps the failure to the file-manager message that R-UD-46 names. The user sees the platform message and not the instruction the requirement names. The failure branch has no code path that produces the required text.",
+      "id": "HLR-125"
+    },
+    {
+      "dimension": "journey-branches",
+      "title": "A running tunnel with no live stats resumes as Idle and cannot be stopped from the page",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1490",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "resumeStatus trusts a running record only when it is younger than CONNECT_TIMEOUT_MS plus STATS_STALE_MS, or when the counters are live. The extension keeps the tunnel when the stat endpoint cannot bind and only logs a warning (SsVpnExtensionAbility.ets:477 to 498), so no counters exist. After a UI process restart the page returns IDLE while the tun still captures traffic. Connect then starts a second attempt that fails with ALREADY_RUNNING. Unless the notification exists and is used, the user cannot stop the old tunnel from the page.",
+      "id": "HLR-126"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Per-row latency test has no requirement owner",
+      "anchor": "entry/src/main/ets/pages/Index.ets:2226",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The profile row renders a Test action and a latency value. The backing code is Index.ets:949 measureProfileLatency and model/Latency.ets:49 measureLatency. U02 defines the row content as title, address, plugin, traffic and selection (R-UB-07 through R-UB-13). U01 defines only the HTTPS connection test (R-UA-11, R-UA-12). No requirement row owns a per-profile TCP latency measurement.",
+      "id": "HLR-127"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Speed test control and throughput module have no requirement owner",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1870",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The page shows a Speed test button. It calls Index.ets:1502 runSpeedTest and model/Throughput.ets:56 measureThroughput, which downloads DEFAULT_SPEED_URL from Diagnostics.ets:94. The requirements contain no speed test row. R-UA-11 covers only the HTTPS connection test.",
+      "id": "HLR-128"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Separate Test connection button adds an unowned control",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1861",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The page shows a Test connection button that calls runProbe(true). R-UA-12 owns a tap on the stats bar as the test trigger. R-UA-22 owns Ctrl+T. No requirement row owns a separate always-visible test button.",
+      "id": "HLR-129"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Automatic connect verification and verifying phase are not requirement-owned",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1366",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. After the extension reports running, the page fetches the probe URL and sets PHASE_VERIFYING before it reports Connected (Index.ets:1331 and 1366). It also reports PHASE_PROBE_FAILED on a stalled probe (Index.ets:1320). R-UA-11 owns the manual HTTPS test. R-UA-08 and R-UA-28 own start failure messages. No requirement defines an automatic post-connect probe or these extra phases.",
+      "id": "HLR-130"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Typed Import URL dialog has no requirement",
+      "anchor": "entry/src/main/ets/pages/Index.ets:2306",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The add menu opens an Import URL dialog (Index.ets:1683) and the dialog struct starts at Index.ets:2306. U04 owns clipboard import, file import, and ss:// VIEW-intent import (R-UD-01 through R-UD-09 and R-UD-40 through R-UD-44). No requirement row owns a manual URL-text entry dialog.",
+      "id": "HLR-131"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Replace-all confirmation dialog has no requirement",
+      "anchor": "entry/src/main/ets/pages/Index.ets:196",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Replace from file opens a confirmation dialog before the picker. R-UD-06 and R-UD-07 define Replace from file as the same picker with replace mode. No requirement row owns a confirmation step.",
+      "id": "HLR-132"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "QR scan retry limit of three empty results has no requirement",
+      "anchor": "entry/src/main/ets/pages/Index.ets:780",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. scanQrCode reopens the scanner after an empty result and stops after three attempts with qr_no_profiles (Index.ets:768 through 784). R-UJ-09 closes the scanner after a profile. R-UJ-10 leaves it open and keeps analyzing after none. No requirement row owns an attempt limit or the qr_no_profiles message.",
+      "id": "HLR-133"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Settings endpoint editors are not in the settings requirement rows",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:505",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The page exposes a Connection test URL field and a Speed test URL field (Settings.ets:505 and 511). U09 lists six settings rows (R-UI-01). None is a test endpoint. R-UA-11 describes test states only. No requirement row owns either editable endpoint.",
+      "id": "HLR-134"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Share over LAN switch and warning have no requirement",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:492",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Proxy mode shows an Allow other devices switch and a warning when it is on (Settings.ets:488 through 500). The switch makes ProxyService bind 0.0.0.0 (ProxyService.ets:59). R-UI-33 owns the SOCKS port as a local listener. No requirement row owns a LAN binding or this switch.",
+      "id": "HLR-135"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Settings action buttons add unowned controls",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:517",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The page adds Custom rules, About, Reset to defaults and Save buttons (Settings.ets:517 through 544). U09 defines preference rows that store on change (R-UI-07, R-UI-27). No requirement row owns navigation buttons, a reset action, or a Save and back control.",
+      "id": "HLR-136"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Profile editor Remote DNS field is not a requirement-owned row",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:620",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The editor shows an editable Remote DNS input. U03 defines the editor rows for name, host, port, password, method, route, IPv6, apps, plugin and fallback (R-UC-01 through R-UC-41). remote_dns appears only as an import and export JSON key (R-UD-15, R-UD-25). No requirement row owns an editable Remote DNS row.",
+      "id": "HLR-137"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Profile editor Show QR code action and ProfileQr page are extra surface",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:760",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The editor shows a Show QR code button that routes to pages/ProfileQr (ProfileEdit.ets:536). U02 R-UB-20 and R-UB-21 own the row share popup and its QR item. U04 R-UD-31 and R-UD-33 own the same popup and dialog. No requirement row owns a QR action in the editor or a standalone QR page.",
+      "id": "HLR-138"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "App picker accepts typed bundle names and shows query reasons",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:194",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. The page adds a free-text bundle field with an Add button (AppPicker.ets:194 through 224), a not-installed label (AppPicker.ets:343), a query reason line (AppPicker.ets:402), and a 64-name limit. U07 owns an installed-app scan, row search, and client-app exclusion (R-UG-10 through R-UG-17). No requirement row owns typed bundle entry, a limit, or the query-failure text.",
+      "id": "HLR-139"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Subscription row profile count and update date have no requirement row",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:316",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Each subscription row shows the number of profiles and a formatted update date (Subscription.ets:316 through 320). U05 owns the URL list, dialog, undo and refresh (R-UE-01 through R-UE-29). No requirement row owns per-row counts or a date format.",
+      "id": "HLR-140"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "About version values are not owned by a requirement",
+      "anchor": "entry/src/main/ets/pages/About.ets:178",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. About shows an app version line and a native core version line. R-UJ-21 owns the title format. R-UJ-22 owns the body. No requirement row owns a core version line or the version value. The packaged app still reports 5.3.5 in this 5.4.0 batch (AppScope/app.json5:6 and the HAP module.json).",
+      "id": "HLR-141"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Notification permission prompt has no requirement owner",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:222",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. ensureEnabled raises the system notification permission request. It runs before a VPN start (Index.ets:1064 and 1100) and before a subscription refresh (SubscriptionRefresh.ets:219). U11 owns notification content and actions (R-UK-01 through R-UK-43). No requirement row owns the permission request or the one-ask policy.",
+      "id": "HLR-142"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Diagnostics exports four entries no product file consumes",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:222",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. settingsRows (Diagnostics.ets:222), latencyPending (355), SERVICE_MODE_CHOICES (128) and PHASE_LOST (51) appear in no import list and no product reference. Settings builds its rows inline and hardcodes its mode menu (Settings.ets:429 through 441). Index builds the pending LatencyEntry inline (Index.ets:954). summarizeStatus never returns PHASE_LOST.",
+      "id": "HLR-143"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "MainShell ringState is exported with no consumer",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:202",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. ringState is not imported anywhere. Index implements the ring delay, fill and hide in its own timers (Index.ets:1541 through 1576). R-UA-06 and R-UA-07 own the ring behavior.",
+      "id": "HLR-144"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "PluginOptions isKnownPlugin is exported with no consumer",
+      "anchor": "entry/src/main/ets/model/PluginOptions.ets:123",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. No product file references isKnownPlugin. ProfileEdit uses pluginStateOf (ProfileEdit.ets:443, 451, 456). Profile uses pluginStateOf too. U08 R-UH-01 and R-UH-10 own the plugin state rules.",
+      "id": "HLR-145"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Transfer.pickTextFile is exported with no consumer",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:53",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Index imports pickTextFiles and saveTextFile only. Nothing uses the single-file picker. U04 R-UD-05 owns the multi-document picker.",
+      "id": "HLR-146"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "QrImport.copyFeatureSettings is an unused duplicate export",
+      "anchor": "entry/src/main/ets/model/QrImport.ets:44",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "Only profilesFromScan in the same file calls it. Profile.ets:127 exports the same feature-copy rule and ProfilesFile.ets:147 uses that one. U10 R-UJ-07 owns the feature copy for scanned profiles.",
+      "id": "HLR-147"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "NotificationContent.notificationTitle has no external consumer",
+      "anchor": "entry/src/main/ets/model/NotificationContent.ets:58",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Only notificationText in the same file calls it. ConnectionNotification imports notificationText and NotificationText (ConnectionNotification.ets:24). U11 R-UK-01 owns the notification title.",
+      "id": "HLR-148"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "CustomRules.removeRule is exported but the page calls removeRules",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:681",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Only setRule in the same file calls removeRule. The page imports removeRules (pages/CustomRules.ets:44). U06 R-UF-12 and R-UF-13 own rule edit and removal.",
+      "id": "HLR-149"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Profile exposes editor helpers that no page calls",
+      "anchor": "entry/src/main/ets/model/Profile.ets:246",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. displaySecondary (246), pluginState (260), canEditPlugin (278), canConfigurePlugin (283), pluginOptionsFor (302), parseDnsAddress (731) and the module function isSubscriptionLocked (163) have no product consumer. ProfileEdit uses the class method isSubscriptionLocked (ProfileEdit.ets:183) and Index uses it too (Index.ets:1766). U03 and U08 own the editor rules.",
+      "id": "HLR-150"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "SIP008 export branch is unreachable from the product",
+      "anchor": "entry/src/main/ets/model/ProfilesFile.ets:587",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. exportProfiles has a sip008 parameter with default false. The only caller (Index.ets:854) omits it, so the branch at ProfilesFile.ets:600 never runs. No requirement row defines SIP008 export. R-UD-21 requires the JSON array export only. architecture.md:88 names SIP008 export, but the requirement set does not own it.",
+      "id": "HLR-151"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Index routeLabel export has no consumer",
+      "anchor": "entry/src/main/ets/pages/Index.ets:95",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. ProfileEdit imports ROUTE_LABELS only (ProfileEdit.ets:37). No product file references routeLabel. R-UC-11 owns route labels.",
+      "id": "HLR-152"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "AboutOpener.ABOUT_OPENED is never read",
+      "anchor": "entry/src/main/ets/model/AboutOpener.ets:34",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. About.follow compares only ABOUT_NO_HANDLER and ABOUT_UNSUPPORTED (About.ets:125 through 128). The success token has no consumer. U10 R-UJ-23 through R-UJ-25 own link outcomes.",
+      "id": "HLR-153"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Subscription and SubscriptionRefresh export internal-only helpers",
+      "anchor": "entry/src/main/ets/model/Subscription.ets:93",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. parseSubscriptionUrl (Subscription.ets:93), compareSubscriptionUrls (213) and sortSubscriptions (240) are used only inside Subscription.ets. SubscriptionRefreshRun (SubscriptionRefresh.ets:87), SUBSCRIPTION_ABORT_EVENT (36) and SUBSCRIPTION_NOTIFICATION_ID (39) are used only inside SubscriptionRefresh.ets. The page imports validateSubscriptionUrl, SubscriptionStore and SubscriptionRefresh only. U05 owns the list and refresh behavior.",
+      "id": "HLR-154"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "Internal-only constant exports have no page consumer",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:37",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. MAX_ACL_DEPTH (AclSync.ets:37), QUERY_MIN_API (AppCatalog.ets:34), matchesQuery (PerApp.ets:145) and ABOUT_LINK_WEB (AboutLinks.ets:28) are exported and used only inside their declaring files. No page or ability imports them. U06, U07 and U10 own the behavior they support.",
+      "id": "HLR-155"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "ProfileEdit blank-form branch is unreachable through product navigation",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:123",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Every router.pushUrl to pages/ProfileEdit passes an id (Index.ets:499 and 539). No manifest skill or other page routes there without params. The id-less manual form branch at ProfileEdit.ets:123 through 133 never runs. U03 R-UC-36 and R-UC-37 own new profile creation, which the Index add path pre-creates with an id.",
+      "id": "HLR-156"
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "title": "ProfileQr route has no requirement journey",
+      "anchor": "entry/src/main/ets/pages/ProfileQr.ets:52",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. pages/ProfileQr is in main_pages.json and in the built HAP page list. Its only inbound navigation is the unowned Show QR code button in ProfileEdit (ProfileEdit.ets:536 and 760). U02 and U04 own a QR dialog opened from the list row share popup. No requirement journey reaches this route, and no requirement row owns its copy URL button or explainer.",
+      "id": "HLR-157"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "A new connect applies the previous session's terminal status and stops the poll",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1291",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. connect() at line 1046 and reloadTunnel() at line 1202 start the health poll before the new extension writes its first status. After any earlier session the status file still holds failed or stopped. A poll tick in the start window applies that old record to the new attempt. The page moves from Connecting to Failed or Idle and stops polling. The extension can then start with no poll watching it. A later Connect tap starts a second attempt and fails on ALREADY_RUNNING. The user cannot stop the running tunnel from the page. The system consent dialog and a cold extension start both make this window long.",
+      "id": "HLR-158"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "v5.3.5 profiles lose subscription ownership on upgrade",
+      "anchor": "entry/src/main/ets/model/ProfileStore.ets:57",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. Profiles written by the 5.3.5 release carry subscriptionId and no subscriptionStatus. ProfileStore.fromJson sets every absent status to STATUS_USER_CONFIGURED. mergeSubscriptionRun (Subscription.ets:683) skips user-configured profiles. The first 5.4.0 refresh thus never updates or obsoletes the stored subscription rows. It adds a second Active profile for each name and address pair. The old rows stay visible and the subscription loses ownership of them. lld.md:1456 states that no migration exists. The stored shape did gain the status field.",
+      "id": "HLR-159"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Session settlement races the extension's own traffic writes and teardown clear",
+      "anchor": "entry/src/main/ets/entryability/EntryAbility.ets:59",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. handleAction calls settleSessionTraffic before it asks the extension to stop. settleSessionTraffic reads and deletes traffic_stats and writes profiles.json. The extension still runs and writes a cumulative traffic_stats sample once per second (SsVpnExtensionAbility.ets:600). The extension teardown also clears traffic_stats after it writes stopped (SsVpnExtensionAbility.ets:403). A later settle can add the same cumulative counters again. If the teardown clear wins, the session counters are lost. Two processes change the same files with no lock and no owner token.",
+      "id": "HLR-160"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "A failed settle write leaves PHASE_STOPPING with no exit",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1149",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. disconnect() and reloadTunnel() set PHASE_STOPPING and then await settleSessionTraffic without a try block. settleSessionTraffic ends in ProfileStore.addTraffic, which writes profiles.json. A write error rejects the call. The phase stays PHASE_STOPPING and the poll is already stopped. disconnect() returns at its first check, the service button is disabled, and resumeStatus() returns while the phase is PHASE_STOPPING. No page action leaves the state. requirements.md:522 requires an exit for every state. The same gap exists at line 1195 in reloadTunnel().",
+      "id": "HLR-161"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Subscription refresh overwrites concurrent profile writes",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:366",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. mergeRun reads the full profile list at line 366 and writes it at line 387. It parses every downloaded body in between. A profile save, delete, reorder or Apply Settings write in that window is overwritten. The refresh runs for seconds and the user can edit profiles meanwhile. No version check and no retry protects the write.",
+      "id": "HLR-162"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Subscription refresh commits across three files without atomicity",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:387",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "mergeRun writes profiles.json, then current_profile_id, then subscriptions.json. A failure after the first write leaves the merged profile list with the old selection and the old updatedAt. The run reports a single store error. lld.md:3867 states that a store error keeps the old file. That statement holds only for the first write.",
+      "id": "HLR-163"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "A session stopped outside the page is never settled and its counters are erased",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1299",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. pollTick moves to Idle or Failed for a stop that the page did not start. It resets the counters and never calls settleSessionTraffic. The sample stays in traffic_stats until the next start clears it at SsVpnExtensionAbility.ets:271. The stored profile counters never include that session. On the core-death path the extension also writes failed with an empty profile id at line 373, so no later settle can attribute the sample. architecture.md:75 lists this risk.",
+      "id": "HLR-164"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Custom rules file is read while the UI truncates and rewrites it",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:89",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. writeUserRules opens custom-rules-user.acl with TRUNC and then writes it. deployAcl reads the same file in the extension process at every start (SsVpnExtensionAbility.ets:434). No atomic rename and no lock protect the file. A connect during a save can read an empty or partial file. composeCustomRules('') returns [bypass_all]. The session then proxies every destination and ignores the user's rules. A crash during the write leaves the truncation on disk.",
+      "id": "HLR-165"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Bare plugin options do not round-trip and gain catalogue defaults",
+      "anchor": "entry/src/main/ets/model/ProfileStore.ets:63",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. ProfileStore.fromJson calls normalizePluginOptions on every load. A profile with a known plugin and empty pluginOpts gets the catalogue default, obfs=tls or mode=websocket. Profile.parseUrl stores a bare plugin with empty options, and seedPluginConfigs keeps it that way. The effective options change after the first reload or save. The file cannot round-trip an empty options text. lld.md:5737 justifies the default only for an old file.",
+      "id": "HLR-166"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Subscription store treats an unreadable file as empty and the next save destroys it",
+      "anchor": "entry/src/main/ets/model/Subscription.ets:417",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. SubscriptionStore.getAll returns [] for an absent file, a failed read and a JSON error. JsonStore.read returns '' when it cannot open the file. A later add, remove, undo or refresh timestamp write calls saveAll with the in-memory list. Every stored URL is lost. ProfileStore has getAllOrNull for this case. SubscriptionStore has no equivalent.",
+      "id": "HLR-167"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Drag after a pending removal moves the wrong profile",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1807",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. dragFrom and insertIndex are positions in shown(), which hides pending removals and applies the search. onItemDragMove starts commitRemovals() without await. dropProfile applies the old indices to the whole stored list. ProfileStore.move then renumbers userOrder. A drag while the undo bar is up moves the wrong profile and saves the wrong order. dropProfile refuses a search filter. It does not refuse a pending removal.",
+      "id": "HLR-168"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "The page and the extension resolve the selected profile differently when it is Obsolete",
+      "anchor": "entry/src/main/ets/model/ProfileStore.ets:267",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. visible() removes Obsolete profiles for the page. Index.currentProfile() falls back to the first visible profile for the connect check, the live counter and the route. ProfileStore.getCurrent resolves current_profile_id against the full list. After a refresh marks the selected profile Obsolete, the page validates one profile and the extension starts another. The live sample then names a profile that no row shows. The merge resets currentId only when it deletes a duplicate.",
+      "id": "HLR-169"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "JsonStore.read sizes its buffer before it opens the renamed file",
+      "anchor": "entry/src/main/ets/model/JsonStore.ets:57",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. JsonStore.read calls statSync and then openSync. The extension replaces vpn_status.json and traffic_stats.json by atomic rename every 500 ms to 1 s. A rename between the two calls makes the buffer smaller than the new file. readSync truncates the new JSON. load catches the parse error and returns null. A present status reads as absent. A live sample reads as absent, so the page reports a connect timeout or no traffic after 6 s.",
+      "id": "HLR-170"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "Export writes the picked file without truncation",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:71",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. saveTextFile opens the picked URI with CREATE and without TRUNC. If the URI names an existing longer file, the write starts at offset 0 and leaves the old tail. The exported profiles.json then holds trailing bytes. A later import fails to parse it.",
+      "id": "HLR-171"
+    },
+    {
+      "dimension": "state-and-persistence",
+      "title": "The refreshed ACL cache is written in place and preferred on the next start",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:122",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "refreshAcl opens the cached ACL with TRUNC and writes it in place. deployAcl prefers the cached copy over the shipped rawfile on the next start (SsVpnExtensionAbility.ets:440). A process death during the write leaves a partial cache. A UI read for the GFW import can also see the partial file. The next start then deploys an incomplete ACL. JsonStore uses a temporary file and a rename. This path does not.",
+      "id": "HLR-172"
+    },
+    {
+      "dimension": "concurrency-and-timing",
+      "title": "The UI starts the next tunnel on a `stopped` status written before teardown",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:325",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final fix pass after this review. See checks/build-final.txt for the clean HAP build, checks/host-tests.txt for the host run, and checks/e2e-final.txt for the on-device result. onDestroy writes the `stopped` status before it calls teardown. The platform can cut teardown off at its first await, so the old core can outlive that status. Index.waitForVpnStopped returns on the status, and reloadTunnel then settles the sample and starts the new profile. The new start can call sslocal.startTunFd before the old core is gone, and the single-instance core returns ALREADY_RUNNING. Teardown can also clear the traffic file during that window, so settleSessionTraffic reads no sample and the session counters never reach the profile.",
+      "id": "HLR-173"
+    },
+    {
+      "dimension": "concurrency-and-timing",
+      "title": "A poll tick reads the previous session's status during a new connect",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1297",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. The status file is never removed, so it still holds `stopped` or `failed` when a new connect starts. connect() starts the health poll before it starts the extension, so the first tick can read that old record before the extension writes `starting`. pollTick applies the old state and does not compare its timestamp with connectingSince. A `stopped` record sets PHASE_IDLE and stops the poll. A `failed` record sets PHASE_FAILED and shows the old reason. The extension then comes up while the page shows Idle or an old failure and no longer polls.",
+      "id": "HLR-174"
+    },
+    {
+      "dimension": "concurrency-and-timing",
+      "title": "No timeout covers a start that stays in `starting`",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1307",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. pollTick checks CONNECT_TIMEOUT_MS only while the status file is absent. A `starting` record falls through the VPN_STATE_RUNNING test at this line with no elapsed check. The extension writes `starting` before it awaits connection.create and protectProcessNet, and neither call has a timeout. A create() call can wait on the system consent dialog or on a stuck VPN service. Either wait leaves the page in Connecting with no failure.",
+      "id": "HLR-175"
+    },
+    {
+      "dimension": "concurrency-and-timing",
+      "title": "The VPN start retry can create a second extension instance",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1071",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. The catch retries startVpnExtensionAbility for every failure. It does not check that the first start failed because of the authorization. The first call can deliver the start and still reject, for example on a timeout. The retry then asks for a second start, and the platform can create a second extension instance. Both instances call sslocal.startTunFd, and the loser writes a failed status over the winner's running status. The page then reports a failure over a live tunnel.",
+      "id": "HLR-176"
+    },
+    {
+      "dimension": "concurrency-and-timing",
+      "title": "A health poll can be installed after its page is destroyed",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1493",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. aboutToAppear and onPageShow call resumeStatus without await. resumeStatus reads the settings, the status file, and the traffic sample before it calls startHealthPolling. aboutToDisappear clears the interval that exists at that moment. It cannot clear the interval that the pending resumeStatus installs afterwards. The new interval then reads the store files and writes page state for the life of the process.",
+      "id": "HLR-177"
+    },
+    {
+      "dimension": "non-functional",
+      "title": "Stop timeout during a profile switch only writes a log line",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1207",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved in the final implementation after this review. See checks/build-fixes.txt and the 490-case host run. waitForVpnStopped returns void after 5000 ms. At expiry its only evidence is one hilog.warn at Index.ets:1217. reloadTunnel calls it at Index.ets:1192 and then starts the new profile. disconnect calls it at Index.ets:1145 and then reports Idle. hld.md:106 expects a reported timeout and no new start. The timeout quality condition has no matching evidence.",
+      "id": "HLR-178"
+    },
+    {
+      "dimension": "non-functional",
+      "title": "Accessibility labels cover five controls only",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1746",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Already recorded as a partial or android-only case in machine/Uxx.json. The missing part is named there. The product sets accessibilityText in five places only: Index.ets:1662, Index.ets:1733, Index.ets:2058, Index.ets:2248 and AppPicker.ets:375. The add menu Text('＋') at Index.ets:1746 has no label. The close Text('✕') controls at ProfileEdit.ets:572, UdpFallback.ets:120 and CustomRules.ets:484 have no label. A selected row shows a Text('✓') at Index.ets:2221 and exposes no accessibility state. The accessibility-label condition has partial evidence.",
+      "id": "HLR-179"
+    },
+    {
+      "dimension": "non-functional",
+      "title": "Failure text reaches the Chinese UI in English",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:298",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "base and zh_CN string.json hold the same 302 keys and the same %s and %d counts. Some paths bypass these resources. The extension writes English reasons at lines 176, 298, 314, 350 and 374 of SsVpnExtensionAbility.ets. Index.ets:1292 passes them through failureText and the page shows the result. QrDialog.ets:68 and ProfileQr.ets:83 show the raw English encoder message. Diagnostics.ets:501 and Diagnostics.ets:534 supply English verdict text. lld.md:793 records the choice to keep extension reasons in English. The localized-string condition has partial evidence.",
+      "id": "HLR-180"
+    },
+    {
+      "dimension": "non-functional",
+      "title": "Native log lines reach hilog with no redaction",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:526",
+      "severity": "weak",
+      "disposition": "open",
+      "reason": "flushCoreLogs copies every line from sslocal.recentLogs() to hilog at INFO level. It applies no filter and no redaction. The ArkTS layer obeys lld.md:5370 and logs no password. The allowed inputs give no evidence that the core's own records exclude credentials. The no-password-logging condition has no evidence for this path.",
+      "id": "HLR-181"
+    },
+    {
+      "dimension": "interface-consumers",
+      "title": "Notification traffic and totals lines drop their format arguments",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:233",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved after the interface-consumers review. See checks/build-interface.txt for the clean HAP build and checks/host-tests.txt for the 490-case host run. showConnected now takes detail and the new totals as ResourceStr (ConnectionNotification.ets:208-216), and the extension passes $r('app.string.notification_traffic', ...) for both at SsVpnExtensionAbility.ets:568-570. resolve() at ConnectionNotification.ets:233-237 calls getStringSync(value.id) and discards the Resource params, so the notification text and additionalText show the literal '%s up, %s down' (or the publish is refused) instead of rates and totals. R-UK-03 and HLD C-07 ('traffic values') are therefore not met on screen.",
+      "id": "HLR-182"
+    },
+    {
+      "dimension": "interface-consumers",
+      "title": "Subscription merge overwrites a corrupt profile store because it reads with getAll",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:366",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved after the interface-consumers review. See checks/build-interface.txt for the clean HAP build and checks/host-tests.txt for the 490-case host run. SubscriptionRefresh.mergeRun reads the stored list with ProfileStore.getAll (:366) and writes the merge result with saveAll (:387). getAll maps a present-but-unparseable profiles.json to [] (ProfileStore.ets:113-116), indistinguishable from an empty list, while the newly added getAllOrNull (:117-121) exists for callers that write back what they read. On a corrupt file, mergeSubscriptionRun receives existing=[] and the save replaces the whole file with only the fresh subscription profiles. The store error branch never fires and the page reports success; manually configured profiles are lost.",
+      "id": "HLR-183"
+    },
+    {
+      "dimension": "interface-consumers",
+      "title": "Export's new null branch is unreachable; a corrupt store exports as success",
+      "anchor": "entry/src/main/ets/pages/Index.ets:829",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved after the interface-consumers review. See checks/build-interface.txt for the clean HAP build and checks/host-tests.txt for the 490-case host run. exportProfiles now returns string|null and Index handles null at :842-845 and :859-861, but readActiveProfiles (:829-835) obtains the list from ProfileStore.getAll, which returns [] for a corrupt file instead of throwing, so the catch and the null result never occur. A corrupt profiles.json is copied to the clipboard as empty and reported as success (:847-848), or written to the export file as '[]' (:858-862). ProfileStore.getAllOrNull (:117-121) is the read that tells corrupt from empty, and this consumer does not use it.",
+      "id": "HLR-184"
+    },
+    {
+      "dimension": "interface-consumers",
+      "title": "Subscription list writes have no error branch",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:159",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved after the interface-consumers review. See checks/build-interface.txt for the clean HAP build and checks/host-tests.txt for the 490-case host run. applyResult (:159), remove (:172) and undo (:202) await SubscriptionStore.saveAll with no try/catch, and their callers (dialog onResult, swipe onAction, undo button) do not await or catch. SubscriptionStore.saveAll writes through JsonStore.write (JsonStore.ets:71-87), whose fs calls can throw. A failed write becomes an unhandled rejection: no message, no rollback, and reload() at :160, :175, :204 never runs. Every other page that writes a store wraps the call (ProfileEdit.save, Settings.persist, AppPicker.applyToAllProfiles, CustomRules.change).",
+      "id": "HLR-185"
+    },
+    {
+      "dimension": "interface-consumers",
+      "title": "New Index messages pass formatted resources to an id-only resolver",
+      "anchor": "entry/src/main/ets/pages/Index.ets:297",
+      "severity": "strong",
+      "disposition": "not-applicable",
+      "reason": "Resolved after the interface-consumers review. See checks/build-interface.txt for the clean HAP build and checks/host-tests.txt for the 490-case host run. Index.text (:297-301) resolves a ResourceStr with getStringSync(value.id), dropping format params. Three call sites added by this batch pass resources with arguments: drawer_faq_failed with FAQ_URL (:437), stats_error_code with the HTTP code (:1513) and stats_network_error with the reason (:1515). The user sees 'Could not open %s', 'Error code: #%s' or 'Fail to detect internet connection: %s'. The older index_could_not_start_proxy call (:1150) has the same defect.",
+      "id": "HLR-186"
+    },
+    {
+      "dimension": "interface-consumers",
+      "title": "Settings page does not consume the new row and menu contract",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:431",
+      "severity": "weak",
+      "disposition": "not-applicable",
+      "reason": "Extra app behavior outside the Android parity requirement set. It is retained as a HarmonyOS capability. Diagnostics exports SERVICE_MODE_CHOICES (Diagnostics.ets:128) and settingsRows (Diagnostics.ets:222) as the settings page's row and menu contract, but no product file references either. Settings.ets builds the menu from two hardcoded MenuItem calls (:431-443) and the rows from hardcoded SettingsRow calls (:469-486). Behavior matches today, but the exported contract is dead in production and the page will not follow a change to the model's row set or order (LLD 6275-6277 and 6470 name these helpers as the page's source of truth).",
+      "id": "HLR-187"
+    }
+  ],
+  "coverage": [
+    {
+      "dimension": "requirement-coverage",
+      "result": "gaps-found",
+      "scanned": [
+        "docs/versions/5.4.0/requirements/requirements.md",
+        "docs/changes/CHG-20261028-hos-parity/architecture.md",
+        "docs/changes/CHG-20261028-hos-parity/hld.md",
+        "entry/src/main/ets/model/MainShell.ets",
+        "entry/src/main/ets/model/Settings.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/model/TrafficStats.ets",
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/model/Profile.ets",
+        "entry/src/main/ets/model/ProfilesFile.ets",
+        "entry/src/main/ets/model/Transfer.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/model/UdpFallback.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/model/PluginOptions.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/model/Routes.ets",
+        "entry/src/main/ets/model/Acl.ets",
+        "entry/src/main/ets/model/CustomRules.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/ets/model/AppContext.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/model/AboutLinks.ets",
+        "entry/src/main/ets/model/AboutOpener.ets",
+        "entry/src/main/ets/model/QrScanner.ets",
+        "entry/src/main/ets/model/QrImport.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/model/QrCode.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/SessionTraffic.ets",
+        "entry/src/main/ets/model/VpnStatus.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/UndoRemoval.ets",
+        "entry/src/main/ets/model/Network.ets",
+        "entry/src/main/ets/model/ConnectivityProbe.ets",
+        "entry/src/main/ets/model/Throughput.ets",
+        "entry/src/main/ets/model/Latency.ets",
+        "entry/src/main/ets/pages/VpnGrant.ts",
+        "entry/src/main/cpp/napi_init.cpp",
+        "entry/src/main/cpp/types/libsslocal/Index.d.ts"
+      ],
+      "note": "All 412 requirement rows in the 11 units were enumerated. The product has code paths for most U01, U02, U04, U05 profile and subscription behavior, but major gaps remain in U06 scheduling, U07 installed-app discovery, U08 plugin provider surfaces, U09 direct boot and transproxy settings, U10 shortcut and About parity, and U11 tiles, shortcuts, boot, Tasker, and reload receivers. The allowed HAP input entry/build/default/outputs/default/entry-default-signed.hap is not present. Only pack.info exists, so packaged declarations such as skills, shortcuts, receivers, and notification channels could not be verified. No docs/oracles, entry/src/test, entry/src/ohosTest, or review files were read."
+    },
+    {
+      "dimension": "hld-contract-coverage",
+      "result": "gaps-found",
+      "scanned": [
+        "docs/changes/CHG-20261028-hos-parity/hld.md",
+        "docs/changes/CHG-20261028-hos-parity/architecture.md",
+        "docs/changes/CHG-20261028-hos-parity/lld.md",
+        "docs/versions/5.4.0/requirements/requirements.md",
+        "entry/src/main/ets/model/Profile.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/model/Acl.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/model/CustomRules.ets",
+        "entry/src/main/ets/model/Routes.ets",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/model/TrafficStats.ets",
+        "entry/src/main/ets/model/SessionTraffic.ets",
+        "entry/src/main/ets/model/VpnStatus.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/JsonStore.ets",
+        "entry/src/main/ets/model/Settings.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/cpp/napi_init.cpp",
+        "entry/src/main/cpp/types/libsslocal/Index.d.ts",
+        "entry/src/main/resources/base/element/string.json",
+        "entry/src/main/resources/zh_CN/element/string.json"
+      ],
+      "note": "C-01 has a port clause gap. C-02 has a readiness gap and a proxy stat gap. C-03 matches on the ArkTS side, but the fd dup and the native error codes live in native/sslocal-ffi, outside the allowed inputs. C-04 has an error-path and a persistence gap. C-05, C-06 and C-08 have error-clause gaps. C-07 has a minor 110004 gap. No HAP exists at entry/build/default/outputs/default, so the built artifact was not inspected. Test directories were excluded by the task, so the assembly and test boundaries are unverified."
+    },
+    {
+      "dimension": "journey-branches",
+      "result": "gaps-found",
+      "scanned": [
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/VpnGrant.ts",
+        "entry/src/main/ets/model/MainShell.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/model/ConnectivityProbe.ets",
+        "entry/src/main/ets/model/TrafficStats.ets",
+        "entry/src/main/ets/model/SessionTraffic.ets",
+        "entry/src/main/ets/model/VpnStatus.ets",
+        "entry/src/main/ets/model/Profile.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/model/ProfilesFile.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/PluginOptions.ets",
+        "entry/src/main/ets/model/UdpFallback.ets",
+        "entry/src/main/ets/model/CustomRules.ets",
+        "entry/src/main/ets/model/Acl.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/model/Settings.ets",
+        "entry/src/main/ets/model/Transfer.ets",
+        "entry/src/main/ets/model/UndoRemoval.ets",
+        "entry/src/main/ets/model/QrImport.ets",
+        "entry/src/main/ets/model/QrScanner.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/AboutLinks.ets",
+        "entry/src/main/ets/model/AboutOpener.ets",
+        "entry/src/main/ets/model/AppContext.ets",
+        "entry/src/main/ets/model/JsonStore.ets",
+        "entry/src/main/ets/model/Routes.ets",
+        "entry/src/main/ets/model/Network.ets",
+        "entry/src/main/ets/model/Latency.ets",
+        "entry/src/main/ets/model/Throughput.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/ets/entryability/EntryAbility.ets"
+      ],
+      "note": "I walked the 11 units against the implementation for normal, boundary, failure, cancel, recovery and permission branches. U02, U05, U08 and U09 have no blocking branch of the reported kinds beyond the shared items. The QR encoder internals and its generated tables were not walked. The encode failures that the dialog and the page expose were walked through QrDialog and ProfileQr. The findings concentrate on U01 (probe abandonment, stop timeout, starting timeout, proxy-mode test), U06 (stale custom-rules ACL), U03/U02 (unreachable read-only editor, stale selection), U04/U10 (replace selection, file-picker message, scan feature copy), and U11 (settle failure, early failure overwrite)."
+    },
+    {
+      "dimension": "reverse-enumeration",
+      "result": "gaps-found",
+      "scanned": [
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/pages/VpnGrant.ts",
+        "36",
+        "364",
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/cpp/napi_init.cpp",
+        "entry/src/main/cpp/types/libsslocal/Index.d.ts",
+        "AppScope/app.json5",
+        "entry/build/default/outputs/default/entry-default-signed.hap",
+        "docs/versions/5.4.0/requirements/requirements.md",
+        "docs/changes/CHG-20261028-hos-parity/architecture.md",
+        "docs/changes/CHG-20261028-hos-parity/hld.md",
+        "docs/changes/CHG-20261028-hos-parity/lld.md"
+      ],
+      "note": "All 9 routed pages in main_pages.json are present in the HAP and have inbound navigation. ProfileQr has no requirement-owned journey. Eight routes are reached from requirement-owned controls. Dead-surface results cover product consumers only. Test files were excluded by the task, so an export used only by host specs can appear here as unused. Type-only exports used as return types were not counted as dead."
+    },
+    {
+      "dimension": "state-and-persistence",
+      "result": "gaps-found",
+      "scanned": [
+        "docs/versions/5.4.0/requirements/requirements.md",
+        "docs/changes/CHG-20261028-hos-parity/hld.md",
+        "docs/changes/CHG-20261028-hos-parity/lld.md",
+        "docs/changes/CHG-20261028-hos-parity/architecture.md",
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/ets/model/JsonStore.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/model/Profile.ets",
+        "entry/src/main/ets/model/ProfilesFile.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/model/Settings.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/model/VpnStatus.ets",
+        "entry/src/main/ets/model/TrafficStats.ets",
+        "entry/src/main/ets/model/SessionTraffic.ets",
+        "entry/src/main/ets/model/CustomRules.ets",
+        "entry/src/main/ets/model/Acl.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/model/UndoRemoval.ets",
+        "entry/src/main/ets/model/MainShell.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/model/PluginOptions.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/UdpFallback.ets",
+        "entry/src/main/ets/model/AppContext.ets",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/model/Transfer.ets",
+        "entry/src/main/ets/model/QrImport.ets",
+        "entry/src/main/ets/model/QrScanner.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/AboutOpener.ets",
+        "entry/src/main/ets/model/Routes.ets",
+        "entry/src/main/ets/model/ConnectivityProbe.ets",
+        "entry/src/main/ets/model/Latency.ets",
+        "entry/src/main/ets/model/Throughput.ets",
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets"
+      ],
+      "note": "Read the requirements state tables and data rules for U01, U02, U03, U04, U05, U06, U07, U08, U09 and U11, the HLD data design and contracts, the LLD state and data sections, and the architecture seams and quality scenarios. Compared them with the product files. Found 15 items: 2 high, 9 medium, 4 low. Checked state transitions, store round trips, cross-process file use and the v5.3.5 to 5.4.0 data migration. No test was run and no device state was observed. Not scanned: docs/oracles, entry/src/test, entry/src/ohosTest, docs/review, native code, pages without persisted state (About, AboutLinks, Network, QrCode)."
+    },
+    {
+      "dimension": "concurrency-and-timing",
+      "result": "gaps-found",
+      "scanned": [
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/ets/model/VpnStatus.ets",
+        "entry/src/main/ets/model/TrafficStats.ets",
+        "entry/src/main/ets/model/SessionTraffic.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/ConnectivityProbe.ets",
+        "entry/src/main/ets/model/Latency.ets",
+        "entry/src/main/ets/model/Throughput.ets",
+        "entry/src/main/ets/model/MainShell.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/model/JsonStore.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/QrScanner.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/model/Transfer.ets",
+        "entry/src/main/ets/model/UndoRemoval.ets"
+      ],
+      "note": "Checked every timer and its lifecycle owner, every cross-process store writer and reader, the connect, stop, and switch sequences, the awaited network and platform calls, and the retry paths. Degradation is present for a failed stat endpoint, a refused notification permission, a missing ACL file, and a probe without counters. The five findings cover the requested classes."
+    },
+    {
+      "dimension": "non-functional",
+      "result": "gaps-found",
+      "scanned": [
+        "entry/src/main/module.json5",
+        "entry/src/main/resources/base/element/color.json",
+        "entry/src/main/resources/dark/element/color.json",
+        "entry/src/main/resources/base/element/string.json",
+        "entry/src/main/resources/zh_CN/element/string.json",
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/pages/VpnGrant.ts",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/Transfer.ets",
+        "entry/src/main/ets/model/JsonStore.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/model/ConnectivityProbe.ets",
+        "entry/src/main/ets/model/Throughput.ets",
+        "entry/src/main/ets/model/Latency.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/model/Network.ets",
+        "entry/src/main/ets/model/QrScanner.ets",
+        "entry/src/main/ets/model/MainShell.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/ets/entryability/EntryAbility.ets"
+      ],
+      "note": "Six quality scenarios appear in architecture.md. All have a mechanism and five match the Expected column. The profile-switch failure path does not match. Permissions, secret handling, colour tokens, memory, battery and API level have a mechanism and evidence. Localization, accessibility and the forwarded native log path have partial evidence. The requirements file and QrDialog.ets changed during the review, so all anchors were re-checked at 2026-10-28 12:26 AEDT. R-UF-31 is android-only in the current requirements.md and the VPN self-grant is a recorded emulator workaround, so neither was scored as a HarmonyOS gap."
+    },
+    {
+      "dimension": "interface-consumers",
+      "result": "gaps-found",
+      "scanned": [
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/model/Profile.ets",
+        "entry/src/main/ets/model/ProfilesFile.ets",
+        "entry/src/main/ets/model/ProfileStore.ets",
+        "entry/src/main/ets/model/Settings.ets",
+        "entry/src/main/ets/model/Diagnostics.ets",
+        "entry/src/main/ets/model/Subscription.ets",
+        "entry/src/main/ets/model/SubscriptionRefresh.ets",
+        "entry/src/main/ets/model/ConnectionNotification.ets",
+        "entry/src/main/ets/model/NotificationContent.ets",
+        "entry/src/main/ets/model/TrafficStats.ets",
+        "entry/src/main/ets/model/AppContext.ets",
+        "entry/src/main/ets/model/Acl.ets",
+        "entry/src/main/ets/model/AclSync.ets",
+        "entry/src/main/ets/model/CustomRules.ets",
+        "entry/src/main/ets/model/PerApp.ets",
+        "entry/src/main/ets/model/AppCatalog.ets",
+        "entry/src/main/ets/model/PluginOptions.ets",
+        "entry/src/main/ets/model/QrImport.ets",
+        "entry/src/main/ets/model/QrScanner.ets",
+        "entry/src/main/ets/model/UdpFallback.ets",
+        "entry/src/main/ets/model/UndoRemoval.ets",
+        "entry/src/main/ets/model/MainShell.ets",
+        "entry/src/main/ets/model/AboutLinks.ets",
+        "entry/src/main/ets/model/AboutOpener.ets",
+        "entry/src/main/ets/model/JsonStore.ets",
+        "entry/src/main/ets/model/SessionTraffic.ets",
+        "entry/src/main/ets/model/ProxyService.ets",
+        "entry/src/main/ets/model/VpnStatus.ets",
+        "entry/src/main/ets/model/Transfer.ets",
+        "entry/src/main/ets/model/Routes.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/cpp/types/libsslocal/Index.d.ts",
+        "entry/src/main/module.json5",
+        "entry/src/main/resources/base/profile/main_pages.json",
+        "entry/src/main/resources/base/element/string.json",
+        "entry/src/main/resources/zh_CN/element/string.json"
+      ],
+      "note": "The NAPI surface (entry/src/main/cpp) is unchanged by this batch; every sslocal call site matches Index.d.ts. No interface change without a persisted-data migration was found: profiles.json gains pluginConfigs, metered, proxyAppsEnabled/Bypass/List and ProfileStore.fromJson defaults them and normalizes plugin options; settings.json's numeric proxyPort is converted to text and the new localDnsPort and autoConnect keys are defaulted by settingsFromJson/settingsNeedSeed (LLD 6634-6638). Other changed interfaces were checked and their consumers match: showStarting/showConnected/clear and ACTION_OPEN/ACTION_DISCONNECT (EntryAbility), toTunConfig's dnsPort (only the extension calls it), getAllOrNull (AppPicker handles null), loadSeeded (Settings page), exportProfiles/parseProfilesText/collectProfiles/parseProfileUrls (Index and QrImport), pluginError (ProxyService throws and Index catches; the extension sets this.failed on refusal), per-app lists to VpnConfig trusted/blocked applications, and the AppPickerParams/UdpFallbackParams/QrParams page parameters. The working tree was edited by another process during the review (files changed at 12:35-12:37); all findings were re-verified at 12:40 AEDT. Two earlier observations were fixed during that window and are not reported: the extension's plugin-refusal branch missing this.failed = true, and QrImport not copying metered/per-app feature settings."
+    }
+  ]
+}

@@ -6,6 +6,8 @@
     "pages/Settings",
     "pages/About",
     "pages/CustomRules",
-    "pages/ProfileQr"
+    "pages/ProfileQr",
+    "pages/AppPicker",
+    "pages/UdpFallback"
   ]
 }

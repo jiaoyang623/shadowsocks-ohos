@@ -1,0 +1,513 @@
+> hvigor [32mFinished :entry:clean... after 16 ms [39m
+> hvigor [32mFinished ::clean... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 645 ms [39m
+
+2 tasks in total: 2 executed, 0 up-to-date
+> hvigor [33mWARN: The project has not explicitly set the 'targetSdkVersion' version at build-profile.json5. It is recommended to configure it. Reference: https://developer.huawei.com/consumer/en/doc/harmonyos-guides/ide-hvigor-build-profile-app#section45865492619[39m
+> hvigor [32mUP-TO-DATE :entry:default@PreBuild...  [39m
+> hvigor [32mFinished :entry:default@CreateModuleInfo... after 1 ms [39m
+> hvigor [32mFinished :entry:default@GenerateMetadata... after 2 ms [39m
+> hvigor [32mFinished :entry:default@ConfigureCmake... after 40 ms [39m
+> hvigor [32mFinished :entry:default@MergeProfile... after 16 ms [39m
+> hvigor [32mFinished :entry:default@CreateBuildProfile... after 1 ms [39m
+> hvigor [32mFinished :entry:default@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgContextInfo... after 2 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgSdkInfo... after 3 ms [39m
+> hvigor [32mFinished :entry:default@ProcessIntegratedHsp... after 1 ms [39m
+> hvigor [32mFinished :entry:default@MakePackInfo... after 2 ms [39m
+> hvigor [32mFinished :entry:default@SyscapTransform... after 6 ms [39m
+> hvigor [32mFinished :entry:default@ProcessProfile... after 26 ms [39m
+> hvigor [32mFinished :entry:default@ProcessRouterMap... after 2 ms [39m
+> hvigor [32mFinished :entry:default@ProcessShareConfig... after 1 ms [39m
+> hvigor [32mFinished :entry:default@ProcessStartupConfig... after 1 ms [39m
+> hvigor [32mFinished :entry:default@ProcessResource... after 1 ms [39m
+> hvigor [32mFinished :entry:default@GenerateLoaderJson... after 3 ms [39m
+> hvigor [33mWARN: Warning: 'app_name' conflict, first declared.
+at /opt/git/github/shadowsocks-ohos/AppScope/resources/base/element/string.json
+but declared again.
+at /opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json
+[39m
+> hvigor [32mFinished :entry:default@CompileResource... after 69 ms [39m
+> hvigor [32mFinished :entry:default@BuildJS... after 1 ms [39m
+> hvigor [32mFinished :entry:default@BuildNativeWithCmake... after 234 ms [39m
+> hvigor [33mWARN: When performing compilation for the arm64-v8a architecture:
+[33mclang++: warning: argument unused during compilation: '--gcc-toolchain=/opt/harmony/sdk/sdk/default/openharmony/native/llvm' [-Wunused-command-line-argument][33m[39m
+[39m
+> hvigor [32mFinished :entry:default@BuildNativeWithNinja... after 377 ms [39m
+> hvigor [32mFinished :entry:default@ProcessLibs... after 35 ms [39m
+> hvigor [32mFinished :entry:default@DoNativeStrip... after 34 ms [39m
+> hvigor [32mFinished :entry:default@CacheNativeLibs... after 2 ms [39m
+> hvigor [33mWARN: [33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PluginOptions.ets:304:50
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PluginOptions.ets:326:56
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppContext.ets:95:10
+ 'getContext' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:54:39
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:73:35
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:184:35
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:185:37
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:199:35
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:200:38
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:208:31
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets:80:19
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets:82:10
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets:84:10
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets:86:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets:89:36
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets:122:19
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets:125:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets:127:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets:90:19
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets:93:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets:95:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:400:29
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:44:13
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:71:19
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:73:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:75:8
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:92:28
+ To use this API, you need to apply for the permissions: ohos.permission.READ_PASTEBOARD [since 12]
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:92:28
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets:108:15
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/QrScanner.ets:83:51
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:296:42
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:306:18
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:306:18
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:310:18
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:310:18
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:412:16
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:412:16
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:415:16
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:415:16
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:418:16
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:418:16
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:421:16
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:421:16
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:499:12
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:499:12
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:510:24
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:539:14
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:641:22
+ 'showDialog' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:807:22
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1110:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1352:22
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1352:22
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1512:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1512:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1555:5
+ 'animateTo' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1620:28
+ 'px2vp' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1693:18
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1778:28
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1793:15
+ 'animateTo' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:66:27
+ 'getParams' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:83:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:83:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:86:31
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:122:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:124:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:124:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets:134:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:88:27
+ 'getParams' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:176:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:198:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:198:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:202:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:202:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:210:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:210:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:216:22
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:216:22
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:234:22
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:239:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:241:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:241:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:248:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:250:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:250:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:264:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:264:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:271:18
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:271:18
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets:365:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets:51:27
+ 'getParams' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets:55:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets:69:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets:74:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets:88:12
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets:123:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:116:27
+ 'getParams' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:147:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:147:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:148:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:154:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:224:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:231:22
+ 'showDialog' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:249:16
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:308:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:308:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:318:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:318:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:322:12
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:333:22
+ 'showDialog' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:361:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:361:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:366:12
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:378:12
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:378:12
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:398:12
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:398:12
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:503:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:503:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:531:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:531:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:536:12
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:536:12
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:575:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets:754:36
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets:325:28
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets:229:22
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets:270:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:161:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:161:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:171:14
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:267:42
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:450:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:523:20
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets:530:20
+ 'pushUrl' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:110:42
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:126:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:126:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:128:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:128:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:163:33
+ 'back' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:148:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:148:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:290:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:290:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:297:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:297:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:300:18
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:300:18
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:316:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:316:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:386:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:389:20
+ 'showToast' has been deprecated.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:389:20
+ Function may throw exceptions. Special handling is required.
+[39m[39m
+[33mWARN: [33m[33mArkTS:WARN File: /opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets:631:35
+ 'back' has been deprecated.
+[39m[39m
+[39m
+> hvigor [32mFinished :entry:default@CompileArkTS... after 3 s 943 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgModuleJson... after 2 ms [39m
+> hvigor [32mFinished :entry:default@ProcessCompiledResources... after 1 ms [39m
+> hvigor [32mFinished :entry:default@PackageHap... after 230 ms [39m
+> hvigor [32mFinished :entry:default@PackingCheck... after 2 ms [39m
+> hvigor [32mFinished :entry:default@SignHap... after 868 ms [39m
+> hvigor [32mFinished :entry:default@CollectDebugSymbol... after 1 ms [39m
+> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 6 s 539 ms [39m
+
+33 tasks in total: 32 executed, 1 up-to-date

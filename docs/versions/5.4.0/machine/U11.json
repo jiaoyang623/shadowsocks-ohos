@@ -1,0 +1,2804 @@
+{
+  "unit": "U11",
+  "title": "System surfaces: notification, tile, shortcuts, boot, Tasker",
+  "sources_read": [
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/xml/shortcuts.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/BootReceiver.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/tasker/ActionListener.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/tasker/Settings.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_tasker.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/AndroidManifest.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/AndroidManifest.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/res/values/strings.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/BaseService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/ProxyService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/TransproxyService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/Core.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/aidl/ShadowsocksConnection.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/xml/pref_global.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/App.kt",
+    "/opt/git/github/shadowsocks-android/plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/module.json5",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json"
+  ],
+  "controls": [
+    {
+      "id": "C-U11-001",
+      "type": "notification",
+      "label": "Shadowsocks",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "the service is starting or running (notification id 1 is posted from startForeground)",
+      "enabled_when": "always",
+      "action": "shows the profile name as the content title, the rates as the content text, the totals as the subtext, the ticker text and the Stop action; the stateChanged callback is empty; tapping the body opens MainActivity",
+      "navigates_to": "U01",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:74"
+    },
+    {
+      "id": "C-U11-002",
+      "type": "image",
+      "label": "Status bar icon",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "the notification is posted",
+      "enabled_when": "always",
+      "action": "shows drawable ic_service_active in the status bar",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:80"
+    },
+    {
+      "id": "C-U11-003",
+      "type": "text",
+      "label": "<profile name>",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "the notification is posted; the text is empty when the start failed before a profile was chosen",
+      "enabled_when": "always",
+      "action": "shows the content title, which is the running profile's formatted name",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:78"
+    },
+    {
+      "id": "C-U11-004",
+      "type": "text",
+      "label": "12 KB/s↑\t34 KB/s↓",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "a traffic sample arrived while the service is Connected and the traffic callback is registered",
+      "enabled_when": "always",
+      "action": "shows the current upload and download rates in the traffic template",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:60"
+    },
+    {
+      "id": "C-U11-005",
+      "type": "text",
+      "label": "1.2 MB↑\t3.4 MB↓",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "a traffic sample arrived while the service is Connected and the traffic callback is registered",
+      "enabled_when": "always",
+      "action": "shows the session upload and download totals as the notification subtext",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:63"
+    },
+    {
+      "id": "C-U11-006",
+      "type": "button",
+      "label": "Stop",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "API < 24 shows a button; API >= 24 adds the same action as an invisible action",
+      "enabled_when": "always",
+      "action": "sends the app-scoped Action.CLOSE broadcast; the service runs stopRunner",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:86"
+    },
+    {
+      "id": "C-U11-007",
+      "type": "row",
+      "label": "Notification body",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "the notification is posted",
+      "enabled_when": "always",
+      "action": "fires the content intent: opens MainActivity with FLAG_ACTIVITY_REORDER_TO_FRONT",
+      "navigates_to": "U01",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:79"
+    },
+    {
+      "id": "C-U11-008",
+      "type": "text",
+      "label": "Shadowsocks started.",
+      "android_id": "",
+      "parent": "C-U11-001",
+      "visible_when": "the notification is first posted and the system shows a ticker",
+      "enabled_when": "always",
+      "action": "shows the ticker text forward_success",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:77"
+    },
+    {
+      "id": "C-U11-010",
+      "type": "tile",
+      "label": "Toggle",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "the user added the tile to Quick Settings",
+      "enabled_when": "always",
+      "action": "a tap stops or starts the service; a long press launches MainActivity through the QS_TILE_PREFERENCES filter, which shows the main screen because MainActivity has no tile-preference handling",
+      "navigates_to": "U01",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:63"
+    },
+    {
+      "id": "C-U11-011",
+      "type": "image",
+      "label": "Tile icon",
+      "android_id": "",
+      "parent": "C-U11-010",
+      "visible_when": "always while the tile is shown",
+      "enabled_when": "always",
+      "action": "shows ic_service_busy while Connecting or Stopping, ic_service_active while Connected, ic_service_idle while Stopped",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:71"
+    },
+    {
+      "id": "C-U11-012",
+      "type": "text",
+      "label": "<profile name> or Shadowsocks",
+      "android_id": "",
+      "parent": "C-U11-010",
+      "visible_when": "always while the tile is shown; the profile name only while Connected and the device is unlocked",
+      "enabled_when": "always",
+      "action": "shows the tile label; it falls back to the app name Shadowsocks",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:76"
+    },
+    {
+      "id": "C-U11-020",
+      "type": "shortcut",
+      "label": "Toggle",
+      "android_id": "toggle",
+      "parent": "",
+      "visible_when": "the launcher shows the app's static shortcuts (long press the app icon)",
+      "enabled_when": "always",
+      "action": "starts QuickToggleShortcut in the :bg process; it toggles the service and finishes",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:3"
+    },
+    {
+      "id": "C-U11-021",
+      "type": "shortcut",
+      "label": "Scan QR code",
+      "android_id": "scan",
+      "parent": "",
+      "visible_when": "the launcher shows the app's static shortcuts (long press the app icon)",
+      "enabled_when": "always",
+      "action": "opens ScannerActivity",
+      "navigates_to": "U10",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:11"
+    },
+    {
+      "id": "C-U11-030",
+      "type": "screen",
+      "label": "Shadowsocks",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "Tasker or Locale sends EDIT_SETTING to ConfigActivity",
+      "enabled_when": "always",
+      "action": "edits one Tasker action: the service switch and the profile",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:97"
+    },
+    {
+      "id": "C-U11-031",
+      "type": "text",
+      "label": "Shadowsocks",
+      "android_id": "",
+      "parent": "C-U11-030",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "shows the toolbar title app_name in the toolbar's own TextView, which has no id of its own",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:101"
+    },
+    {
+      "id": "C-U11-032",
+      "type": "button",
+      "label": "Close (X icon)",
+      "android_id": "",
+      "parent": "C-U11-030",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "icon-only navigation button with drawable ic_navigation_close and no content description; it has no id of its own; finishes the activity without a result, so Tasker keeps the previous setting",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:102"
+    },
+    {
+      "id": "C-U11-033",
+      "type": "switch",
+      "label": "Start the service",
+      "android_id": "serviceSwitch",
+      "parent": "C-U11-030",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "sets the switch state that a row tap stores as switch_on; the switch alone does not save",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_tasker.xml:12"
+    },
+    {
+      "id": "C-U11-034",
+      "type": "list",
+      "label": "Profile list",
+      "android_id": "list",
+      "parent": "C-U11-030",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "lists the default row and one row per active profile; scrolls to the saved profile; the layout gives the list no label",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_tasker.xml:19"
+    },
+    {
+      "id": "C-U11-035",
+      "type": "row",
+      "label": "Use the current profile",
+      "android_id": "text1",
+      "parent": "C-U11-034",
+      "visible_when": "always, as the first row",
+      "enabled_when": "always",
+      "action": "checked when profile_id < 0; a tap stores switch_on and profile_id -1, returns RESULT_OK and finishes",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:54"
+    },
+    {
+      "id": "C-U11-036",
+      "type": "row",
+      "label": "<profile name>",
+      "android_id": "text1",
+      "parent": "C-U11-034",
+      "visible_when": "one row per active profile",
+      "enabled_when": "always",
+      "action": "checked when profile_id equals the profile id; a tap stores switch_on and that id, returns RESULT_OK and finishes",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:59"
+    },
+    {
+      "id": "C-U11-040",
+      "type": "text",
+      "label": "Connect to <profile name>",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "the configured action is shown in the Tasker or Locale action list",
+      "enabled_when": "always",
+      "action": "shows the blurb built by Settings.toIntent: Connect to name, Switch to name, Connect to the current server or Stop",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/Settings.kt:52"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UK-01",
+      "statement": "The notification content title is the running profile's formatted name.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:78",
+      "examples": [
+        {
+          "given": "the selected profile is named Tokyo",
+          "when": "the service starts",
+          "then": "the notification title reads Tokyo",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service stops before a profile is resolved",
+          "when": "the notification is created",
+          "then": "the title is empty",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-02",
+      "statement": "The notification uses ticker Shadowsocks started., icon ic_service_active, category service and no timestamp.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:75",
+      "examples": [
+        {
+          "given": "the service starts",
+          "when": "the notification is posted",
+          "then": "the ticker reads Shadowsocks started. and the small icon is ic_service_active",
+          "polarity": "positive"
+        },
+        {
+          "given": "the notification is already posted",
+          "when": "a traffic sample rewrites the content text and subtext",
+          "then": "the ticker, small icon, category and unset timestamp stay unchanged",
+          "polarity": "boundary",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:59"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-03",
+      "statement": "Each traffic sample sets the content text to the rates and the subtext to the totals.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:60",
+      "examples": [
+        {
+          "given": "the sum sample reports txRate 12 KB/s and rxRate 34 KB/s",
+          "when": "the notification updates",
+          "then": "the content text reads 12 KB/s↑\t34 KB/s↓",
+          "polarity": "positive"
+        },
+        {
+          "given": "the sample reports totals 1.2 MB and 3.4 MB",
+          "when": "the notification updates",
+          "then": "the subtext reads 1.2 MB↑\t3.4 MB↓",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-04",
+      "statement": "The notification registers the traffic callback when the screen is interactive at creation or on a screen-on while Connected, and unregisters it on a screen-off while Connected.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:95",
+      "examples": [
+        {
+          "given": "the service is Connected and the screen is on",
+          "when": "the traffic callback is registered",
+          "then": "the notification updates every 1000 ms",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connected and the screen turns off",
+          "when": "ACTION_SCREEN_OFF arrives",
+          "then": "the callback is unregistered and the text freezes",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-05",
+      "statement": "Screen on and off events change the callback only while the service is Connected.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:104",
+      "examples": [
+        {
+          "given": "the service is Connected and the screen turns on",
+          "when": "onReceive receives ACTION_SCREEN_ON",
+          "then": "updateCallback(true) registers the traffic callback and starts bandwidth listening at 1000 ms",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopping and the screen turns on",
+          "when": "onReceive runs",
+          "then": "the callback is not re-registered",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-06",
+      "statement": "A traffic sample whose profile id is not zero does not update the notification.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:58",
+      "examples": [
+        {
+          "given": "a per-profile sample with profile id 7 arrives",
+          "when": "trafficUpdated runs",
+          "then": "the notification is not rewritten",
+          "polarity": "negative"
+        },
+        {
+          "given": "the summed sample with profile id 0 arrives",
+          "when": "trafficUpdated runs",
+          "then": "the notification is rewritten and shown",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-07",
+      "statement": "The Stop action sends the app-scoped Action.CLOSE broadcast, requires authentication and shows no UI.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:86",
+      "examples": [
+        {
+          "given": "the service is running",
+          "when": "the Stop action is activated",
+          "then": "the close receiver runs stopRunner",
+          "polarity": "positive"
+        },
+        {
+          "given": "the notification is posted",
+          "when": "the Stop action is activated",
+          "then": "no activity opens because the action is a broadcast with no user interface",
+          "polarity": "negative",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:89"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-08",
+      "statement": "Below API 24 the Stop action is a visible button; from API 24 it is an invisible action.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:94",
+      "examples": [
+        {
+          "given": "the device runs API 23",
+          "when": "the notification is posted",
+          "then": "a Stop button is shown",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device runs API 24 or later",
+          "when": "the notification is posted",
+          "then": "the action is added as an invisible action",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-09",
+      "statement": "The notification priority is minimum when visible is false and low otherwise.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:82",
+      "examples": [
+        {
+          "given": "the VPN service creates its notification with visible false",
+          "when": "the notification is posted",
+          "then": "the priority is PRIORITY_MIN",
+          "polarity": "positive"
+        },
+        {
+          "given": "the proxy service creates its notification with visible true",
+          "when": "the notification is posted",
+          "then": "the priority is PRIORITY_LOW",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-10",
+      "statement": "Tapping the notification opens MainActivity reordered to the front.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:79",
+      "examples": [
+        {
+          "given": "the app is in the background",
+          "when": "the user taps the notification body",
+          "then": "MainActivity comes to the front",
+          "polarity": "positive"
+        },
+        {
+          "given": "MainActivity is already running",
+          "when": "the user taps the notification body",
+          "then": "the existing instance moves to the front and no new instance starts",
+          "polarity": "boundary",
+          "source": "core/src/main/java/com/github/shadowsocks/Core.kt:103"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-11",
+      "statement": "Stopping the service destroys the notification and removes the foreground state.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:294",
+      "examples": [
+        {
+          "given": "the notification is posted",
+          "when": "stopRunner completes",
+          "then": "the receiver is unregistered and the notification is removed",
+          "polarity": "positive"
+        },
+        {
+          "given": "the screen is off and the traffic callback is already unregistered",
+          "when": "destroy runs",
+          "then": "no second unregister happens and the foreground notification is still removed",
+          "polarity": "boundary",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:120"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-12",
+      "statement": "Each service mode has its own notification channel: VPN Service, Proxy Service or Transproxy Service.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:150",
+      "examples": [
+        {
+          "given": "the service mode is VPN",
+          "when": "channels are created",
+          "then": "the channel is service-vpn named VPN Service",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service mode is proxy",
+          "when": "channels are created",
+          "then": "the channel is service-proxy named Proxy Service",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-13",
+      "statement": "The VPN channel has minimum importance on API 28+ and low importance below.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:153",
+      "examples": [
+        {
+          "given": "the device runs API 29",
+          "when": "the VPN channel is created",
+          "then": "its importance is IMPORTANCE_MIN",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device runs API 26",
+          "when": "the VPN channel is created",
+          "then": "its importance is IMPORTANCE_LOW",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-14",
+      "statement": "A tile tap stops the service when Connecting or Connected, because canStop is true.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:95",
+      "examples": [
+        {
+          "given": "the service is Connected",
+          "when": "the tile is tapped",
+          "then": "Core.stopService sends Action.CLOSE",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connecting",
+          "when": "the tile is tapped",
+          "then": "the connecting job is cancelled and the service stops",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-15",
+      "statement": "A tile tap starts the service only from the Stopped state.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:100",
+      "examples": [
+        {
+          "given": "the service is Stopped",
+          "when": "the tile is tapped",
+          "then": "Core.startService starts the foreground service",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopping",
+          "when": "the tile is tapped",
+          "then": "nothing happens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-16",
+      "statement": "A tile tap before the service binds is remembered and replayed on connection.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:41",
+      "examples": [
+        {
+          "given": "the tile is listening but connection.service is null",
+          "when": "the user taps",
+          "then": "tapPending is set to true",
+          "polarity": "positive"
+        },
+        {
+          "given": "tapPending is true",
+          "when": "onServiceConnected runs",
+          "then": "tapPending is cleared and toggle runs",
+          "polarity": "positive"
+        },
+        {
+          "given": "the tile is listening and connection.service is bound",
+          "when": "the user taps",
+          "then": "toggle runs at once and tapPending stays false",
+          "polarity": "negative",
+          "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:97"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-17",
+      "statement": "A tap on a locked device requests unlock first unless lock-screen toggling is allowed.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:64",
+      "examples": [
+        {
+          "given": "the device is locked and Allow Toggling in Lock Screen is off",
+          "when": "the tile is tapped",
+          "then": "unlockAndRun requests unlock and then toggles",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device is locked and the setting is on",
+          "when": "the tile is tapped",
+          "then": "toggle runs without an unlock prompt",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-18",
+      "statement": "The tile label is the profile name only when Connected and the device is unlocked.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:76",
+      "examples": [
+        {
+          "given": "the service is Connected and the keyguard is not locked",
+          "when": "the tile updates",
+          "then": "the label is the profile name",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connected but the device is locked",
+          "when": "the tile updates",
+          "then": "the label is Shadowsocks",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-19",
+      "statement": "Tile states map Connecting to active, Connected to active, Stopping to unavailable and Stopped to inactive.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:71",
+      "examples": [
+        {
+          "given": "the state is Connecting",
+          "when": "updateTile runs",
+          "then": "the busy icon and STATE_ACTIVE are set",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state is Stopping",
+          "when": "updateTile runs",
+          "then": "the busy icon and STATE_UNAVAILABLE are set",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the state is Stopped",
+          "when": "updateTile runs",
+          "then": "the idle icon and STATE_INACTIVE are set",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-20",
+      "statement": "The tile update rejects the Idle state with an IllegalStateException error.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:71",
+      "examples": [
+        {
+          "given": "the reported state is Connected and the device is unlocked",
+          "when": "updateTile runs",
+          "then": "the connected icon and STATE_ACTIVE are set with the profile name as the label, and no exception is thrown",
+          "polarity": "positive"
+        },
+        {
+          "given": "the reported state is Idle",
+          "when": "updateTile runs",
+          "then": "error(\"serviceState\") throws",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-21",
+      "statement": "The tile binds to the service while listening and unbinds when listening stops.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:54",
+      "examples": [
+        {
+          "given": "the tile panel opens",
+          "when": "onStartListening runs",
+          "then": "ShadowsocksConnection connects",
+          "polarity": "positive"
+        },
+        {
+          "given": "the tile panel closes",
+          "when": "onStopListening runs",
+          "then": "the connection is released",
+          "polarity": "positive"
+        },
+        {
+          "given": "the tile panel opened and closed once",
+          "when": "the panel opens again",
+          "then": "onStartListening calls connection.connect again",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-22",
+      "statement": "The Toggle shortcut stops a stoppable service, starts a stopped one and then finishes.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt:57",
+      "examples": [
+        {
+          "given": "the service is Connected",
+          "when": "the Toggle shortcut is launched",
+          "then": "Core.stopService runs and the activity finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopped",
+          "when": "the Toggle shortcut is launched",
+          "then": "Core.startService runs and the activity finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopping",
+          "when": "the Toggle shortcut is launched",
+          "then": "neither stop nor start runs and the activity finishes",
+          "polarity": "negative",
+          "source": "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt:59"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-23",
+      "statement": "A launcher create-shortcut request returns a Toggle shortcut and finishes without toggling.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt:43",
+      "examples": [
+        {
+          "given": "the intent action is ACTION_CREATE_SHORTCUT",
+          "when": "QuickToggleShortcut is created",
+          "then": "it sets RESULT_OK with shortcut id toggle and finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the intent action is ACTION_MAIN, as the launcher's Toggle shortcut sends",
+          "when": "QuickToggleShortcut is created",
+          "then": "it connects to the service and toggles instead of returning a shortcut",
+          "polarity": "negative",
+          "source": "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt:51"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-24",
+      "statement": "The boot receiver component is disabled at install and follows the Auto Connect preference.",
+      "kind": "persistence",
+      "source": "core/src/main/AndroidManifest.xml:102",
+      "examples": [
+        {
+          "given": "the app is freshly installed",
+          "when": "the package manager state is read",
+          "then": "BootReceiver.enabled is false",
+          "polarity": "boundary"
+        },
+        {
+          "given": "Auto Connect is switched on",
+          "when": "the preference listener runs",
+          "then": "BootReceiver.enabled is set to true",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-25",
+      "statement": "On a boot broadcast with Auto Connect off the receiver disables itself and returns.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/BootReceiver.kt:44",
+      "examples": [
+        {
+          "given": "Auto Connect is on and direct boot is off",
+          "when": "BOOT_COMPLETED arrives",
+          "then": "the receiver returns without disabling the component and Core.startService runs",
+          "polarity": "positive"
+        },
+        {
+          "given": "Auto Connect is off",
+          "when": "BOOT_COMPLETED arrives",
+          "then": "the component is disabled and no service starts",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-26",
+      "statement": "BOOT_COMPLETED starts only without direct boot; LOCKED_BOOT_COMPLETED starts only with direct boot.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/BootReceiver.kt:48",
+      "examples": [
+        {
+          "given": "direct boot is off",
+          "when": "BOOT_COMPLETED arrives",
+          "then": "Core.startService runs",
+          "polarity": "positive"
+        },
+        {
+          "given": "direct boot is off",
+          "when": "LOCKED_BOOT_COMPLETED arrives",
+          "then": "no service starts",
+          "polarity": "negative"
+        },
+        {
+          "given": "the action is MY_PACKAGE_REPLACED and the user is unlocked",
+          "when": "the receiver runs",
+          "then": "Core.startService runs",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-27",
+      "statement": "A normal stop disables the boot receiver so it does not fire on the next boot.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:311",
+      "examples": [
+        {
+          "given": "the service was running with Auto Connect on",
+          "when": "stopRunner runs without restart",
+          "then": "BootReceiver.enabled is set to false",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service stops to restart on another profile",
+          "when": "stopRunner runs with restart true",
+          "then": "BootReceiver.enabled is left unchanged and startRunner runs",
+          "polarity": "boundary",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:310"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-28",
+      "statement": "Direct boot is active only when the device supports it and lock-screen toggling is allowed.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:66",
+      "examples": [
+        {
+          "given": "the device has per-user encryption and the setting is on",
+          "when": "directBootAware is read",
+          "then": "it is true",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device runs API 23",
+          "when": "directBootAware is read",
+          "then": "it is false",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-29",
+      "statement": "Direct boot writes the expanded profile to noBackupFilesDir and deletes it on clean.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:37",
+      "examples": [
+        {
+          "given": "a profile is selected",
+          "when": "DirectBoot.update runs",
+          "then": "directBootProfile holds the expanded profile",
+          "polarity": "positive"
+        },
+        {
+          "given": "no profile exists",
+          "when": "DirectBoot.update runs",
+          "then": "the profile file and both config files are deleted",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-30",
+      "statement": "A shutdown persists the traffic counters; after the user unlocks, the dirty device-profile copy is flushed into the database.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:94",
+      "examples": [
+        {
+          "given": "ACTION_SHUTDOWN arrives while the service runs",
+          "when": "the close receiver runs",
+          "then": "persistStats writes the traffic counters",
+          "polarity": "positive"
+        },
+        {
+          "given": "a device profile exists and is dirty because the counters were persisted in direct boot",
+          "when": "flushTrafficStats runs at app init with the user already unlocked",
+          "then": "the profile is updated and the stored copy refreshed",
+          "polarity": "positive"
+        },
+        {
+          "given": "a device profile exists and is dirty",
+          "when": "the ACTION_BOOT_COMPLETED receiver that listenForUnlock registered runs",
+          "then": "flushTrafficStats updates the profile, unregisters the receiver and refreshes the copy",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-31",
+      "statement": "Tasker settings default switch_on to true and profile_id to -1, accepting a long or an int.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/Settings.kt:39",
+      "examples": [
+        {
+          "given": "the bundle has no keys",
+          "when": "Settings is built",
+          "then": "switchOn is true and profileId is -1",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the bundle has profile_id as an int",
+          "when": "Settings is built",
+          "then": "the int is read when the long is negative",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-32",
+      "statement": "A fired Tasker setting switches the profile, then starts with reload or stops.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ActionListener.kt:30",
+      "examples": [
+        {
+          "given": "the profile exists and switch_on is true",
+          "when": "FIRE_SETTING arrives",
+          "then": "the profile is switched, the service starts and reloads",
+          "polarity": "positive"
+        },
+        {
+          "given": "switch_on is false",
+          "when": "FIRE_SETTING arrives",
+          "then": "Core.stopService runs",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-33",
+      "statement": "A Tasker row tap stores the switch state and profile id and returns RESULT_OK.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:65",
+      "examples": [
+        {
+          "given": "the switch is on and the row for Tokyo is tapped",
+          "when": "onClick runs",
+          "then": "switch_on is true, profile_id is Tokyo's id, RESULT_OK is set and the activity finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the switch is off and Use the current profile is tapped",
+          "when": "onClick runs",
+          "then": "switch_on is false and profile_id is -1",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-34",
+      "statement": "Toggling the Tasker switch alone does not save; only a row tap saves both values.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:66",
+      "examples": [
+        {
+          "given": "the user turns the switch on and taps the Tokyo row",
+          "when": "onClick runs",
+          "then": "switch_on is saved as true together with Tokyo's profile id in the RESULT_OK intent and the activity finishes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user flips the switch and presses Close",
+          "when": "the activity finishes",
+          "then": "no new setting is returned",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-35",
+      "statement": "The Tasker editor lists Use the current profile first, then every active profile.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:74",
+      "examples": [
+        {
+          "given": "two active profiles exist",
+          "when": "the list binds",
+          "then": "position 0 is Use the current profile and positions 1 and 2 are the profiles",
+          "polarity": "positive"
+        },
+        {
+          "given": "no active profile exists",
+          "when": "the list binds",
+          "then": "only Use the current profile is listed",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-36",
+      "statement": "The Tasker blurb reads Connect to name, Switch to name, Connect to the current server or Stop.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/Settings.kt:47",
+      "examples": [
+        {
+          "given": "the profile Tokyo exists and switch_on is true",
+          "when": "the intent is built",
+          "then": "the blurb is Connect to Tokyo",
+          "polarity": "positive"
+        },
+        {
+          "given": "the profile Tokyo exists and switch_on is false",
+          "when": "the intent is built",
+          "then": "the blurb is Switch to Tokyo",
+          "polarity": "boundary"
+        },
+        {
+          "given": "profile_id is -1 and switch_on is false",
+          "when": "the intent is built",
+          "then": "the blurb is Stop",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-37",
+      "statement": "A start with no profile posts an empty-name notification, then stops with Please select a profile.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:327",
+      "examples": [
+        {
+          "given": "the profile Tokyo is selected and the service is Stopped",
+          "when": "onStartCommand runs",
+          "then": "the notification carries Tokyo as its title and the state changes to Connecting without profile_empty",
+          "polarity": "positive"
+        },
+        {
+          "given": "no profile is selected",
+          "when": "the service starts",
+          "then": "a notification with an empty title is posted and the runner stops with profile_empty",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-38",
+      "statement": "Starting the service writes the boot receiver enabled state from the Auto Connect preference.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:345",
+      "examples": [
+        {
+          "given": "Auto Connect is on",
+          "when": "onStartCommand runs",
+          "then": "BootReceiver.enabled is true",
+          "polarity": "positive"
+        },
+        {
+          "given": "Auto Connect is off",
+          "when": "onStartCommand runs",
+          "then": "BootReceiver.enabled is false",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-39",
+      "statement": "A RELOAD broadcast restarts a running service; no receiver exists while the service is stopped.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:95",
+      "examples": [
+        {
+          "given": "the service is Connected",
+          "when": "Action.RELOAD arrives after a profile switch",
+          "then": "stopRunner(true) restarts it on the new profile",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopped",
+          "when": "Action.RELOAD is sent",
+          "then": "no receiver is registered, so the broadcast is not delivered and nothing starts",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-40",
+      "statement": "The tile is a toggleable tile that requires BIND_QUICK_SETTINGS_TILE and runs directBootAware.",
+      "kind": "display",
+      "source": "mobile/src/main/AndroidManifest.xml:97",
+      "examples": [
+        {
+          "given": "the system binds the tile service",
+          "when": "the permission check runs",
+          "then": "only a holder of BIND_QUICK_SETTINGS_TILE can bind it",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device is locked after a direct boot",
+          "when": "the tile panel opens",
+          "then": "the directBootAware service is reachable",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-41",
+      "statement": "A long press on the tile launches MainActivity through the QS_TILE_PREFERENCES intent filter; MainActivity declares the filter but has no tile-preference handling.",
+      "kind": "interaction",
+      "source": "mobile/src/main/AndroidManifest.xml:33",
+      "examples": [
+        {
+          "given": "the tile is in Quick Settings",
+          "when": "the user long-presses the tile",
+          "then": "the system launches MainActivity, which shows the main screen and the profile list",
+          "polarity": "positive"
+        },
+        {
+          "given": "MainActivity is already running",
+          "when": "the user long-presses the tile",
+          "then": "the singleTask instance receives QS_TILE_PREFERENCES and still shows the main screen",
+          "polarity": "boundary",
+          "source": "mobile/src/main/AndroidManifest.xml:26"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-42",
+      "statement": "MainActivity declares the app shortcuts through the android.app.shortcuts metadata.",
+      "kind": "display",
+      "source": "mobile/src/main/AndroidManifest.xml:35",
+      "examples": [
+        {
+          "given": "the launcher reads the app shortcuts",
+          "when": "the user long-presses the app icon",
+          "then": "the entries from shortcuts.xml are offered",
+          "polarity": "positive"
+        },
+        {
+          "given": "the app is freshly installed and no activity has run",
+          "when": "the launcher reads the app shortcuts",
+          "then": "the two static entries from shortcuts.xml are offered",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UK-43",
+      "statement": "The app declares two static shortcuts: Toggle to QuickToggleShortcut and Scan QR code to ScannerActivity.",
+      "kind": "display",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:3",
+      "examples": [
+        {
+          "given": "the shortcut menu is shown",
+          "when": "the user taps Toggle",
+          "then": "QuickToggleShortcut starts with ACTION_MAIN",
+          "polarity": "positive"
+        },
+        {
+          "given": "the shortcut menu is shown",
+          "when": "the user taps Scan QR code",
+          "then": "ScannerActivity starts",
+          "polarity": "boundary"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "ServiceNotification (ongoing service notification)",
+      "states": [
+        "hidden",
+        "posted, no sample",
+        "posted, live traffic",
+        "posted, traffic frozen"
+      ],
+      "transitions": [
+        {
+          "from": "hidden",
+          "to": "posted, no sample",
+          "event": "the service starts; the notification is posted before any traffic sample can arrive, whether or not the screen is interactive",
+          "producer": "BaseService.Interface.onStartCommand -> ServiceNotification.init",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:95"
+        },
+        {
+          "from": "posted, no sample",
+          "to": "posted, live traffic",
+          "event": "the first sample arrives after Connected while the callback is registered, either from creation with the screen on or from a screen-on while Connected",
+          "producer": "Binder.loop -> trafficUpdated -> show",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:153"
+        },
+        {
+          "from": "posted, live traffic",
+          "to": "posted, traffic frozen",
+          "event": "the screen turns off while the service is Connected",
+          "producer": "ServiceNotification.onReceive -> updateCallback(false)",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:104"
+        },
+        {
+          "from": "posted, traffic frozen",
+          "to": "posted, live traffic",
+          "event": "the screen turns on while the service is Connected",
+          "producer": "ServiceNotification.onReceive -> updateCallback(true)",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:104"
+        },
+        {
+          "from": "posted, no sample",
+          "to": "posted, no sample",
+          "event": "the screen turns off or on while the service is not Connected; onReceive ignores it, so the callback stays as it was",
+          "producer": "ServiceNotification.onReceive",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:104"
+        },
+        {
+          "from": "posted, no sample",
+          "to": "hidden",
+          "event": "the service stops, including a failed start",
+          "producer": "BaseService.Interface.stopRunner -> ServiceNotification.destroy",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:294"
+        },
+        {
+          "from": "posted, live traffic",
+          "to": "hidden",
+          "event": "the service stops",
+          "producer": "BaseService.Interface.stopRunner -> ServiceNotification.destroy",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:120"
+        },
+        {
+          "from": "posted, traffic frozen",
+          "to": "hidden",
+          "event": "the service stops",
+          "producer": "BaseService.Interface.stopRunner -> ServiceNotification.destroy",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:120"
+        }
+      ]
+    },
+    {
+      "object": "Shadowsocks service state",
+      "states": [
+        "Stopped",
+        "Connecting",
+        "Connected",
+        "Stopping"
+      ],
+      "transitions": [
+        {
+          "from": "Stopped",
+          "to": "Connecting",
+          "event": "Core.startService starts the foreground service",
+          "producer": "BaseService.Interface.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:359"
+        },
+        {
+          "from": "Stopped",
+          "to": "Stopping",
+          "event": "the start command finds no profile or an invalid profile and calls stopRunner",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:278"
+        },
+        {
+          "from": "Connecting",
+          "to": "Connected",
+          "event": "the proxy processes start successfully",
+          "producer": "BaseService.Interface.onStartCommand connecting job",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:383"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopping",
+          "event": "a stop is requested while connecting",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:278"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopping",
+          "event": "the platform revokes the VPN while connecting",
+          "producer": "VpnService.onRevoke -> stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:124"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "a stop is requested from the notification, tile, shortcut or Tasker",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:278"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "the platform revokes the VPN because another VPN app starts or the user revokes it",
+          "producer": "VpnService.onRevoke -> stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:124"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "a guarded process exits with an error",
+          "producer": "GuardedProcessPool callback",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:374"
+        },
+        {
+          "from": "Stopping",
+          "to": "Stopped",
+          "event": "processes and notification are cleaned up",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:307"
+        },
+        {
+          "from": "Stopping",
+          "to": "Connecting",
+          "event": "stopRunner(true) restarts after cleanup",
+          "producer": "BaseService.Interface.stopRunner -> startRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:310"
+        }
+      ]
+    },
+    {
+      "object": "BootReceiver component",
+      "states": [
+        "disabled",
+        "enabled"
+      ],
+      "transitions": [
+        {
+          "from": "disabled",
+          "to": "enabled",
+          "event": "the user turns Auto Connect on",
+          "producer": "GlobalSettingsPreferenceFragment preference listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:44"
+        },
+        {
+          "from": "disabled",
+          "to": "enabled",
+          "event": "a service start runs with Auto Connect on",
+          "producer": "BaseService.Interface.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:345"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "a service start runs with Auto Connect off",
+          "producer": "BaseService.Interface.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:345"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the user turns Auto Connect off",
+          "producer": "GlobalSettingsPreferenceFragment preference listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:44"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the service stops without restart",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:311"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "a boot broadcast arrives while Auto Connect is off",
+          "producer": "BootReceiver.onReceive",
+          "source": "core/src/main/java/com/github/shadowsocks/BootReceiver.kt:44"
+        }
+      ]
+    },
+    {
+      "object": "Tasker action editor selection",
+      "states": [
+        "default profile selected",
+        "named profile selected"
+      ],
+      "transitions": [
+        {
+          "from": "default profile selected",
+          "to": "named profile selected",
+          "event": "a new editor session opens on the default row and the user taps a profile row; the row saves and finishes the editor",
+          "producer": "ConfigActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:65"
+        },
+        {
+          "from": "named profile selected",
+          "to": "default profile selected",
+          "event": "a new editor session opens on a named row and the user taps Use the current profile; the row saves and finishes the editor",
+          "producer": "ConfigActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:65"
+        },
+        {
+          "from": "default profile selected",
+          "to": "default profile selected",
+          "event": "a new editor session opens on the default row and the user taps Use the current profile again; the row saves and finishes the editor",
+          "producer": "ConfigActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:65"
+        },
+        {
+          "from": "named profile selected",
+          "to": "named profile selected",
+          "event": "a new editor session opens on a named row and the user taps a profile row; the row saves and finishes the editor",
+          "producer": "ConfigActivity.ProfileViewHolder.onClick",
+          "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:65"
+        }
+      ]
+    },
+    {
+      "object": "Direct boot device profile copy",
+      "states": [
+        "absent",
+        "clean",
+        "dirty"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "clean",
+          "event": "direct boot is on and a profile is selected, so the expanded profile is written to noBackupFilesDir",
+          "producer": "DirectBoot.update",
+          "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:37"
+        },
+        {
+          "from": "clean",
+          "to": "dirty",
+          "event": "counters are persisted in direct boot, so the device profile gets the counters and the dirty flag",
+          "producer": "TrafficMonitor.persistStats",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/TrafficMonitor.kt:106"
+        },
+        {
+          "from": "dirty",
+          "to": "clean",
+          "event": "the user is unlocked and flushTrafficStats updates the database profile and rewrites the copy",
+          "producer": "DirectBoot.flushTrafficStats",
+          "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:41"
+        },
+        {
+          "from": "clean",
+          "to": "absent",
+          "event": "no profile exists, or the lock-screen switch is turned off",
+          "producer": "DirectBoot.clean",
+          "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:28"
+        },
+        {
+          "from": "dirty",
+          "to": "absent",
+          "event": "no profile exists, or the lock-screen switch is turned off",
+          "producer": "DirectBoot.clean",
+          "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:28"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U11-01",
+      "name": "Ongoing notification appears and tracks traffic",
+      "steps": [
+        {
+          "label": "service: starts with the current profile and creates ServiceNotification",
+          "type": "start",
+          "next": "ServiceNotification: posts the notification before connecting",
+          "exception": false
+        },
+        {
+          "label": "ServiceNotification: posts the notification before connecting",
+          "type": "step",
+          "next": "decision: is the screen interactive at creation? (yes → register the traffic callback / no → post without a callback)",
+          "exception": false
+        },
+        {
+          "label": "decision: is the screen interactive at creation? (yes → register the traffic callback / no → post without a callback)",
+          "type": "decision",
+          "next": "yes: register the traffic callback",
+          "exception": false
+        },
+        {
+          "label": "yes: register the traffic callback",
+          "type": "step",
+          "next": "step: a traffic sample arrives every second while Connected",
+          "exception": false
+        },
+        {
+          "label": "step: a traffic sample arrives every second while Connected",
+          "type": "step",
+          "next": "ServiceNotification: rewrites content text to rates and subtext to totals",
+          "exception": false
+        },
+        {
+          "label": "ServiceNotification: rewrites content text to rates and subtext to totals",
+          "type": "step",
+          "next": "end: live rates and totals shown",
+          "exception": false
+        },
+        {
+          "label": "no: post without a callback",
+          "type": "step",
+          "next": "end: only the profile name is shown until a screen-on while Connected",
+          "exception": false
+        },
+        {
+          "label": "end: live rates and totals shown",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: only the profile name is shown until a screen-on while Connected",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service stops: destroy unregisters the receiver, unsubscribes and removes the notification.",
+        "A traffic sample with a profile id other than 0 is ignored, so only the summed sample is shown.",
+        "A start without a profile posts an empty-name notification, then stops with Please select a profile."
+      ]
+    },
+    {
+      "id": "F-U11-02",
+      "name": "Stop the service from the notification",
+      "steps": [
+        {
+          "label": "user: opens the notification shade while the service runs",
+          "type": "start",
+          "next": "user: activates Stop",
+          "exception": false
+        },
+        {
+          "label": "user: activates Stop",
+          "type": "step",
+          "next": "system: sends the app-scoped Action.CLOSE broadcast",
+          "exception": false
+        },
+        {
+          "label": "system: sends the app-scoped Action.CLOSE broadcast",
+          "type": "step",
+          "next": "decision: is the service already Stopping? (yes → ignore / no → run stopRunner)",
+          "exception": false
+        },
+        {
+          "label": "decision: is the service already Stopping? (yes → ignore / no → run stopRunner)",
+          "type": "decision",
+          "next": "no: stopRunner changes the state to Stopping",
+          "exception": false
+        },
+        {
+          "label": "no: stopRunner changes the state to Stopping",
+          "type": "step",
+          "next": "BaseService: shuts down proxies and destroys the notification",
+          "exception": false
+        },
+        {
+          "label": "BaseService: shuts down proxies and destroys the notification",
+          "type": "step",
+          "next": "end: the service is Stopped and the notification is removed",
+          "exception": false
+        },
+        {
+          "label": "yes: ignore the duplicate stop",
+          "type": "step",
+          "next": "end: the notification keeps its last state",
+          "exception": false
+        },
+        {
+          "label": "end: the service is Stopped and the notification is removed",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the notification keeps its last state",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The Action.CLOSE broadcast is package-scoped, and ContextCompat registers the receiver with RECEIVER_NOT_EXPORTED, which only takes effect from API 33. On earlier releases another app can send the same action to this package and stop the tunnel.",
+        "A stop while Connecting cancels the connecting job first.",
+        "The action requires authentication, so a locked device blocks it until unlock."
+      ]
+    },
+    {
+      "id": "F-U11-03",
+      "name": "Open the app from the notification body",
+      "steps": [
+        {
+          "label": "user: taps the notification body",
+          "type": "start",
+          "next": "system: fires the configure PendingIntent",
+          "exception": false
+        },
+        {
+          "label": "system: fires the configure PendingIntent",
+          "type": "step",
+          "next": "MainActivity: comes to the front with FLAG_ACTIVITY_REORDER_TO_FRONT",
+          "exception": false
+        },
+        {
+          "label": "MainActivity: comes to the front with FLAG_ACTIVITY_REORDER_TO_FRONT",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The activity is already open: it is reordered instead of recreated."
+      ]
+    },
+    {
+      "id": "F-U11-04",
+      "name": "Toggle the service from the Quick Settings tile",
+      "steps": [
+        {
+          "label": "user: taps the tile",
+          "type": "start",
+          "next": "decision: is the device locked and toggling not allowed? (yes → request unlock / no → toggle now)",
+          "exception": false
+        },
+        {
+          "label": "decision: is the device locked and toggling not allowed? (yes → request unlock / no → toggle now)",
+          "type": "decision",
+          "next": "no: toggle now",
+          "exception": false
+        },
+        {
+          "label": "no: toggle now",
+          "type": "step",
+          "next": "decision: is the service bound? (yes → read its state / no → remember the tap)",
+          "exception": false
+        },
+        {
+          "label": "decision: is the service bound? (yes → read its state / no → remember the tap)",
+          "type": "decision",
+          "next": "yes: read its state",
+          "exception": false
+        },
+        {
+          "label": "yes: read its state",
+          "type": "step",
+          "next": "decision: can the state stop? (yes → stop the service / no → check for Stopped)",
+          "exception": false
+        },
+        {
+          "label": "decision: can the state stop? (yes → stop the service / no → check for Stopped)",
+          "type": "decision",
+          "next": "yes: stop the service",
+          "exception": false
+        },
+        {
+          "label": "yes: stop the service",
+          "type": "step",
+          "next": "end: the service goes Stopping then Stopped",
+          "exception": false
+        },
+        {
+          "label": "decision: is the state Stopped? (Stopped → start the service / otherwise → do nothing)",
+          "type": "decision",
+          "next": "Stopped: start the service",
+          "exception": false
+        },
+        {
+          "label": "Stopped: start the service",
+          "type": "step",
+          "next": "end: the service goes Connecting then Connected",
+          "exception": false
+        },
+        {
+          "label": "otherwise: do nothing",
+          "type": "step",
+          "next": "end: the tile is unchanged",
+          "exception": false
+        },
+        {
+          "label": "yes: request unlock",
+          "type": "step",
+          "next": "end: the unlock prompt shows and the toggle runs after unlock (F-U11-05)",
+          "exception": false
+        },
+        {
+          "label": "no: remember the tap",
+          "type": "step",
+          "next": "end: the toggle runs when the service connects",
+          "exception": false
+        },
+        {
+          "label": "end: the service goes Stopping then Stopped",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the service goes Connecting then Connected",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the tile is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the unlock prompt shows and the toggle runs after unlock (F-U11-05)",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the toggle runs when the service connects",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service never binds: the tap stays pending until onServiceConnected.",
+        "The unlock is cancelled: no toggle happens."
+      ]
+    },
+    {
+      "id": "F-U11-05",
+      "name": "Toggle the tile on a locked device",
+      "steps": [
+        {
+          "label": "user: taps the tile on the lock screen",
+          "type": "start",
+          "next": "decision: is toggling in the lock screen allowed? (yes → toggle directly / no → unlockAndRun)",
+          "exception": false
+        },
+        {
+          "label": "decision: is toggling in the lock screen allowed? (yes → toggle directly / no → unlockAndRun)",
+          "type": "decision",
+          "next": "no: unlockAndRun asks the user to unlock",
+          "exception": false
+        },
+        {
+          "label": "no: unlockAndRun asks the user to unlock",
+          "type": "step",
+          "next": "decision: did the unlock succeed? (yes → run toggle / no → stop)",
+          "exception": false
+        },
+        {
+          "label": "decision: did the unlock succeed? (yes → run toggle / no → stop)",
+          "type": "decision",
+          "next": "yes: run toggle",
+          "exception": false
+        },
+        {
+          "label": "yes: run toggle",
+          "type": "step",
+          "next": "end: the service is toggled",
+          "exception": false
+        },
+        {
+          "label": "no: stop",
+          "type": "step",
+          "next": "end: nothing changes",
+          "exception": false
+        },
+        {
+          "label": "end: the service is toggled",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: nothing changes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The toggle runs the same stop or start decision as F-U11-04."
+      ]
+    },
+    {
+      "id": "F-U11-06",
+      "name": "Toggle the service from the launcher Toggle shortcut",
+      "steps": [
+        {
+          "label": "user: taps the Toggle shortcut",
+          "type": "start",
+          "next": "QuickToggleShortcut: binds to the service in the :bg process",
+          "exception": false
+        },
+        {
+          "label": "QuickToggleShortcut: binds to the service in the :bg process",
+          "type": "step",
+          "next": "decision: can the state stop? (yes → stop the service / no → check for Stopped)",
+          "exception": false
+        },
+        {
+          "label": "decision: can the state stop? (yes → stop the service / no → check for Stopped)",
+          "type": "decision",
+          "next": "yes: stop the service",
+          "exception": false
+        },
+        {
+          "label": "yes: stop the service",
+          "type": "step",
+          "next": "QuickToggleShortcut: finishes after stop",
+          "exception": false
+        },
+        {
+          "label": "QuickToggleShortcut: finishes after stop",
+          "type": "step",
+          "next": "end: the service stops",
+          "exception": false
+        },
+        {
+          "label": "decision: is the state Stopped? (Stopped → start the service / otherwise → finish)",
+          "type": "decision",
+          "next": "Stopped: start the service",
+          "exception": false
+        },
+        {
+          "label": "Stopped: start the service",
+          "type": "step",
+          "next": "QuickToggleShortcut: finishes after start",
+          "exception": false
+        },
+        {
+          "label": "QuickToggleShortcut: finishes after start",
+          "type": "step",
+          "next": "end: the service starts",
+          "exception": false
+        },
+        {
+          "label": "otherwise: finish without action",
+          "type": "step",
+          "next": "end: the service is unchanged",
+          "exception": false
+        },
+        {
+          "label": "end: the service stops",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the service starts",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the service is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The activity is destroyed before the service binds: no toggle happens.",
+        "The service is Stopping: nothing happens and the activity finishes."
+      ]
+    },
+    {
+      "id": "F-U11-07",
+      "name": "A launcher asks for the Toggle shortcut",
+      "steps": [
+        {
+          "label": "launcher: sends ACTION_CREATE_SHORTCUT to QuickToggleShortcut",
+          "type": "start",
+          "next": "QuickToggleShortcut: builds a shortcut for id toggle",
+          "exception": false
+        },
+        {
+          "label": "QuickToggleShortcut: builds a shortcut for id toggle",
+          "type": "step",
+          "next": "QuickToggleShortcut: sets RESULT_OK and finishes",
+          "exception": false
+        },
+        {
+          "label": "QuickToggleShortcut: sets RESULT_OK and finishes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "F-U11-08",
+      "name": "Open the QR scanner from the Scan QR code shortcut",
+      "steps": [
+        {
+          "label": "user: taps the Scan QR code shortcut",
+          "type": "start",
+          "next": "ScannerActivity: opens",
+          "exception": false
+        },
+        {
+          "label": "ScannerActivity: opens",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "Camera permission is denied: the scanner shows a permission message."
+      ]
+    },
+    {
+      "id": "F-U11-09",
+      "name": "Auto connect at boot",
+      "steps": [
+        {
+          "label": "system: sends BOOT_COMPLETED, LOCKED_BOOT_COMPLETED or MY_PACKAGE_REPLACED",
+          "type": "start",
+          "next": "decision: is Auto Connect on? (yes → choose the start condition / no → disable the receiver)",
+          "exception": false
+        },
+        {
+          "label": "decision: is Auto Connect on? (yes → choose the start condition / no → disable the receiver)",
+          "type": "decision",
+          "next": "yes: choose the start condition",
+          "exception": false
+        },
+        {
+          "label": "yes: choose the start condition",
+          "type": "step",
+          "next": "decision: does the action match the direct boot mode? (BOOT_COMPLETED needs direct boot off; LOCKED_BOOT_COMPLETED needs it on; other actions need it on or an unlocked user) (yes → start the service / no → do nothing)",
+          "exception": false
+        },
+        {
+          "label": "decision: does the action match the direct boot mode? (BOOT_COMPLETED needs direct boot off; LOCKED_BOOT_COMPLETED needs it on; other actions need it on or an unlocked user) (yes → start the service / no → do nothing)",
+          "type": "decision",
+          "next": "yes: start the service",
+          "exception": false
+        },
+        {
+          "label": "yes: start the service",
+          "type": "step",
+          "next": "end: the service starts with the stored profile",
+          "exception": false
+        },
+        {
+          "label": "no: do nothing",
+          "type": "step",
+          "next": "end: no service starts",
+          "exception": false
+        },
+        {
+          "label": "no: disable the receiver",
+          "type": "step",
+          "next": "end: the receiver stays disabled until Auto Connect is turned on",
+          "exception": true
+        },
+        {
+          "label": "end: the service starts with the stored profile",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: no service starts",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the receiver stays disabled until Auto Connect is turned on",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The receiver is disabled in the manifest, so the broadcast never arrives until Auto Connect is enabled.",
+        "The service start fails: the notification is created with an empty profile name and destroyed at once, and the failure message reaches the UI through stateChanged, where MainActivity shows it in a snackbar."
+      ]
+    },
+    {
+      "id": "F-U11-10",
+      "name": "Edit a Tasker action setting",
+      "steps": [
+        {
+          "label": "Tasker: sends EDIT_SETTING to ConfigActivity",
+          "type": "start",
+          "next": "decision: is the intent present? (yes → read the bundle / no → finish immediately)",
+          "exception": false
+        },
+        {
+          "label": "decision: is the intent present? (yes → read the bundle / no → finish immediately)",
+          "type": "decision",
+          "next": "yes: read the bundle",
+          "exception": false
+        },
+        {
+          "label": "yes: read the bundle",
+          "type": "step",
+          "next": "ConfigActivity: shows the switch and the profile list",
+          "exception": false
+        },
+        {
+          "label": "ConfigActivity: shows the switch and the profile list",
+          "type": "step",
+          "next": "decision: does the user pick a row or close? (row → save and return / close → finish without result)",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user pick a row or close? (row → save and return / close → finish without result)",
+          "type": "decision",
+          "next": "row: save and return",
+          "exception": false
+        },
+        {
+          "label": "row: save and return",
+          "type": "step",
+          "next": "ConfigActivity: stores switch_on and profile_id, sets RESULT_OK and finishes",
+          "exception": false
+        },
+        {
+          "label": "ConfigActivity: stores switch_on and profile_id, sets RESULT_OK and finishes",
+          "type": "step",
+          "next": "end: Tasker saves the action",
+          "exception": false
+        },
+        {
+          "label": "close: finish without result",
+          "type": "step",
+          "next": "end: Tasker discards the edit",
+          "exception": false
+        },
+        {
+          "label": "no: finish immediately",
+          "type": "step",
+          "next": "end: no editor is shown",
+          "exception": true
+        },
+        {
+          "label": "end: Tasker saves the action",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: Tasker discards the edit",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: no editor is shown",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "No active profiles exist: only Use the current profile is listed.",
+        "The switch is flipped but no row is tapped: the change is lost."
+      ]
+    },
+    {
+      "id": "F-U11-11",
+      "name": "Fire a Tasker action setting",
+      "steps": [
+        {
+          "label": "Tasker: sends FIRE_SETTING to ActionListener",
+          "type": "start",
+          "next": "ActionListener: reads switch_on and profile_id",
+          "exception": false
+        },
+        {
+          "label": "ActionListener: reads switch_on and profile_id",
+          "type": "step",
+          "next": "decision: does the profile exist? (yes → switch profile / no → keep the current profile)",
+          "exception": false
+        },
+        {
+          "label": "decision: does the profile exist? (yes → switch profile / no → keep the current profile)",
+          "type": "decision",
+          "next": "yes: switch profile",
+          "exception": false
+        },
+        {
+          "label": "yes: switch profile",
+          "type": "step",
+          "next": "decision: is switch_on set? (yes → start the service / no → stop the service)",
+          "exception": false
+        },
+        {
+          "label": "no: keep the current profile",
+          "type": "step",
+          "next": "decision: is switch_on set? (yes → start the service / no → stop the service)",
+          "exception": false
+        },
+        {
+          "label": "decision: is switch_on set? (yes → start the service / no → stop the service)",
+          "type": "decision",
+          "next": "yes: start the service",
+          "exception": false
+        },
+        {
+          "label": "yes: start the service",
+          "type": "step",
+          "next": "decision: was a stored profile found? (yes → reload / no → done)",
+          "exception": false
+        },
+        {
+          "label": "decision: was a stored profile found? (yes → reload / no → done)",
+          "type": "decision",
+          "next": "yes: reload the service",
+          "exception": false
+        },
+        {
+          "label": "yes: reload the service",
+          "type": "step",
+          "next": "end: the service restarts on the stored profile",
+          "exception": false
+        },
+        {
+          "label": "no: done",
+          "type": "step",
+          "next": "end: the service starts or keeps running on the current profile",
+          "exception": false
+        },
+        {
+          "label": "no: stop the service",
+          "type": "step",
+          "next": "end: the service stops",
+          "exception": false
+        },
+        {
+          "label": "end: the service restarts on the stored profile",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the service starts or keeps running on the current profile",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the service stops",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The stored profile was deleted: the old profile stays selected, the switch still starts or stops the service, and no reload runs.",
+        "A fire that names the already-selected profile still reloads, because changed is set whenever the stored profile exists."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U11-01",
+      "title": "The ongoing notification appears when the service starts",
+      "preconditions": [
+        "The service mode is VPN (the default).",
+        "A valid profile named Tokyo is selected.",
+        "Notifications are enabled for the app."
+      ],
+      "steps": [
+        "Start the service from the main screen.",
+        "Open the notification shade."
+      ],
+      "expected": [
+        "A notification is posted as the foreground notification; its content title is the formatted profile name Tokyo.",
+        "The notification shows the Shadowsocks icon and the Stop action (invisible on API 24+)."
+      ],
+      "control_path": "C-U11-001 > C-U11-003",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:74"
+    },
+    {
+      "id": "TC-U11-02",
+      "title": "The notification traffic line updates while the screen is on",
+      "preconditions": [
+        "The VPN service is Connected with the Tokyo profile.",
+        "The screen is on."
+      ],
+      "steps": [
+        "Watch the notification for a few seconds.",
+        "Send traffic through the tunnel."
+      ],
+      "expected": [
+        "The content text shows the current rates as 12 KB/s↑ 34 KB/s↓.",
+        "The subtext shows the session totals as 1.2 MB↑ 3.4 MB↓."
+      ],
+      "control_path": "C-U11-001 > C-U11-004 > C-U11-005",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:60"
+    },
+    {
+      "id": "TC-U11-03",
+      "title": "Traffic updates stop while the screen is off and resume on",
+      "preconditions": [
+        "The VPN service is Connected and the notification shows live traffic."
+      ],
+      "steps": [
+        "Turn the screen off and send traffic.",
+        "Turn the screen on while connected."
+      ],
+      "expected": [
+        "The traffic line does not change while the screen is off.",
+        "The traffic line resumes updating after the screen turns on."
+      ],
+      "control_path": "C-U11-001 > C-U11-004",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:112"
+    },
+    {
+      "id": "TC-U11-04",
+      "title": "Stop from the notification stops the service and removes it",
+      "preconditions": [
+        "The VPN service is Connected.",
+        "The notification is posted.",
+        "The device runs API 23, so the Stop action is a visible notification button."
+      ],
+      "steps": [
+        "Activate the visible Stop action in the notification.",
+        "Open the notification shade again."
+      ],
+      "expected": [
+        "The service enters Stopping and then Stopped.",
+        "The notification is gone and the foreground state is cleared."
+      ],
+      "control_path": "C-U11-001 > C-U11-006",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:86",
+      "rules": [
+        "R-UK-08"
+      ]
+    },
+    {
+      "id": "TC-U11-05",
+      "title": "Tapping the notification body opens the app",
+      "preconditions": [
+        "The VPN service is Connected.",
+        "The app is in the background."
+      ],
+      "steps": [
+        "Tap the notification body."
+      ],
+      "expected": [
+        "MainActivity comes to the front with the profile list."
+      ],
+      "control_path": "C-U11-001 > C-U11-007",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:79"
+    },
+    {
+      "id": "TC-U11-06",
+      "title": "A start without a profile posts an empty notification then stops",
+      "preconditions": [
+        "No profile is selected or the selected profile is invalid."
+      ],
+      "steps": [
+        "Start the service.",
+        "Read the resulting state and notification."
+      ],
+      "expected": [
+        "A notification with an empty title is posted briefly.",
+        "The service stops with the profile error: Please select a profile when no profile exists, otherwise the invalid-config message; the notification is removed."
+      ],
+      "control_path": "C-U11-001 > C-U11-003",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:327"
+    },
+    {
+      "id": "TC-U11-07",
+      "title": "The tile label shows the profile name only while the device is unlocked",
+      "preconditions": [
+        "The Toggle tile is added to Quick Settings.",
+        "The service is Connected with Tokyo."
+      ],
+      "steps": [
+        "Open Quick Settings while the device is unlocked.",
+        "Lock the device and refresh the tile."
+      ],
+      "expected": [
+        "The tile shows the active icon, STATE_ACTIVE and the label Tokyo.",
+        "The tile label changes to Shadowsocks while the keyguard is locked."
+      ],
+      "control_path": "C-U11-010 > C-U11-012",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:76"
+    },
+    {
+      "id": "TC-U11-08",
+      "title": "A tile tap while connecting cancels the connection and stops",
+      "preconditions": [
+        "The service is Connecting with a valid profile."
+      ],
+      "steps": [
+        "Tap the tile.",
+        "Observe the tile until the service stops."
+      ],
+      "expected": [
+        "Core.stopService sends Action.CLOSE and the connecting job is cancelled.",
+        "The tile shows the busy icon and STATE_UNAVAILABLE, then the idle icon and STATE_INACTIVE."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:98"
+    },
+    {
+      "id": "TC-U11-09",
+      "title": "A tile tap while connected stops the service",
+      "preconditions": [
+        "The service is Connected."
+      ],
+      "steps": [
+        "Tap the tile.",
+        "Observe the tile until the service stops."
+      ],
+      "expected": [
+        "Core.stopService sends Action.CLOSE.",
+        "The tile shows the busy icon and STATE_UNAVAILABLE, then the idle icon and STATE_INACTIVE."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:95"
+    },
+    {
+      "id": "TC-U11-10",
+      "title": "A tile tap while stopped starts the service",
+      "preconditions": [
+        "The service is Stopped and a valid profile is selected."
+      ],
+      "steps": [
+        "Tap the tile.",
+        "Observe the tile after the tunnel connects."
+      ],
+      "expected": [
+        "Core.startService starts the foreground service.",
+        "The tile shows the busy icon and STATE_ACTIVE while Connecting, then the active icon when Connected."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:100"
+    },
+    {
+      "id": "TC-U11-11",
+      "title": "A tile tap before the service binds is replayed",
+      "preconditions": [
+        "The tile panel was just opened and the service connection is not bound yet."
+      ],
+      "steps": [
+        "Tap the tile before onServiceConnected arrives.",
+        "Wait for the connection."
+      ],
+      "expected": [
+        "The tap sets tapPending and does nothing yet.",
+        "When onServiceConnected runs, the tap is replayed and the service toggles."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:41"
+    },
+    {
+      "id": "TC-U11-12",
+      "title": "A tile tap on a locked device unlocks first",
+      "preconditions": [
+        "The device is locked.",
+        "Allow Toggling in Lock Screen is off."
+      ],
+      "steps": [
+        "Tap the tile.",
+        "Complete or cancel the unlock prompt."
+      ],
+      "expected": [
+        "unlockAndRun shows the unlock prompt.",
+        "After a successful unlock the service toggles; a cancelled unlock changes nothing."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/bg/TileService.kt:64"
+    },
+    {
+      "id": "TC-U11-13",
+      "title": "The Toggle shortcut stops a running service",
+      "preconditions": [
+        "The service is Connected.",
+        "The Toggle shortcut is available from the launcher."
+      ],
+      "steps": [
+        "Long press the app icon and tap Toggle.",
+        "Return to the app."
+      ],
+      "expected": [
+        "QuickToggleShortcut binds to the service, calls Core.stopService and finishes.",
+        "The main screen shows the service stopped."
+      ],
+      "control_path": "C-U11-020",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt:57"
+    },
+    {
+      "id": "TC-U11-14",
+      "title": "A shortcut creation request returns the Toggle shortcut",
+      "preconditions": [
+        "A launcher sends ACTION_CREATE_SHORTCUT to QuickToggleShortcut."
+      ],
+      "steps": [
+        "Send the create-shortcut intent."
+      ],
+      "expected": [
+        "The activity returns RESULT_OK with shortcut id toggle, the label Toggle and the app icon, then finishes without toggling."
+      ],
+      "control_path": "C-U11-020",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/QuickToggleShortcut.kt:43"
+    },
+    {
+      "id": "TC-U11-15",
+      "title": "The Scan QR code shortcut opens the scanner",
+      "preconditions": [
+        "The static shortcuts are available from the launcher."
+      ],
+      "steps": [
+        "Long press the app icon and tap Scan QR code."
+      ],
+      "expected": [
+        "ScannerActivity opens and requests the camera if the permission is not granted."
+      ],
+      "control_path": "C-U11-021",
+      "parity": "android-only",
+      "source": "mobile/src/main/res/xml/shortcuts.xml:11"
+    },
+    {
+      "id": "TC-U11-16",
+      "title": "Auto Connect starts the service after boot",
+      "preconditions": [
+        "Auto Connect is off, a valid profile is selected, and the service has not started since install."
+      ],
+      "steps": [
+        "Turn Auto Connect on in global settings.",
+        "Reboot the device and let it send BOOT_COMPLETED.",
+        "Wait for the service to start."
+      ],
+      "expected": [
+        "BootReceiver.enabled is false before the switch is turned on and becomes true when it is.",
+        "The enabled receiver receives the broadcast.",
+        "Core.startService starts the service with the saved profile, and the notification shows the profile name."
+      ],
+      "control_path": "C-U11-001 > C-U11-003",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/BootReceiver.kt:43",
+      "rules": [
+        "R-UK-24",
+        "R-UK-38"
+      ]
+    },
+    {
+      "id": "TC-U11-17",
+      "title": "A boot broadcast with Auto Connect off does not start the service",
+      "preconditions": [
+        "The Auto Connect preference reads off while the BootReceiver component is still enabled, for example after settings were restored.",
+        "A boot broadcast reaches the receiver."
+      ],
+      "steps": [
+        "Send BOOT_COMPLETED.",
+        "Read the receiver component state and the service state."
+      ],
+      "expected": [
+        "BootReceiver disables itself and returns.",
+        "No service starts, no notification is posted, and later boots do not reach the receiver."
+      ],
+      "control_path": "C-U11-001",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/BootReceiver.kt:44",
+      "rules": [
+        "R-UK-25"
+      ]
+    },
+    {
+      "id": "TC-U11-18",
+      "title": "Selecting a Tasker profile row returns the setting",
+      "preconditions": [
+        "Tasker opens ConfigActivity with EDIT_SETTING.",
+        "Three active profiles exist, including Tokyo and Berlin.",
+        "The saved setting selects Tokyo."
+      ],
+      "steps": [
+        "Tap Use the current profile.",
+        "Open the editor again with EDIT_SETTING and tap the Tokyo row.",
+        "Open the editor again and tap the Berlin row.",
+        "Open the editor again and tap the toolbar close icon."
+      ],
+      "expected": [
+        "The first tap stores switch_on and profile_id -1, returns RESULT_OK and finishes the editor.",
+        "The Tokyo tap stores switch_on and Tokyo's id, returns RESULT_OK and finishes the editor.",
+        "The Berlin tap stores switch_on and Berlin's id, returns RESULT_OK and finishes the editor.",
+        "The close tap returns no result, and the last saved setting stays."
+      ],
+      "control_path": "C-U11-030 > C-U11-035 > C-U11-036 > C-U11-032",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:65",
+      "rules": [
+        "R-UK-33",
+        "R-UK-34"
+      ]
+    },
+    {
+      "id": "TC-U11-19",
+      "title": "A fired Tasker setting switches profile and restarts the service",
+      "preconditions": [
+        "A Tasker action stores switch_on true and the Tokyo profile id.",
+        "The service is running on another profile."
+      ],
+      "steps": [
+        "Fire the action with FIRE_SETTING.",
+        "Observe the service."
+      ],
+      "expected": [
+        "Core.switchProfile selects Tokyo.",
+        "Core.startService runs, then Core.reloadService restarts the running service on Tokyo."
+      ],
+      "control_path": "C-U11-040",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ActionListener.kt:30"
+    },
+    {
+      "id": "TC-U11-20",
+      "title": "A fired Tasker setting with the switch off stops the service",
+      "preconditions": [
+        "A Tasker action stores switch_on false and a valid profile id.",
+        "The service is Connected."
+      ],
+      "steps": [
+        "Fire the action with FIRE_SETTING.",
+        "Observe the service and the boot receiver."
+      ],
+      "expected": [
+        "Core.switchProfile still selects the stored profile.",
+        "Core.stopService stops the service, and the normal stop disables the boot receiver."
+      ],
+      "control_path": "C-U11-040",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ActionListener.kt:37"
+    },
+    {
+      "id": "TC-U11-21",
+      "title": "Each service mode has its own notification channel",
+      "preconditions": [
+        "The device runs Android 8.0 (API 26) or later."
+      ],
+      "steps": [
+        "Launch the app and read the notification channels it created.",
+        "Start the service in VPN mode and read the notification channel.",
+        "Repeat in proxy and transproxy mode."
+      ],
+      "expected": [
+        "The channels service-vpn, service-proxy and service-transproxy exist with the names VPN Service, Proxy Service and Transproxy Service.",
+        "The VPN notification is posted on service-vpn, and that channel has IMPORTANCE_MIN on API 28+ and IMPORTANCE_LOW on API 26 and 27.",
+        "The proxy and transproxy notifications are posted on their channels, which use IMPORTANCE_LOW."
+      ],
+      "control_path": "C-U11-001",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:150",
+      "rules": [
+        "R-UK-12",
+        "R-UK-13"
+      ]
+    },
+    {
+      "id": "TC-U11-22",
+      "title": "The tile service requires the tile permission and runs direct boot aware",
+      "preconditions": [
+        "The device runs Android 7.0 (API 24) or later."
+      ],
+      "steps": [
+        "Read the TileService component and its metadata.",
+        "Open Quick Settings while the device is locked after a direct boot."
+      ],
+      "expected": [
+        "The service is exported, declares android:permission BIND_QUICK_SETTINGS_TILE, and is a directBootAware toggleable tile with the TOGGLEABLE_TILE metadata.",
+        "Only the system UI can bind the service; another app without the permission cannot.",
+        "The tile is reachable while the device is locked after a direct boot."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/AndroidManifest.xml:97",
+      "rules": [
+        "R-UK-40"
+      ]
+    },
+    {
+      "id": "TC-U11-23",
+      "title": "A tile long press opens the main screen",
+      "preconditions": [
+        "The Toggle tile is in Quick Settings."
+      ],
+      "steps": [
+        "Long-press the tile."
+      ],
+      "expected": [
+        "The system launches MainActivity through the QS_TILE_PREFERENCES intent filter.",
+        "MainActivity shows the main screen with the profile list because it has no tile-preference handling."
+      ],
+      "control_path": "C-U11-010",
+      "parity": "android-only",
+      "source": "mobile/src/main/AndroidManifest.xml:33",
+      "rules": [
+        "R-UK-41"
+      ]
+    },
+    {
+      "id": "TC-U11-24",
+      "title": "The launcher menu offers the two static shortcuts",
+      "preconditions": [
+        "The launcher shows the app's static shortcuts."
+      ],
+      "steps": [
+        "Long-press the app icon."
+      ],
+      "expected": [
+        "The menu lists Toggle and Scan QR code from shortcuts.xml, declared through the android.app.shortcuts metadata.",
+        "Toggle starts QuickToggleShortcut with ACTION_MAIN and Scan QR code starts ScannerActivity."
+      ],
+      "control_path": "C-U11-020 > C-U11-021",
+      "parity": "android-only",
+      "source": "mobile/src/main/AndroidManifest.xml:35",
+      "rules": [
+        "R-UK-42",
+        "R-UK-43"
+      ]
+    },
+    {
+      "id": "TC-U11-25",
+      "title": "A locked device starts the service from the device-protected profile",
+      "preconditions": [
+        "The device runs API 24+ with per-user encryption and Allow Toggling in Lock Screen is on.",
+        "A profile named Tokyo is selected and copied to device-protected storage.",
+        "Auto Connect is on and the device rebooted into the locked state."
+      ],
+      "steps": [
+        "Let LOCKED_BOOT_COMPLETED start the service while the device stays locked.",
+        "Read the profile used for the start and the notification."
+      ],
+      "expected": [
+        "DataStore.directBootAware is true, so Core.currentProfile returns DirectBoot.getDeviceProfile without the credential-encrypted database.",
+        "The service starts with the Tokyo profile from the device copy.",
+        "The notification content title shows Tokyo."
+      ],
+      "control_path": "C-U11-001 > C-U11-003",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/Core.kt:90",
+      "rules": [
+        "R-UK-28",
+        "R-UK-29"
+      ]
+    },
+    {
+      "id": "TC-U11-26",
+      "title": "Shutdown counters survive in the device profile and flush after unlock",
+      "preconditions": [
+        "Direct boot is on and the device profile copy exists.",
+        "The service is running while the device is locked."
+      ],
+      "steps": [
+        "Send ACTION_SHUTDOWN.",
+        "Reboot and unlock the device."
+      ],
+      "expected": [
+        "The close receiver calls persistStats; the credential-encrypted database is unreachable, so the counters go into the device profile, the profile gets the dirty flag and DirectBoot.listenForUnlock registers for ACTION_BOOT_COMPLETED.",
+        "After unlock, the ACTION_BOOT_COMPLETED receiver that listenForUnlock registered calls DirectBoot.flushTrafficStats; if the process starts after the unlock instead, Core.init runs the same flush.",
+        "The database profile gets the counters and the device copy is refreshed."
+      ],
+      "control_path": "C-U11-001",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:94",
+      "rules": [
+        "R-UK-29",
+        "R-UK-30"
+      ]
+    },
+    {
+      "id": "TC-U11-27",
+      "title": "Screen events during Connecting do not change the traffic subscription",
+      "preconditions": [
+        "The VPN service is Connecting to a server that takes a few seconds to answer.",
+        "The screen is on when the service starts."
+      ],
+      "steps": [
+        "Turn the screen off before the state becomes Connected.",
+        "Let the service connect and send traffic.",
+        "Stop the service, turn the screen off, start it again, and turn the screen on before the state becomes Connected."
+      ],
+      "expected": [
+        "ServiceNotification.onReceive ignores the screen-off because the state is not Connected, so the callback stays registered.",
+        "The notification shows live rates although the screen is off.",
+        "The start with the screen off registers no callback, and the screen-on while Connecting is ignored, so the notification shows no rates for that session."
+      ],
+      "control_path": "C-U11-001 > C-U11-004",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ServiceNotification.kt:104",
+      "rules": [
+        "R-UK-05"
+      ]
+    },
+    {
+      "id": "TC-U11-28",
+      "title": "Each boot action starts only in its own direct boot mode",
+      "preconditions": [
+        "Auto Connect is on and BootReceiver.enabled is true.",
+        "A valid profile named Tokyo is selected.",
+        "The device runs API 24 or later with per-user encryption."
+      ],
+      "steps": [
+        "Turn Allow Toggling in Lock Screen off. Send BOOT_COMPLETED.",
+        "Stop the service. Send LOCKED_BOOT_COMPLETED with direct boot still off.",
+        "Turn Allow Toggling in Lock Screen on. Reboot into the locked state. Let LOCKED_BOOT_COMPLETED arrive.",
+        "Unlock the device. Let BOOT_COMPLETED arrive.",
+        "Stop the service. Send MY_PACKAGE_REPLACED while the user is unlocked."
+      ],
+      "expected": [
+        "The receiver starts the service. The notification content title shows Tokyo.",
+        "No service starts. No notification is posted. DataStore.directBootAware is false, so LOCKED_BOOT_COMPLETED does not start the service.",
+        "The receiver starts the service from the device-protected profile. The notification content title shows Tokyo.",
+        "The receiver does not start the service again on BOOT_COMPLETED. Direct boot is on, so the service stays as it is.",
+        "The receiver starts the service. Direct boot is on and the user is unlocked."
+      ],
+      "control_path": "C-U11-001 > C-U11-003",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/BootReceiver.kt:48",
+      "rules": [
+        "R-UK-26"
+      ]
+    },
+    {
+      "id": "TC-U11-29",
+      "title": "The Tasker editor lists the current profile first, then the active profiles",
+      "preconditions": [
+        "Tasker opens ConfigActivity with EDIT_SETTING.",
+        "Tokyo and Berlin are active profiles, in that user order.",
+        "An obsolete profile named Paris exists."
+      ],
+      "steps": [
+        "Read the profile list.",
+        "Delete the Tokyo and Berlin profiles. Open the editor again."
+      ],
+      "expected": [
+        "Position 0 is Use the current profile. Position 1 is Tokyo. Position 2 is Berlin. Paris is absent.",
+        "The list shows only Use the current profile at position 0."
+      ],
+      "control_path": "C-U11-030 > C-U11-034 > C-U11-035 > C-U11-036",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/tasker/ConfigActivity.kt:74",
+      "rules": [
+        "R-UK-35"
+      ]
+    }
+  ],
+  "parity_summary": {
+    "implemented": 3,
+    "partial": 4,
+    "missing": 0,
+    "android_only": 22
+  },
+  "notes": "All listed files exist. shortcuts.xml is listed in both U10 and U11 by the unit map; this unit covers its two shortcut entries. The Auto Connect and Allow Toggling in Lock Screen switches live in U09 (pref_global.xml); U11 records their effects on BootReceiver and DirectBoot but does not duplicate their controls. toolbar_light_dark.xml is included from the plugin module; its title TextView and navigation button have no ids of their own. The boot and direct-boot cases have no in-app control, so their control_path anchors on the notification that the started service posts, or on that notification staying absent when no service starts. The Tasker-fire cases anchor on the Tasker action blurb. HarmonyOS parity: the VPN-mode notification exists (ConnectionNotification.ets) with the app name as the title, the profile name in the content text, rates every 2 s and a Disconnect action; it has no content intent, no totals and no screen-off pause. The proxy mode relies on the system continuous-task notification (ProxyService.ets), not an app notification. Quick Settings tile, launcher shortcuts, boot auto-connect, direct boot storage and Tasker are absent; the parity reference lists the Android tile, shortcuts, boot receiver and Tasker as Android-only surfaces."
+}

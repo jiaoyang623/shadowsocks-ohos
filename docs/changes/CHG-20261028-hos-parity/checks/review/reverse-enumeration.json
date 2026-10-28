@@ -1,0 +1,275 @@
+{
+  "items": [
+    {
+      "title": "Per-row latency test has no requirement owner",
+      "anchor": "entry/src/main/ets/pages/Index.ets:2226",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "The profile row renders a Test action and a latency value. The backing code is Index.ets:949 measureProfileLatency and model/Latency.ets:49 measureLatency. U02 defines the row content as title, address, plugin, traffic and selection (R-UB-07 through R-UB-13). U01 defines only the HTTPS connection test (R-UA-11, R-UA-12). No requirement row owns a per-profile TCP latency measurement."
+    },
+    {
+      "title": "Speed test control and throughput module have no requirement owner",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1870",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "The page shows a Speed test button. It calls Index.ets:1502 runSpeedTest and model/Throughput.ets:56 measureThroughput, which downloads DEFAULT_SPEED_URL from Diagnostics.ets:94. The requirements contain no speed test row. R-UA-11 covers only the HTTPS connection test."
+    },
+    {
+      "title": "Separate Test connection button adds an unowned control",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1861",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "The page shows a Test connection button that calls runProbe(true). R-UA-12 owns a tap on the stats bar as the test trigger. R-UA-22 owns Ctrl+T. No requirement row owns a separate always-visible test button."
+    },
+    {
+      "title": "Automatic connect verification and verifying phase are not requirement-owned",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1366",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "After the extension reports running, the page fetches the probe URL and sets PHASE_VERIFYING before it reports Connected (Index.ets:1331 and 1366). It also reports PHASE_PROBE_FAILED on a stalled probe (Index.ets:1320). R-UA-11 owns the manual HTTPS test. R-UA-08 and R-UA-28 own start failure messages. No requirement defines an automatic post-connect probe or these extra phases."
+    },
+    {
+      "title": "Typed Import URL dialog has no requirement",
+      "anchor": "entry/src/main/ets/pages/Index.ets:2306",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "The add menu opens an Import URL dialog (Index.ets:1683) and the dialog struct starts at Index.ets:2306. U04 owns clipboard import, file import, and ss:// VIEW-intent import (R-UD-01 through R-UD-09 and R-UD-40 through R-UD-44). No requirement row owns a manual URL-text entry dialog."
+    },
+    {
+      "title": "Replace-all confirmation dialog has no requirement",
+      "anchor": "entry/src/main/ets/pages/Index.ets:196",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Replace from file opens a confirmation dialog before the picker. R-UD-06 and R-UD-07 define Replace from file as the same picker with replace mode. No requirement row owns a confirmation step."
+    },
+    {
+      "title": "QR scan retry limit of three empty results has no requirement",
+      "anchor": "entry/src/main/ets/pages/Index.ets:780",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "scanQrCode reopens the scanner after an empty result and stops after three attempts with qr_no_profiles (Index.ets:768 through 784). R-UJ-09 closes the scanner after a profile. R-UJ-10 leaves it open and keeps analyzing after none. No requirement row owns an attempt limit or the qr_no_profiles message."
+    },
+    {
+      "title": "Settings endpoint editors are not in the settings requirement rows",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:505",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "The page exposes a Connection test URL field and a Speed test URL field (Settings.ets:505 and 511). U09 lists six settings rows (R-UI-01). None is a test endpoint. R-UA-11 describes test states only. No requirement row owns either editable endpoint."
+    },
+    {
+      "title": "Share over LAN switch and warning have no requirement",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:492",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "Proxy mode shows an Allow other devices switch and a warning when it is on (Settings.ets:488 through 500). The switch makes ProxyService bind 0.0.0.0 (ProxyService.ets:59). R-UI-33 owns the SOCKS port as a local listener. No requirement row owns a LAN binding or this switch."
+    },
+    {
+      "title": "Settings action buttons add unowned controls",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:517",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "The page adds Custom rules, About, Reset to defaults and Save buttons (Settings.ets:517 through 544). U09 defines preference rows that store on change (R-UI-07, R-UI-27). No requirement row owns navigation buttons, a reset action, or a Save and back control."
+    },
+    {
+      "title": "Profile editor Remote DNS field is not a requirement-owned row",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:620",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "The editor shows an editable Remote DNS input. U03 defines the editor rows for name, host, port, password, method, route, IPv6, apps, plugin and fallback (R-UC-01 through R-UC-41). remote_dns appears only as an import and export JSON key (R-UD-15, R-UD-25). No requirement row owns an editable Remote DNS row."
+    },
+    {
+      "title": "Profile editor Show QR code action and ProfileQr page are extra surface",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:760",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "The editor shows a Show QR code button that routes to pages/ProfileQr (ProfileEdit.ets:536). U02 R-UB-20 and R-UB-21 own the row share popup and its QR item. U04 R-UD-31 and R-UD-33 own the same popup and dialog. No requirement row owns a QR action in the editor or a standalone QR page."
+    },
+    {
+      "title": "App picker accepts typed bundle names and shows query reasons",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:194",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "The page adds a free-text bundle field with an Add button (AppPicker.ets:194 through 224), a not-installed label (AppPicker.ets:343), a query reason line (AppPicker.ets:402), and a 64-name limit. U07 owns an installed-app scan, row search, and client-app exclusion (R-UG-10 through R-UG-17). No requirement row owns typed bundle entry, a limit, or the query-failure text."
+    },
+    {
+      "title": "Subscription row profile count and update date have no requirement row",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:316",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Each subscription row shows the number of profiles and a formatted update date (Subscription.ets:316 through 320). U05 owns the URL list, dialog, undo and refresh (R-UE-01 through R-UE-29). No requirement row owns per-row counts or a date format."
+    },
+    {
+      "title": "About version values are not owned by a requirement",
+      "anchor": "entry/src/main/ets/pages/About.ets:178",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "About shows an app version line and a native core version line. R-UJ-21 owns the title format. R-UJ-22 owns the body. No requirement row owns a core version line or the version value. The packaged app still reports 5.3.5 in this 5.4.0 batch (AppScope/app.json5:6 and the HAP module.json)."
+    },
+    {
+      "title": "Notification permission prompt has no requirement owner",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:222",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "ensureEnabled raises the system notification permission request. It runs before a VPN start (Index.ets:1064 and 1100) and before a subscription refresh (SubscriptionRefresh.ets:219). U11 owns notification content and actions (R-UK-01 through R-UK-43). No requirement row owns the permission request or the one-ask policy."
+    },
+    {
+      "title": "Diagnostics exports four entries no product file consumes",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:222",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "settingsRows (Diagnostics.ets:222), latencyPending (355), SERVICE_MODE_CHOICES (128) and PHASE_LOST (51) appear in no import list and no product reference. Settings builds its rows inline and hardcodes its mode menu (Settings.ets:429 through 441). Index builds the pending LatencyEntry inline (Index.ets:954). summarizeStatus never returns PHASE_LOST.",
+      "note": "Test specs may use these. The product does not."
+    },
+    {
+      "title": "MainShell ringState is exported with no consumer",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:202",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "ringState is not imported anywhere. Index implements the ring delay, fill and hide in its own timers (Index.ets:1541 through 1576). R-UA-06 and R-UA-07 own the ring behavior."
+    },
+    {
+      "title": "PluginOptions isKnownPlugin is exported with no consumer",
+      "anchor": "entry/src/main/ets/model/PluginOptions.ets:123",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "No product file references isKnownPlugin. ProfileEdit uses pluginStateOf (ProfileEdit.ets:443, 451, 456). Profile uses pluginStateOf too. U08 R-UH-01 and R-UH-10 own the plugin state rules."
+    },
+    {
+      "title": "Transfer.pickTextFile is exported with no consumer",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:53",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Index imports pickTextFiles and saveTextFile only. Nothing uses the single-file picker. U04 R-UD-05 owns the multi-document picker."
+    },
+    {
+      "title": "QrImport.copyFeatureSettings is an unused duplicate export",
+      "anchor": "entry/src/main/ets/model/QrImport.ets:44",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Only profilesFromScan in the same file calls it. Profile.ets:127 exports the same feature-copy rule and ProfilesFile.ets:147 uses that one. U10 R-UJ-07 owns the feature copy for scanned profiles."
+    },
+    {
+      "title": "NotificationContent.notificationTitle has no external consumer",
+      "anchor": "entry/src/main/ets/model/NotificationContent.ets:58",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Only notificationText in the same file calls it. ConnectionNotification imports notificationText and NotificationText (ConnectionNotification.ets:24). U11 R-UK-01 owns the notification title."
+    },
+    {
+      "title": "CustomRules.removeRule is exported but the page calls removeRules",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:681",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Only setRule in the same file calls removeRule. The page imports removeRules (pages/CustomRules.ets:44). U06 R-UF-12 and R-UF-13 own rule edit and removal."
+    },
+    {
+      "title": "Profile exposes editor helpers that no page calls",
+      "anchor": "entry/src/main/ets/model/Profile.ets:246",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "displaySecondary (246), pluginState (260), canEditPlugin (278), canConfigurePlugin (283), pluginOptionsFor (302), parseDnsAddress (731) and the module function isSubscriptionLocked (163) have no product consumer. ProfileEdit uses the class method isSubscriptionLocked (ProfileEdit.ets:183) and Index uses it too (Index.ets:1766). U03 and U08 own the editor rules."
+    },
+    {
+      "title": "SIP008 export branch is unreachable from the product",
+      "anchor": "entry/src/main/ets/model/ProfilesFile.ets:587",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "exportProfiles has a sip008 parameter with default false. The only caller (Index.ets:854) omits it, so the branch at ProfilesFile.ets:600 never runs. No requirement row defines SIP008 export. R-UD-21 requires the JSON array export only. architecture.md:88 names SIP008 export, but the requirement set does not own it."
+    },
+    {
+      "title": "Index routeLabel export has no consumer",
+      "anchor": "entry/src/main/ets/pages/Index.ets:95",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "ProfileEdit imports ROUTE_LABELS only (ProfileEdit.ets:37). No product file references routeLabel. R-UC-11 owns route labels."
+    },
+    {
+      "title": "AboutOpener.ABOUT_OPENED is never read",
+      "anchor": "entry/src/main/ets/model/AboutOpener.ets:34",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "About.follow compares only ABOUT_NO_HANDLER and ABOUT_UNSUPPORTED (About.ets:125 through 128). The success token has no consumer. U10 R-UJ-23 through R-UJ-25 own link outcomes."
+    },
+    {
+      "title": "Subscription and SubscriptionRefresh export internal-only helpers",
+      "anchor": "entry/src/main/ets/model/Subscription.ets:93",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "parseSubscriptionUrl (Subscription.ets:93), compareSubscriptionUrls (213) and sortSubscriptions (240) are used only inside Subscription.ets. SubscriptionRefreshRun (SubscriptionRefresh.ets:87), SUBSCRIPTION_ABORT_EVENT (36) and SUBSCRIPTION_NOTIFICATION_ID (39) are used only inside SubscriptionRefresh.ets. The page imports validateSubscriptionUrl, SubscriptionStore and SubscriptionRefresh only. U05 owns the list and refresh behavior."
+    },
+    {
+      "title": "Internal-only constant exports have no page consumer",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:37",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "MAX_ACL_DEPTH (AclSync.ets:37), QUERY_MIN_API (AppCatalog.ets:34), matchesQuery (PerApp.ets:145) and ABOUT_LINK_WEB (AboutLinks.ets:28) are exported and used only inside their declaring files. No page or ability imports them. U06, U07 and U10 own the behavior they support."
+    },
+    {
+      "title": "ProfileEdit blank-form branch is unreachable through product navigation",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:123",
+      "severity": "low",
+      "dimension": "reverse-enumeration",
+      "reason": "Every router.pushUrl to pages/ProfileEdit passes an id (Index.ets:499 and 539). No manifest skill or other page routes there without params. The id-less manual form branch at ProfileEdit.ets:123 through 133 never runs. U03 R-UC-36 and R-UC-37 own new profile creation, which the Index add path pre-creates with an id."
+    },
+    {
+      "title": "ProfileQr route has no requirement journey",
+      "anchor": "entry/src/main/ets/pages/ProfileQr.ets:52",
+      "severity": "medium",
+      "dimension": "reverse-enumeration",
+      "reason": "pages/ProfileQr is in main_pages.json and in the built HAP page list. Its only inbound navigation is the unowned Show QR code button in ProfileEdit (ProfileEdit.ets:536 and 760). U02 and U04 own a QR dialog opened from the list row share popup. No requirement journey reaches this route, and no requirement row owns its copy URL button or explainer."
+    }
+  ],
+  "coverage": {
+    "dimension": "reverse-enumeration",
+    "result": "complete with findings",
+    "scanned": {
+      "pages": [
+        "entry/src/main/ets/pages/About.ets",
+        "entry/src/main/ets/pages/AppPicker.ets",
+        "entry/src/main/ets/pages/CustomRules.ets",
+        "entry/src/main/ets/pages/Index.ets",
+        "entry/src/main/ets/pages/ProfileEdit.ets",
+        "entry/src/main/ets/pages/ProfileQr.ets",
+        "entry/src/main/ets/pages/QrDialog.ets",
+        "entry/src/main/ets/pages/Settings.ets",
+        "entry/src/main/ets/pages/Subscription.ets",
+        "entry/src/main/ets/pages/UdpFallback.ets",
+        "entry/src/main/ets/pages/VpnGrant.ts"
+      ],
+      "model_files": 36,
+      "model_exports_enumerated": 364,
+      "abilities": [
+        "entry/src/main/ets/entryability/EntryAbility.ets",
+        "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets"
+      ],
+      "native_bridge": [
+        "entry/src/main/cpp/napi_init.cpp",
+        "entry/src/main/cpp/types/libsslocal/Index.d.ts"
+      ],
+      "app_scope": [
+        "AppScope/app.json5"
+      ],
+      "built_hap": "entry/build/default/outputs/default/entry-default-signed.hap",
+      "documents": [
+        "docs/versions/5.4.0/requirements/requirements.md",
+        "docs/changes/CHG-20261028-hos-parity/architecture.md",
+        "docs/changes/CHG-20261028-hos-parity/hld.md",
+        "docs/changes/CHG-20261028-hos-parity/lld.md"
+      ]
+    },
+    "note": "All 9 routed pages in main_pages.json are present in the HAP and have inbound navigation. ProfileQr has no requirement-owned journey. Eight routes are reached from requirement-owned controls. Dead-surface results cover product consumers only. Test files were excluded by the task, so an export used only by host specs can appear here as unused. Type-only exports used as return types were not counted as dead."
+  },
+  "inputs": [
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/cpp",
+    "/opt/git/github/shadowsocks-ohos/AppScope",
+    "/opt/git/github/shadowsocks-ohos/entry/build/default/outputs/default/entry-default-signed.hap",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md"
+  ]
+}

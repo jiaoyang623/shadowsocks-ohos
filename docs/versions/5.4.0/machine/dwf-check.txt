@@ -1,0 +1,3 @@
+
+/home/red/.claude/projects/-opt-git-github-shadowsocks-ohos/07105d45-d7ec-4490-ab7c-6d2faf6eccf8/workflows/scripts/android-parity-research-wf_29dd4e7b-788.js  [PASS]  595 行  (FAIL 0 / WARN 0)
+    ✓ 机器可判的规则全部通过

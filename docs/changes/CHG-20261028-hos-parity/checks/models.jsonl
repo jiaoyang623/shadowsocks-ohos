@@ -1,0 +1,4 @@
+{"model":"deepseek/deepseek-flash","session":"07105d45-d7ec-4490-ab7c-6d2faf6eccf8","event":"transcript","at":"2026-10-28T11:20:55+11:00"}
+{"model":"deepseek/deepseek-v4.1-flash-1017","session":"07105d45-d7ec-4490-ab7c-6d2faf6eccf8","event":"transcript","at":"2026-10-28T11:20:55+11:00"}
+{"model":"DeepSeek-V4.1-Flash","session":"07105d45-d7ec-4490-ab7c-6d2faf6eccf8","event":"transcript","at":"2026-10-28T11:20:55+11:00"}
+{"model":"ccs-claude-zhinao--tencent/deepseek/deepseek-v4.1-flash[1m]","session":"07105d45-d7ec-4490-ab7c-6d2faf6eccf8","event":"session-start","at":"2026-10-28T11:31:39+11:00"}

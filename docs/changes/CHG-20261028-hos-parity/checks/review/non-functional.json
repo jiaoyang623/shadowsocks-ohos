@@ -1,0 +1,81 @@
+{
+  "items": [
+    {
+      "title": "Stop timeout during a profile switch only writes a log line",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1207",
+      "severity": "medium",
+      "dimension": "non-functional",
+      "reason": "waitForVpnStopped returns void after 5000 ms. At expiry its only evidence is one hilog.warn at Index.ets:1217. reloadTunnel calls it at Index.ets:1192 and then starts the new profile. disconnect calls it at Index.ets:1145 and then reports Idle. hld.md:106 expects a reported timeout and no new start. The timeout quality condition has no matching evidence."
+    },
+    {
+      "title": "Accessibility labels cover five controls only",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1746",
+      "severity": "low",
+      "dimension": "non-functional",
+      "reason": "The product sets accessibilityText in five places only: Index.ets:1662, Index.ets:1733, Index.ets:2058, Index.ets:2248 and AppPicker.ets:375. The add menu Text('＋') at Index.ets:1746 has no label. The close Text('✕') controls at ProfileEdit.ets:572, UdpFallback.ets:120 and CustomRules.ets:484 have no label. A selected row shows a Text('✓') at Index.ets:2221 and exposes no accessibility state. The accessibility-label condition has partial evidence."
+    },
+    {
+      "title": "Failure text reaches the Chinese UI in English",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:298",
+      "severity": "low",
+      "dimension": "non-functional",
+      "reason": "base and zh_CN string.json hold the same 302 keys and the same %s and %d counts. Some paths bypass these resources. The extension writes English reasons at lines 176, 298, 314, 350 and 374 of SsVpnExtensionAbility.ets. Index.ets:1292 passes them through failureText and the page shows the result. QrDialog.ets:68 and ProfileQr.ets:83 show the raw English encoder message. Diagnostics.ets:501 and Diagnostics.ets:534 supply English verdict text. lld.md:793 records the choice to keep extension reasons in English. The localized-string condition has partial evidence."
+    },
+    {
+      "title": "Native log lines reach hilog with no redaction",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:526",
+      "severity": "low",
+      "dimension": "non-functional",
+      "reason": "flushCoreLogs copies every line from sslocal.recentLogs() to hilog at INFO level. It applies no filter and no redaction. The ArkTS layer obeys lld.md:5370 and logs no password. The allowed inputs give no evidence that the core's own records exclude credentials. The no-password-logging condition has no evidence for this path."
+    }
+  ],
+  "coverage": {
+    "dimension": "non-functional",
+    "result": "partial",
+    "scanned_files": [
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/module.json5",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/color.json",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/dark/element/color.json",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/zh_CN/element/string.json",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/QrDialog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/VpnGrant.ts",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/NotificationContent.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectivityProbe.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Throughput.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Latency.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppCatalog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PerApp.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Network.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/QrScanner.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/MainShell.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets"
+    ],
+    "note": "Six quality scenarios appear in architecture.md. All have a mechanism and five match the Expected column. The profile-switch failure path does not match. Permissions, secret handling, colour tokens, memory, battery and API level have a mechanism and evidence. Localization, accessibility and the forwarded native log path have partial evidence. The requirements file and QrDialog.ets changed during the review, so all anchors were re-checked at 2026-10-28 12:26 AEDT. R-UF-31 is android-only in the current requirements.md and the VPN self-grant is a recorded emulator workaround, so neither was scored as a HarmonyOS gap."
+  },
+  "inputs": [
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md"
+  ]
+}

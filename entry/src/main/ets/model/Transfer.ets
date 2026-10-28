@@ -28,31 +28,48 @@ import { pasteboard } from '@kit.BasicServicesKit';
 export const EXPORT_FILE_NAME = 'profiles.json';
 
 /**
- * Reads the text of a file the user picks, or '' when they cancel.
+ * The URIs of the files the user picks, or [] when they cancel. The limit
+ * bounds one import batch. The platform default is 500 files on API 20 and
+ * earlier.
+ */
+export async function pickTextFiles(context: common.Context): Promise<string[]> {
+  const view = new picker.DocumentViewPicker(context);
+  const options = new picker.DocumentSelectOptions();
+  options.maxSelectNumber = 20;
+  return view.select(options);
+}
+
+/** Reads the text of one picked file. A read error escapes to the caller. */
+export function readTextFile(uri: string): string {
+  return fs.readTextSync(uri);
+}
+
+/**
+ * Reads the text of the first file the user picks, or '' when they cancel.
  *
- * The document picker is what makes a file reachable at all: an app on this
- * platform cannot read outside its own sandbox without the user choosing the
- * file, which is the same bargain Android's storage access framework makes.
+ * Deprecated: use pickTextFiles and readTextFile. Kept while the import flow
+ * moves to a batch of documents.
  */
 export async function pickTextFile(context: common.Context): Promise<string> {
-  const view = new picker.DocumentViewPicker(context);
-  const uris = await view.select(new picker.DocumentSelectOptions());
+  const uris = await pickTextFiles(context);
   if (uris.length === 0) {
     return '';
   }
-  return fs.readTextSync(uris[0]);
+  return readTextFile(uris[0]);
 }
 
-/** Writes `text` to a file the user picks, or returns '' when they cancel. */
+/** Writes `text` to a JSON file the user picks, or returns '' when they cancel. */
 export async function saveTextFile(context: common.Context, name: string, text: string): Promise<string> {
   const options = new picker.DocumentSaveOptions();
   options.newFileNames = [name];
+  options.fileSuffixChoices = ['.json'];
   const view = new picker.DocumentViewPicker(context);
   const uris = await view.save(options);
   if (uris.length === 0) {
     return '';
   }
-  const file = fs.openSync(uris[0], fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
+  const file = fs.openSync(uris[0],
+    fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC);
   try {
     fs.writeSync(file.fd, text);
   } finally {
@@ -77,7 +94,17 @@ export async function readClipboard(): Promise<string> {
   return data.getPrimaryText();
 }
 
+/**
+ * Copies text to the clipboard. The data is marked local only, so it stays on
+ * this device: a profile carries its password, and HarmonyOS has no sensitive
+ * flag. Other apps can still read it, but it never leaves the device through
+ * the clipboard share path.
+ */
 export async function writeClipboard(text: string): Promise<void> {
   const board = pasteboard.getSystemPasteboard();
-  await board.setData(pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, text));
+  const data = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, text);
+  const property = data.getProperty();
+  property.shareOption = pasteboard.ShareOption.LOCALDEVICE;
+  data.setProperty(property);
+  await board.setData(data);
 }

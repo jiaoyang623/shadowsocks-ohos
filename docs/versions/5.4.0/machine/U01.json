@@ -1,0 +1,2887 @@
+{
+  "unit": "U01",
+  "title": "Main shell, navigation drawer, connect control, stats bar",
+  "sources_read": [
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/README.md",
+    "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/FabProgressBehavior.kt",
+    "mobile/src/main/java/com/github/shadowsocks/widget/WindowInsetsListeners.kt",
+    "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt",
+    "mobile/src/main/res/layout/layout_main.xml",
+    "mobile/src/main/res/layout/layout_list.xml",
+    "mobile/src/main/res/layout/navigation_header.xml",
+    "mobile/src/main/res/menu/navigation_main.xml",
+    "mobile/src/main/res/values/colors.xml",
+    "mobile/src/main/res/values/dimen.xml",
+    "mobile/src/main/res/color/background_service.xml",
+    "mobile/src/main/res/color/nav_item_tint.xml",
+    "mobile/src/main/AndroidManifest.xml",
+    "plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "core/src/main/java/com/github/shadowsocks/Core.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/GuardedProcessPool.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/Executable.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt",
+    "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt",
+    "core/src/main/java/com/github/shadowsocks/aidl/ShadowsocksConnection.kt",
+    "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt",
+    "core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "core/src/main/res/values/strings.xml",
+    "gradle/libs.versions.toml",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json"
+  ],
+  "controls": [
+    {
+      "id": "C-U01-001",
+      "type": "screen",
+      "label": "Shadowsocks main screen",
+      "android_id": "drawer",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Holds the content container and the navigation drawer in a DrawerLayout",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:2"
+    },
+    {
+      "id": "C-U01-014",
+      "type": "screen",
+      "label": "Main content container",
+      "android_id": "snackbar",
+      "parent": "C-U01-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Hosts the fragment container, the service button, the progress ring and the stats bar, and shows long snackbars anchored above the service button",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:10"
+    },
+    {
+      "id": "C-U01-002",
+      "type": "screen",
+      "label": "Toolbar fragment container",
+      "android_id": "fragment_holder",
+      "parent": "C-U01-014",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Hosts the current ToolbarFragment in one container: ProfilesFragment at first, then Settings, Subscriptions, Custom rules or About replaces it",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:18"
+    },
+    {
+      "id": "C-U01-003",
+      "type": "row",
+      "label": "Toolbar",
+      "android_id": "toolbar",
+      "parent": "C-U01-002",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the current fragment title and menu; its navigation icon opens the drawer",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_list.xml:8"
+    },
+    {
+      "id": "C-U01-004",
+      "type": "button",
+      "label": "Open navigation drawer",
+      "android_id": "",
+      "parent": "C-U01-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the navigation drawer from the start edge",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:36"
+    },
+    {
+      "id": "C-U01-005",
+      "type": "text",
+      "label": "Profiles",
+      "android_id": "",
+      "parent": "C-U01-003",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the current fragment title; ProfilesFragment sets it to Profiles",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ProfilesFragment.kt:348"
+    },
+    {
+      "id": "C-U01-006",
+      "type": "button",
+      "label": "Connect",
+      "android_id": "fab",
+      "parent": "C-U01-014",
+      "visible_when": "always",
+      "enabled_when": "state.canStop is true or the state is Stopped",
+      "action": "Stops the service when state.canStop is true, otherwise starts it through the StartService contract",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:36"
+    },
+    {
+      "id": "C-U01-007",
+      "type": "image",
+      "label": "Service button progress ring",
+      "android_id": "fabProgress",
+      "parent": "C-U01-014",
+      "visible_when": "the state entered Connecting more than config_mediumAnimTime plus 1000 ms ago and the activity is started, or the ring was already shown and Connected starts the fill animation",
+      "enabled_when": "always",
+      "action": "Shows connection progress around the service button",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:24"
+    },
+    {
+      "id": "C-U01-008",
+      "type": "row",
+      "label": "Stats bar",
+      "android_id": "stats",
+      "parent": "C-U01-014",
+      "visible_when": "state is Connected, plus the show and hide animation",
+      "enabled_when": "always",
+      "action": "Shows traffic counters and connection status; a tap tests the connection while Connected",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:48"
+    },
+    {
+      "id": "C-U01-009",
+      "type": "text",
+      "label": "Connection status",
+      "android_id": "status",
+      "parent": "C-U01-008",
+      "visible_when": "state is Connected",
+      "enabled_when": "always",
+      "action": "Shows the connection state text or the latest connection test result",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:120"
+    },
+    {
+      "id": "C-U01-010",
+      "type": "text",
+      "label": "▲ <sent total>",
+      "android_id": "tx",
+      "parent": "C-U01-008",
+      "visible_when": "state is Connected",
+      "enabled_when": "always",
+      "action": "Shows the uploaded byte total formatted for the locale",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:68"
+    },
+    {
+      "id": "C-U01-011",
+      "type": "text",
+      "label": "<sent rate>/s",
+      "android_id": "txRate",
+      "parent": "C-U01-008",
+      "visible_when": "state is Connected",
+      "enabled_when": "always",
+      "action": "Shows the upload rate formatted for the locale with a /s suffix",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:79"
+    },
+    {
+      "id": "C-U01-012",
+      "type": "text",
+      "label": "▼ <received total>",
+      "android_id": "rx",
+      "parent": "C-U01-008",
+      "visible_when": "state is Connected",
+      "enabled_when": "always",
+      "action": "Shows the downloaded byte total formatted for the locale",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:93"
+    },
+    {
+      "id": "C-U01-013",
+      "type": "text",
+      "label": "<received rate>/s",
+      "android_id": "rxRate",
+      "parent": "C-U01-008",
+      "visible_when": "state is Connected",
+      "enabled_when": "always",
+      "action": "Shows the download rate formatted for the locale with a /s suffix",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:106"
+    },
+    {
+      "id": "C-U01-015",
+      "type": "list",
+      "label": "Navigation drawer",
+      "android_id": "navigation",
+      "parent": "C-U01-001",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Lists the six destinations of the app",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_main.xml:139"
+    },
+    {
+      "id": "C-U01-016",
+      "type": "image",
+      "label": "Drawer header image",
+      "android_id": "",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Decorative header picture, not important for accessibility",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/navigation_header.xml:6"
+    },
+    {
+      "id": "C-U01-017",
+      "type": "text",
+      "label": "shadowsocks",
+      "android_id": "drawer_title",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Drawer header title in the Iceland font, white, 32sp",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/navigation_header.xml:14"
+    },
+    {
+      "id": "C-U01-018",
+      "type": "menu_item",
+      "label": "Profiles",
+      "android_id": "profiles",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Replaces the content with the profile list, checks this item and asks the service for a stats update",
+      "navigates_to": "U02",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:5"
+    },
+    {
+      "id": "C-U01-019",
+      "type": "menu_item",
+      "label": "Subscriptions",
+      "android_id": "subscriptions",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Replaces the content with the subscription list and checks this item",
+      "navigates_to": "U05",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:8"
+    },
+    {
+      "id": "C-U01-020",
+      "type": "menu_item",
+      "label": "Custom rules",
+      "android_id": "customRules",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Replaces the content with the custom rules editor and checks this item",
+      "navigates_to": "U06",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:11"
+    },
+    {
+      "id": "C-U01-021",
+      "type": "menu_item",
+      "label": "Settings",
+      "android_id": "globalSettings",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Replaces the content with the global settings and checks this item",
+      "navigates_to": "U09",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:14"
+    },
+    {
+      "id": "C-U01-022",
+      "type": "menu_item",
+      "label": "FAQ",
+      "android_id": "faq",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Opens the FAQ URL in a custom tab; the item is not checkable and the drawer stays open behind the tab",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:20"
+    },
+    {
+      "id": "C-U01-023",
+      "type": "menu_item",
+      "label": "About",
+      "android_id": "about",
+      "parent": "C-U01-015",
+      "visible_when": "the drawer is open",
+      "enabled_when": "always",
+      "action": "Logs the about event, replaces the content with the About page and checks this item",
+      "navigates_to": "U10",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:24"
+    },
+    {
+      "id": "C-U01-024",
+      "type": "dialog",
+      "label": "VPN connection consent",
+      "android_id": "",
+      "parent": "C-U01-001",
+      "visible_when": "service mode is VPN and VpnService.prepare returns a consent intent",
+      "enabled_when": "always",
+      "action": "System dialog; Allow starts the foreground service, Deny shows the permission denied snackbar",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt:49"
+    },
+    {
+      "id": "C-U01-025",
+      "type": "shortcut",
+      "label": "Ctrl+G",
+      "android_id": "",
+      "parent": "C-U01-001",
+      "visible_when": "the main screen is focused and a keyboard is attached",
+      "enabled_when": "always",
+      "action": "Toggles the service: stops it when state.canStop, otherwise starts it",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:227"
+    },
+    {
+      "id": "C-U01-026",
+      "type": "shortcut",
+      "label": "Ctrl+T",
+      "android_id": "",
+      "parent": "C-U01-001",
+      "visible_when": "the main screen is focused and a keyboard is attached",
+      "enabled_when": "always",
+      "action": "Runs the HTTPS connection test regardless of the current state",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:231"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UA-01",
+      "statement": "The service button shows the stopped icon for Idle and Stopped, connecting for Connecting, connected for Connected, stopping for Stopping.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:119",
+      "examples": [
+        {
+          "given": "the service state is Connected",
+          "when": "the state change is applied",
+          "then": "the button shows the connected icon",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service state is Idle at activity start",
+          "when": "the activity resets the UI before binding",
+          "then": "the button shows the stopped icon, replacing the layout's idle drawable",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-02",
+      "statement": "A tap on the service button stops the service when state.canStop is true and starts it otherwise.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:117",
+      "examples": [
+        {
+          "given": "the service state is Connected",
+          "when": "the user taps the service button",
+          "then": "the app broadcasts the CLOSE action and the service begins stopping",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service state is Stopped",
+          "when": "the user taps the service button",
+          "then": "the app runs the StartService contract instead of stopping",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-03",
+      "statement": "The service button is enabled only when the state can stop or the state is Stopped. On API 24 and later the pointer icon is a hand when the button is enabled and a wait icon when it is disabled.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:133",
+      "examples": [
+        {
+          "given": "the state is Connected and the device runs API 24 or later",
+          "when": "the button state is applied",
+          "then": "the button is enabled and its pointer icon is a hand",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state is Stopped and the device runs API 23",
+          "when": "the button state is applied",
+          "then": "the button is enabled and the pointer icon stays at the platform default, because the code sets no pointer icon below API 24",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the state is Idle and the device runs API 24 or later",
+          "when": "the activity has not yet bound to the service",
+          "then": "the button is disabled and its pointer icon is a wait icon",
+          "polarity": "negative"
+        },
+        {
+          "given": "the state is Stopping",
+          "when": "the button state is applied",
+          "then": "the button is disabled, so a second stop cannot be requested",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-04",
+      "statement": "The service button is checked, and therefore drawn with the green background, only when the state is Connected.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:128",
+      "examples": [
+        {
+          "given": "the state becomes Connected",
+          "when": "the drawable state is refreshed",
+          "then": "state_checked is merged and the background uses material_green_700",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state becomes Connecting",
+          "when": "the drawable state is refreshed",
+          "then": "state_checked is absent and the background uses material_primary_500",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-05",
+      "statement": "The service button content description and tooltip read Stop when the state can stop, and Connect otherwise.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:130",
+      "examples": [
+        {
+          "given": "the state is Connected",
+          "when": "the state change is applied",
+          "then": "the content description and tooltip read Stop",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state is Stopped",
+          "when": "the state change is applied",
+          "then": "the content description and tooltip read Connect",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-06",
+      "statement": "In Connecting the progress ring shows as indeterminate after the medium animation time plus one second, once the activity is started. The delay runs first and does not pause. An activity that starts after the delay sees the ring at once.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:75",
+      "examples": [
+        {
+          "given": "the state becomes Connecting and the activity is started",
+          "when": "the medium animation time plus 1000 ms pass",
+          "then": "the ring becomes indeterminate and shows",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state becomes Connecting and then Connected before the medium animation time plus 1000 ms",
+          "when": "the delayed animation has not fired",
+          "then": "the ring never becomes indeterminate",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the state becomes Connecting while the activity is stopped",
+          "when": "the medium animation time plus 1000 ms pass and then the activity starts",
+          "then": "the ring becomes indeterminate and shows as soon as the activity is started",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-07",
+      "statement": "On Connected the progress ring animates to full and hides when the spring animation ends.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:87",
+      "examples": [
+        {
+          "given": "the state becomes Connected",
+          "when": "the connected animation starts",
+          "then": "progress is set to 1 with animation and the ring hides after the animation",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state leaves Connecting for Stopping",
+          "when": "the stopping icon is applied",
+          "then": "the delayed indeterminate animation is cancelled and the ring hides",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-08",
+      "statement": "Starting in VPN mode asks for system consent only when VpnService.prepare returns an intent, and a denied consent shows the permission denied snackbar.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt:49",
+      "examples": [
+        {
+          "given": "the service mode is VPN and VpnService.prepare returns an intent",
+          "when": "the user allows the consent dialog",
+          "then": "Core.startService starts the foreground service and no snackbar shows",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service mode is VPN and VpnService.prepare returns null because consent was already granted",
+          "when": "the start contract runs",
+          "then": "Core.startService runs at once and no dialog opens",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the service mode is VPN and the consent dialog is shown",
+          "when": "the user denies the dialog",
+          "then": "the app shows the snackbar Permission denied to create a VPN service",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-09",
+      "statement": "The stats bar is shown only while the state is Connected; it hides when the list scrolls up and returns when the list scrolls down.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:74",
+      "examples": [
+        {
+          "given": "the state becomes Connected",
+          "when": "the state change is applied",
+          "then": "hideOnScroll becomes true and the bar performs a show animation",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state becomes Stopped",
+          "when": "the state change is applied",
+          "then": "the bar performs a hide animation",
+          "polarity": "negative"
+        },
+        {
+          "given": "the bar is shown and the profile list scrolls up",
+          "when": "the nested scroll is consumed",
+          "then": "the bar hides but stays connected",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the bar was hidden by an upward scroll and the list scrolls down",
+          "when": "the nested scroll reports a negative consumed distance",
+          "then": "the bar slides back up",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-10",
+      "statement": "While not connected the stats bar status reads Connecting…, Shutting down… or Not connected, chosen by the state.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:84",
+      "examples": [
+        {
+          "given": "the state is Connecting",
+          "when": "the status text is set",
+          "then": "the status reads Connecting…",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state is Stopping",
+          "when": "the status text is set",
+          "then": "the status reads Shutting down…",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the state is Stopped",
+          "when": "the status text is set",
+          "then": "the status reads Not connected",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-11",
+      "statement": "While connected the status text follows the HTTPS test: idle, testing, success with elapsed milliseconds, or failure.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:78",
+      "examples": [
+        {
+          "given": "the state is Connected and the test has not run",
+          "when": "the status observer fires",
+          "then": "the status reads Connected, tap to check connection",
+          "polarity": "positive"
+        },
+        {
+          "given": "the test is running",
+          "when": "the observer fires",
+          "then": "the status reads Testing…",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the test returned an IOException",
+          "when": "the observer fires",
+          "then": "the status reads Internet Unavailable and a snackbar shows the error once",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-12",
+      "statement": "A tap on the stats bar starts the HTTPS connection test only when the state is Connected.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:142",
+      "examples": [
+        {
+          "given": "the state is Connected",
+          "when": "the user taps the stats bar",
+          "then": "the status becomes Testing and a request goes to https://cp.cloudflare.com",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state is Stopped",
+          "when": "the user taps where the stats bar would be",
+          "then": "no test starts",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-13",
+      "statement": "Traffic totals read ▲ and ▼ with formatted sizes, rates read size per second, and all four reset to zero when the state leaves Connected.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:92",
+      "examples": [
+        {
+          "given": "the device runs API 26 or later and the service reports tx 2048 and rx 4096 with rates 512 and 1024",
+          "when": "the aggregate sample arrives",
+          "then": "the bar shows ▲ 2.05 kB, ▼ 4.10 kB, 512 B/s and 1.02 kB/s in the locale format",
+          "polarity": "positive"
+        },
+        {
+          "given": "the bar shows counters and the state becomes Stopped",
+          "when": "the state change is applied",
+          "then": "updateTraffic is called with four zeroes",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-14",
+      "statement": "The toolbar navigation icon opens the navigation drawer from the start edge.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:36",
+      "examples": [
+        {
+          "given": "any fragment is shown and the drawer is closed",
+          "when": "the user taps the navigation icon",
+          "then": "the drawer opens from the start edge",
+          "polarity": "positive"
+        },
+        {
+          "given": "the drawer is already open",
+          "when": "the user taps the navigation icon again",
+          "then": "openDrawer keeps the drawer open and the content does not change",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-15",
+      "statement": "Back press closes the drawer while it is open and does not leave the activity.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:144",
+      "examples": [
+        {
+          "given": "the drawer is open",
+          "when": "the user presses back",
+          "then": "the drawer closes and the activity stays",
+          "polarity": "positive"
+        },
+        {
+          "given": "the drawer is closed",
+          "when": "the user presses back",
+          "then": "the drawer callback is disabled and the normal back action runs",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-16",
+      "statement": "Selecting a checkable drawer item that is unchecked replaces the content fragment, checks the item and closes the drawer.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:196",
+      "examples": [
+        {
+          "given": "the Profiles item is checked",
+          "when": "the user selects Settings",
+          "then": "GlobalSettingsFragment replaces the content, Settings becomes checked and the drawer closes",
+          "polarity": "positive"
+        },
+        {
+          "given": "the drawer is open",
+          "when": "the user selects a menu id the activity does not know",
+          "then": "the handler returns false and nothing changes",
+          "polarity": "negative"
+        },
+        {
+          "given": "the drawer is open",
+          "when": "the user selects the non-checkable FAQ item",
+          "then": "the drawer stays open, because the FAQ branch returns before displayFragment runs",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-17",
+      "statement": "Selecting the already checked drawer item only closes the drawer.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:197",
+      "examples": [
+        {
+          "given": "Subscriptions is checked and its fragment is shown",
+          "when": "the user selects Subscriptions again",
+          "then": "the drawer closes and the fragment is not recreated",
+          "polarity": "positive"
+        },
+        {
+          "given": "the Profiles item is checked and its fragment is shown",
+          "when": "the user selects Profiles again",
+          "then": "the drawer closes and the fragment is not recreated",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-18",
+      "statement": "The FAQ drawer item opens the FAQ URL in a custom tab and is not checkable; it leaves the drawer open.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:208",
+      "examples": [
+        {
+          "given": "the drawer is open",
+          "when": "the user selects FAQ",
+          "then": "a custom tab opens the FAQ URL, no fragment changes and the drawer stays open",
+          "polarity": "positive"
+        },
+        {
+          "given": "no activity can handle the URL",
+          "when": "the user selects FAQ",
+          "then": "a snackbar shows the URL and the drawer stays open",
+          "polarity": "negative"
+        },
+        {
+          "given": "the user has selected FAQ before",
+          "when": "the drawer is reopened",
+          "then": "FAQ is not checked because the item disables checkable",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-19",
+      "statement": "The menu declares checkableBehavior=single for the main and misc groups. Material 1.13.0's NavigationMenuPresenter calls setExclusiveCheckable(false) on every checkable item and keeps one checked item for the whole drawer. Selecting About checks About and unchecks Profiles.",
+      "kind": "state",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:3",
+      "examples": [
+        {
+          "given": "the app starts and the saved state is null",
+          "when": "the drawer is first built",
+          "then": "the Profiles item is checked and ProfilesFragment is shown",
+          "polarity": "positive"
+        },
+        {
+          "given": "Profiles is checked in the main group",
+          "when": "the user selects About in the misc group",
+          "then": "About becomes checked and Profiles becomes unchecked, because the presenter keeps one checked item",
+          "polarity": "boundary"
+        },
+        {
+          "given": "About is checked in the misc group",
+          "when": "the user selects Profiles in the main group",
+          "then": "Profiles becomes checked and About becomes unchecked",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-20",
+      "statement": "A service mode change disconnects the activity from the old service class and binds to the new class. The new service reports its own state, which can be Connecting, Connected, Stopping or Stopped. The activity renders that state and does not set Idle.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:182",
+      "examples": [
+        {
+          "given": "the service mode changes from VPN to proxy and no proxy service runs",
+          "when": "the public preference store reports the serviceMode key",
+          "then": "the activity disconnects and connects again, binds to ProxyService and renders its Stopped state without an Idle reset",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service mode changes to a class whose service is already Connected",
+          "when": "the new binding reports its state",
+          "then": "the activity renders Connected again without an Idle reset",
+          "polarity": "boundary"
+        },
+        {
+          "given": "any other preference key changes",
+          "when": "the store reports it",
+          "then": "the connection is unchanged",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-21",
+      "statement": "A state change carrying a message shows it as a snackbar; onServiceDisconnected resets the UI to Idle, while onBinderDied only rebinds.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108",
+      "examples": [
+        {
+          "given": "the service reports Stopped with a failure message",
+          "when": "the callback delivers the state",
+          "then": "a snackbar shows the message formatted through vpn_error",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service binder dies",
+          "when": "onBinderDied runs",
+          "then": "the connection is disconnected and established again; the Idle reset comes from onServiceDisconnected or the RemoteException catch",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-22",
+      "statement": "Ctrl+G runs toggle: it stops the service when state.canStop is true, otherwise it launches the StartService contract. The service accepts the start only when its own state is Stopped. Ctrl+T runs the connection test.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:226",
+      "examples": [
+        {
+          "given": "the state is Connecting or Connected",
+          "when": "the user presses Ctrl+G",
+          "then": "state.canStop is true, so the CLOSE broadcast is sent and the service enters Stopping",
+          "polarity": "positive"
+        },
+        {
+          "given": "the state is Stopping",
+          "when": "the user presses Ctrl+G",
+          "then": "the start contract runs, and the service ignores the command because its Data.state is not Stopped",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the UI shows Idle before the first binding returns and Data.state is Stopped",
+          "when": "the user presses Ctrl+G",
+          "then": "the start contract runs and the service starts, although the service button is disabled",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the state is Stopped",
+          "when": "the user presses Ctrl+T",
+          "then": "the test starts but no status observer shows its result",
+          "polarity": "boundary"
+        },
+        {
+          "given": "a test is running",
+          "when": "the user presses Ctrl+T",
+          "then": "the running job is cancelled and a new test starts",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the main screen has focus",
+          "when": "the user presses a key without the Ctrl modifier",
+          "then": "the key is offered to the current fragment toolbar menu",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-23",
+      "statement": "Only the aggregate traffic sample with profile id zero updates the stats bar.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:96",
+      "examples": [
+        {
+          "given": "the service sends a sample for profile id 0",
+          "when": "trafficUpdated is called",
+          "then": "the stats bar updates its four values",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service sends a sample for a real profile id",
+          "when": "trafficUpdated is called",
+          "then": "the stats bar is unchanged and only the profile row refreshes",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-24",
+      "statement": "Snackbars anchor above the service button and last for the long duration.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:71",
+      "examples": [
+        {
+          "given": "the service reports an error",
+          "when": "the snackbar is created",
+          "then": "it appears above the service button for Snackbar.LENGTH_LONG",
+          "polarity": "positive"
+        },
+        {
+          "given": "a state change carries no message",
+          "when": "changeState runs",
+          "then": "no snackbar is created",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-25",
+      "statement": "The service button keeps a bottom margin equal to the navigation bar inset plus the Material FAB margin.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:169",
+      "examples": [
+        {
+          "given": "the navigation bar inset is 48 px",
+          "when": "window insets are applied to the button",
+          "then": "the bottom margin becomes 48 px plus mtrl_bottomappbar_fab_bottom_margin",
+          "polarity": "positive"
+        },
+        {
+          "given": "the device has gesture navigation and no bottom inset",
+          "when": "window insets are applied",
+          "then": "the margin equals the Material FAB margin alone",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-26",
+      "statement": "A stop request while the service is already Stopping is ignored.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:276",
+      "examples": [
+        {
+          "given": "the service is Connected",
+          "when": "stopRunner is called",
+          "then": "the runner reports Stopping and starts the teardown",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service state is Stopping",
+          "when": "stopRunner is called again",
+          "then": "the method returns immediately and no second teardown runs",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-27",
+      "statement": "The service accepts a start command only when its state is Stopped. With no selected profile it stops at once with the message Please select a profile.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:326",
+      "examples": [
+        {
+          "given": "the service state is Stopped and a valid profile is selected",
+          "when": "the start command arrives",
+          "then": "the service reports Connecting",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service state is Connecting, Connected or Stopping",
+          "when": "a start command arrives",
+          "then": "onStartCommand returns without a state change",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service state is Stopped and no profile is selected",
+          "when": "the start command arrives",
+          "then": "stopRunner reports Stopping and then Stopped with the message Please select a profile",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service state is Stopped and ProxyInstance throws IllegalArgumentException",
+          "when": "the start command arrives",
+          "then": "stopRunner reports Stopping and then Stopped with the exception message",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-28",
+      "statement": "A start failure reports Failed to connect the remote server followed by the readable exception message.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:386",
+      "examples": [
+        {
+          "given": "starting the proxy processes throws an exception",
+          "when": "the connecting job catches it",
+          "then": "stopRunner runs with the message 'Failed to connect the remote server: <message>'",
+          "polarity": "positive"
+        },
+        {
+          "given": "the start job is cancelled by a stop request",
+          "when": "CancellationException is caught",
+          "then": "no failure message is produced; the canceller completes the stop",
+          "polarity": "boundary"
+        },
+        {
+          "given": "a guarded process exits within one second of starting",
+          "when": "the process pool reports the fatal IOException",
+          "then": "stopRunner reports the process message alone, without the Failed to connect prefix",
+          "polarity": "boundary"
+        },
+        {
+          "given": "a selected profile whose server is unreachable and whose start succeeds",
+          "when": "the start command runs",
+          "then": "ss-local starts without contacting the server, the state becomes Connected and no failure snackbar shows",
+          "polarity": "boundary"
+        },
+        {
+          "given": "ProxyInstance throws IllegalArgumentException before the connecting job starts",
+          "when": "the start command catches it",
+          "then": "stopRunner reports Stopping and then Stopped with the exception message alone, without the Failed to connect prefix",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-29",
+      "statement": "The UI asks the bound service for traffic samples every 500 ms while started and stops asking when stopped.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:221",
+      "examples": [
+        {
+          "given": "the activity is started and bound",
+          "when": "onStart runs",
+          "then": "bandwidthTimeout is set to 500 and the service loops every 500 ms",
+          "polarity": "positive"
+        },
+        {
+          "given": "the activity is stopped",
+          "when": "onStop runs",
+          "then": "bandwidthTimeout is set to 0 and the service loop ends",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UA-30",
+      "statement": "The drawer selection survives a saved state. NavigationView saves the checked item through NavigationMenuPresenter, and DrawerLayout saves the open state. MainActivity checks Profiles only when savedInstanceState is null.",
+      "kind": "persistence",
+      "source": "mobile/src/main/res/layout/layout_main.xml:139",
+      "examples": [
+        {
+          "given": "the activity starts with a null savedInstanceState",
+          "when": "onCreate builds the drawer",
+          "then": "Profiles is checked and ProfilesFragment is displayed",
+          "polarity": "positive"
+        },
+        {
+          "given": "the activity is recreated with a saved state after showing Settings",
+          "when": "onCreate runs",
+          "then": "the saved Settings item and the Settings fragment are restored, and Profiles is not forced",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the activity is recreated with a saved state after showing About",
+          "when": "onCreate runs",
+          "then": "the saved About item is restored and About stays checked",
+          "polarity": "boundary"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "BaseService service state",
+      "states": [
+        "Idle",
+        "Connecting",
+        "Connected",
+        "Stopping",
+        "Stopped"
+      ],
+      "transitions": [
+        {
+          "from": "Idle",
+          "to": "Connecting",
+          "event": "The activity binds while the service is already connecting",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopped",
+          "to": "Connecting",
+          "event": "The start command is accepted with a non-empty profile",
+          "producer": "BaseService.Interface.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:359"
+        },
+        {
+          "from": "Connecting",
+          "to": "Connected",
+          "event": "The proxy processes are started and updates are scheduled",
+          "producer": "BaseService.Interface.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:383"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopping",
+          "event": "The start job throws or the user stops while connecting",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:388"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "The CLOSE broadcast or a stop request arrives",
+          "producer": "BaseService.Data.closeReceiver",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:92"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "A guarded process exits within one second of starting, so the guard throws and the pool calls stopRunner",
+          "producer": "GuardedProcessPool callback",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/GuardedProcessPool.kt:75"
+        },
+        {
+          "from": "Stopping",
+          "to": "Stopped",
+          "event": "The teardown completes and the runner reports Stopped with any failure message",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:307"
+        },
+        {
+          "from": "Stopping",
+          "to": "Stopping",
+          "event": "A second stop request is ignored",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:276"
+        },
+        {
+          "from": "Connected",
+          "to": "Idle",
+          "event": "The service connection drops; the UI resets to Idle from whatever state it showed",
+          "producer": "MainActivity.onServiceDisconnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:125"
+        },
+        {
+          "from": "Connecting",
+          "to": "Idle",
+          "event": "The service connection drops; the UI resets to Idle from whatever state it showed",
+          "producer": "MainActivity.onServiceDisconnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:125"
+        },
+        {
+          "from": "Stopping",
+          "to": "Idle",
+          "event": "The service connection drops; the UI resets to Idle from whatever state it showed",
+          "producer": "MainActivity.onServiceDisconnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:125"
+        },
+        {
+          "from": "Stopped",
+          "to": "Idle",
+          "event": "The service connection drops; the UI resets to Idle from whatever state it showed",
+          "producer": "MainActivity.onServiceDisconnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:125"
+        },
+        {
+          "from": "Idle",
+          "to": "Stopped",
+          "event": "Binding succeeds and the stopped service reports Stopped",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Idle",
+          "to": "Connected",
+          "event": "The activity binds while the service is already connected",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Idle",
+          "to": "Stopping",
+          "event": "The activity binds while the service is already stopping",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopped",
+          "to": "Stopping",
+          "event": "The start command finds no profile or an invalid profile and calls stopRunner, which reports Stopping first",
+          "producer": "BaseService.Interface.stopRunner",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:278"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopped",
+          "event": "A service mode change rebinds to a service that reports Stopped",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connected",
+          "to": "Connecting",
+          "event": "A service mode change rebinds to a service that reports Connecting",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "A service mode change rebinds to a service that reports Stopping",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connecting",
+          "to": "Connected",
+          "event": "A service mode change rebinds to a service that reports Connected",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopping",
+          "event": "A service mode change rebinds to a service that reports Stopping",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopped",
+          "event": "A service mode change rebinds to a service that reports Stopped",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopping",
+          "to": "Connecting",
+          "event": "A service mode change rebinds to a service that reports Connecting",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopping",
+          "to": "Connected",
+          "event": "A service mode change rebinds to a service that reports Connected",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopping",
+          "to": "Stopped",
+          "event": "A service mode change rebinds to a service that reports Stopped",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopped",
+          "to": "Connecting",
+          "event": "A service mode change rebinds to a service that reports Connecting",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopped",
+          "to": "Connected",
+          "event": "A service mode change rebinds to a service that reports Connected",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopped",
+          "to": "Stopping",
+          "event": "A service mode change rebinds to a service that reports Stopping",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connecting",
+          "to": "Connecting",
+          "event": "A service mode change rebinds to a service that reports Connecting",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connected",
+          "to": "Connected",
+          "event": "A service mode change rebinds to a service that reports Connected",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopping",
+          "to": "Stopping",
+          "event": "A service mode change rebinds to a service that reports Stopping",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Stopped",
+          "to": "Stopped",
+          "event": "A service mode change rebinds to a service that reports Stopped",
+          "producer": "MainActivity.onServiceConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopping",
+          "event": "VpnService.onRevoke calls stopRunner, which reports Stopping",
+          "producer": "VpnService.onRevoke",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:124"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "VpnService.onRevoke calls stopRunner, which reports Stopping",
+          "producer": "VpnService.onRevoke",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:124"
+        },
+        {
+          "from": "Connecting",
+          "to": "Stopping",
+          "event": "The RELOAD broadcast calls forceLoad, which stops the service with restart enabled",
+          "producer": "BaseService.Data.closeReceiver",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:95"
+        },
+        {
+          "from": "Connected",
+          "to": "Stopping",
+          "event": "The RELOAD broadcast calls forceLoad, which stops the service with restart enabled",
+          "producer": "BaseService.Data.closeReceiver",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:95"
+        },
+        {
+          "from": "Stopping",
+          "to": "Stopping",
+          "event": "The RELOAD broadcast calls forceLoad while the service is Stopping. forceLoad logs Illegal state and changes nothing.",
+          "producer": "BaseService.Interface.forceLoad",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:237"
+        },
+        {
+          "from": "Stopped",
+          "to": "Connecting",
+          "event": "The RELOAD broadcast calls forceLoad, which starts the service and the start command is accepted",
+          "producer": "BaseService.Data.closeReceiver",
+          "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:95"
+        }
+      ]
+    },
+    {
+      "object": "HttpsTest.Status",
+      "states": [
+        "Idle",
+        "Testing",
+        "Success",
+        "Error"
+      ],
+      "transitions": [
+        {
+          "from": "Idle",
+          "to": "Testing",
+          "event": "The stats bar is tapped while connected or Ctrl+T is pressed",
+          "producer": "StatsBar.testConnection",
+          "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:82"
+        },
+        {
+          "from": "Testing",
+          "to": "Success",
+          "event": "The response code is 204, or 200 with a zero content length",
+          "producer": "HttpsTest.testConnection",
+          "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:94"
+        },
+        {
+          "from": "Testing",
+          "to": "Error",
+          "event": "The response code is neither 204 nor an empty 200",
+          "producer": "HttpsTest.testConnection",
+          "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:95"
+        },
+        {
+          "from": "Testing",
+          "to": "Error",
+          "event": "An IOException is thrown during the request",
+          "producer": "HttpsTest.testConnection",
+          "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:96"
+        },
+        {
+          "from": "Error",
+          "to": "Testing",
+          "event": "Another test is requested",
+          "producer": "HttpsTest.testConnection",
+          "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:82"
+        },
+        {
+          "from": "Success",
+          "to": "Testing",
+          "event": "Another test is requested",
+          "producer": "HttpsTest.testConnection",
+          "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:82"
+        },
+        {
+          "from": "Testing",
+          "to": "Idle",
+          "event": "The service enters Connecting, Stopping or Stopped, so the stats bar invalidates the tester",
+          "producer": "StatsBar.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:83"
+        },
+        {
+          "from": "Success",
+          "to": "Idle",
+          "event": "The service enters Connecting, Stopping or Stopped, so the stats bar invalidates the tester",
+          "producer": "StatsBar.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:83"
+        },
+        {
+          "from": "Error",
+          "to": "Idle",
+          "event": "The service enters Connecting, Stopping or Stopped, so the stats bar invalidates the tester",
+          "producer": "StatsBar.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:83"
+        }
+      ]
+    },
+    {
+      "object": "Navigation drawer",
+      "states": [
+        "closed",
+        "open"
+      ],
+      "transitions": [
+        {
+          "from": "closed",
+          "to": "open",
+          "event": "The toolbar navigation icon is tapped",
+          "producer": "ToolbarFragment",
+          "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:36"
+        },
+        {
+          "from": "closed",
+          "to": "open",
+          "event": "The user swipes from the start edge",
+          "producer": "DrawerLayout",
+          "source": "mobile/src/main/res/layout/layout_main.xml:2"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "A checkable drawer item is selected and its fragment replaces the content",
+          "producer": "MainActivity.displayFragment",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:193"
+        },
+        {
+          "from": "open",
+          "to": "open",
+          "event": "The FAQ item is selected: the custom tab opens and the drawer stays open",
+          "producer": "MainActivity.onNavigationItemSelected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:208"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "The already checked item is selected",
+          "producer": "MainActivity.onNavigationItemSelected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:197"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "The user presses back",
+          "producer": "OnBackPressedCallback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:145"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "The user taps the scrim beside the drawer",
+          "producer": "DrawerLayout",
+          "source": "mobile/src/main/res/layout/layout_main.xml:2"
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "event": "The user swipes the drawer shut",
+          "producer": "DrawerLayout",
+          "source": "mobile/src/main/res/layout/layout_main.xml:2"
+        }
+      ]
+    },
+    {
+      "object": "Service button progress ring",
+      "states": [
+        "hidden",
+        "indeterminate",
+        "determinate"
+      ],
+      "transitions": [
+        {
+          "from": "hidden",
+          "to": "indeterminate",
+          "event": "The state has been Connecting for the medium animation time plus 1000 ms and the activity is started",
+          "producer": "ServiceButton.iconConnecting",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:79"
+        },
+        {
+          "from": "hidden",
+          "to": "determinate",
+          "event": "The state becomes Connected before the delayed show, so progress is set to 1 while the ring was never shown",
+          "producer": "ServiceButton.iconConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:90"
+        },
+        {
+          "from": "indeterminate",
+          "to": "determinate",
+          "event": "The state becomes Connected and progress is set to 1",
+          "producer": "ServiceButton.iconConnected",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:90"
+        },
+        {
+          "from": "determinate",
+          "to": "hidden",
+          "event": "The spring animation on the progress drawable ends",
+          "producer": "ServiceButton.onAnimationEnd",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:105"
+        },
+        {
+          "from": "determinate",
+          "to": "hidden",
+          "event": "The state leaves Connected while the spring animation runs, so hideProgress hides the ring",
+          "producer": "ServiceButton.hideProgress",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:108"
+        },
+        {
+          "from": "indeterminate",
+          "to": "hidden",
+          "event": "The state leaves Connecting for Idle, Stopped or Stopping, so hideProgress hides the ring",
+          "producer": "ServiceButton.hideProgress",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:108"
+        }
+      ]
+    },
+    {
+      "object": "Stats bar visibility",
+      "states": [
+        "hidden",
+        "shown"
+      ],
+      "transitions": [
+        {
+          "from": "hidden",
+          "to": "shown",
+          "event": "The state becomes Connected",
+          "producer": "StatsBar.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:76"
+        },
+        {
+          "from": "shown",
+          "to": "hidden",
+          "event": "The state leaves Connected",
+          "producer": "StatsBar.changeState",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:79"
+        },
+        {
+          "from": "shown",
+          "to": "hidden",
+          "event": "The profile list scrolls up",
+          "producer": "BottomAppBar hideOnScroll",
+          "source": "mobile/src/main/res/layout/layout_main.xml:58"
+        },
+        {
+          "from": "hidden",
+          "to": "shown",
+          "event": "The profile list scrolls down while Connected and the bar was hidden by a scroll",
+          "producer": "HideBottomViewOnScrollBehavior.onNestedScroll",
+          "source": "mobile/src/main/res/layout/layout_main.xml:57"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U01-01",
+      "name": "Start the service from the main screen",
+      "steps": [
+        {
+          "label": "start: the user taps the service button",
+          "type": "start",
+          "next": "decision: can the current service state be stopped?",
+          "exception": false
+        },
+        {
+          "label": "decision: can the current service state be stopped?",
+          "type": "decision",
+          "next": "yes: the disconnect flow F-U01-02 runs",
+          "exception": false
+        },
+        {
+          "label": "yes: the disconnect flow F-U01-02 runs",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the service mode decides the start path",
+          "type": "step",
+          "next": "decision: is the service mode VPN and does VpnService.prepare return a consent intent?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the service mode VPN and does VpnService.prepare return a consent intent?",
+          "type": "decision",
+          "next": "yes: the system VPN consent dialog opens",
+          "exception": false
+        },
+        {
+          "label": "yes: the system VPN consent dialog opens",
+          "type": "step",
+          "next": "decision: does the user allow the VPN?",
+          "exception": false
+        },
+        {
+          "label": "no: the app starts the foreground service without a dialog, because the mode is not VPN or consent is already granted",
+          "type": "step",
+          "next": "the service reports Connecting",
+          "exception": false
+        },
+        {
+          "label": "decision: does the user allow the VPN?",
+          "type": "decision",
+          "next": "yes: the app starts the foreground service",
+          "exception": false
+        },
+        {
+          "label": "yes: the app starts the foreground service",
+          "type": "step",
+          "next": "the service reports Connecting",
+          "exception": false
+        },
+        {
+          "label": "no: the user denies the VPN",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "the service reports Connecting",
+          "type": "step",
+          "next": "decision: did the core start?",
+          "exception": false
+        },
+        {
+          "label": "decision: did the core start?",
+          "type": "decision",
+          "next": "yes: the service reports Connected",
+          "exception": false
+        },
+        {
+          "label": "yes: the service reports Connected",
+          "type": "step",
+          "next": "end: the button turns green and the stats bar shows the connection status",
+          "exception": false
+        },
+        {
+          "label": "no: the service reports Stopping and then Stopped with a message",
+          "type": "step",
+          "next": "end: a snackbar shows the failure and the button returns to stopped",
+          "exception": true
+        },
+        {
+          "label": "end: the button turns green and the stats bar shows the connection status",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: a snackbar shows the failure and the button returns to stopped",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The user denies the VPN consent: a snackbar reads Permission denied to create a VPN service and the state stays stopped.",
+        "No profile is selected: the service stops at once and reports Please select a profile.",
+        "The core cannot start: the service reports Stopping then Stopped with Failed to connect the remote server and the reason."
+      ]
+    },
+    {
+      "id": "F-U01-02",
+      "name": "Stop the service from the main screen",
+      "steps": [
+        {
+          "label": "start: the user taps the service button while state.canStop is true",
+          "type": "start",
+          "next": "the activity broadcasts the CLOSE action",
+          "exception": false
+        },
+        {
+          "label": "the activity broadcasts the CLOSE action",
+          "type": "step",
+          "next": "the service enters Stopping and the button shows the stopping icon",
+          "exception": false
+        },
+        {
+          "label": "the service enters Stopping and the button shows the stopping icon",
+          "type": "step",
+          "next": "the service tears down processes, notification and receivers",
+          "exception": false
+        },
+        {
+          "label": "the service tears down processes, notification and receivers",
+          "type": "step",
+          "next": "the service enters Stopped",
+          "exception": false
+        },
+        {
+          "label": "the service enters Stopped",
+          "type": "step",
+          "next": "end: the button is enabled and shows the stopped icon; the stats bar hides",
+          "exception": false
+        },
+        {
+          "label": "end: the button is enabled and shows the stopped icon; the stats bar hides",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "A stop request while already Stopping is ignored by stopRunner.",
+        "A guarded process that exits within one second of starting stops the service without a user tap. A later exit is logged and the process restarts."
+      ]
+    },
+    {
+      "id": "F-U01-03",
+      "name": "Open the drawer and switch content",
+      "steps": [
+        {
+          "label": "start: the user taps the toolbar navigation icon",
+          "type": "start",
+          "next": "the drawer opens from the start edge",
+          "exception": false
+        },
+        {
+          "label": "the drawer opens from the start edge",
+          "type": "step",
+          "next": "the user selects a drawer item",
+          "exception": false
+        },
+        {
+          "label": "the user selects a drawer item",
+          "type": "step",
+          "next": "decision: is the selected item already checked?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the selected item already checked?",
+          "type": "decision",
+          "next": "yes: the drawer closes and the content stays",
+          "exception": false
+        },
+        {
+          "label": "yes: the drawer closes and the content stays",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the activity reads the selected item id",
+          "type": "step",
+          "next": "decision: is the selected item the FAQ?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the selected item the FAQ?",
+          "type": "decision",
+          "next": "yes: the FAQ URL opens in a custom tab",
+          "exception": false
+        },
+        {
+          "label": "yes: the FAQ URL opens in a custom tab",
+          "type": "step",
+          "next": "end: the drawer stays open behind the custom tab and no item becomes checked",
+          "exception": false
+        },
+        {
+          "label": "end: the drawer stays open behind the custom tab and no item becomes checked",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the matching fragment replaces the content and the item is checked",
+          "type": "step",
+          "next": "end: the drawer closes",
+          "exception": false
+        },
+        {
+          "label": "end: the drawer closes",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "No activity can open the FAQ URL: a snackbar shows the URL instead and the drawer stays open.",
+        "Selecting an unknown menu id returns false and leaves the drawer as it is."
+      ]
+    },
+    {
+      "id": "F-U01-04",
+      "name": "Test the connection from the stats bar",
+      "steps": [
+        {
+          "label": "start: the user taps the stats bar",
+          "type": "start",
+          "next": "decision: is the state Connected?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the state Connected?",
+          "type": "decision",
+          "next": "yes: the status becomes Testing",
+          "exception": false
+        },
+        {
+          "label": "no: no test starts",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "yes: the status becomes Testing",
+          "type": "step",
+          "next": "the app requests https://cp.cloudflare.com through the SOCKS proxy",
+          "exception": false
+        },
+        {
+          "label": "the app requests https://cp.cloudflare.com through the SOCKS proxy",
+          "type": "step",
+          "next": "decision: is the response 204 or 200 with no body?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the response 204 or 200 with no body?",
+          "type": "decision",
+          "next": "yes: the status shows Success with the elapsed time",
+          "exception": false
+        },
+        {
+          "label": "yes: the status shows Success with the elapsed time",
+          "type": "step",
+          "next": "end: the status reads Success: HTTPS handshake took <ms>ms",
+          "exception": false
+        },
+        {
+          "label": "end: the status reads Success: HTTPS handshake took <ms>ms",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the status shows Internet Unavailable",
+          "type": "step",
+          "next": "end: a snackbar shows the error code or the network message",
+          "exception": true
+        },
+        {
+          "label": "end: a snackbar shows the error code or the network message",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The request throws IOException: the status reads Internet Unavailable and the snackbar reads Fail to detect internet connection: <message>.",
+        "Another test is requested while one runs: the running job is cancelled first."
+      ]
+    },
+    {
+      "id": "F-U01-05",
+      "name": "Synchronize the UI with the bound service",
+      "steps": [
+        {
+          "label": "start: the activity starts or the service mode changes",
+          "type": "start",
+          "next": "the activity binds to the service class of the current mode",
+          "exception": false
+        },
+        {
+          "label": "the activity binds to the service class of the current mode",
+          "type": "step",
+          "next": "decision: does the binder connect?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the binder connect?",
+          "type": "decision",
+          "next": "yes: the reported state is rendered on the button and the stats bar",
+          "exception": false
+        },
+        {
+          "label": "yes: the reported state is rendered on the button and the stats bar",
+          "type": "step",
+          "next": "end: the UI asks the service every 500 ms for a sample. The service broadcasts only a sample that changed or a rate that fell to zero, and that sample updates the bar",
+          "exception": false
+        },
+        {
+          "label": "end: the UI asks the service every 500 ms for a sample. The service broadcasts only a sample that changed or a rate that fell to zero, and that sample updates the bar",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the binder dies, so the activity disconnects and binds again; the framework's onServiceDisconnected may reset the UI to Idle",
+          "type": "step",
+          "next": "the activity binds to the service class of the current mode",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "A RemoteException while reading the state is treated as Idle.",
+        "The unbind call throws IllegalArgumentException and is ignored.",
+        "onServiceDisconnected renders Idle from any state. A binder death only disconnects and rebinds, so the Idle render depends on that separate callback.",
+        "A service mode change drops the old binding and binds the new class. The new service reports its own state, so no Idle render is guaranteed."
+      ]
+    },
+    {
+      "id": "F-U01-06",
+      "name": "Toggle the service from the keyboard",
+      "steps": [
+        {
+          "label": "start: the user presses Ctrl+G with the main screen focused",
+          "type": "start",
+          "next": "decision: can the current state stop the service?",
+          "exception": false
+        },
+        {
+          "label": "decision: can the current state stop the service?",
+          "type": "decision",
+          "next": "yes: the service stops through the CLOSE broadcast | no: the StartService contract runs because state.canStop is false",
+          "exception": false
+        },
+        {
+          "label": "yes: the service stops through the CLOSE broadcast",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the StartService contract runs because state.canStop is false",
+          "type": "step",
+          "next": "decision: does the VPN consent dialog open?",
+          "exception": false
+        },
+        {
+          "label": "decision: does the VPN consent dialog open?",
+          "type": "decision",
+          "next": "yes: the system VPN consent dialog opens | no: the service receives the start command",
+          "exception": false
+        },
+        {
+          "label": "yes: the system VPN consent dialog opens",
+          "type": "step",
+          "next": "the service receives the start command",
+          "exception": false
+        },
+        {
+          "label": "the service receives the start command",
+          "type": "step",
+          "next": "decision: is the service state Stopped?",
+          "exception": false
+        },
+        {
+          "label": "decision: is the service state Stopped?",
+          "type": "decision",
+          "next": "yes: the start flow F-U01-01 runs | no: the service ignores the command because its state is not Stopped",
+          "exception": false
+        },
+        {
+          "label": "yes: the start flow F-U01-01 runs",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "no: the service ignores the command because its state is not Stopped",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "Ctrl+T runs the connection test even when the state is not Connected. No observer shows the result.",
+        "Ctrl+G while the UI shows Idle launches the start contract. The service starts if its Data.state is Stopped, because Idle is a UI-only state.",
+        "Ctrl+G while Connecting or Connected sends CLOSE and stops the service, because state.canStop is true. Ctrl+G while Stopping launches a start the service ignores, because its state is not Stopped.",
+        "The user denies the VPN consent. No start command reaches the service."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U01-01",
+      "title": "Connect with the VPN consent granted",
+      "preconditions": [
+        "At least one profile is stored and selected",
+        "The service is stopped",
+        "The service mode is VPN",
+        "VpnService.prepare returns a consent intent, because the VPN permission has not been granted"
+      ],
+      "steps": [
+        "Tap the service button",
+        "Allow the VPN consent dialog"
+      ],
+      "expected": [
+        "The button shows the connecting icon and is enabled",
+        "The service reports Connecting",
+        "The service reports Connected after the core starts",
+        "The button becomes checked and green with the tooltip Stop",
+        "The stats bar shows and reads Connected, tap to check connection"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:117"
+    },
+    {
+      "id": "TC-U01-02",
+      "title": "Deny the VPN consent",
+      "preconditions": [
+        "The service mode is VPN",
+        "The VPN permission has not been granted"
+      ],
+      "steps": [
+        "Tap the service button",
+        "Deny the VPN consent dialog"
+      ],
+      "expected": [
+        "A snackbar reads Permission denied to create a VPN service",
+        "The state stays Stopped and the button stays enabled",
+        "No notification and no tunnel appear"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-024",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt:59"
+    },
+    {
+      "id": "TC-U01-03",
+      "title": "Start with no selected profile",
+      "preconditions": [
+        "The profile list is empty or no profile is selected",
+        "The service is stopped"
+      ],
+      "steps": [
+        "Tap the service button",
+        "Allow the VPN consent if it appears"
+      ],
+      "expected": [
+        "The service reports Stopping first",
+        "The service stops itself before connecting",
+        "A snackbar reads Please select a profile",
+        "The state returns to Stopped and the button shows the stopped icon"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:329"
+    },
+    {
+      "id": "TC-U01-04",
+      "title": "The service button is disabled until a stopped service is bound",
+      "preconditions": [
+        "The app has just launched"
+      ],
+      "steps": [
+        "Observe the service button before the service connection returns",
+        "Wait for the binding to report Stopped"
+      ],
+      "expected": [
+        "The button is disabled while the state is Idle",
+        "The button becomes enabled once the state is Stopped",
+        "A tap while disabled produces no state change"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:133"
+    },
+    {
+      "id": "TC-U01-05",
+      "title": "Disconnect from Connected",
+      "preconditions": [
+        "The service state is Connected"
+      ],
+      "steps": [
+        "Tap the service button",
+        "Tap the service button again while it shows the stopping icon",
+        "Wait for the stop to finish"
+      ],
+      "expected": [
+        "The button shows the stopping icon and is disabled",
+        "The second tap does nothing because the button is disabled",
+        "The stats bar hides and its counters reset to zero",
+        "The state becomes Stopped and the tooltip reads Connect",
+        "The button is enabled again"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:117"
+    },
+    {
+      "id": "TC-U01-06",
+      "title": "The progress ring appears during a slow connect",
+      "preconditions": [
+        "The service is stopped",
+        "The activity is in the started state"
+      ],
+      "steps": [
+        "Tap the service button",
+        "Observe the button for one second plus the medium animation time",
+        "Let the state become Connected"
+      ],
+      "expected": [
+        "The ring stays hidden for the first second plus the medium animation time of Connecting",
+        "The ring becomes indeterminate and visible after that delay",
+        "On Connected the ring fills to full and hides when the animation ends"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-007",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:75"
+    },
+    {
+      "id": "TC-U01-07",
+      "title": "A failed start reports the service message",
+      "preconditions": [
+        "A profile is selected and its start throws inside the connecting job. For example, the route is Custom rules and the ACL download throws IOException, or the ss-local process cannot be spawned.",
+        "An unreachable server is not a start failure. The core reports Connected because ss-local does not contact the server at start."
+      ],
+      "steps": [
+        "Select a profile whose route is Custom rules and whose ACL download throws, or whose ss-local process cannot start",
+        "Tap the service button",
+        "Allow the VPN consent if it appears",
+        "Wait for the connecting job to fail"
+      ],
+      "expected": [
+        "The state goes Connecting to Stopping to Stopped",
+        "A snackbar reads Failed to connect the remote server: followed by the readable reason",
+        "The button returns to the stopped icon and stays enabled"
+      ],
+      "control_path": "C-U01-001 > C-U01-014",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:386"
+    },
+    {
+      "id": "TC-U01-08",
+      "title": "The stats bar is hidden while not connected",
+      "preconditions": [
+        "The service state is Stopped"
+      ],
+      "steps": [
+        "Open the app",
+        "Observe the bottom of the screen"
+      ],
+      "expected": [
+        "The stats bar is hidden",
+        "The status text it holds is Not connected but is not visible",
+        "The service button is shown alone above the navigation bar"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008 > C-U01-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:79"
+    },
+    {
+      "id": "TC-U01-09",
+      "title": "Tap the stats bar to test the connection",
+      "preconditions": [
+        "The service state is Connected",
+        "The network path through the tunnel works"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "Observe the status text during the request",
+        "Wait for the request to finish"
+      ],
+      "expected": [
+        "The status reads Testing…",
+        "The status then reads Success: HTTPS handshake took <ms>ms",
+        "No snackbar appears"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008 > C-U01-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:142"
+    },
+    {
+      "id": "TC-U01-10",
+      "title": "The connection test fails with an HTTP error code",
+      "preconditions": [
+        "The service state is Connected",
+        "The test URL answers with a code other than 204 or an empty 200"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "Wait for the response",
+        "Tap the stats bar again"
+      ],
+      "expected": [
+        "The status reads Internet Unavailable",
+        "A snackbar reads Error code: #<code>",
+        "The snackbar is shown once for this error",
+        "The second tap starts a new test and the status reads Testing… again"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:68"
+    },
+    {
+      "id": "TC-U01-11",
+      "title": "Traffic counters update and reset",
+      "preconditions": [
+        "The service state is Connected"
+      ],
+      "steps": [
+        "Let traffic pass for two sample periods",
+        "Read the four traffic texts",
+        "Disconnect the service"
+      ],
+      "expected": [
+        "The totals read ▲ and ▼ with formatted sizes",
+        "The rates read formatted sizes with a /s suffix",
+        "After the disconnect all four values read zero"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008 > C-U01-010",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:92"
+    },
+    {
+      "id": "TC-U01-12",
+      "title": "Open the drawer and see the six entries",
+      "preconditions": [
+        "The main screen is shown",
+        "The drawer is closed"
+      ],
+      "steps": [
+        "Tap the toolbar navigation icon",
+        "Inspect the drawer"
+      ],
+      "expected": [
+        "The drawer opens from the start edge",
+        "The header shows the background image and the title shadowsocks",
+        "The entries read Profiles, Subscriptions, Custom rules, Settings, FAQ and About",
+        "Profiles is checked"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-002 > C-U01-003 > C-U01-004 > C-U01-015",
+      "parity": "partial",
+      "source": "mobile/src/main/res/menu/navigation_main.xml:5",
+      "rules": [
+        "R-UA-14"
+      ]
+    },
+    {
+      "id": "TC-U01-13",
+      "title": "Select Settings from the drawer",
+      "preconditions": [
+        "The drawer is open",
+        "Profiles is checked"
+      ],
+      "steps": [
+        "Select Settings",
+        "Reopen the drawer and select Settings again"
+      ],
+      "expected": [
+        "GlobalSettingsFragment replaces the profile list",
+        "Settings is checked, Profiles is no longer checked and the drawer closes",
+        "The second selection only closes the drawer and does not recreate the fragment"
+      ],
+      "control_path": "C-U01-001 > C-U01-015 > C-U01-021",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:203"
+    },
+    {
+      "id": "TC-U01-14",
+      "title": "Back press closes the drawer first",
+      "preconditions": [
+        "The drawer is open"
+      ],
+      "steps": [
+        "Press back",
+        "Press back again with the drawer closed"
+      ],
+      "expected": [
+        "The first press closes the drawer and the main screen stays",
+        "The second press leaves the activity"
+      ],
+      "control_path": "C-U01-001 > C-U01-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:144"
+    },
+    {
+      "id": "TC-U01-15",
+      "title": "FAQ opens the FAQ page in a custom tab",
+      "preconditions": [
+        "The drawer is open",
+        "A browser supports custom tabs"
+      ],
+      "steps": [
+        "Select FAQ",
+        "Return to the app from the custom tab"
+      ],
+      "expected": [
+        "A custom tab opens the FAQ URL",
+        "The drawer stays open behind the custom tab",
+        "FAQ is not checked"
+      ],
+      "control_path": "C-U01-001 > C-U01-015 > C-U01-022",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:208"
+    },
+    {
+      "id": "TC-U01-16",
+      "title": "A service mode change rebinds the connection",
+      "preconditions": [
+        "The main screen is bound to the VPN service and the service is Connected"
+      ],
+      "steps": [
+        "Set the serviceMode key to proxy in the public preference store, because the settings control is disabled while the service runs",
+        "Observe the service button and the stats bar while the new binding reports its state"
+      ],
+      "expected": [
+        "The activity drops the VPN binding and binds to ProxyService",
+        "No Idle render happens",
+        "The new service reports its own state, which can be Stopped, Connecting, Connected or Stopping, and the button and stats bar render that state",
+        "Traffic samples come from the new service class"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:182"
+    },
+    {
+      "id": "TC-U01-17",
+      "title": "The service process dies and the UI recovers",
+      "preconditions": [
+        "The main screen is bound and Connected"
+      ],
+      "steps": [
+        "Kill the service process",
+        "Wait for the death notification"
+      ],
+      "expected": [
+        "If the framework reports the disconnect first, the state resets to Idle and the button becomes disabled. If the binder death callback runs first, no Idle render happens.",
+        "The connection is dropped and established again",
+        "The new binding reports the actual service state"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:126"
+    },
+    {
+      "id": "TC-U01-18",
+      "title": "Ctrl+G toggles the service",
+      "preconditions": [
+        "The main screen has focus and a hardware keyboard is attached",
+        "At least one profile is selected",
+        "The service is Stopped",
+        "The VPN consent is already granted, so the start contract opens no dialog"
+      ],
+      "steps": [
+        "Press Ctrl+G while the state is Stopped",
+        "Press Ctrl+G again while the state is Connecting. Wait for Stopped, start the service again, wait for Connected, then press Ctrl+G.",
+        "While the state is Stopping, press Ctrl+G again",
+        "Wait for Stopped, force-stop the app process, launch the app and press Ctrl+G before the binding reports the service state, so the UI shows Idle"
+      ],
+      "expected": [
+        "The first press launches the start contract and the service reports Connecting",
+        "Each of those presses broadcasts CLOSE and the service reports Stopping, because state.canStop is true for Connecting and Connected",
+        "The press while Stopping launches a start that the service ignores because its Data.state is Stopping. The teardown still reaches Stopped.",
+        "The press while the UI shows Idle starts the service although the button is disabled, because Data.state is Stopped. Idle is a UI-only state.",
+        "The button and stats bar follow the states that the service reports, as in F-U01-01 and F-U01-02"
+      ],
+      "control_path": "C-U01-001 > C-U01-025",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:227"
+    },
+    {
+      "id": "TC-U01-19",
+      "title": "Service errors appear as a snackbar above the service button",
+      "preconditions": [
+        "The service reports a state change with a message"
+      ],
+      "steps": [
+        "Cause a start failure",
+        "Observe the bottom of the screen"
+      ],
+      "expected": [
+        "A long snackbar appears above the service button",
+        "The text is the service message",
+        "The snackbar disappears on its own"
+      ],
+      "control_path": "C-U01-001 > C-U01-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:108"
+    },
+    {
+      "id": "TC-U01-20",
+      "title": "The stats bar hides when the list scrolls up",
+      "preconditions": [
+        "The service state is Connected",
+        "The profile list is long enough to scroll"
+      ],
+      "steps": [
+        "Scroll the profile list upward",
+        "Scroll back down"
+      ],
+      "expected": [
+        "The stats bar slides out while the list scrolls up",
+        "The stats bar returns when the list scrolls down",
+        "The connection stays Connected throughout"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008",
+      "parity": "implemented",
+      "source": "mobile/src/main/res/layout/layout_main.xml:58"
+    },
+    {
+      "id": "TC-U01-21",
+      "title": "Open the app while the service is already running",
+      "preconditions": [
+        "A shadowsocks service is already Connected",
+        "The main screen process has not started yet"
+      ],
+      "steps": [
+        "Launch the app",
+        "Wait for the main screen to bind to the service"
+      ],
+      "expected": [
+        "The activity first resets the UI to Idle without animation",
+        "The binding then renders the state the service reports: Connecting, Connected or Stopping, never Stopped",
+        "A Connected service turns the button green and shows the stats bar"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:120"
+    },
+    {
+      "id": "TC-U01-22",
+      "title": "Ctrl+T runs the connection test and replaces a running one",
+      "preconditions": [
+        "The main screen has focus",
+        "A hardware keyboard is attached"
+      ],
+      "steps": [
+        "Press Ctrl+T while the service is Stopped",
+        "Connect the service and press Ctrl+T again",
+        "Press Ctrl+T once more while the test is still running"
+      ],
+      "expected": [
+        "The first press starts a test whose result no observer shows, because the stats bar does not observe while not Connected",
+        "The second press shows Testing… and then the result in the stats bar",
+        "The third press cancels the running job first and only the new result is shown",
+        "A failure from the cancelled job produces no snackbar"
+      ],
+      "control_path": "C-U01-001 > C-U01-026",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:231"
+    },
+    {
+      "id": "TC-U01-23",
+      "title": "The connection test fails with a network error",
+      "preconditions": [
+        "The service state is Connected",
+        "The request to https://cp.cloudflare.com throws an IOException"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "Wait for the request to fail"
+      ],
+      "expected": [
+        "The status reads Internet Unavailable",
+        "A snackbar reads Fail to detect internet connection: followed by the message",
+        "The snackbar appears once for this error"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:96"
+    },
+    {
+      "id": "TC-U01-24",
+      "title": "Stop the service while it is connecting",
+      "preconditions": [
+        "The service state is Connecting",
+        "The service button shows the connecting icon and reads Stop"
+      ],
+      "steps": [
+        "Tap the service button while the state is Connecting",
+        "Wait for the stop to finish"
+      ],
+      "expected": [
+        "The state goes Connecting to Stopping to Stopped",
+        "The button shows the stopping icon and is disabled",
+        "The delayed indeterminate ring is cancelled and never shows, or hides if it was already visible",
+        "No failure snackbar appears"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:117"
+    },
+    {
+      "id": "TC-U01-25",
+      "title": "The drawer opens by an edge swipe and closes by the scrim",
+      "preconditions": [
+        "The main screen is shown",
+        "The drawer is closed"
+      ],
+      "steps": [
+        "Swipe from the start edge",
+        "Tap the scrim outside the drawer"
+      ],
+      "expected": [
+        "The drawer opens from the start edge on the swipe",
+        "The drawer closes on the scrim tap and the content stays"
+      ],
+      "control_path": "C-U01-001 > C-U01-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/res/layout/layout_main.xml:2"
+    },
+    {
+      "id": "TC-U01-26",
+      "title": "FAQ with no handler shows the URL",
+      "preconditions": [
+        "The drawer is open",
+        "No activity can open the FAQ URL"
+      ],
+      "steps": [
+        "Select FAQ"
+      ],
+      "expected": [
+        "A snackbar shows the FAQ URL",
+        "No custom tab opens",
+        "The drawer stays open and no item becomes checked"
+      ],
+      "control_path": "C-U01-001 > C-U01-015 > C-U01-022",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:86"
+    },
+    {
+      "id": "TC-U01-27",
+      "title": "A guarded process exits and stops the service without a tap",
+      "preconditions": [
+        "The service state is Connected",
+        "The ss-local guarded process exits with an error within one second of starting"
+      ],
+      "steps": [
+        "Restart the service so ss-local starts",
+        "Make ss-local exit with an error within one second"
+      ],
+      "expected": [
+        "The pool reports libsslocal exits too fast (exit code: <N>) and calls stopRunner",
+        "The service enters Stopping without a user tap",
+        "The service enters Stopped with the process message",
+        "A snackbar shows the process message alone, without the Failed to connect the remote server prefix",
+        "The button returns to the stopped icon and the stats bar hides",
+        "An exit later than one second does not stop the service. The process restarts and the state stays Connected."
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:374"
+    },
+    {
+      "id": "TC-U01-28",
+      "title": "Stopping during a test clears the test status",
+      "preconditions": [
+        "The service state is Connected",
+        "The connection test takes long enough that the user can stop the service while it runs"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "While the status reads Testing…, tap the service button"
+      ],
+      "expected": [
+        "The status reads Testing… before the stop",
+        "The service enters Stopping and the stats bar hides",
+        "The tester is invalidated, so its status becomes Idle and no late result replaces it",
+        "After the next connect the status reads Connected, tap to check connection"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-008 > C-U01-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:83",
+      "rules": [
+        "R-UA-09",
+        "R-UA-11"
+      ]
+    },
+    {
+      "id": "TC-U01-29",
+      "title": "Stopping after a successful test clears the result",
+      "preconditions": [
+        "The service state is Connected",
+        "The test returns 204 or 200 with no body"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "Wait for the status to read Success: HTTPS handshake took <ms>ms",
+        "Tap the service button to stop the service",
+        "Connect the service again"
+      ],
+      "expected": [
+        "The status reads Success with the elapsed time",
+        "The stop invalidates the tester and the status becomes Idle",
+        "The stats bar hides and its counters reset",
+        "After the next connect the status reads Connected, tap to check connection, not the old Success text"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-008 > C-U01-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:83",
+      "rules": [
+        "R-UA-09",
+        "R-UA-11"
+      ]
+    },
+    {
+      "id": "TC-U01-30",
+      "title": "Stopping after a failed test clears the error",
+      "preconditions": [
+        "The service state is Connected",
+        "The test returns a code other than 204 or an empty 200, or throws IOException"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "Wait for the status to read Internet Unavailable and for the error snackbar",
+        "Tap the service button to stop the service",
+        "Connect the service again"
+      ],
+      "expected": [
+        "The status reads Internet Unavailable",
+        "The stop invalidates the tester and the status becomes Idle",
+        "The error snackbar is not shown again for the cleared error",
+        "After the next connect the status reads Connected, tap to check connection"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-008 > C-U01-009",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/StatsBar.kt:83",
+      "rules": [
+        "R-UA-09",
+        "R-UA-11"
+      ]
+    },
+    {
+      "id": "TC-U01-31",
+      "title": "Select About and replace the fragment in the shared holder",
+      "preconditions": [
+        "The main screen is shown and the drawer is open",
+        "Profiles is checked"
+      ],
+      "steps": [
+        "Select About",
+        "Inspect the content and the drawer"
+      ],
+      "expected": [
+        "AboutFragment replaces the current fragment inside the same fragment holder",
+        "About becomes checked and Profiles becomes unchecked",
+        "The drawer closes"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-002 > C-U01-003 > C-U01-015 > C-U01-023",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:204",
+      "rules": [
+        "R-UA-16",
+        "R-UA-19"
+      ]
+    },
+    {
+      "id": "TC-U01-32",
+      "title": "An invalid profile stops the start with the exception message",
+      "preconditions": [
+        "The service is Stopped",
+        "A profile is selected and ProxyInstance throws IllegalArgumentException. For example, the server address or the password is empty, the method is deprecated, or a 2022 key is not valid Base64."
+      ],
+      "steps": [
+        "Tap the service button",
+        "Allow the VPN consent if it appears"
+      ],
+      "expected": [
+        "The state goes Stopped to Stopping to Stopped",
+        "A snackbar reads the exception message. For example, Proxy/Password should not be empty",
+        "The snackbar has no Failed to connect the remote server prefix",
+        "The button returns to the stopped icon and stays enabled"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:337",
+      "rules": [
+        "R-UA-27",
+        "R-UA-28"
+      ]
+    },
+    {
+      "id": "TC-U01-33",
+      "title": "A second stop request while the service is Stopping is ignored",
+      "preconditions": [
+        "The service state is Connected",
+        "The teardown takes long enough to send another stop request while the state is Stopping"
+      ],
+      "steps": [
+        "Request a stop, for example with a tap on the service button",
+        "While the state is Stopping, send the CLOSE action again from inside the app process",
+        "Wait for the teardown to finish"
+      ],
+      "expected": [
+        "The first request makes the service report Stopping",
+        "The second request returns at the Stopping guard. It causes no state change and no second teardown",
+        "The service reports Stopped once",
+        "The stats bar hides and the button returns to the stopped icon"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:276",
+      "rules": [
+        "R-UA-26"
+      ]
+    },
+    {
+      "id": "TC-U01-34",
+      "title": "The drawer closes by a swipe",
+      "preconditions": [
+        "The main screen is shown",
+        "The drawer is open"
+      ],
+      "steps": [
+        "Swipe the drawer toward the start edge"
+      ],
+      "expected": [
+        "The drawer follows the finger and closes",
+        "The content does not change and no item becomes checked or unchecked"
+      ],
+      "control_path": "C-U01-001 > C-U01-015",
+      "parity": "android-only",
+      "source": "mobile/src/main/res/layout/layout_main.xml:2"
+    },
+    {
+      "id": "TC-U01-35",
+      "title": "Connected before the delayed show sets the ring to full",
+      "preconditions": [
+        "The service is Stopped",
+        "The activity is in the started state",
+        "The core starts faster than config_mediumAnimTime plus 1000 ms"
+      ],
+      "steps": [
+        "Tap the service button",
+        "Let the service report Connected before the delayed show fires",
+        "Wait for the fill animation to end"
+      ],
+      "expected": [
+        "The ring never shows as indeterminate",
+        "On Connected the progress is set to 1 and the ring enters the determinate state. The ring was not shown before",
+        "The ring hides when the spring animation ends"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-007",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:90",
+      "rules": [
+        "R-UA-06",
+        "R-UA-07"
+      ]
+    },
+    {
+      "id": "TC-U01-36",
+      "title": "Stopping during the fill hides the determinate ring",
+      "preconditions": [
+        "The service is Connected",
+        "The connect was slow enough that the ring shows as indeterminate"
+      ],
+      "steps": [
+        "Connect the service and wait for the indeterminate ring",
+        "Let the service report Connected, so the ring starts the fill",
+        "Before the fill ends, tap the service button to stop the service"
+      ],
+      "expected": [
+        "The ring shows as indeterminate before Connected",
+        "On Connected the ring becomes determinate and fills to full",
+        "The stop calls hideProgress and the ring hides before the fill ends",
+        "The service reports Stopping and then Stopped"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006 > C-U01-007",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/ServiceButton.kt:108",
+      "rules": [
+        "R-UA-07"
+      ]
+    },
+    {
+      "id": "TC-U01-37",
+      "title": "Start another test after a successful test",
+      "preconditions": [
+        "The service state is Connected",
+        "The test returns 204 or 200 with no body"
+      ],
+      "steps": [
+        "Tap the stats bar",
+        "Wait for the status to read Success: HTTPS handshake took <ms>ms",
+        "Tap the stats bar again"
+      ],
+      "expected": [
+        "The first test reads Testing… and then Success with the elapsed time",
+        "The second tap sets the status to Testing… and starts a new request",
+        "The old Success text is replaced",
+        "The successful test shows no snackbar"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-008 > C-U01-009",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/net/HttpsTest.kt:82",
+      "rules": [
+        "R-UA-11"
+      ]
+    },
+    {
+      "id": "TC-U01-38",
+      "title": "Recreate the activity and restore the drawer item and open state",
+      "preconditions": [
+        "The main screen is shown",
+        "The drawer is open",
+        "Settings is selected"
+      ],
+      "steps": [
+        "Select Settings from the drawer",
+        "Open the drawer again",
+        "Recreate the activity, for example rotate the device"
+      ],
+      "expected": [
+        "The recreated activity shows the Settings fragment",
+        "Settings stays checked and Profiles is not forced",
+        "The drawer is open after the recreation"
+      ],
+      "control_path": "C-U01-001 > C-U01-015 > C-U01-021",
+      "parity": "partial",
+      "source": "mobile/src/main/res/layout/layout_main.xml:139",
+      "rules": [
+        "R-UA-30"
+      ]
+    },
+    {
+      "id": "TC-U01-39",
+      "title": "Start the service without a consent dialog when consent is granted",
+      "preconditions": [
+        "The service mode is VPN",
+        "VpnService.prepare returns null, because the VPN permission is already granted",
+        "The service is Stopped",
+        "A profile is selected"
+      ],
+      "steps": [
+        "Tap the service button"
+      ],
+      "expected": [
+        "No consent dialog opens",
+        "Core.startService runs at once and the service reports Connecting",
+        "No permission denied snackbar appears",
+        "The service reports Connected after the core starts, as in F-U01-01"
+      ],
+      "control_path": "C-U01-001 > C-U01-014 > C-U01-006",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/ActivityResultContracts.kt:49",
+      "rules": [
+        "R-UA-08"
+      ]
+    }
+  ],
+  "parity_summary": {
+    "implemented": 29,
+    "partial": 6,
+    "missing": 0,
+    "android_only": 4
+  },
+  "notes": "All listed files exist. U01 owns layout_main.xml, navigation_header.xml, navigation_main.xml, ToolbarFragment.kt, ServiceButton.kt, StatsBar.kt, FabProgressBehavior.kt, WindowInsetsListeners.kt, Core.kt and BaseService.kt. The toolbar's own menu (profile_manager_menu.xml) and the search field belong to U02, so only the toolbar's navigation icon and title are listed here. The menu XML declares checkableBehavior=single for the main and misc groups. Material 1.13.0's NavigationMenuPresenter calls setExclusiveCheckable(false) on every checkable item, so the groups are not exclusive. The presenter still tracks one checked item for the whole drawer. Selecting About unchecks Profiles, and the reverse also holds. The FAQ item is declared not checkable. NavigationView saves the checked item through NavigationMenuPresenter, and DrawerLayout saves the open state, so a recreated activity restores both. MainActivity forces Profiles only when savedInstanceState is null. Selecting FAQ opens a custom tab and leaves the drawer open. BaseService.onStartCommand returns unless Data.state is Stopped. A Ctrl+G start while the UI shows Idle can start a Stopped service. Ctrl+G while Connecting or Connected sends CLOSE and stops the service. Ctrl+G while Stopping launches a start that the service ignores because Data.state is not Stopped. VpnService.onRevoke calls stopRunner. The RELOAD broadcast calls forceLoad, which stops and restarts a running service and starts a stopped one. Only a guarded process that exits within one second of starting stops the service. A later exit is logged and the process restarts. A service mode change disconnects and rebinds. The new service reports its own state, which can be Connecting, Connected, Stopping or Stopped. The activity does not set Idle. StatsBar.changeState sets the status text before the hide animation starts. Shutting down… and Not connected are visible while the bar slides out. Connecting… is set while the bar is already hidden, so it is not visible. Core.updateNotificationChannels creates VPN Service, Proxy Service, Transproxy Service and Subscription Service channels and deletes service-nat. Those channels are system surfaces covered by U11, not here. The HarmonyOS port has no drawer: the main page shows the app name, a gear that opens Settings (custom rules and About live there) and a plus menu that offers Subscriptions. FAQ has no counterpart. Parity was checked against entry/src/main/ets/pages/Index.ets and Settings.ets: the HarmonyOS connect control is a full-width button whose text switches between Connect and Disconnect, the traffic area is two text lines, the connection test and speed test are separate buttons, and there is no progress ring and no hide-on-scroll."
+}

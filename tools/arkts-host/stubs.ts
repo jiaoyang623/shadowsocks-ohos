@@ -23,7 +23,8 @@ export namespace common {
  * notification API takes as plain text, and no spec goes near that.
  */
 declare global {
-  function $r(key: string, ...args: (string | number)[]): { id: number };
+  function $r(key: string, ...args: (string | number)[]): { id: number; params?: Array<string | number> };
+  type ResourceStr = string | { id: number; params?: Array<string | number> };
 }
 
 const unavailable = new Proxy({}, {
@@ -38,6 +39,40 @@ const unavailable = new Proxy({}, {
 });
 
 export const fileIo: any = unavailable;
-export const http: any = unavailable;
+export namespace http {
+  export interface HttpRequest {
+    request(url: string, options: Object): Promise<{ responseCode: number; result: Object }>;
+    destroy(): void;
+  }
+  export const createHttp: any = unavailable;
+  export const RequestMethod: any = { GET: 'GET', POST: 'POST' };
+}
 export const socket: any = unavailable;
+export interface BusinessError {
+  code: number;
+  message: string;
+}
 export const BusinessError: any = unavailable;
+export namespace notificationManager {
+  export interface NotificationRequest {
+    [key: string]: any;
+  }
+  export interface NotificationActionButton {
+    [key: string]: any;
+  }
+  export const ContentType: any = { NOTIFICATION_CONTENT_BASIC_TEXT: 0 };
+  export const SlotType: any = { CONTENT_INFORMATION: 0, OTHER_TYPES: 1 };
+  export const publish: any = unavailable;
+  export const cancel: any = unavailable;
+  export const isNotificationEnabled: any = unavailable;
+  export const requestEnableNotification: any = unavailable;
+}
+export namespace commonEventManager {
+  export type CommonEventSubscriber = any;
+  export const createSubscriber: any = unavailable;
+  export const subscribe: any = unavailable;
+  export const unsubscribe: any = unavailable;
+}
+export const hilog: any = unavailable;
+export const wantAgent: any = unavailable;
+export type WantAgent = any;

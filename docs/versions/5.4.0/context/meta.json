@@ -1,0 +1,51 @@
+{
+  "version": "5.4.0",
+  "android_baseline": {
+    "repo": "/opt/git/github/shadowsocks-android",
+    "tag": "v5.3.5-nightly",
+    "commit": "ae28fd91931fe4d2d5aab044de9ceaf9ed07ad56",
+    "version_name": "5.3.5-nightly"
+  },
+  "ohos_baseline": {
+    "repo": "/opt/git/github/shadowsocks-ohos",
+    "version_name": "5.3.5",
+    "commit": "e123804"
+  },
+  "users": [
+    {
+      "id": "U-USER",
+      "name": "Phone user",
+      "description": "A person who runs Shadowsocks on a HarmonyOS NEXT phone. This person adds a server, picks a route, connects, checks traffic, and manages subscriptions."
+    },
+    {
+      "id": "U-DEV",
+      "name": "HarmonyOS developer",
+      "description": "A developer who ports the Android behavior to the HarmonyOS app. This person reads the control tree, the requirements, and the E2E cases."
+    }
+  ],
+  "problem": "The HarmonyOS app is a separate implementation. Android behavior changes do not reach it automatically. No verified list maps each Android screen and control to a HarmonyOS behavior.",
+  "outcome": "A verified control tree, a requirement set, and an E2E case set. The sets describe the Android mobile app as it behaves at the pinned baseline. Each item states its current HarmonyOS parity.",
+  "scope": {
+    "do": [
+      "Every page, dialog, menu, and preference screen in the Android mobile module.",
+      "Every control that a user can see or operate.",
+      "Behavior that the UI exposes, including state changes and validation.",
+      "A parity tag for each requirement and each E2E case."
+    ],
+    "not": [
+      "Android TV module behavior.",
+      "Plugin APK internals beyond the UI contract.",
+      "Network protocol internals that the UI does not expose.",
+      "HarmonyOS implementation work in this version."
+    ],
+    "later": [
+      "The a01 requirements model and review batch.",
+      "HarmonyOS implementation and UI restoration checks."
+    ]
+  },
+  "assumptions": [
+    "The pinned Android baseline is the intended parity target.",
+    "Android-only surfaces stay Android-only unless HarmonyOS exposes an equivalent system API.",
+    "A control that is visible but disabled still counts as a control."
+  ]
+}

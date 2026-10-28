@@ -1,0 +1,16 @@
+=== Red run on baseline e123804 (git archive HEAD) ===
+time: 2026-10-28T12:05:01+11:00
+command: A01_SPEC=<suite> ./test-arkts-host.sh in a clean HEAD copy
+
+=== Profile
+FAIL ProfileTest > hands the core a DNS gateway inside the tun
+18 passed, 1 failed
+=== Subscription
+FAIL SubscriptionTest > rejects garbage bodies
+4 passed, 1 failed
+=== CustomRules
+FAIL CustomRulesTest > adds a domain, a subnet and an import
+FAIL CustomRulesTest > removes a whole selection at once
+FAIL CustomRulesTest > takes the entries of another list and nothing else
+FAIL CustomRulesTest > does not add a rule it already has
+6 passed, 4 failed

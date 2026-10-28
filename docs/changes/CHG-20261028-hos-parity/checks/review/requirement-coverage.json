@@ -1,0 +1,810 @@
+{
+  "items": [
+    {
+      "title": "The connect control is also enabled in Idle and Failed, so R-UA-03 is only partly present.",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:136",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "serviceButtonEnabled returns canStop or canStart, and canStart is true for idle and failed. Android enables the button only when the state can stop or is Stopped. No hand or wait pointer is rendered either."
+    },
+    {
+      "title": "The checked fill also applies to the probe-failed phase, not only Connected (R-UA-04).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:141",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "serviceButtonChecked returns true for PHASE_CONNECTED and PHASE_PROBE_FAILED. The requirement reserves the green checked state for Connected."
+    },
+    {
+      "title": "The stats bar is also visible when the probe failed, not only while Connected (R-UA-09).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:282",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "statsVisible returns true for connected and probe-failed. The scroll hide and show behavior is present, but the phase gate is wider than the requirement."
+    },
+    {
+      "title": "A stats-bar tap starts the connection test in probe-failed as well as Connected (R-UA-12).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:347",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "statsTapAction returns test whenever statsVisible is true, which includes probe-failed. The requirement allows the test only while Connected."
+    },
+    {
+      "title": "VPN start never performs the prepare-intent check that R-UA-08 describes.",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1051",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "startVpn always calls startVpnExtensionAbility, with a self-grant and one retry. HarmonyOS has no VpnService.prepare equivalent, so the conditional consent path has no code representation."
+    },
+    {
+      "title": "A service-mode change stops the tunnel instead of rebinding to the new service (R-UA-20).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1445",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "reconcileServiceMode calls disconnect and shows a mode-changed message. It does not render the new service's reported state or rebind a connection."
+    },
+    {
+      "title": "Traffic samples are polled once per second, not requested every 500 ms (R-UA-29).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:77",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "STATS_POLL_INTERVAL_MS is 1000, and startHealthPolling uses it at line 1240. The core reports every 500 ms, but the UI does not ask at that cadence."
+    },
+    {
+      "title": "Drawer selection is reset on every appearance, so a saved selection and open state are not restored (R-UA-30).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:224",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "aboutToAppear and onPageShow assign defaultDrawerSelection. The open flag is an AppStorage link, but the selected destination is not persisted."
+    },
+    {
+      "title": "A start is accepted from Failed as well as Stopped, so R-UA-27 is only partly present.",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:128",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "canStart returns true for PHASE_IDLE and PHASE_FAILED. The requirement accepts a start only from Stopped. The no-profile message path exists at Index.ets:1020."
+    },
+    {
+      "title": "The connecting ring delay is a fixed 1200 ms, not Android's medium-animation time plus one second (R-UA-06).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:110",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "RING_DELAY_MS is 1200. The late-activity behavior exists through the onPageShow check, but the timing value is not derived from the animation policy."
+    },
+    {
+      "title": "Snackbars use a fixed 4000 ms timeout rather than Android's long duration (R-UA-24).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:114",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "SNACKBAR_DURATION_MS is 4000. The snackbar is drawn above the service button, so the anchor half of the requirement is present."
+    },
+    {
+      "title": "No service-connection callback resets the UI to Idle or distinguishes binder death (R-UA-21).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1600",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The page shows a failure snackbar and derives phases from the status file. There is no onServiceDisconnected or onBinderDied equivalent because the app does not bind a service."
+    },
+    {
+      "title": "The service-button glyphs do not match Android's per-state icons (R-UA-01).",
+      "anchor": "entry/src/main/ets/model/MainShell.ets:157",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "Connecting and verifying return the stop glyph, and connected returns a check glyph. Android shows a connecting glyph while Connecting and a green checked state only when Connected."
+    },
+    {
+      "title": "A row tap is accepted in Idle and Failed as well as the three Android states (R-UB-03).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:411",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "isEnabled returns true for every phase except stopping. The row tap therefore also selects a profile while failed, idle, or lost."
+    },
+    {
+      "title": "The editor path has no private draft store, so R-UB-16, R-UC-01, and R-UC-04 are only partly present.",
+      "anchor": "entry/src/main/ets/pages/Index.ets:493",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "openEditor reloads the list and routes with a profile id. ProfileEdit keeps form state in component state and saves directly to the store. No serialized draft survives between the list and the editor."
+    },
+    {
+      "title": "The subscription icon opens the Subscription page instead of refreshing the profile and opening its editor (R-UB-19).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1777",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The row callback routes to pages/Subscription. The requirement says the icon refreshes the profile and opens the same profile editor."
+    },
+    {
+      "title": "Clipboard writes are marked local-device only because HarmonyOS has no sensitive flag (R-UB-24, R-UD-19).",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:106",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "writeClipboard sets ShareOption.LOCALDEVICE. The requirement asks for a sensitive clipboard entry, which this platform does not expose."
+    },
+    {
+      "title": "The swipe action is attached to the end side, while the requirement places it on the start edge (R-UB-26, R-UF-15).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1994",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "swipeOptions defines an end action. CustomRules.ets:454 also defines an end action. Both still remove the row and offer Undo."
+    },
+    {
+      "title": "A committed swipe delete reassigns the selection instead of leaving the selected id unchanged (R-UB-33).",
+      "anchor": "entry/src/main/ets/model/ProfileStore.ets:249",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "remove deletes the row and, when it was current, writes the first remaining profile id at line 254. Android's listener finds no row and leaves the selected id as it was."
+    },
+    {
+      "title": "Search filters the in-memory list and never re-reads the database (R-UB-51).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:351",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "shown passes this.profiles and the pending id list to ProfileStore.filter. A profile whose removal is pending stays hidden during a search, so it cannot return while Undo is offered."
+    },
+    {
+      "title": "Search is an always-visible text field with no Search action or expansion (R-UB-39).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1755",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The toolbar has no Search action. The TextInput is always present with a profile-search placeholder."
+    },
+    {
+      "title": "The force-unwrap crash on a deleted profile is deliberately not reproduced (R-UB-17).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:493",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "openEditor checks the stored list and reloads when the id is absent. The Android case where the tap crashes has no matching code path."
+    },
+    {
+      "title": "Import and export failures show generic operation-failed toasts rather than the required literal messages (R-UB-25, R-UB-42, R-UB-48, R-UD-46).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:523",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "reportFailure builds a localized operation-failed message. The specific Failed to export, Failed to import, and Please install a file manager texts have no code path."
+    },
+    {
+      "title": "The document picker applies no application/* or text/* type filter (R-UD-05).",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:35",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "pickTextFiles sets only maxSelectNumber. Multi-document selection is present, but the MIME restriction is absent."
+    },
+    {
+      "title": "No letter or Ctrl+Shift menu shortcuts are declared (R-UD-48, R-UD-49).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1920",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The key handler covers Ctrl+G and Ctrl+T only. The n, v, o, s, c and Ctrl+Shift variants for profile commands have no code path."
+    },
+    {
+      "title": "A QR encoding failure is reported by toast, not the required snackbar (R-UB-23, R-UD-35).",
+      "anchor": "entry/src/main/ets/pages/QrDialog.ets:79",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "fail reports the message through onError and closes the dialog. The page turns that into a toast at Index.ets:509."
+    },
+    {
+      "title": "Metered Hint has no editor row and buildProfile never writes metered (R-UC-06, R-UC-15).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:283",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "Profile carries a metered field at Profile.ets:207. The editor has no control for it, and buildProfile copies no metered value. An existing value survives only because the profile object is edited in place."
+    },
+    {
+      "title": "The encryption-method picker offers six AEAD methods plus Custom, not the 22-entry Android menu (R-UC-10).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:42",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "METHODS lists six AEAD names. A Custom entry allows other text. The lower-case storage rule is present through select handling."
+    },
+    {
+      "title": "A new manual profile uses aes-256-gcm rather than the required aes-256-cfb default (R-UC-37).",
+      "anchor": "entry/src/main/ets/model/Profile.ets:48",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "MANUAL_HOST, port 8388, and the password match the requirement. The method differs because the bundled core rejects aes-256-cfb."
+    },
+    {
+      "title": "The Apps VPN draft participates in dirty detection even though R-UC-03 excludes it.",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:205",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "formSnapshot joins PerAppDraft.snapshot. Any per-app change therefore makes the form dirty."
+    },
+    {
+      "title": "There is no untrusted-plugin warning because the plugin catalogue is fixed and built in (R-UC-19, R-UH-12).",
+      "anchor": "entry/src/main/ets/model/PluginOptions.ets:84",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "BUILTIN_PLUGINS holds obfs-local and v2ray-plugin only. There is no signature, trust, or provider concept to warn about."
+    },
+    {
+      "title": "There is no plugin help button or help dialog (R-UC-22, R-UC-23, R-UH-18, R-UH-19).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:791",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "PluginOptionsDialog has a monospace field and Cancel/OK only. No question-mark control or help callback exists."
+    },
+    {
+      "title": "Configure always opens the built-in options editor and never starts a plugin configuration activity (R-UC-20, R-UH-13).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:490",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "openOptionsEditor opens the local dialog. HarmonyOS cannot resolve an Android plugin ACTION_CONFIGURE, so the fallback path is the only path."
+    },
+    {
+      "title": "The plugin list is static and is not rebuilt on package install or removal (R-UC-25, R-UH-23).",
+      "anchor": "entry/src/main/ets/model/PluginOptions.ets:84",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The catalogue is a module constant. No package event, discovery cache, or rebuild path exists."
+    },
+    {
+      "title": "No Direct Boot storage copy is written when a selected profile or fallback is saved (R-UC-38).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:306",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "save upserts the JSON profile store only. There is no device-protected or noBackupFilesDir profile copy."
+    },
+    {
+      "title": "The port field has no cursor-at-end placement and is inline rather than a dialog (R-UC-09).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:595",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The TextInput uses InputType.Number and maxLength 5. Cursor placement is not controlled."
+    },
+    {
+      "title": "The password row is a masked input, not a summary that shows one bullet per stored character (R-UC-08).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:600",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The form uses InputType.Password. The platform draws the mask, so there is no explicit per-character summary."
+    },
+    {
+      "title": "ss:// VIEW links are handled by EntryAbility rather than a dedicated UrlImportActivity excluded from recents (R-UD-40).",
+      "anchor": "entry/src/main/ets/entryability/EntryAbility.ets:32",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "takeImportUri reads want.uri and accepts ss://. The dedicated activity, VIEW-only filter, and recents exclusion have no code path."
+    },
+    {
+      "title": "After a replace removes the selected profile, the UI falls back to the first profile instead of reporting no current profile (R-UD-55).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:439",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "currentProfile returns the first profile when no id matches. The Android behavior is a null Core.currentProfile and no selected row."
+    },
+    {
+      "title": "The save picker suggests a .json suffix but no application/json type (R-UD-22).",
+      "anchor": "entry/src/main/ets/model/Transfer.ets:65",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "EXPORT_FILE_NAME is profiles.json and fileSuffixChoices is .json. The picker call sets no MIME type."
+    },
+    {
+      "title": "Subscriptions are stored as JSON objects under `subscriptions`, not newline-joined URLs under the public `subscription` key (R-UE-11).",
+      "anchor": "entry/src/main/ets/model/Subscription.ets:377",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "SubscriptionStore reads and writes JSON records with id, url, and updatedAt. The Android store shape and key name are not reproduced."
+    },
+    {
+      "title": "The refresh notification has no determinate or indeterminate progress bar (R-UE-17).",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:266",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "publishProgress sends a basic text notification with a count title. The two progress-bar modes have no code path."
+    },
+    {
+      "title": "A cancel received before the merge window suppresses the profile write, while R-UE-18 says a stop during finishing cannot interrupt the merge.",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:124",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "beginMerge returns false when cancelled, and the caller then skips mergeRun. Android still writes profiles once Finishing up has begun."
+    },
+    {
+      "title": "A refresh start is ignored while one runs and never stops the service (R-UE-16).",
+      "anchor": "entry/src/main/ets/model/SubscriptionRefresh.ets:212",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "start returns when a run exists. There is no tunnel stop and no second-run replacement, so the cancelled-job behavior is only partly present."
+    },
+    {
+      "title": "Invalid subscription URLs show app-composed messages rather than the platform's parse message (R-UE-03).",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:401",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "validate selects the no-protocol or unknown-protocol resource. The Android field error comes from the platform URL parser."
+    },
+    {
+      "title": "AclSyncer has no scheduled, constrained refresh, and refresh runs only at VPN start (R-UF-31).",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:110",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "refreshAcl is called from deployAcl. There is no worker, unmetered or charging constraint, ten-second delay, or locked-user return."
+    },
+    {
+      "title": "ACL import fetches make one attempt and do not retry to five (R-UF-32).",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:86",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "fetchText issues one HTTP GET. flattenAcl skips a failed list. No IOException retry loop exists."
+    },
+    {
+      "title": "The import refresh also runs for the custom-rules route, not only the presets (R-UF-33).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:454",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "deployAcl calls refreshAcl for every route that has a file, including custom-rules. Android schedules AclSyncer only for routes other than all and custom-rules."
+    },
+    {
+      "title": "The bundled ACL is redeployed on every start instead of comparing the package update time (R-UF-34).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:414",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "deployAcl reads the rawfile or cached copy and writes it on every start. There is no stored asset time or update-time comparison."
+    },
+    {
+      "title": "The GFW list is read from filesDir/acl-cache or the rawfile, not noBackupFilesDir (R-UF-25).",
+      "anchor": "entry/src/main/ets/model/AclSync.ets:40",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "cacheDir resolves under filesDir. The one-tap import path exists at CustomRules.ets:307, but the storage location differs."
+    },
+    {
+      "title": "The URL rule template accepts only http and https URLs, not any parseable URL (R-UF-09).",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:207",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "isUrlRule matches only ^https?://. The cleartext warning for http is present."
+    },
+    {
+      "title": "Domain validation lacks the IDN.ALLOW_UNASSIGNED and USE_STD3_ASCII_RULES distinctions (R-UF-07).",
+      "anchor": "entry/src/main/ets/model/CustomRules.ets:430",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "toAsciiDomain applies a local label rule plus Punycode. The two Android IDN flags have no equivalent."
+    },
+    {
+      "title": "Per-app selection keys on bundle name because HarmonyOS exposes no app UID (R-UG-03).",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:29",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The module comment records the substitution. Packages that share a UID cannot change together."
+    },
+    {
+      "title": "There is no installed-package scan, so R-UG-10, R-UG-17, and R-UG-18 have no code path.",
+      "anchor": "entry/src/main/ets/model/AppCatalog.ets:25",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The picker resolves names the profile already stores and accepts typed names. It does not list installed packages, filter by INTERNET permission, or reload on package events."
+    },
+    {
+      "title": "App rows show only a label, without icon, package name, or UID (R-UG-12).",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:335",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "AppRow renders entry.label and a switch. The not-installed tag is the only other text."
+    },
+    {
+      "title": "Search has no UID match because the model has no UID (R-UG-16).",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:145",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "matchesQuery compares the label and bundle name only."
+    },
+    {
+      "title": "Opening the app picker marks the draft dirty and the editor later saves that state, unlike R-UG-04.",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:295",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "ensureEnabled sets enabled and dirty. ProfileEdit.buildProfile reads PerAppDraft.enabled at line 299, so the editor does deliver the state that Android never delivers."
+    },
+    {
+      "title": "The shared dirty flag is not cleared by serialization and the page does not consult it for save decisions (R-UG-31).",
+      "anchor": "entry/src/main/ets/model/PerApp.ets:270",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "PerAppDraft.dirty is set by setters and cleared only by clear. ProfileEdit uses formSnapshot instead of this flag."
+    },
+    {
+      "title": "There are no Ctrl+Shift+A, Ctrl+C, or Ctrl+V app-picker shortcuts (R-UG-35).",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:288",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The page exposes Apply All, Export, and Import through an overflow menu only. No key handler exists."
+    },
+    {
+      "title": "The app list shows a spinner but no fade-in transition (R-UG-30).",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:409",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "LoadingProgress is replaced by the list when loading ends. No animation accompanies the swap."
+    },
+    {
+      "title": "Plugin rows render no icon, no plugin-id second line, and no unlock-warning icon (R-UH-02, R-UH-05, R-UH-06).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:675",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The Plugin row is a text label plus summary and chevron. There is no icon slot, id line, or warning badge."
+    },
+    {
+      "title": "A long press on a plugin row does not open the system application details screen (R-UH-08).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:540",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "PluginPickerSheet has a tap handler only. Built-in plugins have no package to open."
+    },
+    {
+      "title": "Configure is enabled from the built-in catalogue rather than from an installed provider (R-UH-11).",
+      "anchor": "entry/src/main/ets/model/Profile.ets:283",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "canConfigurePlugin checks canEditPlugin and pluginState known. The known state comes from the static catalogue."
+    },
+    {
+      "title": "There is no configuration-activity result contract or RESULT_FALLBACK path (R-UH-14, R-UH-15).",
+      "anchor": "entry/src/main/ets/pages/ProfileEdit.ets:499",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "commitPluginOptions accepts dialog text. No plugin activity result, EXTRA_OPTIONS, or fallback result is handled."
+    },
+    {
+      "title": "The Settings screen has four rows and omits Allow Toggling in Lock Screen and the Transproxy port (R-UI-01, R-UI-02, R-UI-06, R-UI-21).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:121",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The row keys are auto-connect, service-mode, proxy-port, and local-dns-port. The collapsed view shows Auto Connect only."
+    },
+    {
+      "title": "Auto Connect only persists a boolean and has no boot receiver to enable or disable (R-UI-08, R-UI-10, R-UI-11).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:148",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The field comment says no HarmonyOS startup hook exists. No receiver component state is written on start or stop."
+    },
+    {
+      "title": "No direct-boot copy, cleanup, or directBootAware key exists (R-UI-12, R-UI-13, R-UI-14, R-UI-35).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:139",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "AppSettings has no directBootAware field. No device-protected profile copy path exists."
+    },
+    {
+      "title": "The service-mode menu offers only proxy and VPN, with no transproxy entry (R-UI-15, R-UI-17, R-UI-22).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:128",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "SERVICE_MODE_CHOICES is [proxy, vpn]. The Settings menu renders those two entries. Transparent proxy is not offered."
+    },
+    {
+      "title": "Auto Connect is stored as a JSON `autoConnect` key, not as the public `isAutoConnect` preference (R-UI-07).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:149",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The value lives in store/settings.json. The platform preference store is not used anywhere."
+    },
+    {
+      "title": "Port defaults omit the per-user index and the transproxy 8200 default (R-UI-30).",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:109",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "DEFAULT_PROXY_PORT is 1080 and DEFAULT_LOCAL_DNS_PORT is 5450. No user-index offset and no transproxy default exist."
+    },
+    {
+      "title": "The SOCKS5 port is used only in proxy mode and never as a VPN-mode listener (R-UI-33).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1029",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "connect branches to connectProxy only in proxy mode. VPN mode hands the tun fd to the core and opens no SOCKS listener."
+    },
+    {
+      "title": "The port dialog has no cursor-at-end placement (R-UI-26).",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:577",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "PortDialog uses InputType.Number, maxLength 5, and sanitizePortInput. Cursor position is not set."
+    },
+    {
+      "title": "QR scanning delegates camera, permission, and analyzer behavior to Scan Kit (R-UJ-01 to R-UJ-05).",
+      "anchor": "entry/src/main/ets/model/QrScanner.ets:59",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "startScanForResult owns the preview and permission. The app has no CAMERA permission flow, permission toast, camera-bind fallback, or image-picker fallback on denial."
+    },
+    {
+      "title": "A scan with no profile reopens the system scanner up to three times instead of leaving one scanner open (R-UJ-10).",
+      "anchor": "entry/src/main/ets/pages/Index.ets:768",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "scanQrCode loops while the system UI is dismissed with no profiles, then shows a message after three empty results."
+    },
+    {
+      "title": "Scanned profiles copy route, IPv6, UDP DNS, and remote DNS but not metered or the per-app settings (R-UJ-07).",
+      "anchor": "entry/src/main/ets/model/QrImport.ets:44",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "copyFeatureSettings copies four fields and its comment incorrectly says metered and proxy_apps are not Profile fields. Both fields exist at Profile.ets:207 and Profile.ets:210."
+    },
+    {
+      "title": "There is no launcher Scan QR code shortcut and no shortcut-usage report (R-UJ-19, R-UJ-20).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:461",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The scan entry is a menu item inside Index.ets. No shortcut resource, shortcut handler, or usage report exists. The built HAP is absent, so packaged shortcut declarations cannot be verified either."
+    },
+    {
+      "title": "The About body is plain split paragraphs, not about.html rendered with list-item breaks (R-UJ-22).",
+      "anchor": "entry/src/main/ets/pages/About.ets:81",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "About concatenates two resources and splitAboutBody splits on blank lines. No HTML renderer or list-item line breaks exist."
+    },
+    {
+      "title": "The # link shows an unavailable message instead of opening the OSS licences screen (R-UJ-23).",
+      "anchor": "entry/src/main/ets/model/AboutOpener.ets:50",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "classifyAboutLink marks the anchor as unsupported and the page shows a toast. No licence screen exists."
+    },
+    {
+      "title": "A mailto link opens a generic send-to-data want without a Send email chooser title (R-UJ-24).",
+      "anchor": "entry/src/main/ets/model/AboutOpener.ets:53",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The want uses ohos.want.action.sendToData. No title is set, and the chooser is owned by the system."
+    },
+    {
+      "title": "The About page has a back control rather than a drawer navigation icon (R-UJ-27).",
+      "anchor": "entry/src/main/ets/pages/About.ets:160",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The toolbar calls router.back. No drawer or navigation icon exists on this page."
+    },
+    {
+      "title": "The About bottom padding is a fixed 16 vp, not the navigation-bar inset (R-UJ-28).",
+      "anchor": "entry/src/main/ets/pages/About.ets:226",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The scroll content uses padding bottom 16. Index reads the inset, but About does not."
+    },
+    {
+      "title": "The notification sets no ticker, icon, category, timestamp, or priority (R-UK-02, R-UK-09).",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:133",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The request carries content, id, tapDismissed, isOngoing, a slot type, and action buttons. The listed Android fields have no equivalent."
+    },
+    {
+      "title": "The notification uses one content-information slot and has no per-mode channels or importance settings (R-UK-12, R-UK-13).",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:145",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "notificationSlotType is CONTENT_INFORMATION for every mode. No VPN, Proxy, or Transproxy channel is created."
+    },
+    {
+      "title": "The Stop action starts EntryAbility and shows the app rather than sending a silent app-scoped broadcast (R-UK-07, R-UK-08).",
+      "anchor": "entry/src/main/ets/model/ConnectionNotification.ets:71",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "disconnectAgent builds a START_ABILITY want. The app opens and stops the extension from EntryAbility.handleAction. No API-level visible or invisible action variant exists."
+    },
+    {
+      "title": "Screen state is sampled per traffic tick instead of registering and unregistering a traffic callback on screen events (R-UK-04, R-UK-05).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:543",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "updateNotification calls power.isActive each time and trafficUpdate resets the baseline when inactive. No screen event listener exists."
+    },
+    {
+      "title": "No sample carries a profile id, so R-UK-06's aggregate-only filter has no code path.",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:576",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "onStatConnection reads one 16-byte tx/rx pair from the core. The endpoint reports one aggregate stream, so there is no per-profile sample to filter."
+    },
+    {
+      "title": "There is no Quick Settings tile, so tile taps, states, binding, label, long press, and preferences are absent (R-UK-14 to R-UK-21, R-UK-40, R-UK-41).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:489",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "No tile ability, tile service, or tile preference handler exists in the product. The built HAP is absent, so a packaged tile declaration cannot be checked either."
+    },
+    {
+      "title": "There is no launcher shortcut for Toggle or Scan QR code and no create-shortcut request handler (R-UK-22, R-UK-23, R-UK-42, R-UK-43).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:517",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "No shortcut resource, shortcut executor, or shortcut metadata exists in the product. EntryAbility handles only actions and ss:// wants."
+    },
+    {
+      "title": "No boot receiver exists, so boot broadcasts, direct-boot variants, and boot-state persistence are absent (R-UK-24 to R-UK-30, R-UK-38).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:499",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The only boot-related product state is the autoConnect boolean in Settings. No receiver, BOOT_COMPLETED handler, LOCKED_BOOT_COMPLETED handler, or device-protected profile flush exists."
+    },
+    {
+      "title": "No Tasker plugin editor or setting handler exists (R-UK-31 to R-UK-36).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:506",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "There is no Tasker row, editor, setting bundle receiver, or switch and profile-id storage path."
+    },
+    {
+      "title": "No RELOAD broadcast receiver restarts a running service (R-UK-39).",
+      "anchor": "docs/versions/5.4.0/requirements/requirements.md:514",
+      "severity": "strong",
+      "dimension": "requirement-coverage",
+      "reason": "The only common-event subscriber in the product is the subscription abort event in SubscriptionRefresh.ets. No reload action is handled."
+    },
+    {
+      "title": "A start with no profile shows a starting notification then a failed status, not an empty-name notification followed by a stop message (R-UK-37).",
+      "anchor": "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:175",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "onCreate calls showStarting with the app name, marks failed with No profile configured, and clears the notification. It does not post an empty-name notification."
+    },
+    {
+      "title": "The main page adds a speed test and a per-profile latency probe that no requirement item describes.",
+      "anchor": "entry/src/main/ets/pages/Index.ets:1870",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The speed-test button calls measureThroughput, and the row test control calls measureLatency at Index.ets:2226. Neither appears in the requirement tables."
+    },
+    {
+      "title": "Settings exposes probe and speed-test URL overrides and a share-over-LAN switch that no requirement item describes.",
+      "anchor": "entry/src/main/ets/pages/Settings.ets:505",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "The page edits probeUrl, speedTestUrl, and shareOverLan. The requirement rows cover the URLs no further than the connection test and cover no LAN-sharing switch."
+    },
+    {
+      "title": "The app adds a standalone QR page with a copy-URL action that the requirements do not mention.",
+      "anchor": "entry/src/main/ets/pages/ProfileQr.ets:169",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "Requirements describe a QR dialog on the profile list and in the editor. ProfileQr is a separate page with a copy button."
+    },
+    {
+      "title": "The app picker lets the user type a bundle name, an entry path with no Android requirement.",
+      "anchor": "entry/src/main/ets/pages/AppPicker.ets:441",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "addBundle validates and appends a typed name. The requirement rows describe selecting from an installed-app list only."
+    },
+    {
+      "title": "The subscription page shows per-URL profile counts and update dates that no requirement item requires.",
+      "anchor": "entry/src/main/ets/pages/Subscription.ets:317",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "profileCounts is computed from profile subscription ids. The requirement rows describe the URL list, not per-URL profile counts."
+    },
+    {
+      "title": "The connection probe also requires the core's receive counter to move, which no requirement item states.",
+      "anchor": "entry/src/main/ets/model/Diagnostics.ets:498",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "interpretProbe reports not-tunnelled when rxAfter is not greater than rxBefore. The Android requirement describes only the HTTPS test result."
+    },
+    {
+      "title": "The app self-grants VPN authorization through an undocumented API, a path with no requirement.",
+      "anchor": "entry/src/main/ets/pages/VpnGrant.ts:46",
+      "severity": "weak",
+      "dimension": "requirement-coverage",
+      "reason": "grantVpnAuthorization calls vpnExtension.updateVpnAuthorizedState. The requirement set assumes the system consent dialog and has no self-grant item."
+    }
+  ],
+  "coverage": {
+    "dimension": "requirement-coverage",
+    "result": "gaps-found",
+    "scanned": [
+      "docs/versions/5.4.0/requirements/requirements.md",
+      "docs/changes/CHG-20261028-hos-parity/architecture.md",
+      "docs/changes/CHG-20261028-hos-parity/hld.md",
+      "entry/src/main/ets/model/MainShell.ets",
+      "entry/src/main/ets/model/Settings.ets",
+      "entry/src/main/ets/model/Diagnostics.ets",
+      "entry/src/main/ets/model/TrafficStats.ets",
+      "entry/src/main/ets/pages/Index.ets",
+      "entry/src/main/ets/model/Profile.ets",
+      "entry/src/main/ets/model/ProfilesFile.ets",
+      "entry/src/main/ets/model/Transfer.ets",
+      "entry/src/main/ets/model/ProfileStore.ets",
+      "entry/src/main/ets/pages/ProfileEdit.ets",
+      "entry/src/main/ets/model/UdpFallback.ets",
+      "entry/src/main/ets/pages/UdpFallback.ets",
+      "entry/src/main/ets/model/PluginOptions.ets",
+      "entry/src/main/ets/model/PerApp.ets",
+      "entry/src/main/ets/pages/AppPicker.ets",
+      "entry/src/main/ets/model/Subscription.ets",
+      "entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "entry/src/main/ets/pages/Subscription.ets",
+      "entry/src/main/ets/model/Routes.ets",
+      "entry/src/main/ets/model/Acl.ets",
+      "entry/src/main/ets/model/CustomRules.ets",
+      "entry/src/main/ets/pages/CustomRules.ets",
+      "entry/src/main/ets/model/AclSync.ets",
+      "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "entry/src/main/ets/model/ConnectionNotification.ets",
+      "entry/src/main/ets/model/NotificationContent.ets",
+      "entry/src/main/ets/entryability/EntryAbility.ets",
+      "entry/src/main/ets/model/AppContext.ets",
+      "entry/src/main/ets/pages/Settings.ets",
+      "entry/src/main/ets/pages/About.ets",
+      "entry/src/main/ets/model/AboutLinks.ets",
+      "entry/src/main/ets/model/AboutOpener.ets",
+      "entry/src/main/ets/model/QrScanner.ets",
+      "entry/src/main/ets/model/QrImport.ets",
+      "entry/src/main/ets/pages/QrDialog.ets",
+      "entry/src/main/ets/pages/ProfileQr.ets",
+      "entry/src/main/ets/model/QrCode.ets",
+      "entry/src/main/ets/model/ProxyService.ets",
+      "entry/src/main/ets/model/SessionTraffic.ets",
+      "entry/src/main/ets/model/VpnStatus.ets",
+      "entry/src/main/ets/model/AppCatalog.ets",
+      "entry/src/main/ets/model/UndoRemoval.ets",
+      "entry/src/main/ets/model/Network.ets",
+      "entry/src/main/ets/model/ConnectivityProbe.ets",
+      "entry/src/main/ets/model/Throughput.ets",
+      "entry/src/main/ets/model/Latency.ets",
+      "entry/src/main/ets/pages/VpnGrant.ts",
+      "entry/src/main/cpp/napi_init.cpp",
+      "entry/src/main/cpp/types/libsslocal/Index.d.ts"
+    ],
+    "note": "All 412 requirement rows in the 11 units were enumerated. The product has code paths for most U01, U02, U04, U05 profile and subscription behavior, but major gaps remain in U06 scheduling, U07 installed-app discovery, U08 plugin provider surfaces, U09 direct boot and transproxy settings, U10 shortcut and About parity, and U11 tiles, shortcuts, boot, Tasker, and reload receivers. The allowed HAP input entry/build/default/outputs/default/entry-default-signed.hap is not present. Only pack.info exists, so packaged declarations such as skills, shortcuts, receivers, and notification channels could not be verified. No docs/oracles, entry/src/test, entry/src/ohosTest, or review files were read."
+  },
+  "inputs": [
+    "docs/versions/5.4.0/requirements/requirements.md",
+    "docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "docs/changes/CHG-20261028-hos-parity/hld.md",
+    "entry/src/main/ets/model/MainShell.ets",
+    "entry/src/main/ets/model/Settings.ets",
+    "entry/src/main/ets/model/Diagnostics.ets",
+    "entry/src/main/ets/model/TrafficStats.ets",
+    "entry/src/main/ets/pages/Index.ets",
+    "entry/src/main/ets/model/Profile.ets",
+    "entry/src/main/ets/model/ProfilesFile.ets",
+    "entry/src/main/ets/model/Transfer.ets",
+    "entry/src/main/ets/model/ProfileStore.ets",
+    "entry/src/main/ets/pages/ProfileEdit.ets",
+    "entry/src/main/ets/model/UdpFallback.ets",
+    "entry/src/main/ets/pages/UdpFallback.ets",
+    "entry/src/main/ets/model/PluginOptions.ets",
+    "entry/src/main/ets/model/PerApp.ets",
+    "entry/src/main/ets/pages/AppPicker.ets",
+    "entry/src/main/ets/model/Subscription.ets",
+    "entry/src/main/ets/model/SubscriptionRefresh.ets",
+    "entry/src/main/ets/pages/Subscription.ets",
+    "entry/src/main/ets/model/Routes.ets",
+    "entry/src/main/ets/model/Acl.ets",
+    "entry/src/main/ets/model/CustomRules.ets",
+    "entry/src/main/ets/pages/CustomRules.ets",
+    "entry/src/main/ets/model/AclSync.ets",
+    "entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+    "entry/src/main/ets/model/ConnectionNotification.ets",
+    "entry/src/main/ets/model/NotificationContent.ets",
+    "entry/src/main/ets/entryability/EntryAbility.ets",
+    "entry/src/main/ets/model/AppContext.ets",
+    "entry/src/main/ets/pages/Settings.ets",
+    "entry/src/main/ets/pages/About.ets",
+    "entry/src/main/ets/model/AboutLinks.ets",
+    "entry/src/main/ets/model/AboutOpener.ets",
+    "entry/src/main/ets/model/QrScanner.ets",
+    "entry/src/main/ets/model/QrImport.ets",
+    "entry/src/main/ets/pages/QrDialog.ets",
+    "entry/src/main/ets/pages/ProfileQr.ets",
+    "entry/src/main/ets/model/QrCode.ets",
+    "entry/src/main/ets/model/ProxyService.ets",
+    "entry/src/main/ets/model/SessionTraffic.ets",
+    "entry/src/main/ets/model/VpnStatus.ets",
+    "entry/src/main/ets/model/AppCatalog.ets",
+    "entry/src/main/ets/model/UndoRemoval.ets",
+    "entry/src/main/ets/model/Network.ets",
+    "entry/src/main/ets/model/ConnectivityProbe.ets",
+    "entry/src/main/ets/model/Throughput.ets",
+    "entry/src/main/ets/model/Latency.ets",
+    "entry/src/main/ets/pages/VpnGrant.ts",
+    "entry/src/main/cpp/napi_init.cpp",
+    "entry/src/main/cpp/types/libsslocal/Index.d.ts"
+  ]
+}

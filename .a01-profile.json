@@ -1,0 +1,41 @@
+{
+  "runnerModel": "ArkTS hypium, Rust cargo test, host Node specs",
+  "oracleDir": "docs/oracles",
+  "requirementsDir": "docs/versions/5.4.0/requirements",
+  "tests": [
+    "entry/src/test",
+    "entry/src/ohosTest",
+    "native/sslocal-ffi/tests"
+  ],
+  "testExts": [
+    ".ets",
+    ".rs",
+    ".mjs"
+  ],
+  "anchorExts": [
+    ".ets",
+    ".rs",
+    ".mjs"
+  ],
+  "entryModel": "test-files",
+  "caseName": {
+    "fileSeparator": "::",
+    "caseSeparator": "#"
+  },
+  "sourceExts": [
+    ".ets",
+    ".ts",
+    ".rs",
+    ".cpp",
+    ".h"
+  ],
+  "pathOverrides": {
+    "docs/changes/CHG-20261028-hos-parity/requirements.md": "docs/versions/5.4.0/requirements/requirements.md",
+    "docs/changes/CHG-20261028-hos-parity/requirements-model.json": "docs/versions/5.4.0/requirements/requirements-model.json",
+    "docs/oracles/journey.md": "docs/oracles/90-journeys/journeys.md",
+    "docs/changes/CHG-20261028-hos-parity/review-snapshot.json": "docs/changes/CHG-20261028-hos-parity/review/requirements/review-snapshot.json",
+    "docs/changes/CHG-20261028-hos-parity/review-decisions.json": "docs/changes/CHG-20261028-hos-parity/review/requirements/review-decisions.json",
+    "docs/oracles/seam.md": "docs/oracles/91-seams/seams.md",
+    "docs/oracles/unit.md": "docs/oracles/point.md"
+  }
+}

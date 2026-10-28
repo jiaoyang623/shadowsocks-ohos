@@ -1,0 +1,71 @@
+# Final verification
+
+命令: `./test-arkts-host.sh`; `hvigorw clean` then `hvigorw assembleHap --mode module -p product=default -p buildMode=debug`; `cargo test --workspace`; `cargo check --target aarch64-unknown-linux-ohos`; `ci/hos-emulator-e2e.sh` (`SKIP_EMULATOR=1`)
+时间: 2026-10-28T14:34:00+11:00
+基线: `e123804+dirty`
+宿主用例: 500
+通过: 500
+失败: 0
+
+## Results
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Host model, seam and parity specs | 500 passed, 0 failed, 0 TypeScript diagnostics | `host-tests.txt` |
+| Clean HAP build, arm64-v8a and x86_64 | BUILD SUCCESSFUL, 0 ArkTS errors | `build-final.txt` |
+| Rust workspace tests | 39 passed (7 service + 30 core + 2 e2e), 0 failed | this file |
+| OHOS cross-target check | `cargo check --target aarch64-unknown-linux-ohos` finished | this file |
+| On-device E2E, HVPhone API 24 x86_64 | 5 tests run, 5 passed, 0 failed | `e2e-final.txt`, `e2e-steps.json` |
+| E2E report | generated, published, HTTP 200 | `e2e-published.txt` |
+| High-level review | 187 items, 8/8 dimensions, gate clear, report published | `high-level-review-published.txt` |
+| Spec consistency | PASS, 0 failures, 3 warnings | `specs.txt` |
+| UI restoration | not run: the batch has no design-reference screens | `completion.md` |
+| Human design gates | pending: requirements, architecture, HLD, LLD, result | `flow.json` |
+
+The signed HAP is `entry/build/default/outputs/default/entry-default-signed.hap`.
+It carries `libs/arm64-v8a/libsslocal.so` and `libs/x86_64/libsslocal.so`.
+
+## Device suite
+
+`SslocalNativeTest` and `SocksE2eTest` ran on the emulator against a
+host-side `ssserver`:
+
+- exposes the native core
+- rejects invalid configs
+- rejects a negative tun fd
+- round-trips an HTTP fetch through the shadowsocks tunnel
+- cannot reach the marker without the tunnel
+
+`VpnE2eTest` stays a real-device test: the emulator does not deliver guest
+traffic to `vpn-tun` (`docs/hos-emulator-vpn.md` §2a).
+
+## Remaining limits
+
+- The human design gates are pending. The user has not reviewed any layer.
+- The result gate needs the user's own words.
+- `VpnE2eTest` did not run.
+- The weak open review items are listed in `high-level-review.json`; none is
+  strong.
+
+This batch therefore cannot claim the full a01 completion conditions. The
+exact state is in `completion.md`.
+
+## UI follow-up, 2026-10-28T17:20:00+11:00
+
+The user asked for the Android main screen exactly and reported a dead edit
+action. The change touches ArkTS pages, model files and resources only.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Host model, seam and parity specs | 500 passed, 0 failed | rerun after the change |
+| HAP build, arm64-v8a and x86_64 | BUILD SUCCESSFUL, debug-signed | `hvigorw assembleHap` |
+| Emulator install and launch | installed and started on HVPhone | `127.0.0.1:5555` |
+| Main-screen parity, light and dark | control table and screenshots | `ui-parity/main-screen.md`, `ui-parity/*.jpeg`, `ui-parity/android-main.png` |
+| Fresh-install seed and selection | one default profile, selected | device store `profiles.json` and `current_profile_id.json` |
+| Edit action | pencil opens the profile editor | emulator tap and layout dump |
+| Connection loop on the phone | green fill and stats bar two seconds after the tap, before the probe verdict | `ui-parity/harmony-connected-dark.jpeg` |
+| System bars on the phone | status bar `#263238`, navigation area on the page colour, no black strip | phone capture, `hilog` free of `1300002` |
+
+The Rust workspace tests, the cross-target check and the on-device suites
+were not rerun: no Rust source changed, and those suites do not exercise the
+UI.

@@ -1,5 +1,7 @@
 import { describe, expect, it } from '@ohos/hypium';
-import { AclDocument, flattenAcl, importUrls, parseAcl, serializeAcl } from '../main/ets/model/Acl';
+import {
+  AclDocument, flattenAcl, flattenCompleteAcl, importUrls, parseAcl, serializeAcl,
+} from '../main/ets/model/Acl';
 
 /** A fetcher that serves the lists a test names, and fails for anything else. */
 function fetcherFor(lists: Map<string, string>): (url: string) => Promise<string> {
@@ -117,6 +119,56 @@ export default function aclTest() {
       const flat = await flattenAcl(text, 1, fetcherFor(new Map<string, string>()));
       expect(parseAcl(flat).proxyEntries.length).assertEqual(1);
       expect(parseAcl(flat).proxyEntries[0]).assertEqual('mine.test');
+    });
+
+    it('reports a failed import, so a partial result never replaces the cache', 0, async () => {
+      // One list resolves and one does not. The flattened text is partial: it
+      // holds the resolved list's entries and lacks the failed list's entries.
+      // A refresh must keep the previous cached copy for such a result.
+      const lists = new Map<string, string>();
+      lists.set('https://a.example/list', '[proxy_all]\n\n[proxy_list]\nremote.test\n');
+      const text = '[proxy_all]\n\n[proxy_list]\nmine.test\n' +
+        '\n#IMPORT_URL <https://a.example/list>\n#IMPORT_URL <https://gone.example/list>\n';
+
+      const failed: string[] = [];
+      const flat = await flattenAcl(text, 1, fetcherFor(lists), failed);
+      expect(failed.length).assertEqual(1);
+      expect(failed[0]).assertEqual('https://gone.example/list');
+      expect(parseAcl(flat).proxyEntries.length).assertEqual(2);
+
+      // The cache form refuses the partial text.
+      const cacheFailed: string[] = [];
+      const complete = await flattenCompleteAcl(text, 1, fetcherFor(lists), cacheFailed);
+      expect(complete).assertEqual('');
+      expect(cacheFailed.length).assertEqual(1);
+      expect(cacheFailed[0]).assertEqual('https://gone.example/list');
+    });
+
+    it('offers the complete result when every import resolves', 0, async () => {
+      const lists = new Map<string, string>();
+      lists.set('https://a.example/list', '[proxy_all]\n\n[proxy_list]\nremote.test\n');
+      const text = '[proxy_all]\n\n[proxy_list]\nmine.test\n\n#IMPORT_URL <https://a.example/list>\n';
+
+      const failed: string[] = [];
+      const complete = await flattenCompleteAcl(text, 1, fetcherFor(lists), failed);
+      expect(failed.length).assertEqual(0);
+      expect(parseAcl(complete).proxyEntries.length).assertEqual(2);
+      expect(parseAcl(complete).proxyEntries[0]).assertEqual('mine.test');
+      expect(parseAcl(complete).proxyEntries[1]).assertEqual('remote.test');
+    });
+
+    it('reports an import that fails inside a resolved list', 0, async () => {
+      // The failure is one level down, so the top-level fetch succeeds and
+      // only the recursive call knows that the chain is incomplete.
+      const lists = new Map<string, string>();
+      lists.set('https://a.example/list', '[proxy_all]\n#IMPORT_URL <https://gone.example/list>\n');
+      const text = '[proxy_all]\n#IMPORT_URL <https://a.example/list>\n';
+
+      const failed: string[] = [];
+      const complete = await flattenCompleteAcl(text, 2, fetcherFor(lists), failed);
+      expect(complete).assertEqual('');
+      expect(failed.length).assertEqual(1);
+      expect(failed[0]).assertEqual('https://gone.example/list');
     });
 
     it('does nothing when there is nothing to import', 0, async () => {

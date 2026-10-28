@@ -11,6 +11,7 @@
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
+    "querySchemes": ["ftp", "file", "mailto"],
     "abilities": [
       {
         "name": "EntryAbility",
@@ -57,6 +58,11 @@
         // proxy mode runs the core in this process, which the platform freezes
         // in the background without a continuous task
         "name": "ohos.permission.KEEP_BACKGROUND_RUNNING"
+      },
+      {
+        // resolves a bundle name the app picker stores into a bundle record;
+        // normal grant, no runtime prompt
+        "name": "ohos.permission.GET_BUNDLE_INFO"
       }
     ]
   }

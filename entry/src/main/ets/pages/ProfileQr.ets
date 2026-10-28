@@ -78,8 +78,12 @@ struct ProfileQr {
       // version 40 code holds, which is close to three thousand characters
       this.hasError = true;
       this.error = $r('app.string.qr_too_long');
-      hilog.warn(0x0000, TAG, 'the profile URL does not encode: %{public}s',
-        e instanceof Error ? e.message : String(e));
+      const message = e instanceof Error ? e.message : String(e);
+      hilog.warn(0x0000, TAG, 'the profile URL does not encode: %{public}s', message);
+      promptAction.showToast({ message: message });
+      // the code cannot show, so the page has nothing left to offer. Android
+      // dismisses its dialog. Closing the page is the same move here.
+      setTimeout(() => router.back(), 0);
       return;
     }
     this.draw();

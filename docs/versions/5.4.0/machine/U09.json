@@ -1,0 +1,2566 @@
+{
+  "unit": "U09",
+  "title": "Global settings",
+  "sources_read": [
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/GlobalSettingsFragment.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_global_settings.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/xml/pref_global.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/res/values/arrays.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/res/values/strings.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/preference/RoomPreferenceDataStore.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/BootReceiver.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/Core.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/BaseService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/bg/TransproxyService.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/aidl/ShadowsocksConnection.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/KeyValuePair.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/PublicDatabase.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/AndroidManifest.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/MainActivity.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/menu/navigation_main.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_main.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_list.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/navigation_header.xml",
+    "/opt/git/github/shadowsocks-android/plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/widget/WindowInsetsListeners.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/xml/pref_profile.xml",
+    "/opt/git/github/shadowsocks-android/tv/src/main/res/xml/pref_main.xml",
+    "/opt/git/github/shadowsocks-android/mobile/build.gradle.kts",
+    "/opt/git/github/shadowsocks-android/buildSrc/src/main/kotlin/Helpers.kt",
+    "/opt/git/github/shadowsocks-android/gradle/libs.versions.toml",
+    "/tmp/pref121/androidx/preference/PreferenceGroupAdapter.java",
+    "/tmp/pref121/androidx/preference/ExpandButton.java",
+    "/tmp/pref121/androidx/preference/PreferenceScreen.java",
+    "/tmp/pref121/androidx/preference/Preference.java",
+    "/tmp/pref121/androidx/preference/TwoStatePreference.java",
+    "/tmp/pref121/androidx/preference/ListPreference.java",
+    "/tmp/pref121/androidx/preference/EditTextPreference.java",
+    "/tmp/pref121/androidx/preference/EditTextPreferenceDialogFragmentCompat.java",
+    "/tmp/pref121/androidx/preference/PreferenceDialogFragmentCompat.java",
+    "/tmp/pref121/androidx/preference/DialogPreference.java",
+    "/tmp/pref121/aar/res/values/values.xml",
+    "/tmp/smp.java",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/machine/U07.json",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json"
+  ],
+  "controls": [
+    {
+      "id": "C-U09-001",
+      "type": "screen",
+      "label": "Settings",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "the player selects the Settings entry in the navigation drawer",
+      "enabled_when": "always",
+      "action": "Shows the global settings list and sets the toolbar title to Settings",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsFragment.kt:32"
+    },
+    {
+      "id": "C-U09-002",
+      "type": "button",
+      "label": "Open navigation drawer",
+      "android_id": "",
+      "parent": "C-U09-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Opens the navigation drawer",
+      "navigates_to": "U01 main shell drawer",
+      "source": "mobile/src/main/java/com/github/shadowsocks/ToolbarFragment.kt:35"
+    },
+    {
+      "id": "C-U09-003",
+      "type": "text",
+      "label": "Settings",
+      "android_id": "",
+      "parent": "C-U09-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the screen title in the toolbar",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsFragment.kt:37"
+    },
+    {
+      "id": "C-U09-004",
+      "type": "list",
+      "label": "Settings preferences",
+      "android_id": "",
+      "parent": "C-U09-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Scrolls the preference rows",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_global_settings.xml:8"
+    },
+    {
+      "id": "C-U09-005",
+      "type": "switch",
+      "label": "Auto Connect",
+      "android_id": "isAutoConnect",
+      "parent": "C-U09-004",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Flips isAutoConnect and enables or disables the boot receiver component",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:4"
+    },
+    {
+      "id": "C-U09-006",
+      "type": "text",
+      "label": "Enable Shadowsocks on startup/app update if it was running before",
+      "android_id": "",
+      "parent": "C-U09-005",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the fixed summary of the Auto Connect row",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:7"
+    },
+    {
+      "id": "C-U09-007",
+      "type": "switch",
+      "label": "Allow Toggling in Lock Screen",
+      "android_id": "directBootAware",
+      "parent": "C-U09-004",
+      "visible_when": "Build.VERSION.SDK_INT is 24 or higher",
+      "enabled_when": "always",
+      "action": "Flips directBootAware and writes or deletes the device-protected profile copy",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:9"
+    },
+    {
+      "id": "C-U09-008",
+      "type": "text",
+      "label": "Your selected profile information will be less protected",
+      "android_id": "",
+      "parent": "C-U09-007",
+      "visible_when": "the Allow Toggling in Lock Screen row is present",
+      "enabled_when": "always",
+      "action": "Shows the fixed summary of the lock-screen row",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:12"
+    },
+    {
+      "id": "C-U09-009",
+      "type": "preference",
+      "label": "Service mode",
+      "android_id": "serviceMode",
+      "parent": "C-U09-004",
+      "visible_when": "the list shows this row, which the Advanced button controls",
+      "enabled_when": "the service state reported by the main screen is Stopped",
+      "action": "Opens the service mode popup",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:15"
+    },
+    {
+      "id": "C-U09-010",
+      "type": "text",
+      "label": "VPN",
+      "android_id": "",
+      "parent": "C-U09-009",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the current service mode entry, or Not set when the stored value matches no entry",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:22"
+    },
+    {
+      "id": "C-U09-011",
+      "type": "dialog",
+      "label": "Service mode",
+      "android_id": "",
+      "parent": "C-U09-009",
+      "visible_when": "the user taps the enabled Service mode row",
+      "enabled_when": "always",
+      "action": "Shows a simple menu with the three mode entries and marks the current one",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+    },
+    {
+      "id": "C-U09-012",
+      "type": "menu_item",
+      "label": "Proxy only",
+      "android_id": "",
+      "parent": "C-U09-011",
+      "visible_when": "the service mode popup is open",
+      "enabled_when": "always",
+      "action": "Selects the proxy service mode",
+      "navigates_to": "",
+      "source": "core/src/main/res/values/arrays.xml:212"
+    },
+    {
+      "id": "C-U09-013",
+      "type": "menu_item",
+      "label": "VPN",
+      "android_id": "",
+      "parent": "C-U09-011",
+      "visible_when": "the service mode popup is open",
+      "enabled_when": "always",
+      "action": "Selects the VPN service mode",
+      "navigates_to": "",
+      "source": "core/src/main/res/values/arrays.xml:213"
+    },
+    {
+      "id": "C-U09-014",
+      "type": "menu_item",
+      "label": "Transproxy",
+      "android_id": "",
+      "parent": "C-U09-011",
+      "visible_when": "the service mode popup is open",
+      "enabled_when": "always",
+      "action": "Selects the transproxy service mode",
+      "navigates_to": "",
+      "source": "core/src/main/res/values/arrays.xml:214"
+    },
+    {
+      "id": "C-U09-015",
+      "type": "preference",
+      "label": "SOCKS5 proxy port",
+      "android_id": "portProxy",
+      "parent": "C-U09-004",
+      "visible_when": "the list shows this row, which the Advanced button controls",
+      "enabled_when": "the service state reported by the main screen is Stopped",
+      "action": "Opens the port dialog with the stored text",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:23"
+    },
+    {
+      "id": "C-U09-016",
+      "type": "preference",
+      "label": "Local DNS port",
+      "android_id": "portLocalDns",
+      "parent": "C-U09-004",
+      "visible_when": "the list shows this row, which the Advanced button controls",
+      "enabled_when": "the service state reported by the main screen is Stopped",
+      "action": "Opens the port dialog with the stored text",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:28"
+    },
+    {
+      "id": "C-U09-017",
+      "type": "preference",
+      "label": "Transproxy port",
+      "android_id": "portTransproxy",
+      "parent": "C-U09-004",
+      "visible_when": "the list shows this row, which the Advanced button controls",
+      "enabled_when": "the service state is Stopped and the stored service mode is transproxy",
+      "action": "Opens the port dialog with the stored text",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:33"
+    },
+    {
+      "id": "C-U09-018",
+      "type": "button",
+      "label": "Advanced",
+      "android_id": "",
+      "parent": "C-U09-004",
+      "visible_when": "the list is collapsed and at least one row is hidden",
+      "enabled_when": "always",
+      "action": "Expands the list, shows every row, and removes itself",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:3"
+    },
+    {
+      "id": "C-U09-019",
+      "type": "text",
+      "label": "Service mode, SOCKS5 proxy port, Local DNS port, Transproxy port",
+      "android_id": "",
+      "parent": "C-U09-018",
+      "visible_when": "the list is collapsed",
+      "enabled_when": "always",
+      "action": "Lists the titles of the hidden rows as the Advanced summary",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:15"
+    },
+    {
+      "id": "C-U09-020",
+      "type": "dialog",
+      "label": "SOCKS5 proxy port",
+      "android_id": "",
+      "parent": "C-U09-015",
+      "visible_when": "the enabled SOCKS5 proxy port row is tapped",
+      "enabled_when": "always",
+      "action": "Shows a title, one text field, OK and Cancel",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:23"
+    },
+    {
+      "id": "C-U09-021",
+      "type": "input",
+      "label": "Port number",
+      "android_id": "android:id/edit",
+      "parent": "C-U09-020",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Holds the stored text, takes digits only, and limits the text to five characters",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:37"
+    },
+    {
+      "id": "C-U09-022",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android:id/button1",
+      "parent": "C-U09-020",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Stores the field text in portProxy and closes the dialog",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:23"
+    },
+    {
+      "id": "C-U09-023",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android:id/button2",
+      "parent": "C-U09-020",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Closes the dialog and stores nothing",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:23"
+    },
+    {
+      "id": "C-U09-024",
+      "type": "dialog",
+      "label": "Local DNS port",
+      "android_id": "",
+      "parent": "C-U09-016",
+      "visible_when": "the enabled Local DNS port row is tapped",
+      "enabled_when": "always",
+      "action": "Shows a title, one text field, OK and Cancel",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:28"
+    },
+    {
+      "id": "C-U09-025",
+      "type": "input",
+      "label": "Port number",
+      "android_id": "android:id/edit",
+      "parent": "C-U09-024",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Holds the stored text, takes digits only, and limits the text to five characters",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:37"
+    },
+    {
+      "id": "C-U09-026",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android:id/button1",
+      "parent": "C-U09-024",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Stores the field text in portLocalDns and closes the dialog",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:28"
+    },
+    {
+      "id": "C-U09-027",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android:id/button2",
+      "parent": "C-U09-024",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Closes the dialog and stores nothing",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:28"
+    },
+    {
+      "id": "C-U09-028",
+      "type": "dialog",
+      "label": "Transproxy port",
+      "android_id": "",
+      "parent": "C-U09-017",
+      "visible_when": "the enabled Transproxy port row is tapped",
+      "enabled_when": "always",
+      "action": "Shows a title, one text field, OK and Cancel",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:33"
+    },
+    {
+      "id": "C-U09-029",
+      "type": "input",
+      "label": "Port number",
+      "android_id": "android:id/edit",
+      "parent": "C-U09-028",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Holds the stored text, takes digits only, and limits the text to five characters",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:37"
+    },
+    {
+      "id": "C-U09-030",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android:id/button1",
+      "parent": "C-U09-028",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Stores the field text in portTransproxy and closes the dialog",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:33"
+    },
+    {
+      "id": "C-U09-031",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android:id/button2",
+      "parent": "C-U09-028",
+      "visible_when": "the port dialog is open",
+      "enabled_when": "always",
+      "action": "Closes the dialog and stores nothing",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:33"
+    },
+    {
+      "id": "C-U09-032",
+      "type": "text",
+      "label": "Not set",
+      "android_id": "",
+      "parent": "C-U09-015",
+      "visible_when": "the stored SOCKS5 proxy port text is empty",
+      "enabled_when": "always",
+      "action": "Shows the empty-value summary of the row",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:27"
+    },
+    {
+      "id": "C-U09-033",
+      "type": "text",
+      "label": "Not set",
+      "android_id": "",
+      "parent": "C-U09-016",
+      "visible_when": "the stored Local DNS port text is empty",
+      "enabled_when": "always",
+      "action": "Shows the empty-value summary of the row",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:32"
+    },
+    {
+      "id": "C-U09-034",
+      "type": "text",
+      "label": "Not set",
+      "android_id": "",
+      "parent": "C-U09-017",
+      "visible_when": "the stored Transproxy port text is empty",
+      "enabled_when": "always",
+      "action": "Shows the empty-value summary of the row",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/xml/pref_global.xml:36"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UI-01",
+      "statement": "The screen lists six rows in this order: Auto Connect, Allow Toggling in Lock Screen, Service mode, SOCKS5 proxy port, Local DNS port, Transproxy port.",
+      "kind": "display",
+      "source": "mobile/src/main/res/xml/pref_global.xml:4",
+      "examples": [
+        {
+          "given": "a fresh install",
+          "when": "the user opens Settings",
+          "then": "the six rows appear in the fixed order",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service runs in transproxy mode",
+          "when": "the user opens Settings",
+          "then": "the row order is unchanged",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-02",
+      "statement": "While collapsed, the list shows only Auto Connect and Allow Toggling in Lock Screen, then the Advanced button.",
+      "kind": "display",
+      "source": "mobile/src/main/res/xml/pref_global.xml:3",
+      "examples": [
+        {
+          "given": "the screen just opened",
+          "when": "the list renders",
+          "then": "two rows and Advanced are visible",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user expanded the list",
+          "when": "the list renders",
+          "then": "the Advanced button is absent",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-03",
+      "statement": "Tapping Advanced shows the four hidden rows and removes the Advanced button.",
+      "kind": "interaction",
+      "source": "mobile/src/main/res/xml/pref_global.xml:3",
+      "examples": [
+        {
+          "given": "the list is collapsed",
+          "when": "the user taps Advanced",
+          "then": "six rows show and Advanced is gone",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list is collapsed",
+          "when": "the user scrolls without tapping",
+          "then": "the list stays collapsed",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-04",
+      "statement": "The Advanced summary lists the hidden row titles joined by commas.",
+      "kind": "display",
+      "source": "mobile/src/main/res/xml/pref_global.xml:3",
+      "examples": [
+        {
+          "given": "the list is collapsed",
+          "when": "the user reads the Advanced row",
+          "then": "the summary reads Service mode, SOCKS5 proxy port, Local DNS port, Transproxy port",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list is collapsed",
+          "when": "the user reads the Advanced summary",
+          "then": "Auto Connect and Allow Toggling in Lock Screen are absent, because only the hidden rows are listed",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-05",
+      "statement": "The expansion lasts only while the screen is open, and reopening shows the first two rows again.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsFragment.kt:32",
+      "examples": [
+        {
+          "given": "the user expanded the list",
+          "when": "the user leaves and opens Settings again",
+          "then": "the list is collapsed again",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list is expanded",
+          "when": "the user checks the preference store",
+          "then": "no key records the expansion",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-06",
+      "statement": "The Allow Toggling in Lock Screen row is absent below API 24 and present from API 24.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:53",
+      "examples": [
+        {
+          "given": "the device runs API 23",
+          "when": "the user opens Settings",
+          "then": "the lock-screen row does not exist",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the device runs API 24",
+          "when": "the user opens Settings",
+          "then": "the lock-screen row is shown",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-07",
+      "statement": "The Auto Connect switch stores the boolean isAutoConnect in the public preference store.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:44",
+      "examples": [
+        {
+          "given": "Auto Connect is off",
+          "when": "the user turns it on",
+          "then": "isAutoConnect is stored as true",
+          "polarity": "positive"
+        },
+        {
+          "given": "Auto Connect is on",
+          "when": "the user turns it off",
+          "then": "isAutoConnect is stored as false",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-08",
+      "statement": "Turning Auto Connect on enables the boot receiver component, and turning it off disables that component.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:45",
+      "examples": [
+        {
+          "given": "the boot receiver is disabled",
+          "when": "the user turns Auto Connect on",
+          "then": "the receiver component becomes enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the boot receiver is enabled",
+          "when": "the user turns Auto Connect off",
+          "then": "the receiver component becomes disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-09",
+      "statement": "When isAutoConnect is absent, the switch shows the boot receiver state and stores that value.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:63",
+      "examples": [
+        {
+          "given": "a fresh install with a disabled receiver",
+          "when": "the settings screen reads the preference",
+          "then": "the switch is off and false is stored",
+          "polarity": "positive"
+        },
+        {
+          "given": "the boot receiver component is enabled and the key is absent",
+          "when": "the key is absent",
+          "then": "the switch is on and true is stored",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-10",
+      "statement": "Starting the service sets the boot receiver enabled state to the stored isAutoConnect value.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:345",
+      "examples": [
+        {
+          "given": "Auto Connect is on",
+          "when": "the service starts",
+          "then": "the boot receiver is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "Auto Connect is off",
+          "when": "the service starts",
+          "then": "the boot receiver stays disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-11",
+      "statement": "Stopping the service without restart disables the boot receiver while isAutoConnect keeps its stored value.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:311",
+      "examples": [
+        {
+          "given": "Auto Connect is on and the service is Connected",
+          "when": "the user stops the service without a restart",
+          "then": "the boot receiver is disabled and isAutoConnect still stores true",
+          "polarity": "positive"
+        },
+        {
+          "given": "Auto Connect is on and the tunnel runs",
+          "when": "the user stops the tunnel",
+          "then": "the receiver is disabled and the switch shows on",
+          "polarity": "boundary"
+        },
+        {
+          "given": "Auto Connect is off",
+          "when": "the service stops",
+          "then": "the receiver stays disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-12",
+      "statement": "The Allow Toggling in Lock Screen switch stores the boolean directBootAware in the public store.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:50",
+      "examples": [
+        {
+          "given": "the switch is off",
+          "when": "the user turns it on",
+          "then": "directBootAware is stored as true",
+          "polarity": "positive"
+        },
+        {
+          "given": "the switch is on",
+          "when": "the user turns it off",
+          "then": "directBootAware is stored as false",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-13",
+      "statement": "Turning the lock-screen switch on copies the selected profile to device-protected storage only when direct boot is supported.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:51",
+      "examples": [
+        {
+          "given": "the device supports per-user encryption and a profile is selected",
+          "when": "the user turns the switch on",
+          "then": "the profile is written to device-protected storage",
+          "polarity": "positive"
+        },
+        {
+          "given": "no profile is selected",
+          "when": "the user turns the switch on",
+          "then": "the device-protected copy is deleted",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-14",
+      "statement": "Turning the switch on without direct boot support, or turning it off, deletes the device-protected profile copy and its config files.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:28",
+      "examples": [
+        {
+          "given": "a device without per-user encryption",
+          "when": "the user turns the switch on",
+          "then": "no copy is kept on device storage",
+          "polarity": "negative"
+        },
+        {
+          "given": "the switch is on",
+          "when": "the user turns it off",
+          "then": "the copy and both config files are deleted",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-15",
+      "statement": "Tapping the enabled Service mode row opens a simple menu with the three mode entries.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77",
+      "examples": [
+        {
+          "given": "the service is stopped",
+          "when": "the user taps Service mode",
+          "then": "the menu shows Proxy only, VPN and Transproxy",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is connected",
+          "when": "the user taps Service mode",
+          "then": "no menu opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-16",
+      "statement": "The service mode menu marks the entry that matches the stored value.",
+      "kind": "display",
+      "source": "mobile/src/main/res/xml/pref_global.xml:15",
+      "examples": [
+        {
+          "given": "the stored mode is VPN",
+          "when": "the menu opens",
+          "then": "VPN is marked as selected",
+          "polarity": "positive"
+        },
+        {
+          "given": "the stored mode is transproxy",
+          "when": "the menu opens",
+          "then": "Transproxy is marked as selected",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-17",
+      "statement": "Choosing a menu entry stores one of proxy, vpn or transproxy under serviceMode.",
+      "kind": "persistence",
+      "source": "mobile/src/main/res/xml/pref_global.xml:20",
+      "examples": [
+        {
+          "given": "the mode is VPN",
+          "when": "the user taps Proxy only",
+          "then": "serviceMode stores proxy",
+          "polarity": "positive"
+        },
+        {
+          "given": "the mode is VPN",
+          "when": "the user taps Transproxy",
+          "then": "serviceMode stores transproxy",
+          "polarity": "positive"
+        },
+        {
+          "given": "no serviceMode value is stored",
+          "when": "the settings screen binds the service mode row",
+          "then": "the key holds vpn, the XML default",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-18",
+      "statement": "The Service mode summary shows the stored entry, VPN when no value is stored, and Not set when the value matches no entry.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:67",
+      "examples": [
+        {
+          "given": "no serviceMode value is stored",
+          "when": "the row renders",
+          "then": "the summary reads VPN",
+          "polarity": "positive"
+        },
+        {
+          "given": "serviceMode holds an unknown string",
+          "when": "the row renders",
+          "then": "the summary reads Not set",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-19",
+      "statement": "The Service mode row is enabled only while the service state is Stopped.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:68",
+      "examples": [
+        {
+          "given": "the service is Stopped",
+          "when": "the row renders",
+          "then": "the row is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connected",
+          "when": "the row renders",
+          "then": "the row is disabled",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service is Idle before the bind",
+          "when": "the row renders",
+          "then": "the row is disabled",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-20",
+      "statement": "The SOCKS5 proxy port and Local DNS port rows are enabled only while the service state is Stopped.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:69",
+      "examples": [
+        {
+          "given": "the service is Stopped",
+          "when": "the rows render",
+          "then": "both rows are enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connecting",
+          "when": "the rows render",
+          "then": "both rows are disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-21",
+      "statement": "The Transproxy port row is enabled only when the service is Stopped and the stored mode is transproxy.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:63",
+      "examples": [
+        {
+          "given": "the service is Stopped and the mode is transproxy",
+          "when": "the row renders",
+          "then": "the row is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Stopped and the mode is VPN",
+          "when": "the row renders",
+          "then": "the row is disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-22",
+      "statement": "Choosing Transproxy enables the Transproxy port row at once, without leaving the screen.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:62",
+      "examples": [
+        {
+          "given": "the mode is VPN and the service is Stopped",
+          "when": "the user picks Transproxy",
+          "then": "the port row becomes enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "the mode is Transproxy",
+          "when": "the user picks VPN",
+          "then": "the port row becomes disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-23",
+      "statement": "A serviceMode change makes the main screen rebind its service connection to the new mode's service class.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:184",
+      "examples": [
+        {
+          "given": "the mode changes from VPN to Proxy only",
+          "when": "the value is stored",
+          "then": "the main screen disconnects and binds ProxyService",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user picks the already stored mode",
+          "when": "no new value is stored",
+          "then": "the connection is not rebound",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-24",
+      "statement": "The state gating follows live service state only while the settings screen is open.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:75",
+      "examples": [
+        {
+          "given": "the screen is open",
+          "when": "the service changes state",
+          "then": "the rows change their enabled state",
+          "polarity": "positive"
+        },
+        {
+          "given": "the user left the screen",
+          "when": "the service changes state",
+          "then": "the removed screen is not updated",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-25",
+      "statement": "Tapping an enabled port row opens a dialog titled with the row title and holding the stored text.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:69",
+      "examples": [
+        {
+          "given": "portProxy stores 1080",
+          "when": "the user taps SOCKS5 proxy port",
+          "then": "the dialog title is SOCKS5 proxy port and the field reads 1080",
+          "polarity": "positive"
+        },
+        {
+          "given": "portLocalDns stores 5450",
+          "when": "the user taps Local DNS port",
+          "then": "the dialog title is Local DNS port and the field reads 5450",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service is Connected",
+          "when": "the user taps the SOCKS5 proxy port row",
+          "then": "no port dialog opens",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-26",
+      "statement": "The port field takes digits only, holds at most five characters, and places the cursor at the end.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:36",
+      "examples": [
+        {
+          "given": "portProxy stores 1080",
+          "when": "the user opens the SOCKS5 proxy port dialog",
+          "then": "the field shows 1080 with the cursor after the last digit",
+          "polarity": "positive"
+        },
+        {
+          "given": "the dialog is open",
+          "when": "the user types a sixth digit",
+          "then": "the field keeps five characters",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the dialog is open",
+          "when": "the user types a letter",
+          "then": "the letter is not accepted",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-27",
+      "statement": "OK stores the typed text unchanged in the port key, and Cancel stores nothing.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:56",
+      "examples": [
+        {
+          "given": "portProxy stores 1080",
+          "when": "the user types 1234 and taps OK",
+          "then": "portProxy stores the string 1234",
+          "polarity": "positive"
+        },
+        {
+          "given": "portProxy stores 1080",
+          "when": "the user types 1234 and taps Cancel",
+          "then": "portProxy keeps 1080",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-28",
+      "statement": "A port row shows its stored text as the summary, and shows Not set when the text is empty.",
+      "kind": "display",
+      "source": "mobile/src/main/res/xml/pref_global.xml:23",
+      "examples": [
+        {
+          "given": "portProxy stores 1080",
+          "when": "the row renders",
+          "then": "the summary reads 1080",
+          "polarity": "positive"
+        },
+        {
+          "given": "portProxy stores an empty string",
+          "when": "the row renders",
+          "then": "the summary reads Not set",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-29",
+      "statement": "A stored port below 1025 or above 65535 is replaced by the default when the core reads it.",
+      "kind": "validation",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/Utils.kt:100",
+      "examples": [
+        {
+          "given": "portProxy stores 1234",
+          "when": "the core reads the port",
+          "then": "the core uses 1234",
+          "polarity": "positive"
+        },
+        {
+          "given": "portProxy stores 80",
+          "when": "the core reads the port",
+          "then": "the core uses 1080",
+          "polarity": "negative"
+        },
+        {
+          "given": "portProxy stores 1025",
+          "when": "the core reads the port",
+          "then": "the core uses 1025",
+          "polarity": "boundary"
+        },
+        {
+          "given": "portProxy stores 65535",
+          "when": "the core reads the port",
+          "then": "the core uses 65535",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-30",
+      "statement": "The default ports are 1080 for SOCKS5, 5450 for local DNS and 8200 for transproxy, each plus the calling user index.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:69",
+      "examples": [
+        {
+          "given": "the primary user and no stored port",
+          "when": "the screen seeds the defaults",
+          "then": "portProxy stores 1080",
+          "polarity": "positive"
+        },
+        {
+          "given": "a secondary user with index 10",
+          "when": "the screen seeds the defaults",
+          "then": "portProxy stores 1090",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-31",
+      "statement": "Opening the screen writes default strings for absent port keys and for an absent isAutoConnect key.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:83",
+      "examples": [
+        {
+          "given": "no port keys are stored",
+          "when": "the user opens Settings",
+          "then": "the three port keys hold decimal strings",
+          "polarity": "positive"
+        },
+        {
+          "given": "a port key already holds 1234",
+          "when": "the user opens Settings",
+          "then": "the key keeps 1234",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-32",
+      "statement": "The local DNS port becomes the dnsgw address that the core uses in VPN mode.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:215",
+      "examples": [
+        {
+          "given": "portLocalDns stores 5353",
+          "when": "the VPN service starts",
+          "then": "the core receives dnsgw 127.0.0.1:5353",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service runs in proxy mode",
+          "when": "the core starts",
+          "then": "no dnsgw address is passed",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-33",
+      "statement": "The SOCKS5 port is the local listener in proxy and VPN modes and the redsocks upstream in transproxy mode.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/TransproxyService.kt:51",
+      "examples": [
+        {
+          "given": "portProxy stores 1080",
+          "when": "the core starts in proxy mode",
+          "then": "the local SOCKS5 listener uses port 1080",
+          "polarity": "positive"
+        },
+        {
+          "given": "portProxy stores 1080",
+          "when": "the transproxy service starts",
+          "then": "redsocks forwards to 127.0.0.1:1080",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service runs in transproxy mode and portTransproxy stores 8200 while portProxy stores 1080",
+          "when": "redsocks starts",
+          "then": "redsocks listens on 8200 and uses 1080 only as its upstream",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-34",
+      "statement": "The Transproxy port is the local redsocks port used in transproxy mode.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/TransproxyService.kt:60",
+      "examples": [
+        {
+          "given": "portTransproxy stores 8200",
+          "when": "the transproxy service starts",
+          "then": "redsocks listens on 8200",
+          "polarity": "positive"
+        },
+        {
+          "given": "the service runs in VPN mode",
+          "when": "the core starts",
+          "then": "no redsocks process listens on the Transproxy port",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UI-35",
+      "statement": "Opening the screen writes directBootAware false when the key is absent.",
+      "kind": "persistence",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:49",
+      "examples": [
+        {
+          "given": "directBootAware is absent and the device runs API 24 or later",
+          "when": "the user opens Settings",
+          "then": "the Lock Screen switch shows off and directBootAware is stored as false",
+          "polarity": "positive"
+        },
+        {
+          "given": "a fresh install on API 24 or later",
+          "when": "the user opens Settings",
+          "then": "directBootAware is stored as false",
+          "polarity": "boundary"
+        },
+        {
+          "given": "directBootAware is already true",
+          "when": "the user opens Settings",
+          "then": "the key keeps true",
+          "polarity": "negative"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "Global settings control availability",
+      "states": [
+        "enabled",
+        "disabled"
+      ],
+      "transitions": [
+        {
+          "from": "disabled",
+          "to": "enabled",
+          "event": "the service reports Stopped while the screen is open",
+          "producer": "GlobalSettingsPreferenceFragment state listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:66"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the service reports Idle, Connecting, Connected or Stopping",
+          "producer": "GlobalSettingsPreferenceFragment state listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:66"
+        },
+        {
+          "from": "disabled",
+          "to": "enabled",
+          "event": "the screen is created while the service is already Stopped",
+          "producer": "GlobalSettingsPreferenceFragment.onCreatePreferences initial listener call",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:75"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the screen is created while the service is not Stopped",
+          "producer": "GlobalSettingsPreferenceFragment.onCreatePreferences initial listener call",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:75"
+        },
+        {
+          "from": "enabled",
+          "to": "disabled",
+          "event": "the screen is destroyed and the listener is cleared",
+          "producer": "GlobalSettingsPreferenceFragment.onDestroy",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:85"
+        }
+      ]
+    },
+    {
+      "object": "Auto Connect switch",
+      "states": [
+        "off",
+        "on"
+      ],
+      "transitions": [
+        {
+          "from": "off",
+          "to": "on",
+          "event": "the user taps the Auto Connect row or switch",
+          "producer": "SwitchPreference change listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:44"
+        },
+        {
+          "from": "on",
+          "to": "off",
+          "event": "the user taps the Auto Connect row or switch",
+          "producer": "SwitchPreference change listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:44"
+        }
+      ]
+    },
+    {
+      "object": "Allow Toggling in Lock Screen switch",
+      "states": [
+        "absent",
+        "off",
+        "on"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "off",
+          "event": "the screen is created on API 24 or later",
+          "producer": "GlobalSettingsPreferenceFragment.onCreatePreferences",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:50"
+        },
+        {
+          "from": "absent",
+          "to": "absent",
+          "event": "the screen is created below API 24 and the row is removed",
+          "producer": "GlobalSettingsPreferenceFragment.onCreatePreferences",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:53"
+        },
+        {
+          "from": "off",
+          "to": "on",
+          "event": "the user taps the lock-screen row or switch",
+          "producer": "SwitchPreference change listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:50"
+        },
+        {
+          "from": "on",
+          "to": "off",
+          "event": "the user taps the lock-screen row or switch",
+          "producer": "SwitchPreference change listener",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:50"
+        }
+      ]
+    },
+    {
+      "object": "Service mode setting",
+      "states": [
+        "vpn",
+        "proxy",
+        "transproxy"
+      ],
+      "transitions": [
+        {
+          "from": "vpn",
+          "to": "proxy",
+          "event": "the user picks Proxy only in the service mode menu",
+          "producer": "SimpleMenuPreference item click and ListPreference.setValue",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+        },
+        {
+          "from": "vpn",
+          "to": "transproxy",
+          "event": "the user picks Transproxy in the service mode menu",
+          "producer": "SimpleMenuPreference item click and ListPreference.setValue",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+        },
+        {
+          "from": "proxy",
+          "to": "vpn",
+          "event": "the user picks VPN in the service mode menu",
+          "producer": "SimpleMenuPreference item click and ListPreference.setValue",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+        },
+        {
+          "from": "proxy",
+          "to": "transproxy",
+          "event": "the user picks Transproxy in the service mode menu",
+          "producer": "SimpleMenuPreference item click and ListPreference.setValue",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+        },
+        {
+          "from": "transproxy",
+          "to": "vpn",
+          "event": "the user picks VPN in the service mode menu",
+          "producer": "SimpleMenuPreference item click and ListPreference.setValue",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+        },
+        {
+          "from": "transproxy",
+          "to": "proxy",
+          "event": "the user picks Proxy only in the service mode menu",
+          "producer": "SimpleMenuPreference item click and ListPreference.setValue",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+        },
+        {
+          "from": "vpn",
+          "to": "vpn",
+          "event": "no serviceMode value is stored and the XML default vpn is written",
+          "producer": "ListPreference default value and DataStore.serviceMode fallback",
+          "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:67"
+        }
+      ]
+    },
+    {
+      "object": "Port preference value",
+      "states": [
+        "unset",
+        "stored"
+      ],
+      "transitions": [
+        {
+          "from": "unset",
+          "to": "stored",
+          "event": "the screen seeds a default port string when the key is absent",
+          "producer": "DataStore.initGlobal",
+          "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:85"
+        },
+        {
+          "from": "stored",
+          "to": "stored",
+          "event": "the user confirms a new text in the port dialog",
+          "producer": "EditTextPreferenceDialogFragmentCompat positive result",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:56"
+        },
+        {
+          "from": "stored",
+          "to": "unset",
+          "event": "the user clears the field and taps OK",
+          "producer": "EditTextPreferenceDialogFragmentCompat positive result",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:57"
+        },
+        {
+          "from": "stored",
+          "to": "stored",
+          "event": "the user taps Cancel and the stored text stays",
+          "producer": "EditTextPreferenceDialogFragmentCompat negative result",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:57"
+        }
+      ]
+    },
+    {
+      "object": "Settings list expansion",
+      "states": [
+        "collapsed",
+        "expanded"
+      ],
+      "transitions": [
+        {
+          "from": "collapsed",
+          "to": "expanded",
+          "event": "the user taps the Advanced button",
+          "producer": "androidx ExpandButton click and PreferenceGroupAdapter",
+          "source": "mobile/src/main/res/xml/pref_global.xml:3"
+        },
+        {
+          "from": "expanded",
+          "to": "collapsed",
+          "event": "the user leaves the screen and opens Settings again",
+          "producer": "GlobalSettingsFragment and PreferenceInflater",
+          "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsFragment.kt:32"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U09-01",
+      "name": "Open the global settings screen",
+      "steps": [
+        {
+          "label": "User: opens the navigation drawer",
+          "type": "start",
+          "next": "User: taps the Settings entry",
+          "exception": false
+        },
+        {
+          "label": "User: taps the Settings entry",
+          "type": "step",
+          "next": "Decision: the Settings entry was already checked",
+          "exception": false
+        },
+        {
+          "label": "Decision: the Settings entry was already checked",
+          "type": "decision",
+          "next": "Yes: the drawer closes and the screen stays / No: the settings screen replaces the profile list",
+          "exception": false
+        },
+        {
+          "label": "Yes: the drawer closes and the screen stays",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: the settings screen replaces the profile list",
+          "type": "step",
+          "next": "System: binds the public preference store and seeds defaults",
+          "exception": false
+        },
+        {
+          "label": "System: binds the public preference store and seeds defaults",
+          "type": "step",
+          "next": "Decision: the service state is Stopped",
+          "exception": false
+        },
+        {
+          "label": "Decision: the service state is Stopped",
+          "type": "decision",
+          "next": "Yes: the service mode and port rows are enabled / No: the service mode and port rows are disabled",
+          "exception": false
+        },
+        {
+          "label": "Yes: the service mode and port rows are enabled",
+          "type": "step",
+          "next": "System: shows the first two rows and the Advanced button",
+          "exception": false
+        },
+        {
+          "label": "No: the service mode and port rows are disabled",
+          "type": "step",
+          "next": "System: shows the first two rows and the Advanced button",
+          "exception": false
+        },
+        {
+          "label": "System: shows the first two rows and the Advanced button",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service bind fails, so the state stays Idle and every service row is disabled.",
+        "The Settings entry is already checked, so the drawer closes and the screen does not change."
+      ]
+    },
+    {
+      "id": "F-U09-02",
+      "name": "Expand the collapsed settings rows",
+      "steps": [
+        {
+          "label": "User: taps the Advanced button",
+          "type": "start",
+          "next": "System: expands the preference group",
+          "exception": false
+        },
+        {
+          "label": "System: expands the preference group",
+          "type": "step",
+          "next": "Decision: the service state is Stopped",
+          "exception": false
+        },
+        {
+          "label": "Decision: the service state is Stopped",
+          "type": "decision",
+          "next": "Yes: the port rows appear enabled / No: the port rows appear disabled",
+          "exception": false
+        },
+        {
+          "label": "Yes: the port rows appear enabled",
+          "type": "step",
+          "next": "System: shows all six rows and removes the Advanced button",
+          "exception": false
+        },
+        {
+          "label": "No: the port rows appear disabled",
+          "type": "step",
+          "next": "System: shows all six rows and removes the Advanced button",
+          "exception": false
+        },
+        {
+          "label": "System: shows all six rows and removes the Advanced button",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The user leaves the screen after expanding, so the next visit starts collapsed again."
+      ]
+    },
+    {
+      "id": "F-U09-03",
+      "name": "Change the service mode",
+      "steps": [
+        {
+          "label": "User: taps the Service mode row",
+          "type": "start",
+          "next": "Decision: the row is enabled",
+          "exception": false
+        },
+        {
+          "label": "Decision: the row is enabled",
+          "type": "decision",
+          "next": "Yes: the service mode popup opens / No: nothing happens",
+          "exception": true
+        },
+        {
+          "label": "Yes: the service mode popup opens",
+          "type": "step",
+          "next": "User: taps an entry in the popup",
+          "exception": false
+        },
+        {
+          "label": "No: nothing happens",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "User: taps an entry in the popup",
+          "type": "step",
+          "next": "Decision: the tapped entry differs from the stored value",
+          "exception": false
+        },
+        {
+          "label": "Decision: the tapped entry differs from the stored value",
+          "type": "decision",
+          "next": "Yes: the new value is stored / No: the popup closes without a write",
+          "exception": false
+        },
+        {
+          "label": "No: the popup closes without a write",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "Yes: the new value is stored",
+          "type": "step",
+          "next": "Decision: the new mode is transproxy",
+          "exception": false
+        },
+        {
+          "label": "Decision: the new mode is transproxy",
+          "type": "decision",
+          "next": "Yes: the Transproxy port row becomes enabled / No: the Transproxy port row becomes disabled",
+          "exception": false
+        },
+        {
+          "label": "Yes: the Transproxy port row becomes enabled",
+          "type": "step",
+          "next": "System: the main screen rebinds the service connection",
+          "exception": false
+        },
+        {
+          "label": "No: the Transproxy port row becomes disabled",
+          "type": "step",
+          "next": "System: the main screen rebinds the service connection",
+          "exception": false
+        },
+        {
+          "label": "System: the main screen rebinds the service connection",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service is not Stopped, so the row is disabled and the flow cannot start.",
+        "The stored mode is an unknown string, so the service class lookup throws when the main screen binds."
+      ]
+    },
+    {
+      "id": "F-U09-04",
+      "name": "Edit a local port value",
+      "steps": [
+        {
+          "label": "User: taps an enabled port row",
+          "type": "start",
+          "next": "System: opens the port dialog with the stored text",
+          "exception": false
+        },
+        {
+          "label": "System: opens the port dialog with the stored text",
+          "type": "step",
+          "next": "Decision: the user taps OK",
+          "exception": false
+        },
+        {
+          "label": "Decision: the user taps OK",
+          "type": "decision",
+          "next": "Yes: the typed text is stored / No: the dialog closes and nothing is stored",
+          "exception": false
+        },
+        {
+          "label": "No: the dialog closes and nothing is stored",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "Yes: the typed text is stored",
+          "type": "step",
+          "next": "Decision: the text is empty",
+          "exception": false
+        },
+        {
+          "label": "Decision: the text is empty",
+          "type": "decision",
+          "next": "Yes: the row shows Not set / No: the row shows the typed text",
+          "exception": false
+        },
+        {
+          "label": "Yes: the row shows Not set",
+          "type": "step",
+          "next": "Decision: the text is inside 1025 to 65535",
+          "exception": false
+        },
+        {
+          "label": "No: the row shows the typed text",
+          "type": "step",
+          "next": "Decision: the text is inside 1025 to 65535",
+          "exception": false
+        },
+        {
+          "label": "Decision: the text is inside 1025 to 65535",
+          "type": "decision",
+          "next": "Yes: the core uses the stored text as the port / No: the core uses the default port instead",
+          "exception": false
+        },
+        {
+          "label": "Yes: the core uses the stored text as the port",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: the core uses the default port instead",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The row is disabled while the service is not Stopped, so the dialog does not open.",
+        "The user types more than five digits, so the field refuses the extra characters."
+      ]
+    },
+    {
+      "id": "F-U09-05",
+      "name": "Toggle Auto Connect",
+      "steps": [
+        {
+          "label": "User: taps the Auto Connect row or its switch",
+          "type": "start",
+          "next": "Decision: the switch was off",
+          "exception": false
+        },
+        {
+          "label": "Decision: the switch was off",
+          "type": "decision",
+          "next": "Yes: isAutoConnect becomes true / No: isAutoConnect becomes false",
+          "exception": false
+        },
+        {
+          "label": "Yes: isAutoConnect becomes true",
+          "type": "step",
+          "next": "System: enables the boot receiver component",
+          "exception": false
+        },
+        {
+          "label": "No: isAutoConnect becomes false",
+          "type": "step",
+          "next": "System: disables the boot receiver component",
+          "exception": false
+        },
+        {
+          "label": "System: enables the boot receiver component",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "System: disables the boot receiver component",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The service stops without restart, so the boot receiver turns off while isAutoConnect stays true."
+      ]
+    },
+    {
+      "id": "F-U09-06",
+      "name": "Toggle Allow Toggling in Lock Screen",
+      "steps": [
+        {
+          "label": "User: taps the Allow Toggling in Lock Screen row or its switch",
+          "type": "start",
+          "next": "Decision: the new value is true",
+          "exception": false
+        },
+        {
+          "label": "Decision: the new value is true",
+          "type": "decision",
+          "next": "Yes: directBootAware becomes true / No: directBootAware becomes false",
+          "exception": false
+        },
+        {
+          "label": "Yes: directBootAware becomes true",
+          "type": "step",
+          "next": "Decision: direct boot is supported on this device",
+          "exception": false
+        },
+        {
+          "label": "Decision: direct boot is supported on this device",
+          "type": "decision",
+          "next": "Yes: the profile is copied to device-protected storage / No: the device-protected copy is deleted",
+          "exception": false
+        },
+        {
+          "label": "Yes: the profile is copied to device-protected storage",
+          "type": "step",
+          "next": "System: stores directBootAware true",
+          "exception": false
+        },
+        {
+          "label": "No: the device-protected copy is deleted",
+          "type": "step",
+          "next": "System: stores directBootAware true",
+          "exception": false
+        },
+        {
+          "label": "No: directBootAware becomes false",
+          "type": "step",
+          "next": "System: deletes the device-protected copy and its config files",
+          "exception": false
+        },
+        {
+          "label": "System: stores directBootAware true",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "System: deletes the device-protected copy and its config files",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The device runs API 23, so the row does not exist and the flow cannot start.",
+        "The encryption status query throws, so direct boot counts as unsupported and the copy is deleted."
+      ]
+    },
+    {
+      "id": "F-U09-07",
+      "name": "Service state gates the settings rows",
+      "steps": [
+        {
+          "label": "System: the service reports a new state to the main screen",
+          "type": "start",
+          "next": "Decision: the state is Stopped",
+          "exception": false
+        },
+        {
+          "label": "Decision: the state is Stopped",
+          "type": "decision",
+          "next": "Yes: the settings rows are enabled / No: the settings rows are disabled",
+          "exception": false
+        },
+        {
+          "label": "Yes: the settings rows are enabled",
+          "type": "step",
+          "next": "Decision: the stored service mode is transproxy",
+          "exception": false
+        },
+        {
+          "label": "Decision: the stored service mode is transproxy",
+          "type": "decision",
+          "next": "Yes: the Transproxy port row is enabled / No: the Transproxy port row is disabled",
+          "exception": false
+        },
+        {
+          "label": "Yes: the Transproxy port row is enabled",
+          "type": "step",
+          "next": "System: the screen keeps the new enable states",
+          "exception": false
+        },
+        {
+          "label": "No: the Transproxy port row is disabled",
+          "type": "step",
+          "next": "System: the screen keeps the new enable states",
+          "exception": false
+        },
+        {
+          "label": "No: the settings rows are disabled",
+          "type": "step",
+          "next": "System: the Transproxy port row is disabled as well",
+          "exception": false
+        },
+        {
+          "label": "System: the Transproxy port row is disabled as well",
+          "type": "step",
+          "next": "System: the screen keeps the new enable states",
+          "exception": false
+        },
+        {
+          "label": "System: the screen keeps the new enable states",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "The settings screen is closed, so no listener receives the state change."
+      ]
+    },
+    {
+      "id": "F-U09-08",
+      "name": "Leave the settings screen",
+      "steps": [
+        {
+          "label": "User: opens the drawer and picks another entry",
+          "type": "start",
+          "next": "System: the settings fragment is destroyed",
+          "exception": false
+        },
+        {
+          "label": "System: the settings fragment is destroyed",
+          "type": "step",
+          "next": "System: the main screen clears its state listener",
+          "exception": false
+        },
+        {
+          "label": "System: the main screen clears its state listener",
+          "type": "step",
+          "next": "Decision: the user returns to Settings",
+          "exception": false
+        },
+        {
+          "label": "Decision: the user returns to Settings",
+          "type": "decision",
+          "next": "Yes: the screen subscribes again and applies the current state / No: state changes have no effect on the closed screen",
+          "exception": false
+        },
+        {
+          "label": "Yes: the screen subscribes again and applies the current state",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "No: state changes have no effect on the closed screen",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "A new settings screen replaces the listener before the old screen is destroyed."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U09-01",
+      "title": "Open Settings from the navigation drawer",
+      "preconditions": [
+        "The app shows the profile list",
+        "The service is stopped",
+        "No serviceMode value is stored"
+      ],
+      "steps": [
+        "Open the navigation drawer",
+        "Tap the Settings entry"
+      ],
+      "expected": [
+        "The drawer closes and the Settings screen opens",
+        "The toolbar title reads Settings",
+        "Auto Connect and Allow Toggling in Lock Screen show, then the Advanced row",
+        "The Service mode summary reads VPN and serviceMode stores vpn"
+      ],
+      "control_path": "C-U09-001 > C-U09-004 > C-U09-018",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:203"
+    },
+    {
+      "id": "TC-U09-02",
+      "title": "Advanced expands the hidden rows and the next visit collapses them",
+      "preconditions": [
+        "The Settings screen is open",
+        "The list is collapsed"
+      ],
+      "steps": [
+        "Tap the Advanced row",
+        "Leave to Profiles",
+        "Open Settings again"
+      ],
+      "expected": [
+        "Service mode, SOCKS5 proxy port, Local DNS port and Transproxy port appear",
+        "The Advanced row disappears",
+        "The next visit shows the collapsed list again"
+      ],
+      "control_path": "C-U09-001 > C-U09-004 > C-U09-018",
+      "parity": "partial",
+      "source": "mobile/src/main/res/xml/pref_global.xml:3"
+    },
+    {
+      "id": "TC-U09-03",
+      "title": "The service mode row shows the three entries and marks the current one",
+      "preconditions": [
+        "The service is stopped",
+        "The list is expanded"
+      ],
+      "steps": [
+        "Tap the Service mode row"
+      ],
+      "expected": [
+        "A simple menu opens with Proxy only, VPN and Transproxy",
+        "VPN is marked as the current entry"
+      ],
+      "control_path": "C-U09-001 > C-U09-009 > C-U09-011",
+      "parity": "partial",
+      "source": "mobile/src/main/res/xml/pref_global.xml:15"
+    },
+    {
+      "id": "TC-U09-04",
+      "title": "Choosing Proxy only stores the mode and disables the transproxy port",
+      "preconditions": [
+        "The service is stopped",
+        "The stored mode is VPN"
+      ],
+      "steps": [
+        "Tap Service mode",
+        "Tap Proxy only"
+      ],
+      "expected": [
+        "serviceMode stores proxy",
+        "The Service mode summary reads Proxy only",
+        "The Transproxy port row stays disabled",
+        "The main screen rebinds its connection to ProxyService"
+      ],
+      "control_path": "C-U09-009 > C-U09-011 > C-U09-012",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:77"
+    },
+    {
+      "id": "TC-U09-05",
+      "title": "Cycle every service mode entry and let the transproxy port follow",
+      "preconditions": [
+        "The service is stopped",
+        "The stored mode is VPN"
+      ],
+      "steps": [
+        "Tap Service mode",
+        "Tap Transproxy",
+        "Tap Service mode",
+        "Tap Proxy only",
+        "Tap Service mode",
+        "Tap VPN",
+        "Tap Service mode",
+        "Tap Proxy only",
+        "Tap Service mode",
+        "Tap Transproxy",
+        "Tap Service mode",
+        "Tap VPN"
+      ],
+      "expected": [
+        "serviceMode stores transproxy and the Transproxy port row becomes enabled",
+        "serviceMode stores proxy and the transproxy port row becomes disabled",
+        "serviceMode stores vpn and the transproxy port stays disabled",
+        "serviceMode stores proxy again",
+        "serviceMode stores transproxy and the port row becomes enabled again",
+        "serviceMode stores vpn and every menu entry has been observed"
+      ],
+      "control_path": "C-U09-009 > C-U09-011 > C-U09-013",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:62"
+    },
+    {
+      "id": "TC-U09-06",
+      "title": "A service mode change rebinds the main screen to the new service class",
+      "preconditions": [
+        "The service is stopped",
+        "The stored mode is VPN"
+      ],
+      "steps": [
+        "Tap Service mode",
+        "Tap Proxy only",
+        "Wait for the main screen to rebind"
+      ],
+      "expected": [
+        "The old service binding is disconnected",
+        "The new binding uses the ProxyService class",
+        "No tunnel starts"
+      ],
+      "control_path": "C-U09-009 > C-U09-011 > C-U09-012",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/MainActivity.kt:184"
+    },
+    {
+      "id": "TC-U09-07",
+      "title": "The service mode and port rows lock while the tunnel runs",
+      "preconditions": [
+        "The Settings screen is open and expanded",
+        "The service is stopped"
+      ],
+      "steps": [
+        "Start the tunnel from the main screen",
+        "Return to Settings"
+      ],
+      "expected": [
+        "Service mode, SOCKS5 proxy port, Local DNS port and Transproxy port are disabled",
+        "Auto Connect and Allow Toggling in Lock Screen stay enabled"
+      ],
+      "control_path": "C-U09-009 > C-U09-015 > C-U09-016 > C-U09-017",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:66"
+    },
+    {
+      "id": "TC-U09-08",
+      "title": "The rows unlock when the service reaches Stopped",
+      "preconditions": [
+        "The service is connected"
+      ],
+      "steps": [
+        "Open Settings while the tunnel runs",
+        "Stop the tunnel",
+        "Wait for the service state Stopped"
+      ],
+      "expected": [
+        "The rows open disabled because the state is not Stopped",
+        "On Stopped, Service mode, SOCKS5 proxy port and Local DNS port become enabled",
+        "The Transproxy port row is enabled only when the stored mode is Transproxy"
+      ],
+      "control_path": "C-U09-009 > C-U09-015 > C-U09-016 > C-U09-017",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:71"
+    },
+    {
+      "id": "TC-U09-09",
+      "title": "Editing the SOCKS5 port with a valid value persists it and the core uses it",
+      "preconditions": [
+        "The service is stopped",
+        "portProxy stores 1080"
+      ],
+      "steps": [
+        "Tap the SOCKS5 proxy port row",
+        "Type 1234",
+        "Tap OK",
+        "Start the proxy service"
+      ],
+      "expected": [
+        "The dialog title reads SOCKS5 proxy port and the field reads 1080",
+        "The row summary becomes 1234",
+        "portProxy stores the string 1234",
+        "The local SOCKS5 listener uses 1234"
+      ],
+      "control_path": "C-U09-015 > C-U09-020 > C-U09-021 > C-U09-022",
+      "parity": "implemented",
+      "source": "mobile/src/main/res/xml/pref_global.xml:23"
+    },
+    {
+      "id": "TC-U09-10",
+      "title": "Cancel keeps the stored port",
+      "preconditions": [
+        "The service is stopped",
+        "portProxy stores 1080"
+      ],
+      "steps": [
+        "Tap the SOCKS5 proxy port row",
+        "Type 1234",
+        "Tap Cancel"
+      ],
+      "expected": [
+        "The dialog closes",
+        "The row summary still reads 1080",
+        "portProxy still stores 1080"
+      ],
+      "control_path": "C-U09-015 > C-U09-020 > C-U09-023",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:57"
+    },
+    {
+      "id": "TC-U09-11",
+      "title": "A port below 1025 is stored but the core falls back to the default",
+      "preconditions": [
+        "The service is stopped",
+        "portProxy stores 1080"
+      ],
+      "steps": [
+        "Tap the SOCKS5 proxy port row",
+        "Clear the field",
+        "Type 80",
+        "Tap OK",
+        "Start the proxy service"
+      ],
+      "expected": [
+        "The row summary reads 80",
+        "portProxy stores the string 80",
+        "The local SOCKS5 listener uses 1080"
+      ],
+      "control_path": "C-U09-015 > C-U09-020 > C-U09-021 > C-U09-022",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/Utils.kt:100"
+    },
+    {
+      "id": "TC-U09-12",
+      "title": "A port above 65535 is stored but the core falls back to the default",
+      "preconditions": [
+        "The service is stopped",
+        "portProxy stores 1080"
+      ],
+      "steps": [
+        "Tap the SOCKS5 proxy port row",
+        "Clear the field",
+        "Type 70000",
+        "Tap OK",
+        "Start the proxy service"
+      ],
+      "expected": [
+        "The field accepts five digits",
+        "The row summary reads 70000",
+        "The local SOCKS5 listener uses 1080"
+      ],
+      "control_path": "C-U09-015 > C-U09-020 > C-U09-021 > C-U09-022",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/Utils.kt:102"
+    },
+    {
+      "id": "TC-U09-13",
+      "title": "An empty port shows Not set and the default applies",
+      "preconditions": [
+        "The service is stopped",
+        "portProxy stores 1080"
+      ],
+      "steps": [
+        "Tap the SOCKS5 proxy port row",
+        "Clear the field",
+        "Tap OK"
+      ],
+      "expected": [
+        "The row summary reads Not set",
+        "portProxy stores an empty string",
+        "The core reads the default 1080"
+      ],
+      "control_path": "C-U09-015 > C-U09-020 > C-U09-021 > C-U09-022 > C-U09-032",
+      "parity": "implemented",
+      "source": "mobile/src/main/res/xml/pref_global.xml:27"
+    },
+    {
+      "id": "TC-U09-14",
+      "title": "The port field takes digits only and at most five characters",
+      "preconditions": [
+        "A port dialog is open"
+      ],
+      "steps": [
+        "Type 1234567",
+        "Type a letter"
+      ],
+      "expected": [
+        "The field holds 12345",
+        "The letter is rejected",
+        "The keyboard is numeric and the cursor stays at the end"
+      ],
+      "control_path": "C-U09-020 > C-U09-021",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/EditTextPreferenceModifiers.kt:36"
+    },
+    {
+      "id": "TC-U09-15",
+      "title": "The Local DNS port becomes the dnsgw address in VPN mode",
+      "preconditions": [
+        "The service is stopped",
+        "portLocalDns stores 5450"
+      ],
+      "steps": [
+        "Tap the Local DNS port row",
+        "Type 5353",
+        "Tap OK",
+        "Start the VPN"
+      ],
+      "expected": [
+        "The dialog title reads Local DNS port",
+        "The summary becomes 5353",
+        "portLocalDns stores 5353",
+        "The core receives dnsgw 127.0.0.1:5353"
+      ],
+      "control_path": "C-U09-016 > C-U09-024 > C-U09-025 > C-U09-026",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/VpnService.kt:215"
+    },
+    {
+      "id": "TC-U09-16",
+      "title": "Auto Connect turns the boot receiver on and off",
+      "preconditions": [
+        "The Settings screen is open",
+        "Auto Connect is off"
+      ],
+      "steps": [
+        "Tap the Auto Connect row",
+        "Tap the Auto Connect row again"
+      ],
+      "expected": [
+        "First tap: the switch is on, isAutoConnect stores true and the receiver is enabled",
+        "Second tap: the switch is off, isAutoConnect stores false and the receiver is disabled"
+      ],
+      "control_path": "C-U09-005",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:44"
+    },
+    {
+      "id": "TC-U09-17",
+      "title": "Auto Connect starts off on a fresh install because the receiver ships disabled",
+      "preconditions": [
+        "A fresh install",
+        "The isAutoConnect key is absent",
+        "The boot receiver component is disabled"
+      ],
+      "steps": [
+        "Open Settings"
+      ],
+      "expected": [
+        "The Auto Connect switch reads off",
+        "isAutoConnect is stored as false",
+        "The stored value matches the receiver state"
+      ],
+      "control_path": "C-U09-005 > C-U09-006",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/preference/DataStore.kt:63"
+    },
+    {
+      "id": "TC-U09-18",
+      "title": "API 23 has no lock-screen row",
+      "preconditions": [
+        "The device runs API 23",
+        "The Settings screen is open"
+      ],
+      "steps": [
+        "Expand the list"
+      ],
+      "expected": [
+        "No Allow Toggling in Lock Screen row appears",
+        "The list holds five rows",
+        "The Advanced summary lists the three port titles"
+      ],
+      "control_path": "C-U09-001 > C-U09-004 > C-U09-007",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:53"
+    },
+    {
+      "id": "TC-U09-19",
+      "title": "The lock-screen switch on without direct boot support stores true but protects nothing",
+      "preconditions": [
+        "The device runs API 24 or later",
+        "Per-user encryption is not active",
+        "The switch is off"
+      ],
+      "steps": [
+        "Tap the Allow Toggling in Lock Screen row",
+        "Tap the row again"
+      ],
+      "expected": [
+        "The switch reads on and directBootAware stores true",
+        "DirectBoot.clean deletes the device-protected copy and config files",
+        "The second tap stores false and deletes the copy again",
+        "The effective directBootAware value stays false"
+      ],
+      "control_path": "C-U09-007",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:51"
+    },
+    {
+      "id": "TC-U09-20",
+      "title": "Leaving Settings clears the state listener and returning re-subscribes",
+      "preconditions": [
+        "The Settings screen is open"
+      ],
+      "steps": [
+        "Open the drawer and tap Profiles",
+        "Change the service state from the main screen",
+        "Open Settings again"
+      ],
+      "expected": [
+        "The destroyed screen clears MainActivity.stateListener",
+        "The state change does not update the closed screen",
+        "The reopened screen applies the current state to the rows"
+      ],
+      "control_path": "C-U09-001 > C-U09-004",
+      "parity": "partial",
+      "source": "mobile/src/main/java/com/github/shadowsocks/GlobalSettingsPreferenceFragment.kt:85"
+    },
+    {
+      "id": "TC-U09-21",
+      "title": "Starting the service sets the boot receiver from the stored Auto Connect value",
+      "preconditions": [
+        "A profile is selected",
+        "The service is stopped",
+        "Auto Connect is on and isAutoConnect stores true",
+        "An earlier stop without restart disabled the boot receiver component"
+      ],
+      "steps": [
+        "Start the VPN from the main screen",
+        "Read the boot receiver component state",
+        "Stop the tunnel",
+        "Open Settings",
+        "Turn Auto Connect off",
+        "Start the VPN again",
+        "Read the boot receiver component state"
+      ],
+      "expected": [
+        "The first start enables the boot receiver",
+        "isAutoConnect still stores true",
+        "The second start leaves the boot receiver disabled"
+      ],
+      "control_path": "C-U09-001 > C-U09-004 > C-U09-005",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:345",
+      "rules": [
+        "R-UI-10"
+      ]
+    },
+    {
+      "id": "TC-U09-22",
+      "title": "Stopping without restart disables the boot receiver and keeps isAutoConnect",
+      "preconditions": [
+        "A profile is selected",
+        "Auto Connect is on and isAutoConnect stores true",
+        "The boot receiver component is enabled",
+        "The VPN tunnel runs"
+      ],
+      "steps": [
+        "Stop the tunnel from the main screen",
+        "Read the boot receiver component state",
+        "Open Settings",
+        "Read the Auto Connect switch",
+        "Turn Auto Connect off",
+        "Start the VPN again",
+        "Stop the tunnel from the main screen",
+        "Read the boot receiver component state"
+      ],
+      "expected": [
+        "The first stop disables the boot receiver",
+        "isAutoConnect still stores true after the first stop",
+        "The Auto Connect switch reads on after the first stop",
+        "The second stop leaves the boot receiver disabled"
+      ],
+      "control_path": "C-U09-001 > C-U09-004 > C-U09-005",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/BaseService.kt:311",
+      "rules": [
+        "R-UI-11"
+      ]
+    },
+    {
+      "id": "TC-U09-23",
+      "title": "The lock-screen switch deletes the device-protected copy without direct boot support",
+      "preconditions": [
+        "The device runs API 24 or later",
+        "Per-user encryption is not active",
+        "A profile is selected",
+        "The Allow Toggling in Lock Screen switch is off",
+        "The device-protected noBackupFilesDir holds the profile copy and both config files"
+      ],
+      "steps": [
+        "Tap the Allow Toggling in Lock Screen row",
+        "Read the device-protected noBackupFilesDir",
+        "Restore the profile copy and both config files in that directory",
+        "Tap the Allow Toggling in Lock Screen row again",
+        "Read the device-protected noBackupFilesDir"
+      ],
+      "expected": [
+        "directBootAware stores true after the first tap",
+        "The first tap deletes the profile copy and both config files",
+        "directBootAware stores false after the second tap",
+        "The second tap deletes the profile copy and both config files again"
+      ],
+      "control_path": "C-U09-007",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/DirectBoot.kt:28",
+      "rules": [
+        "R-UI-14"
+      ]
+    },
+    {
+      "id": "TC-U09-24",
+      "title": "Each service mode entry stores its own value under serviceMode",
+      "preconditions": [
+        "The service is stopped",
+        "The list is expanded",
+        "The stored mode is VPN"
+      ],
+      "steps": [
+        "Tap Service mode",
+        "Tap Proxy only",
+        "Read serviceMode",
+        "Tap Service mode",
+        "Tap Transproxy",
+        "Read serviceMode",
+        "Tap Service mode",
+        "Tap VPN",
+        "Read serviceMode"
+      ],
+      "expected": [
+        "serviceMode stores proxy after the first choice",
+        "serviceMode stores transproxy after the second choice",
+        "serviceMode stores vpn after the third choice",
+        "Every stored value is the exact lowercase value of its entry"
+      ],
+      "control_path": "C-U09-009 > C-U09-011 > C-U09-012 > C-U09-014 > C-U09-013",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/Constants.kt:35",
+      "rules": [
+        "R-UI-17"
+      ]
+    },
+    {
+      "id": "TC-U09-25",
+      "title": "The SOCKS5 port is the local listener in proxy and VPN modes",
+      "preconditions": [
+        "A profile is selected",
+        "The service is stopped",
+        "Share over LAN is off",
+        "portProxy stores 1234"
+      ],
+      "steps": [
+        "Select Proxy only in the service mode menu",
+        "Start the service",
+        "Connect a SOCKS5 client to 127.0.0.1:1234",
+        "Stop the service",
+        "Select VPN in the service mode menu",
+        "Start the service",
+        "Connect a SOCKS5 client to 127.0.0.1:1234"
+      ],
+      "expected": [
+        "The proxy mode listener accepts SOCKS5 on 127.0.0.1:1234",
+        "The VPN mode listener accepts SOCKS5 on 127.0.0.1:1234",
+        "No local listener uses port 1080"
+      ],
+      "control_path": "C-U09-009 > C-U09-011 > C-U09-012 > C-U09-013 > C-U09-015",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/ProxyInstance.kt:93",
+      "rules": [
+        "R-UI-33"
+      ]
+    },
+    {
+      "id": "TC-U09-26",
+      "title": "Transproxy listens on the Transproxy port and forwards to the SOCKS5 port",
+      "preconditions": [
+        "A profile is selected",
+        "The service is stopped",
+        "The stored mode is transproxy",
+        "Share over LAN is off",
+        "portProxy stores 1234",
+        "portTransproxy stores 8300"
+      ],
+      "steps": [
+        "Start the transproxy service",
+        "Read redsocks.conf from the app files directory",
+        "Read the listening sockets of the redsocks process"
+      ],
+      "expected": [
+        "redsocks.conf holds local_ip = 127.0.0.1 and local_port = 8300",
+        "redsocks.conf holds ip = 127.0.0.1 and port = 1234",
+        "redsocks listens on 127.0.0.1:8300",
+        "redsocks forwards redirected connections to 127.0.0.1:1234"
+      ],
+      "control_path": "C-U09-009 > C-U09-011 > C-U09-014 > C-U09-017",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/bg/TransproxyService.kt:49",
+      "rules": [
+        "R-UI-33",
+        "R-UI-34"
+      ]
+    }
+  ],
+  "parity_summary": {
+    "implemented": 9,
+    "partial": 12,
+    "missing": 0,
+    "android_only": 5
+  },
+  "notes": "All listed files exist. The screen is a PreferenceFragmentCompat inside MainActivity. Its drawer entry is owned by U01.\nThe Advanced expand button, the OK and Cancel buttons, the Not set summary and the dialog chrome come from androidx.preference 1.2.1 (gradle/libs.versions.toml:23). The repo does not contain those strings, so they were checked against that release's sources and AAR.\npref_global.xml:3 sets initialExpandedChildrenCount to 2. On API 23 the lock-screen row is removed with Preference.remove. minSdk is 23 (buildSrc/src/main/kotlin/Helpers.kt:28).\nDataStore.initGlobal runs before the XML inflates, so the three ports and isAutoConnect are seeded first. Port defaults add Binder.getCallingUserHandle().hashCode().\nparsePort uses 1025 as the minimum. Values 1 to 1024 are rejected at read time, not at input time.\nThe screen has no snackbar, notification, menu or permission surface. Its system effects are the boot receiver component and the device-protected profile copy, so rules and states model them.\nShare over LAN exists only in the TV preference file. The HarmonyOS Settings page does expose it.\nHarmonyOS parity: pages/Settings.ets shows Auto Connect, the Advanced expansion, the service mode menu, the SOCKS5 proxy port row and the Local DNS port row. The ports use text dialogs and a read-time fallback. The service rows follow the live service state. The Local DNS port becomes the tun dns_gateway port. The SOCKS5 port is the proxy listener port. The page has no lock-screen row, no Transproxy mode or port, and no boot receiver hook. The main screen has no bound service class. VPN mode has no local SOCKS5 listener."
+}

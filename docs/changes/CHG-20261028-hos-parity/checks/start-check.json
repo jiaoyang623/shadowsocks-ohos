@@ -1,0 +1,56 @@
+{
+  "schema_version": "a01-start-check/1",
+  "at": "2026-10-28T10:48:50+11:00",
+  "root": "/opt/git/github/shadowsocks-ohos",
+  "ok": true,
+  "items": [
+    {
+      "name": "Node",
+      "check": "process.version 的主版本不低于 18",
+      "ok": true,
+      "why": "v22.23.2，不低于 18"
+    },
+    {
+      "name": "Python 3",
+      "check": "python3 --version 退出 0 且输出以 Python 3. 开头",
+      "ok": true,
+      "why": "Python 3.13.3"
+    },
+    {
+      "name": "本机 Chrome",
+      "check": "先试 A01_CHROME，再试审核工具 render.mjs 的同一份命令名与路径，逐个 --version，有一个退出 0 就算过",
+      "ok": true,
+      "why": "google-chrome：Google Chrome 155.0.8059.79"
+    },
+    {
+      "name": "项目声明文件",
+      "check": "读 /opt/git/github/shadowsocks-ohos/.a01-profile.json，要存在且是合法 JSON",
+      "ok": true,
+      "why": "/opt/git/github/shadowsocks-ohos/.a01-profile.json 存在且是合法 JSON"
+    },
+    {
+      "name": "Tailscale IP",
+      "check": "tailscale ip -4 退出 0 且有一行是 IPv4 地址",
+      "ok": true,
+      "why": "tailscale ip -4 给出 100.111.99.60"
+    },
+    {
+      "name": "发布目录可写",
+      "check": "fs.accessSync(/var/www/html/proj/shadowsocks-ohos, W_OK) 不抛错；该目录不存在时改查 /var/www/html/proj 本身可写（项目码 shadowsocks-ohos 取自git 主仓库名）",
+      "ok": true,
+      "why": "/var/www/html/proj/shadowsocks-ohos 可写（项目码 shadowsocks-ohos 取自git 主仓库名）"
+    },
+    {
+      "name": "审核工具",
+      "check": "/home/red/.claude/tools/a01-review-brief/package.json 存在",
+      "ok": true,
+      "why": "/home/red/.claude/tools/a01-review-brief/package.json 存在"
+    },
+    {
+      "name": "运行留账钩子已挂",
+      "check": "/home/red/.claude/settings.json 里 SessionStart、PostModelSwitch、Stop、SessionEnd、PostToolUse、PreToolUse 6 个事件各有带 a01-hook.cjs 标记的钩子",
+      "ok": true,
+      "why": "/home/red/.claude/settings.json 里 6 个事件都已挂"
+    }
+  ]
+}

@@ -29,10 +29,20 @@ export interface ProbeOutcome {
   ok: boolean;
   /** HTTP status, 0 when no response arrived. */
   httpCode: number;
+  /** Length of the response body in characters. 0 when there is no body. */
+  bodyLength: number;
   /** Wall-clock milliseconds for the request; 0 when it failed. */
   rttMs: number;
   /** Human-readable failure text, '' when ok. */
   reason: string;
+}
+
+/** The length of a string body. 0 for every other result type. */
+function bodyLengthOf(result: string | Object | ArrayBuffer): number {
+  if (typeof result === 'string') {
+    return result.length;
+  }
+  return 0;
 }
 
 /**
@@ -85,17 +95,22 @@ export async function probeThroughTunnel(url: string, timeoutMs: number): Promis
     const response: http.HttpResponse = await Promise.race([call, timeout]);
     const rttMs = Date.now() - started;
     const code = response.responseCode;
+    const bodyLength = bodyLengthOf(response.result);
     if (code >= 200 && code < 300) {
-      const ok: ProbeOutcome = { ok: true, httpCode: code, rttMs: rttMs, reason: '' };
+      const ok: ProbeOutcome = {
+        ok: true, httpCode: code, bodyLength: bodyLength, rttMs: rttMs, reason: '',
+      };
       return ok;
     }
     const failed: ProbeOutcome = {
-      ok: false, httpCode: code, rttMs: rttMs, reason: `HTTP ${code}`,
+      ok: false, httpCode: code, bodyLength: bodyLength, rttMs: rttMs, reason: `HTTP ${code}`,
     };
     return failed;
   } catch (e) {
     const message: string = (e as BusinessError).message ?? JSON.stringify(e);
-    const failed: ProbeOutcome = { ok: false, httpCode: 0, rttMs: 0, reason: message };
+    const failed: ProbeOutcome = {
+      ok: false, httpCode: 0, bodyLength: 0, rttMs: 0, reason: message,
+    };
     return failed;
   } finally {
     if (watchdog >= 0) {

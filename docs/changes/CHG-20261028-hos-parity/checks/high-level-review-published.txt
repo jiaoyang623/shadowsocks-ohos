@@ -1,0 +1,17 @@
+# High-level review publication
+
+链接: http://100.111.99.60/proj/shadowsocks-ohos/review/high-level-CHG-20261028-hos-parity/index.html
+时间: 2026-10-28T14:32:00+11:00
+HTTP 状态: 200
+基线: e123804+dirty
+
+Gate: clear (0 strong open items, 8 of 8 dimensions covered).
+Items: 187 (67 strong not-applicable, 60 weak not-applicable, 60 weak open).
+
+## Directory note
+
+The E2E report occupies
+`/proj/shadowsocks-ohos/e2e/CHG-20261028-hos-parity/index.html`. Both reports
+must be online, so this report lives in an independent directory under
+`/proj/shadowsocks-ohos/review/`, as `references/high-level-review.md`
+requires. The HTTP check above was run after the copy.

@@ -1,0 +1,2007 @@
+{
+  "unit": "U05",
+  "title": "Subscriptions: URL list, add/edit/remove dialog, refresh service and profile merge",
+  "sources_read": [
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/subscription/Subscription.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/layout_subscriptions.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/layout/dialog_subscription.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/menu/subscription_menu.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/res/menu/navigation_main.xml",
+    "/opt/git/github/shadowsocks-android/plugin/src/main/res/layout/toolbar_light_dark.xml",
+    "/opt/git/github/shadowsocks-android/core/src/main/res/values/strings.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt",
+    "/opt/git/github/shadowsocks-android/plugin/src/main/java/com/github/shadowsocks/plugin/fragment/AlertDialogFragment.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Sorters.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Constants.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/utils/Utils.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/Profile.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/database/ProfileManager.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/preference/DataStore.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/java/com/github/shadowsocks/Core.kt",
+    "/opt/git/github/shadowsocks-android/core/src/main/AndroidManifest.xml",
+    "/opt/git/github/shadowsocks-android/mobile/src/main/java/com/github/shadowsocks/MainActivity.kt",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/harmonyos-inventory.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/context/unit-map.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/zh_CN/element/string.json"
+  ],
+  "controls": [
+    {
+      "id": "C-U05-001",
+      "type": "screen",
+      "label": "Subscriptions",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows the subscription URL list. Reached from the navigation drawer item 'Subscriptions', which belongs to U01.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_subscriptions.xml:2"
+    },
+    {
+      "id": "C-U05-002",
+      "type": "text",
+      "label": "Subscriptions",
+      "android_id": "",
+      "parent": "C-U05-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Toolbar title of the screen. It has no action.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:219"
+    },
+    {
+      "id": "C-U05-003",
+      "type": "menu_item",
+      "label": "Add a subscription",
+      "android_id": "action_manual_settings",
+      "parent": "C-U05-001",
+      "visible_when": "always (drawn as a toolbar action). The item never moves to the overflow.",
+      "enabled_when": "always",
+      "action": "Opens C-U05-008 with an empty field. Hardware-keyboard shortcut is 'n'.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/subscription_menu.xml:4"
+    },
+    {
+      "id": "C-U05-004",
+      "type": "menu_item",
+      "label": "Refresh servers from subscription",
+      "android_id": "action_update_subscription",
+      "parent": "C-U05-001",
+      "visible_when": "always (shown as an action if room, otherwise in the overflow)",
+      "enabled_when": "SubscriptionService.idle is true",
+      "action": "Starts SubscriptionService, which downloads every stored URL and merges the profiles. Hardware-keyboard shortcut is 'r'.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/menu/subscription_menu.xml:9"
+    },
+    {
+      "id": "C-U05-005",
+      "type": "list",
+      "label": "Subscription list",
+      "android_id": "list",
+      "parent": "C-U05-001",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Vertical RecyclerView of stored URLs. It has no empty-state text.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/layout_subscriptions.xml:17"
+    },
+    {
+      "id": "C-U05-006",
+      "type": "row",
+      "label": "Subscription row",
+      "android_id": "",
+      "parent": "C-U05-005",
+      "visible_when": "the stored URL list has at least one entry",
+      "enabled_when": "always",
+      "action": "Tap opens C-U05-008 with this URL. Swipe from the start edge removes the URL through C-U05-014. The layout is android.R.layout.simple_list_item_1.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:121"
+    },
+    {
+      "id": "C-U05-007",
+      "type": "text",
+      "label": "<subscription URL>",
+      "android_id": "android.R.id.text1",
+      "parent": "C-U05-006",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Shows URL.toString() for the row. Nothing else is shown per row.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:132"
+    },
+    {
+      "id": "C-U05-008",
+      "type": "dialog",
+      "label": "Edit subscription",
+      "android_id": "",
+      "parent": "C-U05-001",
+      "visible_when": "opened from C-U05-003 or from C-U05-006",
+      "enabled_when": "always",
+      "action": "Adds one URL or edits one stored URL. The title is the same for both uses.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:79"
+    },
+    {
+      "id": "C-U05-009",
+      "type": "input",
+      "label": "Subscription URL",
+      "android_id": "content",
+      "parent": "C-U05-008",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Multi-line text field (textNoSuggestions|textMultiLine) with no visible label. Its label is descriptive. It holds the URL and is prefilled for an edit.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/dialog_subscription.xml:14"
+    },
+    {
+      "id": "C-U05-010",
+      "type": "text",
+      "label": "<validation message>",
+      "android_id": "content_layout",
+      "parent": "C-U05-008",
+      "visible_when": "the field error message is not empty",
+      "enabled_when": "always",
+      "action": "Shows either the cleartext warning or the URL parse message under C-U05-009.",
+      "navigates_to": "",
+      "source": "mobile/src/main/res/layout/dialog_subscription.xml:9"
+    },
+    {
+      "id": "C-U05-011",
+      "type": "button",
+      "label": "OK",
+      "android_id": "android.R.id.button1",
+      "parent": "C-U05-008",
+      "visible_when": "always",
+      "enabled_when": "the text of C-U05-009 parses as a URL",
+      "action": "Returns the edited text. For an edit the old URL is removed and the new one added. Closes the dialog.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:80"
+    },
+    {
+      "id": "C-U05-012",
+      "type": "button",
+      "label": "Cancel",
+      "android_id": "android.R.id.button2",
+      "parent": "C-U05-008",
+      "visible_when": "always",
+      "enabled_when": "always",
+      "action": "Dismisses the dialog with no result. No list change and no store write.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:81"
+    },
+    {
+      "id": "C-U05-013",
+      "type": "button",
+      "label": "Remove",
+      "android_id": "android.R.id.button3",
+      "parent": "C-U05-008",
+      "visible_when": "the dialog was opened for a stored URL (arg.item is not null or empty)",
+      "enabled_when": "always",
+      "action": "Returns a delete result: the URL is removed from the list and C-U05-014 is shown.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:82"
+    },
+    {
+      "id": "C-U05-014",
+      "type": "snackbar",
+      "label": "Removed / %d items removed",
+      "android_id": "",
+      "parent": "C-U05-001",
+      "visible_when": "a URL was removed by swipe or by C-U05-013",
+      "enabled_when": "always",
+      "action": "Reports the removal and keeps the removed URLs for undo until it is dismissed. Each removal builds a new snackbar whose count is the whole undo window, so a new removal replaces the previous snackbar.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+    },
+    {
+      "id": "C-U05-015",
+      "type": "button",
+      "label": "Undo",
+      "android_id": "",
+      "parent": "C-U05-014",
+      "visible_when": "C-U05-014 is shown",
+      "enabled_when": "always",
+      "action": "Re-adds every removed URL in sorted order and persists the list.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+    },
+    {
+      "id": "C-U05-016",
+      "type": "notification",
+      "label": "Subscription Service",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "SubscriptionService is running a refresh",
+      "enabled_when": "always",
+      "action": "Ongoing progress notification on channel service-subscription, ID 2, low importance, category progress, no timestamp. Title is 'Syncing subscriptions… (k of N)' with a determinate bar of k out of N. After every download it reads 'Finishing up…' with an indeterminate bar.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:92"
+    },
+    {
+      "id": "C-U05-017",
+      "type": "button",
+      "label": "Stop",
+      "android_id": "",
+      "parent": "C-U05-016",
+      "visible_when": "C-U05-016 is shown",
+      "enabled_when": "always",
+      "action": "Sends the Action.ABORT broadcast to the service package, which cancels the refresh worker. The action stays in the notification through the Finishing up phase, where the merge has no suspension point, so a tap then cannot interrupt it. It has no user interface.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:95"
+    },
+    {
+      "id": "C-U05-018",
+      "type": "image",
+      "label": "Fast scroll handle",
+      "android_id": "",
+      "parent": "C-U05-005",
+      "visible_when": "the URL list scrolls further than the viewport. The thumb auto-hides after the scroll stops.",
+      "enabled_when": "always",
+      "action": "Draggable scrollbar thumb. Dragging it scrolls the list. No letter popup appears, because the adapter does not implement PopupTextProvider.",
+      "navigates_to": "",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:231"
+    },
+    {
+      "id": "C-U05-019",
+      "type": "snackbar",
+      "label": "<download error message> (long toast)",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "a download throws an exception during a refresh",
+      "enabled_when": "always",
+      "action": "Shows the exception's readable message as a long toast. The download yields no body and the refresh continues with the other URLs.",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:151"
+    },
+    {
+      "id": "C-U05-020",
+      "type": "snackbar",
+      "label": "<parse error message> (long toast)",
+      "android_id": "",
+      "parent": "",
+      "visible_when": "a fetched body raises a JSON parse error",
+      "enabled_when": "always",
+      "action": "Shows the exception's readable message as a long toast. That body contributes no profiles and the other bodies are still merged.",
+      "navigates_to": "",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:210"
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-UE-01",
+      "statement": "The OK button stays enabled only while the field text parses as a URL.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:99",
+      "examples": [
+        {
+          "given": "the edit dialog is open with an empty field",
+          "when": "validate runs on start",
+          "then": "OK is disabled and the field shows a parse error",
+          "polarity": "negative"
+        },
+        {
+          "given": "the field holds 'https://example.com/sub'",
+          "when": "the text changes",
+          "then": "OK is enabled and the error is empty",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-02",
+      "statement": "An http URL shows the cleartext warning and still allows OK.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:101",
+      "examples": [
+        {
+          "given": "the field holds 'http://example.com/sub'",
+          "when": "validate runs",
+          "then": "the error reads 'Cleartext HTTP traffic is insecure' and OK is enabled",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the field holds 'https://example.com/sub'",
+          "when": "validate runs",
+          "then": "no warning is shown",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-03",
+      "statement": "A text that does not parse shows the platform message as the field error and disables OK.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:103",
+      "examples": [
+        {
+          "given": "the field holds 'example.com'",
+          "when": "validate runs",
+          "then": "the error shows the MalformedURLException message and OK is disabled",
+          "polarity": "negative"
+        },
+        {
+          "given": "the field holds 'https://cdn.example.org/list.json'",
+          "when": "validate runs",
+          "then": "OK is enabled and the field error is empty",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-04",
+      "statement": "The URL check accepts any scheme with a handler, such as ftp or file, not only http and https.",
+      "kind": "validation",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:100",
+      "examples": [
+        {
+          "given": "the field holds 'ftp://example.com/list'",
+          "when": "validate runs",
+          "then": "OK is enabled and no message is shown",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the field holds 'foo://example.com'",
+          "when": "validate runs",
+          "then": "OK is disabled because the protocol has no handler",
+          "polarity": "negative"
+        },
+        {
+          "given": "the field holds 'file:///sdcard/subscription.json'",
+          "when": "validate runs",
+          "then": "OK is enabled and no message is shown, because the platform has a handler for the file scheme",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-05",
+      "statement": "The dialog title is Edit subscription when adding a URL as well as when editing one.",
+      "kind": "display",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:79",
+      "examples": [
+        {
+          "given": "the list is empty",
+          "when": "the actor taps Add a subscription",
+          "then": "the dialog is titled 'Edit subscription'",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the list holds one stored URL",
+          "when": "the actor taps the row",
+          "then": "the dialog is titled 'Edit subscription' and the field holds that URL",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-06",
+      "statement": "The Remove button appears only when the dialog was opened for a stored URL.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:82",
+      "examples": [
+        {
+          "given": "the add dialog opened from the menu",
+          "when": "the dialog is shown",
+          "then": "there is no Remove button",
+          "polarity": "negative"
+        },
+        {
+          "given": "a stored URL was tapped",
+          "when": "the dialog is shown",
+          "then": "Remove is the neutral button",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-07",
+      "statement": "OK on an edited URL removes the old URL and inserts the edited one in sorted order.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:213",
+      "examples": [
+        {
+          "given": "the row URL is 'https://a.example/x'",
+          "when": "the actor edits it to 'https://b.example/y' and taps OK",
+          "then": "the old URL is gone, the new one is listed at its sorted position and the list scrolls to it",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list holds 'https://a.example/x' and 'https://b.example/y'",
+          "when": "the actor edits 'https://b.example/y' to 'https://a.example/x' and taps OK",
+          "then": "the old URL is removed, the edited URL replaces the equal stored row, the list holds one row and the public store holds one line",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-08",
+      "statement": "Remove deletes the URL immediately and shows an undo snackbar.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:214",
+      "examples": [
+        {
+          "given": "a stored URL is open in the edit dialog",
+          "when": "the actor taps Remove",
+          "then": "the row disappears, the store loses the URL and the snackbar offers Undo",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list holds one stored URL",
+          "when": "the actor opens it in the edit dialog and taps Remove",
+          "then": "the list shows no rows and the snackbar still offers Undo",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-09",
+      "statement": "A start swipe on a row deletes the URL immediately and shows an undo snackbar.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:233",
+      "examples": [
+        {
+          "given": "the list holds one URL",
+          "when": "the actor swipes the row from the start edge",
+          "then": "the row is removed and the snackbar appears",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list holds one URL",
+          "when": "the actor swipes the row toward the end edge",
+          "then": "the row stays and no snackbar appears, because the item touch callback enables only the start direction",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-10",
+      "statement": "Undo re-adds all removed URLs in sorted order and persists the list.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:38",
+      "examples": [
+        {
+          "given": "two URLs were removed while one snackbar was showing",
+          "when": "the actor taps Undo",
+          "then": "both URLs return at their sorted positions and the store holds them again",
+          "polarity": "positive"
+        },
+        {
+          "given": "the actor removed the only URL and the snackbar offers Undo",
+          "when": "the snackbar is dismissed without the Undo action",
+          "then": "no undo callback runs, the URL stays removed and the store still lacks it, because the dismissal clears the removed list",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-11",
+      "statement": "The subscription list is stored as newline-joined URL strings under the public store key subscription.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/Subscription.kt:41",
+      "examples": [
+        {
+          "given": "the list holds two URLs",
+          "when": "the adapter persists after a change",
+          "then": "the public store holds the two URLs separated by one newline",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list holds no URL",
+          "when": "the adapter persists the empty list",
+          "then": "the public store holds the empty string under subscription and a later read lists no row",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-12",
+      "statement": "Stored lines that do not parse as URLs are dropped when the list loads.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/Subscription.kt:49",
+      "examples": [
+        {
+          "given": "the stored value holds one URL and one plain word",
+          "when": "Subscription.instance is read",
+          "then": "only the URL is listed and the next write drops the plain word",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the stored value holds 'https://b.example/y' and 'https://a.example/x'",
+          "when": "Subscription.instance is read",
+          "then": "both URLs are listed with 'https://a.example/x' first, and the next write stores both lines",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-13",
+      "statement": "Rows are sorted by host, then port, then URL.file, then protocol. URL.file is the path plus the query string, so two URLs with equal paths and different queries sort by the query.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/Sorters.kt:39",
+      "examples": [
+        {
+          "given": "the list holds 'https://b.example/x' and 'https://a.example/y'",
+          "when": "the list renders",
+          "then": "'https://a.example/y' is the first row",
+          "polarity": "positive"
+        },
+        {
+          "given": "the list holds 'https://a.example/x?c=2' and 'https://a.example/x?a=1'",
+          "when": "the list renders",
+          "then": "'https://a.example/x?a=1' comes first because the queries differ",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-14",
+      "statement": "Adding a URL that is already listed changes nothing. The sorted list replaces the equal item in place, keeps its size, inserts no row and writes no store entry.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:167",
+      "examples": [
+        {
+          "given": "the list holds 'https://a.example/x'",
+          "when": "the actor adds the same URL again",
+          "then": "the list still shows one row and the store still holds one line",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the list holds 'https://a.example/x' and 'https://b.example/y'",
+          "when": "the actor adds 'https://a.example/x' again",
+          "then": "the list still holds two rows and the store is not rewritten",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-15",
+      "statement": "Refresh servers from subscription is enabled only while SubscriptionService.idle is true.",
+      "kind": "state",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:222",
+      "examples": [
+        {
+          "given": "the screen opens and no refresh runs",
+          "when": "the observer receives idle true",
+          "then": "the refresh menu item is enabled",
+          "polarity": "positive"
+        },
+        {
+          "given": "a refresh started",
+          "when": "idle becomes false",
+          "then": "the refresh menu item is disabled",
+          "polarity": "negative"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-16",
+      "statement": "A start request while the worker is fetching stops the service. The destroy cancels the job, so the run ends without creating profiles.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:137",
+      "examples": [
+        {
+          "given": "worker is not null and a second start intent arrives",
+          "when": "onStartCommand runs",
+          "then": "stopSelf(startId) runs and no second worker is started",
+          "polarity": "boundary"
+        },
+        {
+          "given": "the second start stopped the service",
+          "when": "onDestroy runs cancel()",
+          "then": "the first worker is cancelled, no profile is written and idle returns to true",
+          "polarity": "negative"
+        },
+        {
+          "given": "the service is idle and the actor taps Refresh servers from subscription",
+          "when": "onStartCommand runs with worker null",
+          "then": "idle becomes false, one worker starts, stopSelf does not run and the run proceeds to fetch and merge",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-17",
+      "statement": "The notification shows a determinate bar from zero to N while downloads run and an indeterminate bar after the last one. The title counts finished downloads and then reads Finishing up.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:103",
+      "examples": [
+        {
+          "given": "three subscription URLs are stored",
+          "when": "the service starts and each fetch finishes",
+          "then": "the title goes from '(0 of 3)' to '(3 of 3)' and the bar fills by one third each time",
+          "polarity": "positive"
+        },
+        {
+          "given": "every fetch has finished",
+          "when": "awaitAll returns",
+          "then": "the title reads 'Finishing up…' and the bar turns indeterminate",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-18",
+      "statement": "Stop broadcasts Action.ABORT, which cancels the worker. A cancellation during fetching creates no profile. During Finishing up the merge has no suspension point, so a Stop tap cannot interrupt it and the profiles are still created and written.",
+      "kind": "interaction",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:76",
+      "examples": [
+        {
+          "given": "a refresh is waiting on a slow download",
+          "when": "the actor taps Stop",
+          "then": "the worker is cancelled, no profile is created, the notification is removed and idle returns to true",
+          "polarity": "positive"
+        },
+        {
+          "given": "the notification reads 'Finishing up…'",
+          "when": "the actor taps Stop",
+          "then": "the merge runs to completion on the main thread, the profiles are written, and the finally block only cancels the notification and sets idle true",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-19",
+      "statement": "A failed download shows a long toast with the platform message and yields no body. The refresh continues with the other URLs, and the merge still marks every Active non-user profile Obsolete, so the profiles of that URL leave the profile list unless another body lists them.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:150",
+      "examples": [
+        {
+          "given": "one of two URLs cannot be reached",
+          "when": "the refresh runs",
+          "then": "a long toast shows the error, the other URL is still processed and the profiles of the failing URL become Obsolete",
+          "polarity": "negative"
+        },
+        {
+          "given": "a URL that cannot be reached created three Active profiles",
+          "when": "the refresh ends",
+          "then": "the three profiles are Obsolete and absent from the profile list until a body lists them again",
+          "polarity": "negative"
+        },
+        {
+          "given": "two stored URLs are both reachable and each body lists the servers it created before",
+          "when": "the refresh runs",
+          "then": "no toast appears, both bodies merge and the profiles they list stay Active",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-20",
+      "statement": "A body that raises a JSON parse error shows a long toast and contributes no profiles. The other bodies still merge and the profiles of that URL become Obsolete unless another body lists them. A body of bare literals does not raise. The tokenizer returns strings or numbers, the parser ignores them, and no toast appears.",
+      "kind": "display",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:208",
+      "examples": [
+        {
+          "given": "a subscription body raises a JSON exception, for example a body with an unterminated string",
+          "when": "the refresh reads the body",
+          "then": "a long toast shows the parse message and nothing is added from that body",
+          "polarity": "negative"
+        },
+        {
+          "given": "a subscription URL serves the bare words 'Not Found'",
+          "when": "the refresh reads the body",
+          "then": "the tokenizer returns string tokens, the parser ignores them, no toast appears and no profile is added",
+          "polarity": "boundary"
+        },
+        {
+          "given": "a subscription URL serves one JSON object with server, server_port, password and method",
+          "when": "the refresh reads the body",
+          "then": "the object parses, its server becomes an Active profile and no toast appears",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-21",
+      "statement": "Every Active non-user profile that survives the duplicate check becomes Obsolete before the fetched profiles are applied. An Active duplicate is deleted in the preprocessing phase instead, so it never becomes Obsolete.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:178",
+      "examples": [
+        {
+          "given": "an Active profile is not listed by the new body",
+          "when": "the refresh preprocesses the stored profiles",
+          "then": "its status becomes Obsolete and it is queued for a write",
+          "polarity": "positive"
+        },
+        {
+          "given": "two Active non-user profiles share one name and one address",
+          "when": "the refresh preprocesses the stored profiles",
+          "then": "the first becomes Obsolete and the second is deleted without ever becoming Obsolete",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-22",
+      "statement": "A re-listed Obsolete profile keeps its id and takes the new password, method, plugin and UDP fallback.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:193",
+      "examples": [
+        {
+          "given": "profile A is Obsolete and the new body lists A with a new password",
+          "when": "the body is merged",
+          "then": "A becomes Active with the new transport fields and the same id",
+          "polarity": "positive"
+        },
+        {
+          "given": "profile A is Obsolete with a plugin and a UDP fallback, and the new body lists A without plugin or udp_fallback",
+          "when": "the body is merged",
+          "then": "A becomes Active with no plugin and no UDP fallback and keeps its id",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-23",
+      "statement": "A new subscription profile is created Active. It starts from the current profile's route, ipv6, metered, proxy apps, bypass, individual and udpdns. A body key that is present overrides the copied value. remote_dns always comes from the body or the default 'dns.google'.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:202",
+      "examples": [
+        {
+          "given": "the current profile uses route 'bypass-lan' and the body entry has no route key",
+          "when": "the body lists a new server",
+          "then": "the new Active profile also uses route 'bypass-lan'",
+          "polarity": "positive"
+        },
+        {
+          "given": "the current profile uses route 'bypass-lan' and the body entry sets route to 'gfwlist'",
+          "when": "the body lists a new server",
+          "then": "the new Active profile uses route 'gfwlist'",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-24",
+      "statement": "In the preprocessing phase a non-user profile whose name-plus-address key is already taken is deleted. Deleting the current one resets the profile id to 0. User-configured profiles are skipped before the duplicate check, so they are never deleted and never take part in it.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:175",
+      "examples": [
+        {
+          "given": "two stored non-user profiles share one name and one host:port",
+          "when": "the refresh preprocesses the profiles",
+          "then": "the later one is deleted and, if it was current, DataStore.profileId becomes 0",
+          "polarity": "boundary"
+        },
+        {
+          "given": "two user-configured profiles share one name and one host:port",
+          "when": "the refresh preprocesses the profiles",
+          "then": "both are skipped before the duplicate check and neither is deleted",
+          "polarity": "negative"
+        },
+        {
+          "given": "every stored non-user profile has a unique name-plus-address key",
+          "when": "the refresh preprocesses the profiles",
+          "then": "no profile is deleted, the current profile id keeps its value and each Active non-user profile becomes Obsolete",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-25",
+      "statement": "An incoming profile that matches an Active profile is ignored and the stored profile is kept.",
+      "kind": "persistence",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:188",
+      "examples": [
+        {
+          "given": "the body lists the same name and address twice",
+          "when": "the second copy is merged",
+          "then": "a warning is logged and the first stored profile stays",
+          "polarity": "negative"
+        },
+        {
+          "given": "profile A is stored Active and the body lists A with the same name and address but a different password",
+          "when": "the body is merged",
+          "then": "the incoming profile is ignored and the profile list still holds one A with its stored password",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-26",
+      "statement": "Deleting a subscription URL leaves the profiles it created in the database.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:177",
+      "examples": [
+        {
+          "given": "a subscription URL created three profiles",
+          "when": "the actor removes the URL",
+          "then": "the three profiles stay Active until a later refresh marks them Obsolete",
+          "polarity": "negative"
+        },
+        {
+          "given": "a stored URL created three Active profiles",
+          "when": "the actor opens the URL and taps Remove",
+          "then": "the URL row and its store line disappear while the three profiles remain in the profile list with status Active",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-27",
+      "statement": "Cancel dismisses the dialog without any result.",
+      "kind": "interaction",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:81",
+      "examples": [
+        {
+          "given": "the field text was changed",
+          "when": "the actor taps Cancel",
+          "then": "the dialog closes and the list and store are unchanged",
+          "polarity": "negative"
+        },
+        {
+          "given": "a stored URL is open in the edit dialog",
+          "when": "the actor taps Cancel",
+          "then": "the dialog closes, the URL stays in the list and the store is not rewritten",
+          "polarity": "positive"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-28",
+      "statement": "idle returns to true when a run finishes, including a run where every download failed, or when it is cancelled. A run with no stored URL or with every download failed still enters the merge, so it obsoletes every Active non-user profile before idle returns.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:128",
+      "examples": [
+        {
+          "given": "the refresh ended with every download failed",
+          "when": "the merge runs with an empty sequence, then the finally block runs",
+          "then": "every Active non-user profile is Obsolete and the notification is cancelled with idle true",
+          "polarity": "positive"
+        },
+        {
+          "given": "no subscription URL is stored",
+          "when": "the refresh runs",
+          "then": "the merge runs with an empty sequence, every Active non-user profile is Obsolete and idle becomes true",
+          "polarity": "boundary"
+        }
+      ]
+    },
+    {
+      "id": "R-UE-29",
+      "statement": "The service reads the subscription URL list once, when it starts.",
+      "kind": "state",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:91",
+      "examples": [
+        {
+          "given": "a URL is added after the refresh started",
+          "when": "the running refresh continues",
+          "then": "the new URL is not fetched in this run",
+          "polarity": "boundary"
+        },
+        {
+          "given": "two URLs are stored when the refresh starts",
+          "when": "the worker reads the list once",
+          "then": "exactly those two URLs are fetched and the notification counts from 0 of 2 to 2 of 2",
+          "polarity": "positive"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "object": "SubscriptionService refresh run",
+      "states": [
+        "idle",
+        "fetching",
+        "finishing"
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "fetching",
+          "event": "startService while worker is null",
+          "producer": "SubscriptionService.onStartCommand",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:83"
+        },
+        {
+          "from": "fetching",
+          "to": "finishing",
+          "event": "every fetch job completed",
+          "producer": "SubscriptionService.onStartCommand (awaitAll)",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:113"
+        },
+        {
+          "from": "fetching",
+          "to": "idle",
+          "event": "Action.ABORT received and the worker is cancelled",
+          "producer": "cancelReceiver, then the finally block",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:76"
+        },
+        {
+          "from": "finishing",
+          "to": "idle",
+          "event": "profiles created and the finally block ran",
+          "producer": "SubscriptionService.onStartCommand (finally)",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:121"
+        },
+        {
+          "from": "fetching",
+          "to": "idle",
+          "event": "startService while the worker is fetching. stopSelf(startId) stops the service and onDestroy cancels the worker",
+          "producer": "SubscriptionService.onStartCommand (stopSelf), then onDestroy (cancel), then the finally block",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:137"
+        }
+      ]
+    },
+    {
+      "object": "Profile subscription status",
+      "states": [
+        "absent",
+        "UserConfigured",
+        "Active",
+        "Obsolete"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "Active",
+          "event": "an incoming profile matches no stored key",
+          "producer": "createProfilesFromSubscription compute",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:202"
+        },
+        {
+          "from": "UserConfigured",
+          "to": "UserConfigured",
+          "event": "the refresh preprocesses the profile and skips it",
+          "producer": "createProfilesFromSubscription",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:174"
+        },
+        {
+          "from": "Active",
+          "to": "Obsolete",
+          "event": "the refresh preprocesses a kept non-user profile",
+          "producer": "createProfilesFromSubscription",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:178"
+        },
+        {
+          "from": "Active",
+          "to": "Active",
+          "event": "an incoming profile matches an Active stored profile. The incoming copy is ignored.",
+          "producer": "createProfilesFromSubscription compute",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:188"
+        },
+        {
+          "from": "Obsolete",
+          "to": "Active",
+          "event": "an incoming profile matches the stored name and address",
+          "producer": "createProfilesFromSubscription compute",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:193"
+        },
+        {
+          "from": "Obsolete",
+          "to": "Obsolete",
+          "event": "the new body does not list it again",
+          "producer": "createProfilesFromSubscription",
+          "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:175"
+        }
+      ]
+    },
+    {
+      "object": "Subscription edit dialog validation",
+      "states": [
+        "unvalidated",
+        "invalid",
+        "valid",
+        "valid_cleartext_http"
+      ],
+      "transitions": [
+        {
+          "from": "unvalidated",
+          "to": "invalid",
+          "event": "the dialog opens with an empty field",
+          "producer": "SubDialogFragment.onStart then validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:88"
+        },
+        {
+          "from": "unvalidated",
+          "to": "valid",
+          "event": "the dialog opens with a stored https URL",
+          "producer": "SubDialogFragment.onStart then validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:88"
+        },
+        {
+          "from": "unvalidated",
+          "to": "valid_cleartext_http",
+          "event": "the dialog opens with a stored http URL",
+          "producer": "SubDialogFragment.onStart then validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:88"
+        },
+        {
+          "from": "invalid",
+          "to": "valid",
+          "event": "the text becomes a parseable non-http URL",
+          "producer": "SubDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:99"
+        },
+        {
+          "from": "invalid",
+          "to": "valid_cleartext_http",
+          "event": "the text becomes an http URL",
+          "producer": "SubDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:101"
+        },
+        {
+          "from": "valid",
+          "to": "invalid",
+          "event": "the text is cleared or becomes malformed",
+          "producer": "SubDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:103"
+        },
+        {
+          "from": "valid",
+          "to": "valid_cleartext_http",
+          "event": "the text becomes an http URL",
+          "producer": "SubDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:101"
+        },
+        {
+          "from": "valid_cleartext_http",
+          "to": "valid",
+          "event": "the text becomes an https or other non-http URL",
+          "producer": "SubDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:99"
+        },
+        {
+          "from": "valid_cleartext_http",
+          "to": "invalid",
+          "event": "the text becomes malformed",
+          "producer": "SubDialogFragment.validate",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:103"
+        }
+      ]
+    },
+    {
+      "object": "Removed subscription undo window",
+      "states": [
+        "none",
+        "pendingUndo"
+      ],
+      "transitions": [
+        {
+          "from": "none",
+          "to": "pendingUndo",
+          "event": "a row is swiped or Remove is tapped",
+          "producer": "SubscriptionAdapter.remove and UndoSnackbarManager.remove",
+          "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:177"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "pendingUndo",
+          "event": "another row is removed while the snackbar shows. A new snackbar replaces the old one with the accumulated count.",
+          "producer": "UndoSnackbarManager.remove (recycleBin accumulates and a new Snackbar is shown)",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:49"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "none",
+          "event": "Undo action tapped",
+          "producer": "UndoSnackbarManager undo callback and SubscriptionAdapter.undo",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:54"
+        },
+        {
+          "from": "pendingUndo",
+          "to": "none",
+          "event": "snackbar dismissed without the action",
+          "producer": "UndoSnackbarManager.removedCallback",
+          "source": "mobile/src/main/java/com/github/shadowsocks/widget/UndoSnackbarManager.kt:38"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F-U05-01",
+      "name": "Add a subscription URL",
+      "steps": [
+        {
+          "label": "actor: opens Subscriptions from the navigation drawer",
+          "type": "start",
+          "next": "actor: taps Add a subscription",
+          "exception": false
+        },
+        {
+          "label": "actor: taps Add a subscription",
+          "type": "step",
+          "next": "system: shows Edit subscription with an empty field, a parse error and OK disabled",
+          "exception": false
+        },
+        {
+          "label": "system: shows Edit subscription with an empty field, a parse error and OK disabled",
+          "type": "step",
+          "next": "actor: types a URL",
+          "exception": false
+        },
+        {
+          "label": "actor: types a URL",
+          "type": "step",
+          "next": "decision: does the text parse as a URL? yes -> actor taps OK; no -> end: OK stays disabled and the error stays",
+          "exception": false
+        },
+        {
+          "label": "decision: does the text parse as a URL? yes -> actor taps OK; no -> end: OK stays disabled and the error stays",
+          "type": "decision",
+          "next": "actor: taps OK",
+          "exception": false
+        },
+        {
+          "label": "actor: taps OK",
+          "type": "step",
+          "next": "system: inserts the URL in sorted order, persists it and scrolls to it",
+          "exception": false
+        },
+        {
+          "label": "system: inserts the URL in sorted order, persists it and scrolls to it",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: OK stays disabled and the error stays",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end (exception): actor taps Cancel; the list is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "Cancel dismisses the dialog with no result.",
+        "An empty field is malformed, so OK is disabled from the first frame."
+      ]
+    },
+    {
+      "id": "F-U05-02",
+      "name": "Edit one subscription URL",
+      "steps": [
+        {
+          "label": "actor: taps a subscription row",
+          "type": "start",
+          "next": "system: shows Edit subscription with the URL prefilled, OK enabled and Remove visible",
+          "exception": false
+        },
+        {
+          "label": "system: shows Edit subscription with the URL prefilled, OK enabled and Remove visible",
+          "type": "step",
+          "next": "actor: changes the URL text",
+          "exception": false
+        },
+        {
+          "label": "actor: changes the URL text",
+          "type": "step",
+          "next": "decision: does the edited text parse as a URL? yes -> actor taps OK; no -> end: OK stays disabled",
+          "exception": false
+        },
+        {
+          "label": "decision: does the edited text parse as a URL? yes -> actor taps OK; no -> end: OK stays disabled",
+          "type": "decision",
+          "next": "actor: taps OK",
+          "exception": false
+        },
+        {
+          "label": "actor: taps OK",
+          "type": "step",
+          "next": "system: removes the old URL, inserts the edited URL in sorted order, persists and scrolls to it",
+          "exception": false
+        },
+        {
+          "label": "system: removes the old URL, inserts the edited URL in sorted order, persists and scrolls to it",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: OK stays disabled",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end (exception): actor taps Cancel; the stored URL is unchanged",
+          "type": "end",
+          "next": "",
+          "exception": true
+        },
+        {
+          "label": "end: actor taps Remove; the removal continues in F-U05-03",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "Cancel returns no result, so the old URL stays.",
+        "Remove is a separate result that runs the delete path of F-U05-03."
+      ]
+    },
+    {
+      "id": "F-U05-03",
+      "name": "Remove a subscription URL with an undo window",
+      "steps": [
+        {
+          "label": "actor: swipes a row from the start edge, or taps Remove in Edit subscription",
+          "type": "start",
+          "next": "system: removes the URL from the list and persists at once",
+          "exception": false
+        },
+        {
+          "label": "system: removes the URL from the list and persists at once",
+          "type": "step",
+          "next": "system: shows the removed-items snackbar with Undo",
+          "exception": false
+        },
+        {
+          "label": "system: shows the removed-items snackbar with Undo",
+          "type": "step",
+          "next": "decision: does the actor tap Undo before the snackbar dismisses? yes -> system: re-adds every removed URL in sorted order and persists; no -> end: the snackbar dismisses and the deletion stands",
+          "exception": false
+        },
+        {
+          "label": "decision: does the actor tap Undo before the snackbar dismisses? yes -> system: re-adds every removed URL in sorted order and persists; no -> end: the snackbar dismisses and the deletion stands",
+          "type": "decision",
+          "next": "system: re-adds every removed URL in sorted order and persists",
+          "exception": false
+        },
+        {
+          "label": "system: re-adds every removed URL in sorted order and persists",
+          "type": "step",
+          "next": "end: the subscription is back in the list",
+          "exception": false
+        },
+        {
+          "label": "end: the subscription is back in the list",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: the snackbar dismisses and the deletion stands",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end (exception): actor leaves the screen; onDetach flushes the snackbar and the deletion stands",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "Leaving the screen dismisses the snackbar and keeps the deletion.",
+        "Undo restores a URL that the store no longer lists."
+      ]
+    },
+    {
+      "id": "F-U05-04",
+      "name": "Refresh all subscriptions",
+      "steps": [
+        {
+          "label": "actor: taps Refresh servers from subscription, or an explicit start intent reaches SubscriptionService",
+          "type": "start",
+          "next": "decision: is SubscriptionService.idle true? yes -> system: starts the service and posts the progress notification with a determinate bar of 0 of N; no -> system: the second start stops the service and the active run ends",
+          "exception": false
+        },
+        {
+          "label": "decision: is SubscriptionService.idle true? yes -> system: starts the service and posts the progress notification with a determinate bar of 0 of N; no -> system: the second start stops the service and the active run ends",
+          "type": "decision",
+          "next": "system: starts the service and posts the progress notification with a determinate bar of 0 of N",
+          "exception": false
+        },
+        {
+          "label": "system: starts the service and posts the progress notification with a determinate bar of 0 of N",
+          "type": "step",
+          "next": "system: fetches every stored URL in parallel and advances the determinate bar as each download ends",
+          "exception": false
+        },
+        {
+          "label": "system: fetches every stored URL in parallel and advances the determinate bar as each download ends",
+          "type": "step",
+          "next": "decision: did a download throw an exception? yes -> system: shows a long toast and keeps no body for that URL; no -> system: keeps the downloaded body",
+          "exception": false
+        },
+        {
+          "label": "decision: did a download throw an exception? yes -> system: shows a long toast and keeps no body for that URL; no -> system: keeps the downloaded body",
+          "type": "decision",
+          "next": "system: keeps the downloaded body",
+          "exception": false
+        },
+        {
+          "label": "system: shows a long toast and keeps no body for that URL",
+          "type": "step",
+          "next": "system: after every download ends, sets the title to Finishing up… with an indeterminate bar",
+          "exception": false
+        },
+        {
+          "label": "system: keeps the downloaded body",
+          "type": "step",
+          "next": "system: after every download ends, sets the title to Finishing up… with an indeterminate bar",
+          "exception": false
+        },
+        {
+          "label": "system: after every download ends, sets the title to Finishing up… with an indeterminate bar",
+          "type": "step",
+          "next": "system: preprocesses the stored profiles and marks every Active non-user profile Obsolete",
+          "exception": false
+        },
+        {
+          "label": "system: preprocesses the stored profiles and marks every Active non-user profile Obsolete",
+          "type": "step",
+          "next": "decision: does a body raise a JSON parse error? yes -> system: shows a long toast and skips only that body; no -> system: merges the parsed profiles by name and address",
+          "exception": false
+        },
+        {
+          "label": "decision: does a body raise a JSON parse error? yes -> system: shows a long toast and skips only that body; no -> system: merges the parsed profiles by name and address",
+          "type": "decision",
+          "next": "system: merges the parsed profiles by name and address",
+          "exception": false
+        },
+        {
+          "label": "system: shows a long toast and skips only that body",
+          "type": "step",
+          "next": "system: writes the queued profiles and cancels the notification",
+          "exception": false
+        },
+        {
+          "label": "system: merges the parsed profiles by name and address",
+          "type": "step",
+          "next": "system: writes the queued profiles and cancels the notification",
+          "exception": false
+        },
+        {
+          "label": "system: writes the queued profiles and cancels the notification",
+          "type": "step",
+          "next": "end: idle returns to true and the profile list reloads only if the Profiles screen is attached",
+          "exception": false
+        },
+        {
+          "label": "end: idle returns to true and the profile list reloads only if the Profiles screen is attached",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "system: the second start stops the service and the active run ends",
+          "type": "step",
+          "next": "end (exception): the active run is cancelled, no profile is written and idle returns to true",
+          "exception": true
+        },
+        {
+          "label": "end (exception): the active run is cancelled, no profile is written and idle returns to true",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "A download that fails is skipped after a long toast. The run continues and the profiles of that URL become Obsolete.",
+        "A body that raises a JSON parse error is skipped after a long toast. The other bodies still merge.",
+        "A run with no stored URL or with every download failed still obsoletes every Active non-user profile.",
+        "Stop cancels the run through F-U05-05."
+      ]
+    },
+    {
+      "id": "F-U05-05",
+      "name": "Stop a running refresh",
+      "steps": [
+        {
+          "label": "actor: taps Stop in the Subscription Service notification",
+          "type": "start",
+          "next": "system: the Action.ABORT broadcast reaches the registered receiver",
+          "exception": false
+        },
+        {
+          "label": "system: the Action.ABORT broadcast reaches the registered receiver",
+          "type": "step",
+          "next": "decision: is the run still fetching? yes -> system: worker.cancel() cancels the coroutine before profiles are created; no -> system: the merge in Finishing up runs to completion",
+          "exception": false
+        },
+        {
+          "label": "decision: is the run still fetching? yes -> system: worker.cancel() cancels the coroutine before profiles are created; no -> system: the merge in Finishing up runs to completion",
+          "type": "decision",
+          "next": "system: worker.cancel() cancels the coroutine before profiles are created",
+          "exception": false
+        },
+        {
+          "label": "system: worker.cancel() cancels the coroutine before profiles are created",
+          "type": "step",
+          "next": "system: the finally block deletes temp files, cancels the notification and sets idle true",
+          "exception": false
+        },
+        {
+          "label": "system: the merge in Finishing up runs to completion",
+          "type": "step",
+          "next": "system: the profiles are created and written, then the finally block cancels the notification and sets idle true",
+          "exception": false
+        },
+        {
+          "label": "system: the profiles are created and written, then the finally block cancels the notification and sets idle true",
+          "type": "step",
+          "next": "system: the finally block deletes temp files, cancels the notification and sets idle true",
+          "exception": false
+        },
+        {
+          "label": "system: the finally block deletes temp files, cancels the notification and sets idle true",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end (exception): no refresh is running, so no receiver is registered and nothing happens",
+          "type": "end",
+          "next": "",
+          "exception": true
+        }
+      ],
+      "exceptions": [
+        "The receiver exists only while a run is active, so Stop outside a run has no effect.",
+        "Stop during Finishing up cannot interrupt the merge, which has no suspension point."
+      ]
+    },
+    {
+      "id": "F-U05-06",
+      "name": "Merge fetched profiles into the stored list",
+      "steps": [
+        {
+          "label": "system: reads the current profile id and every stored profile",
+          "type": "start",
+          "next": "decision: is the stored profile user-configured? yes -> end: leave it untouched; no -> index it by name plus address",
+          "exception": false
+        },
+        {
+          "label": "decision: is the stored profile user-configured? yes -> end: leave it untouched; no -> index it by name plus address",
+          "type": "decision",
+          "next": "decision: is its name-plus-address key already taken? yes -> delete the duplicate and reset the selection if it was current; no -> keep it",
+          "exception": false
+        },
+        {
+          "label": "decision: is its name-plus-address key already taken? yes -> delete the duplicate and reset the selection if it was current; no -> keep it",
+          "type": "decision",
+          "next": "decision: is the kept profile Active? yes -> mark it Obsolete and queue a write; no -> leave it as is",
+          "exception": false
+        },
+        {
+          "label": "decision: is the kept profile Active? yes -> mark it Obsolete and queue a write; no -> leave it as is",
+          "type": "decision",
+          "next": "system: for each incoming profile, looks up its name-plus-address key",
+          "exception": false
+        },
+        {
+          "label": "system: for each incoming profile, looks up its name-plus-address key",
+          "type": "step",
+          "next": "decision: does the key hold an Obsolete profile? yes -> copy password, method, plugin and UDP fallback, mark Active and queue a write; no -> continue to the next decision",
+          "exception": false
+        },
+        {
+          "label": "decision: does the key hold an Obsolete profile? yes -> copy password, method, plugin and UDP fallback, mark Active and queue a write; no -> continue to the next decision",
+          "type": "decision",
+          "next": "decision: does the key hold an Active profile? yes -> end: keep the stored profile and ignore the incoming copy; no -> system: creates the incoming profile as Active",
+          "exception": false
+        },
+        {
+          "label": "decision: does the key hold an Active profile? yes -> end: keep the stored profile and ignore the incoming copy; no -> system: creates the incoming profile as Active",
+          "type": "decision",
+          "next": "system: creates the incoming profile as Active",
+          "exception": false
+        },
+        {
+          "label": "system: creates the incoming profile as Active",
+          "type": "step",
+          "next": "system: writes every queued profile and calls reloadProfiles on the registered listener",
+          "exception": false
+        },
+        {
+          "label": "system: writes every queued profile and calls reloadProfiles on the registered listener",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: keep the stored profile and ignore the incoming copy",
+          "type": "end",
+          "next": "",
+          "exception": false
+        },
+        {
+          "label": "end: leave it untouched",
+          "type": "end",
+          "next": "",
+          "exception": false
+        }
+      ],
+      "exceptions": [
+        "A body that raises a JSON parse error is skipped with a long toast.",
+        "The body sequence can be empty: with no stored URL or with every download failed, the preprocessing still marks every Active non-user profile Obsolete.",
+        "The reload reaches only a live ProfilesFragment. ProfileManager.listener is null while the Subscriptions screen is open, so the call does nothing."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-U05-01",
+      "title": "Add a valid subscription URL",
+      "preconditions": [
+        "The Subscriptions screen is open",
+        "The stored URL list is empty"
+      ],
+      "steps": [
+        "Tap 'Add a subscription' in the toolbar menu",
+        "Type 'https://example.com/sub' in the field",
+        "Tap OK"
+      ],
+      "expected": [
+        "The Edit subscription dialog opens with an empty field, OK disabled and a parse error shown",
+        "OK becomes enabled and the parse error clears",
+        "The dialog closes, one row shows the URL, the list scrolls to it, and the store holds the URL"
+      ],
+      "control_path": "C-U05-001 > C-U05-003 > C-U05-008 > C-U05-009 > C-U05-011",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:210"
+    },
+    {
+      "id": "TC-U05-02",
+      "title": "An empty or malformed field keeps OK disabled",
+      "preconditions": [
+        "The Edit subscription dialog is open with an empty field"
+      ],
+      "steps": [
+        "Leave the field empty",
+        "Type 'example.com'",
+        "Tap OK"
+      ],
+      "expected": [
+        "OK is disabled and the field shows a parse error",
+        "OK stays disabled and the error shows the platform message",
+        "Nothing happens; the dialog stays open"
+      ],
+      "control_path": "C-U05-008 > C-U05-009 > C-U05-010 > C-U05-011",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:97"
+    },
+    {
+      "id": "TC-U05-03",
+      "title": "A cleartext http URL warns but is accepted",
+      "preconditions": [
+        "The Edit subscription dialog is open"
+      ],
+      "steps": [
+        "Type 'http://example.com/sub'",
+        "Replace the text with 'https://example.com/sub'",
+        "Clear the field",
+        "Type 'http://example.com/sub' again",
+        "Tap OK"
+      ],
+      "expected": [
+        "The field shows 'Cleartext HTTP traffic is insecure' and OK is enabled",
+        "The warning clears and OK stays enabled",
+        "OK becomes disabled and the field shows a parse error",
+        "The warning returns and OK is enabled",
+        "The URL is added and persisted like an https URL"
+      ],
+      "control_path": "C-U05-008 > C-U05-009 > C-U05-010 > C-U05-011 > C-U05-005 > C-U05-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:101"
+    },
+    {
+      "id": "TC-U05-04",
+      "title": "Any URL scheme with a handler passes validation",
+      "preconditions": [
+        "The Edit subscription dialog is open"
+      ],
+      "steps": [
+        "Type 'ftp://example.com/list'",
+        "Tap OK"
+      ],
+      "expected": [
+        "No message is shown and OK is enabled",
+        "The URL is added and stored"
+      ],
+      "control_path": "C-U05-008 > C-U05-009 > C-U05-011 > C-U05-005 > C-U05-006",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:100"
+    },
+    {
+      "id": "TC-U05-05",
+      "title": "Edit a stored URL from its row",
+      "preconditions": [
+        "The list holds 'https://example.com/old'"
+      ],
+      "steps": [
+        "Tap the row",
+        "Replace the text with 'https://example.com/new'",
+        "Tap OK"
+      ],
+      "expected": [
+        "The dialog opens titled Edit subscription, the URL is prefilled and Remove is visible",
+        "OK stays enabled",
+        "The old URL is removed, the new one is inserted in sorted order, the list scrolls to it and the store holds only the new URL"
+      ],
+      "control_path": "C-U05-001 > C-U05-005 > C-U05-006 > C-U05-008 > C-U05-009 > C-U05-011",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:136"
+    },
+    {
+      "id": "TC-U05-06",
+      "title": "Remove from the dialog and restore with Undo",
+      "preconditions": [
+        "The list holds at least one URL"
+      ],
+      "steps": [
+        "Tap a row",
+        "Tap Remove",
+        "Tap Undo in the snackbar"
+      ],
+      "expected": [
+        "Edit subscription opens with Remove visible",
+        "The row disappears at once, the snackbar reports the removal and the store no longer holds the URL",
+        "The URL returns at its sorted position and is stored again"
+      ],
+      "control_path": "C-U05-006 > C-U05-008 > C-U05-013 > C-U05-014 > C-U05-015",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:213"
+    },
+    {
+      "id": "TC-U05-07",
+      "title": "Swipe a row to delete it",
+      "preconditions": [
+        "The list holds two URLs"
+      ],
+      "steps": [
+        "Swipe the first row from the start edge",
+        "Swipe the second row from the start edge",
+        "Wait for the snackbar to dismiss without tapping Undo"
+      ],
+      "expected": [
+        "The first row is removed and the snackbar with Undo appears",
+        "The second row is removed, the first snackbar is dismissed, and a new snackbar reads '2 items removed'. Both URLs are already gone from the store.",
+        "The snackbar clears and both deletions stand"
+      ],
+      "control_path": "C-U05-005 > C-U05-006 > C-U05-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:233"
+    },
+    {
+      "id": "TC-U05-08",
+      "title": "Refresh runs while idle and reports progress",
+      "preconditions": [
+        "Two subscription URLs are stored",
+        "No refresh is running"
+      ],
+      "steps": [
+        "Open the Subscriptions screen",
+        "Tap 'Refresh servers from subscription'"
+      ],
+      "expected": [
+        "The refresh menu item is enabled",
+        "An ongoing Subscription Service notification shows 'Syncing subscriptions… (0 of 2)' with a determinate bar at 0 of 2. Each finished download advances the bar and the count. Then it reads 'Finishing up…' with an indeterminate bar. Finally the notification is cancelled, the menu item is enabled again, and the profile list reloads if the Profiles screen is attached"
+      ],
+      "control_path": "C-U05-001 > C-U05-004 > C-U05-016",
+      "parity": "android-only",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:82"
+    },
+    {
+      "id": "TC-U05-09",
+      "title": "The refresh menu item follows the idle state",
+      "preconditions": [
+        "One subscription URL is stored",
+        "No refresh is running"
+      ],
+      "steps": [
+        "Tap 'Refresh servers from subscription'",
+        "Try the menu item during the run",
+        "Wait for the run to finish"
+      ],
+      "expected": [
+        "The run starts and idle becomes false",
+        "The menu item is disabled and cannot start a second run",
+        "idle becomes true and the menu item is enabled again"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:222"
+    },
+    {
+      "id": "TC-U05-10",
+      "title": "A duplicate start request stops the service and the active run",
+      "preconditions": [
+        "A refresh is running (worker is not null)"
+      ],
+      "steps": [
+        "Send a second start intent for SubscriptionService (the menu item is disabled, so this needs an explicit intent)",
+        "Observe the notification and the pending run"
+      ],
+      "expected": [
+        "onStartCommand calls stopSelf(startId) and no second worker starts",
+        "The service is destroyed, onDestroy calls cancel() on the SupervisorJob, and the first worker is cancelled",
+        "The notification is cancelled, no profile is written by the aborted run, and idle returns to true"
+      ],
+      "control_path": "C-U05-004",
+      "parity": "android-only",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:137"
+    },
+    {
+      "id": "TC-U05-11",
+      "title": "Stop cancels a running refresh",
+      "preconditions": [
+        "A refresh is running against a slow URL"
+      ],
+      "steps": [
+        "Tap Stop in the Subscription Service notification",
+        "Wait for the notification to disappear"
+      ],
+      "expected": [
+        "The Action.ABORT broadcast reaches the service and worker.cancel() runs",
+        "No profile is created or updated, the temp file is deleted, the notification is cancelled and idle returns to true"
+      ],
+      "control_path": "C-U05-016 > C-U05-017",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:76"
+    },
+    {
+      "id": "TC-U05-12",
+      "title": "One failed download does not stop the others",
+      "preconditions": [
+        "Two URLs are stored",
+        "One URL cannot be reached and its profiles are Active"
+      ],
+      "steps": [
+        "Run the refresh",
+        "Watch the notification and the toasts"
+      ],
+      "expected": [
+        "A long toast shows the network error for the failing URL",
+        "The other URL is still fetched and its profiles are created. The notification completes and is cancelled.",
+        "The profiles the failing URL had created are Obsolete and leave the profile list unless the other body lists them"
+      ],
+      "control_path": "C-U05-001 > C-U05-004 > C-U05-016 > C-U05-019",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:148"
+    },
+    {
+      "id": "TC-U05-13",
+      "title": "A body that raises a JSON parse error is skipped",
+      "preconditions": [
+        "A subscription URL serves a body that raises a JSON exception, for example an unterminated string",
+        "Another subscription URL serves valid JSON"
+      ],
+      "steps": [
+        "Run the refresh",
+        "Observe the toasts and the resulting profile list"
+      ],
+      "expected": [
+        "A long toast shows the parse error for the failing body",
+        "No profile is added from that body, and the valid JSON body still creates its profiles",
+        "The profiles the failing body's URL had created are Obsolete and leave the profile list unless the other body lists them"
+      ],
+      "control_path": "C-U05-001 > C-U05-004 > C-U05-020",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:208"
+    },
+    {
+      "id": "TC-U05-14",
+      "title": "A profile missing from the new body becomes Obsolete",
+      "preconditions": [
+        "Profile A is Active and was created by a subscription"
+      ],
+      "steps": [
+        "Serve a body that does not list A",
+        "Run the refresh",
+        "Run the refresh again with the same body"
+      ],
+      "expected": [
+        "A is marked Obsolete and queued for a write",
+        "A no longer appears in the profile list when the Profiles screen is opened again. The refresh's own reload call does nothing while that screen is not attached.",
+        "A stays Obsolete and no duplicate profile is created"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:178"
+    },
+    {
+      "id": "TC-U05-15",
+      "title": "A re-listed Obsolete profile takes the new transport fields",
+      "preconditions": [
+        "Profile A is Obsolete"
+      ],
+      "steps": [
+        "Serve a body that lists A with a new password, method, plugin and UDP fallback",
+        "Run the refresh"
+      ],
+      "expected": [
+        "A is matched by name and address",
+        "A becomes Active with the new password, method, plugin and UDP fallback, and keeps its id"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "partial",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:193"
+    },
+    {
+      "id": "TC-U05-16",
+      "title": "Stored duplicate name-plus-address profiles are removed",
+      "preconditions": [
+        "Two non-user profiles share one name and one host:port"
+      ],
+      "steps": [
+        "Run the refresh",
+        "Observe the stored profiles and the current selection"
+      ],
+      "expected": [
+        "One duplicate is deleted from the database and the first stored profile keeps the key",
+        "If the deleted duplicate was the current profile, the profile id resets to 0"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:175"
+    },
+    {
+      "id": "TC-U05-17",
+      "title": "A user-configured profile is never touched",
+      "preconditions": [
+        "A manual profile M has the same name and address as a subscription entry"
+      ],
+      "steps": [
+        "Run the refresh",
+        "Observe the stored profiles"
+      ],
+      "expected": [
+        "M is skipped in the preprocessing phase and keeps UserConfigured status and its id",
+        "The incoming entry creates a separate Active profile"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:174"
+    },
+    {
+      "id": "TC-U05-18",
+      "title": "A new subscription profile starts from the current profile's feature settings",
+      "preconditions": [
+        "The current profile uses route 'bypass-lan'"
+      ],
+      "steps": [
+        "Serve a body with a new server that has no route, remote_dns, ipv6, metered, proxy_apps or udpdns keys",
+        "Run the refresh"
+      ],
+      "expected": [
+        "The new profile starts from the current profile's route, ipv6, metered, proxy apps, bypass, individual and udpdns",
+        "The new profile is created Active"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:202"
+    },
+    {
+      "id": "TC-U05-19",
+      "title": "Deleting a subscription URL keeps the profiles it created",
+      "preconditions": [
+        "A subscription URL created three profiles"
+      ],
+      "steps": [
+        "Tap the subscription row",
+        "Tap Remove"
+      ],
+      "expected": [
+        "The URL is removed from the list",
+        "The three profiles stay in the database and stay Active until a later refresh marks them Obsolete"
+      ],
+      "control_path": "C-U05-006 > C-U05-008 > C-U05-013 > C-U05-014",
+      "parity": "implemented",
+      "source": "mobile/src/main/java/com/github/shadowsocks/subscription/SubscriptionFragment.kt:177"
+    },
+    {
+      "id": "TC-U05-20",
+      "title": "The URL list survives a restart and drops invalid lines",
+      "preconditions": [
+        "The public store key subscription holds one valid URL line and one plain word"
+      ],
+      "steps": [
+        "Reopen the Subscriptions screen",
+        "Add or remove one URL"
+      ],
+      "expected": [
+        "Only the parseable URL is listed",
+        "The store is rewritten as newline-joined URL strings without the plain word"
+      ],
+      "control_path": "C-U05-001 > C-U05-005",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/Subscription.kt:46"
+    },
+    {
+      "id": "TC-U05-21",
+      "title": "Rows sort by host, port, then URL.file",
+      "preconditions": [
+        "The store holds 'https://a.example/x?c=2', 'https://a.example/x?a=1' and 'https://b.example/x'"
+      ],
+      "steps": [
+        "Open the Subscriptions screen",
+        "Observe the row order"
+      ],
+      "expected": [
+        "'https://a.example/x?a=1' is the first row and 'https://a.example/x?c=2' is the second, because URL.file includes the query",
+        "'https://b.example/x' is the last row, because host sorts before file"
+      ],
+      "control_path": "C-U05-005 > C-U05-006",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/utils/Sorters.kt:39"
+    },
+    {
+      "id": "TC-U05-22",
+      "title": "A refresh with no stored URL still obsoletes every subscription profile",
+      "preconditions": [
+        "No subscription URL is stored",
+        "Profile A is Active and not user-configured"
+      ],
+      "steps": [
+        "Send a start intent to SubscriptionService",
+        "Observe the profiles and the idle state"
+      ],
+      "expected": [
+        "No download runs, the notification reads 'Finishing up…' and the merge runs with an empty sequence",
+        "A becomes Obsolete and is written",
+        "The notification is cancelled and idle returns to true"
+      ],
+      "control_path": "C-U05-004 > C-U05-016",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:119"
+    },
+    {
+      "id": "TC-U05-23",
+      "title": "A body of bare literals produces no toast and no profile",
+      "preconditions": [
+        "A subscription URL serves the bare words 'Not Found'",
+        "Another subscription URL serves valid JSON"
+      ],
+      "steps": [
+        "Run the refresh",
+        "Observe the toasts and the resulting profile list"
+      ],
+      "expected": [
+        "No toast shows for the bare-literal body, because the tokenizer returns string tokens and the parser ignores them",
+        "No profile is added from that body, and the valid JSON body still creates its profiles",
+        "The profiles the bare-literal body's URL had created are Obsolete and leave the profile list unless the other body lists them"
+      ],
+      "control_path": "C-U05-001 > C-U05-004",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/database/Profile.kt:233"
+    },
+    {
+      "id": "TC-U05-24",
+      "title": "Every download fails and every subscription profile becomes Obsolete",
+      "preconditions": [
+        "Two subscription URLs are stored and neither can be reached",
+        "Profile A is Active and not user-configured"
+      ],
+      "steps": [
+        "Run the refresh",
+        "Observe the notification, the toasts and the profile list"
+      ],
+      "expected": [
+        "A long toast shows the network error for each failing URL",
+        "The notification reads 'Finishing up…' and the merge runs with an empty sequence",
+        "A becomes Obsolete and leaves the profile list, and idle returns to true"
+      ],
+      "control_path": "C-U05-001 > C-U05-004 > C-U05-016 > C-U05-019",
+      "parity": "implemented",
+      "source": "core/src/main/java/com/github/shadowsocks/subscription/SubscriptionService.kt:113"
+    }
+  ],
+  "parity_summary": {
+    "implemented": 21,
+    "partial": 1,
+    "missing": 0,
+    "android_only": 2
+  },
+  "notes": "Entry point: the 'Subscriptions' drawer item is mobile/src/main/res/menu/navigation_main.xml:8 and belongs to U01, so it is not a control here; MainActivity.kt:213 opens this screen. Android subscribes only to JSON bodies (SIP008-like, Profile.parseJson); HarmonyOS also accepts base64 and plain ss:// lists (model/Subscription.ets:114), which is why several refresh cases differ. Android's refresh is one batch run for all URLs with a service notification; HarmonyOS updates one row at a time with a spinner and no notification, no stop, and no batch. Android deletion removes only the URL and keeps its profiles; HarmonyOS removeSubscriptionProfiles deletes the profiles and clears the selection (ProfileStore.ets:182). Android has no per-row metadata; HarmonyOS adds an updated-date and profile-count line per row, and has no edit dialog. The schema has no toast type, so the two service Toasts are recorded as snackbar controls (C-U05-019, C-U05-020), as U04 records its Toast. The fast scroll handle is C-U05-018 (an image, as in U07); it has no letter popup because SubscriptionAdapter does not implement PopupTextProvider. C-U05-016 records the notification's determinate and indeterminate bars. The merge ends with ProfileManager.listener?.reloadProfiles(): the listener is set only by ProfilesFragment and is null while the Subscriptions screen is open, so the reload is a no-op until Profiles is opened again. Navigation drawer, snackbar anchor FAB and toolbar hamburger belong to U01."
+}

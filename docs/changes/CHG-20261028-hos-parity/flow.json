@@ -1,0 +1,356 @@
+{
+  "skill": "a01",
+  "ruleset": "2026-10-28",
+  "baseline": "e123804+dirty",
+  "authorizedLayer": "implement",
+  "currentStep": "C-02",
+  "done": [
+    {
+      "step": "L-00",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/start-check.json",
+        "docs/changes/CHG-20261028-hos-parity/change-record.yaml",
+        "docs/changes/CHG-20261028-hos-parity/flow.json"
+      ],
+      "summary": "Batch opened. Resource check passes all 8 items. Scope is the 5.4.0 parity backlog.",
+      "at": "2026-10-28T10:49:02+11:00"
+    },
+    {
+      "step": "L-01-a",
+      "outputs": [
+        "docs/versions/5.4.0/requirements/requirements.md"
+      ],
+      "summary": "Requirement document with Users, Problem and outcome, Scope, 412 requirement items, 51 state machines and Open items.",
+      "at": "2026-10-28T10:30:00+11:00"
+    },
+    {
+      "step": "L-01-b",
+      "outputs": [
+        "docs/versions/5.4.0/requirements/requirements-model.json",
+        "docs/changes/CHG-20261028-hos-parity/tools/build-model.mjs"
+      ],
+      "summary": "Requirements model with 3 actors, 2 goals, 10 scope items, 12 flows and 409 rules. Three rules without a counterexample are covered by flow steps.",
+      "at": "2026-10-28T10:52:00+11:00"
+    },
+    {
+      "step": "L-01-c",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/requirements-model-check.txt"
+      ],
+      "summary": "Model check passes M1 to M9 with 412 of 412 requirement IDs covered.",
+      "at": "2026-10-28T10:53:00+11:00"
+    },
+    {
+      "step": "L-01-d",
+      "outputs": [
+        "docs/oracles/90-journeys/journeys.md",
+        "docs/changes/CHG-20261028-hos-parity/tools/gen-journey-oracles.mjs"
+      ],
+      "summary": "11 journey oracles, one per unit flow, each anchored to a planned E2E spec.",
+      "at": "2026-10-28T10:54:00+11:00"
+    },
+    {
+      "step": "L-01-e",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/oracle-check.txt"
+      ],
+      "summary": "Oracle check: 11 oracles, 0 P0, form and relation clean, 0 closed and 11 pending-test.",
+      "at": "2026-10-28T10:55:00+11:00"
+    },
+    {
+      "step": "L-01-f",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/review-snapshot.json",
+        "docs/changes/CHG-20261028-hos-parity/tools/build-snapshot.mjs"
+      ],
+      "summary": "Machine trace snapshot with 409 requirement items and 11 journey oracles. review.py --check passes.",
+      "at": "2026-10-28T11:02:00+11:00"
+    },
+    {
+      "step": "L-01-g",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/review-brief.json",
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/model-report.json"
+      ],
+      "summary": "Model generated 94 figures and 3 assumption entries into the review brief.",
+      "at": "2026-10-28T11:03:00+11:00"
+    },
+    {
+      "step": "L-01-h",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/review-brief.json",
+        "docs/changes/CHG-20261028-hos-parity/tools/fill-brief.mjs"
+      ],
+      "summary": "Four decisions written: baseline, Android-only scope, unit journeys, acceptance bar. Brief check passes.",
+      "at": "2026-10-28T11:07:00+11:00"
+    },
+    {
+      "step": "L-01-i",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/index.html",
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/published.txt"
+      ],
+      "summary": "Requirements review page rendered and published over Tailscale at HTTP 200.",
+      "at": "2026-10-28T11:08:18+11:00"
+    },
+    {
+      "step": "L-01",
+      "outputs": [
+        "docs/versions/5.4.0/requirements/requirements.md",
+        "docs/versions/5.4.0/requirements/requirements-model.json",
+        "docs/oracles/90-journeys/journeys.md",
+        "docs/changes/CHG-20261028-hos-parity/review/requirements/index.html"
+      ],
+      "summary": "Requirements layer complete: model, journey oracles, review brief and published page. Reviewer verdict pending.",
+      "at": "2026-10-28T11:08:18+11:00"
+    },
+    {
+      "step": "L-02",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/architecture.md",
+        "docs/oracles/91-seams/seams.md",
+        "docs/changes/CHG-20261028-hos-parity/review/architecture/index.html"
+      ],
+      "summary": "Architecture increment, 8 seams and 8 seam oracles. Review page published. Gate pending.",
+      "at": "2026-10-28T11:20:00+11:00"
+    },
+    {
+      "step": "L-03",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/hld.md",
+        "docs/oracles/point.md",
+        "docs/changes/CHG-20261028-hos-parity/review/hld/index.html"
+      ],
+      "summary": "HLD contracts C-01 to C-08, 11 unit oracles, review page published. Gate pending.",
+      "at": "2026-10-28T11:30:00+11:00"
+    },
+    {
+      "step": "L-04",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/lld.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U01.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U02.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U03.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U04.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U05.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U06.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U07.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U08.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U09.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U10.md",
+        "docs/changes/CHG-20261028-hos-parity/lld/U11.md",
+        "docs/changes/CHG-20261028-hos-parity/review/lld/index.html",
+        "docs/changes/CHG-20261028-hos-parity/review/lld/review-brief.json",
+        "docs/changes/CHG-20261028-hos-parity/review/lld/review-snapshot.json",
+        "docs/changes/CHG-20261028-hos-parity/review/lld/gate.json",
+        "docs/changes/CHG-20261028-hos-parity/review/lld/published.txt"
+      ],
+      "summary": "11 unit plans merged into lld.md. LLD review page rendered, checked and published; gate recorded pending. Implementation starts at I-01.",
+      "at": "2026-10-28T11:39:00+11:00"
+    },
+    {
+      "step": "I-01",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/tests.txt"
+      ],
+      "summary": "Integration tests written: ParitySeam.test.ets (13 cases across C-01, C-02, C-04, C-05, C-06, C-08).",
+      "at": "2026-10-28T12:20:00+11:00"
+    },
+    {
+      "step": "I-02",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/tests.txt"
+      ],
+      "summary": "Unit tests written: ParityU01 to ParityU11, 249 cases, registered in test/List.test.ets.",
+      "at": "2026-10-28T12:20:00+11:00"
+    },
+    {
+      "step": "I-03",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/red.txt"
+      ],
+      "summary": "Red recorded on baseline e123804 for the three changed existing suites. New modules had no baseline API; the deviation is in risks.",
+      "at": "2026-10-28T12:20:00+11:00"
+    },
+    {
+      "step": "I-04",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/build-clean.txt"
+      ],
+      "summary": "Implementation complete across 11 units: model, pages, adapters, resources and manifest. Clean HAP build succeeds.",
+      "at": "2026-10-28T12:20:00+11:00"
+    },
+    {
+      "step": "I-05",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/host-tests.txt"
+      ],
+      "summary": "Integration and unit suites green: 490 passed, 0 failed. Rust core suites green.",
+      "at": "2026-10-28T12:20:00+11:00"
+    },
+    {
+      "step": "I-06",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/e2e-steps.json",
+        "docs/changes/CHG-20261028-hos-parity/checks/e2e/index.html",
+        "docs/changes/CHG-20261028-hos-parity/checks/e2e-final.txt",
+        "docs/changes/CHG-20261028-hos-parity/checks/e2e-published.txt"
+      ],
+      "summary": "On-device E2E on the x86_64 HVPhone emulator: SslocalNativeTest and SocksE2eTest ran, 5 of 5 passed. The run log, report and Tailscale link are recorded. VpnE2eTest stays a real-device test.",
+      "at": "2026-10-28T14:31:00+11:00"
+    },
+    {
+      "step": "I-07",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/checks/high-level-review.json",
+        "docs/changes/CHG-20261028-hos-parity/checks/high-level-review/index.html",
+        "docs/changes/CHG-20261028-hos-parity/checks/high-level-review-published.txt"
+      ],
+      "summary": "High-level review with 8 of 8 dimensions, 187 items. The final fix pass closed the 14 strong items; the gate is clear. The report is published under an independent directory.",
+      "at": "2026-10-28T14:26:00+11:00"
+    },
+    {
+      "step": "C-01",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/changes.md"
+      ],
+      "summary": "Change review: every batch change is listed with its content and reason. The machine side is complete; the human change sign-off is pending.",
+      "at": "2026-10-28T14:40:00+11:00"
+    },
+    {
+      "step": "C-02",
+      "outputs": [
+        "docs/changes/CHG-20261028-hos-parity/completion.md"
+      ],
+      "summary": "Completion judgement: verdict incomplete. Development and tests are green. The four human gates, the result gate, VpnE2eTest and the UI restoration evidence are open. The handoff is registered.",
+      "at": "2026-10-28T14:40:00+11:00"
+    }
+  ],
+  "gates": [
+    {
+      "layer": "requirements",
+      "verdict": "pending",
+      "by": "ai",
+      "at": "2026-10-28T11:08:18+11:00"
+    },
+    {
+      "layer": "architecture",
+      "verdict": "pending",
+      "by": "ai",
+      "at": "2026-10-28T11:20:00+11:00"
+    },
+    {
+      "layer": "hld",
+      "verdict": "pending",
+      "by": "ai",
+      "at": "2026-10-28T11:30:00+11:00"
+    },
+    {
+      "layer": "lld",
+      "verdict": "pending",
+      "by": "ai",
+      "at": "2026-10-28T11:39:00+11:00"
+    },
+    {
+      "layer": "implement",
+      "verdict": "pending",
+      "by": "ai",
+      "at": "2026-10-28T14:40:00+11:00"
+    }
+  ],
+  "branches": [],
+  "openItems": [
+    {
+      "id": "requirements-review",
+      "question": "Reviewer must export review-decisions.json from the requirements page.",
+      "owner": "user"
+    },
+    {
+      "id": "architecture-review",
+      "question": "Reviewer must export review-decisions.json from the architecture page.",
+      "owner": "user"
+    },
+    {
+      "id": "hld-review",
+      "question": "Reviewer must export review-decisions.json from the HLD page.",
+      "owner": "user"
+    },
+    {
+      "id": "lld-review",
+      "question": "Reviewer must export review-decisions.json from the LLD page.",
+      "owner": "user"
+    },
+    {
+      "id": "device-e2e",
+      "question": "SslocalNativeTest and SocksE2eTest passed on the x86_64 emulator (5 of 5). VpnE2eTest still needs real hardware, because the emulator does not deliver guest traffic to the tun. Tracked as BL-540-02.",
+      "owner": "user"
+    },
+    {
+      "id": "weak-review-items",
+      "question": "60 weak open high-level review items remain. Triage them in BL-540-04.",
+      "owner": "ai"
+    },
+    {
+      "id": "ui-restoration",
+      "question": "UI restoration evidence is absent: the batch has no design-reference screenshots. Tracked as BL-540-03.",
+      "owner": "user"
+    },
+    {
+      "id": "result-gate",
+      "question": "The reviewer must export accepted conclusions for the four design layers, then accept or reject the delivery in their own words.",
+      "owner": "user"
+    }
+  ],
+  "handoff": {
+    "prior": []
+  },
+  "reviewBrief": {
+    "enabled": true
+  },
+  "risks": [
+    {
+      "risk": "The VPN tun E2E needs a real device or the emulator grant. The public emulator does not deliver guest traffic to the tun.",
+      "handling": "Use host Rust tests, the ArkTS host specs, and the SOCKS e2e on the emulator. Record the tun E2E as a device-blocked item with the exact blocker."
+    },
+    {
+      "risk": "The repository and the HarmonyOS SDK are owned by w2h. The session user is red.",
+      "handling": "Run build and test commands as w2h with sudo -u w2h. Keep generated files under directories owned by red."
+    },
+    {
+      "risk": "229 portable cases span 11 units and cannot fit one delivery window.",
+      "handling": "Work one unit at a time in parity order. Split into a follow-up batch if the work crosses two natural days."
+    },
+    {
+      "risk": "Human design gates and the result gate are pending. The a01 skill does not allow the executor to sign for the reviewer.",
+      "handling": "Publish every layer page and keep the gates pending. Claim completion only after the reviewer exports accepted conclusions and the user says the delivery is accepted."
+    },
+    {
+      "risk": "56 Android-only cases cannot be ported as they are.",
+      "handling": "Record a platform decision per case. Implement a HarmonyOS equivalent where the public SDK supports one. Accept the rest as not portable with the reason."
+    },
+    {
+      "risk": "Test-first order was compressed for the new modules: implementation and specs were written in the same wave. Red is recorded only for the three changed existing suites.",
+      "handling": "Recorded in checks/red.txt and completion.md. The host suites and the clean build are the executed evidence."
+    },
+    {
+      "risk": "The emulator runs x86_64 while the app shipped arm64-v8a only, so the on-device suites could not install.",
+      "handling": "Resolved: the app build now carries arm64-v8a and x86_64, and the x86_64 Rust staticlib is built. SslocalNativeTest and SocksE2eTest passed on the emulator. VpnE2eTest stays a real-device test."
+    },
+    {
+      "risk": "UI restoration evidence is absent because no device screenshot exists.",
+      "handling": "Recorded as an open item; the Android baseline remains the visual reference."
+    }
+  ],
+  "resources": {
+    "checked": true,
+    "evidence": "docs/changes/CHG-20261028-hos-parity/checks/start-check.json"
+  },
+  "next": {
+    "step": "C-02",
+    "reads": [
+      "docs/changes/CHG-20261028-hos-parity/checks/final.txt",
+      "docs/changes/CHG-20261028-hos-parity/checks/e2e-steps.json",
+      "docs/changes/CHG-20261028-hos-parity/checks/high-level-review.json"
+    ]
+  }
+}

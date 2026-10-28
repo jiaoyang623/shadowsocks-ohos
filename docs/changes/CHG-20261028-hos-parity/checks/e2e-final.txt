@@ -1,0 +1,288 @@
+
+=== 1/6 build the native core ===
+warning: use of deprecated method `tokio::net::TcpStream::set_linger`: `SO_LINGER` causes the socket to block the thread on drop
+   --> vendor/shadowsocks-service/src/server/tcprelay.rs:165:36
+    |
+165 |                     let _ = stream.set_linger(Some(Duration::ZERO));
+    |                                    ^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> vendor/shadowsocks-service/src/acl/mod.rs:520:31
+    |
+520 |     fn convert_to_ascii(host: &str) -> Cow<str> {
+    |                               ^^^^     ^^^^^^^^ the same lifetime is hidden here
+    |                               |
+    |                               the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+520 |     fn convert_to_ascii(host: &str) -> Cow<'_, str> {
+    |                                            +++
+
+warning: `shadowsocks-service` (lib) generated 2 warnings (run `cargo fix --lib -p shadowsocks-service` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 0.11s
+Installed /opt/git/github/shadowsocks-ohos/native/../entry/libs/arm64-v8a/libsslocal_core.a
+
+=== 2/6 build and sign both HAPs ===
+> hvigor [33mWARN: The project has not explicitly set the 'targetSdkVersion' version at build-profile.json5. It is recommended to configure it. Reference: https://developer.huawei.com/consumer/en/doc/harmonyos-guides/ide-hvigor-build-profile-app#section45865492619[39m
+> hvigor [32mUP-TO-DATE :entry:default@PreBuild...  [39m
+> hvigor [32mFinished :entry:default@CreateModuleInfo... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GenerateMetadata...  [39m
+> hvigor [32mFinished :entry:default@ConfigureCmake... after 24 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@MergeProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@CreateBuildProfile...  [39m
+> hvigor [32mFinished :entry:default@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgContextInfo... after 3 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgSdkInfo...  [39m
+> hvigor [32mFinished :entry:default@ProcessIntegratedHsp... after 1 ms [39m
+> hvigor [32mFinished :entry:default@BuildNativeWithCmake... after 6 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@MakePackInfo...  [39m
+> hvigor [32mFinished :entry:default@SyscapTransform... after 6 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessRouterMap...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessShareConfig...  [39m
+> hvigor [32mFinished :entry:default@ProcessStartupConfig... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@GenerateLoaderJson...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@CompileResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@CompileArkTS...  [39m
+> hvigor [32mFinished :entry:default@BuildJS... after 1 ms [39m
+> hvigor [32mFinished :entry:default@BuildNativeWithNinja... after 133 ms [39m
+> hvigor [32mFinished :entry:default@ProcessLibs... after 65 ms [39m
+> hvigor [32mFinished :entry:default@DoNativeStrip... after 48 ms [39m
+> hvigor [32mFinished :entry:default@CacheNativeLibs... after 3 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgModuleJson...  [39m
+> hvigor [32mFinished :entry:default@ProcessCompiledResources... after 1 ms [39m
+> hvigor [32mFinished :entry:default@PackageHap... after 246 ms [39m
+> hvigor [32mFinished :entry:default@PackingCheck... after 2 ms [39m
+> hvigor [32mFinished :entry:default@SignHap... after 914 ms [39m
+> hvigor [32mFinished :entry:default@CollectDebugSymbol... after 1 ms [39m
+> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 2 s 496 ms [39m
+
+33 tasks in total: 19 executed, 14 up-to-date
+> hvigor [33mWARN: The project has not explicitly set the 'targetSdkVersion' version at build-profile.json5. It is recommended to configure it. Reference: https://developer.huawei.com/consumer/en/doc/harmonyos-guides/ide-hvigor-build-profile-app#section45865492619[39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@PreBuild...  [39m
+> hvigor [32mFinished :entry:ohosTest@CreateModuleInfo... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GenerateMetadata...  [39m
+> hvigor [32mFinished :entry:ohosTest@ConfigureCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@MergeProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@CreateBuildProfile...  [39m
+> hvigor [32mFinished :entry:ohosTest@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GenerateOhosTestTemplate...  [39m
+> hvigor [32mFinished :entry:ohosTest@GeneratePkgContextInfo... after 3 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GeneratePkgSdkInfo...  [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessIntegratedHsp... after 1 ms [39m
+> hvigor [32mFinished :entry:ohosTest@BuildNativeWithCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@MakePackInfo...  [39m
+> hvigor [32mFinished :entry:ohosTest@SyscapTransform... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessRouterMap...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessShareConfig...  [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessStartupConfig... after 1 ms [39m
+> hvigor [32mFinished :entry:ohosTest@BuildNativeWithNinja... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@ProcessResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GenerateLoaderJson...  [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessLibs... after 2 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@CompileResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@DoNativeStrip...  [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@OhosTestCompileArkTS...  [39m
+> hvigor [32mFinished :entry:ohosTest@OhosTestBuildJS... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@CacheNativeLibs...  [39m
+> hvigor [32mFinished :entry:ohosTest@OhosTestCopyMockConfigJson... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@GeneratePkgModuleJson...  [39m
+> hvigor [32mFinished :entry:ohosTest@ProcessCompiledResources... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:ohosTest@PackageHap...  [39m
+> hvigor [32mFinished :entry:ohosTest@PackingCheck... after 2 ms [39m
+> hvigor [32mFinished :entry:ohosTest@SignHap... after 809 ms [39m
+> hvigor [32mFinished :entry:ohosTest@CollectDebugSymbol... after 1 ms [39m
+> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 1 s 527 ms [39m
+
+35 tasks in total: 17 executed, 18 up-to-date
+10-27 20:31:11.879  INFO - Start sign-profile
+10-27 20:31:11.904  INFO - /opt/harmony/sdk/sdk/default/openharmony/toolchains/lib/OpenHarmony.p12 is exist. Try to load it with given passwd
+10-27 20:31:12.085  INFO - sign-profile success
+10-27 20:31:12.330  INFO - Start sign-app
+10-27 20:31:12.419  INFO - certificate in profile: OpenHarmony Application Release
+10-27 20:31:12.493  INFO - Start to sign code.
+10-27 20:31:12.496  INFO - profile type is: debug
+10-27 20:31:12.567  INFO - /opt/harmony/sdk/sdk/default/openharmony/toolchains/lib/OpenHarmony.p12 is exist. Try to load it with given passwd
+10-27 20:31:12.653  INFO - Create a sign info successfully.
+10-27 20:31:12.658  INFO - Create a sign info successfully.
+10-27 20:31:12.670  INFO - Create a sign info successfully.
+10-27 20:31:12.682  INFO - Create a sign info successfully.
+10-27 20:31:12.690  INFO - Create a sign info successfully.
+10-27 20:31:12.690  INFO - Create a sign info successfully.
+10-27 20:31:12.695  INFO - Sign successfully.
+10-27 20:31:12.695  INFO - Start permission signing.
+10-27 20:31:12.727  INFO - Add sign data in sign info list success.
+10-27 20:31:12.730  INFO - Generate signing block success, begin write it to output file
+10-27 20:31:12.730  INFO - Sign Hap success!
+10-27 20:31:12.730  INFO - sign-app success
+10-27 20:31:12.995  WARN - Missing parameter: outproof
+Signed and verified: entry/build/default/outputs/default/entry-default-signed.hap
+10-27 20:31:13.870  INFO - Start sign-profile
+10-27 20:31:13.895  INFO - /opt/harmony/sdk/sdk/default/openharmony/toolchains/lib/OpenHarmony.p12 is exist. Try to load it with given passwd
+10-27 20:31:14.060  INFO - sign-profile success
+10-27 20:31:14.290  INFO - Start sign-app
+10-27 20:31:14.373  INFO - certificate in profile: OpenHarmony Application Release
+10-27 20:31:14.393  INFO - Start to sign code.
+10-27 20:31:14.395  INFO - profile type is: debug
+10-27 20:31:14.407  INFO - /opt/harmony/sdk/sdk/default/openharmony/toolchains/lib/OpenHarmony.p12 is exist. Try to load it with given passwd
+10-27 20:31:14.483  INFO - Create a sign info successfully.
+10-27 20:31:14.488  INFO - Create a sign info successfully.
+10-27 20:31:14.491  INFO - No native libs.
+10-27 20:31:14.492  INFO - Sign successfully.
+10-27 20:31:14.492  INFO - Start permission signing.
+10-27 20:31:14.500  INFO - Add sign data in sign info list success.
+10-27 20:31:14.502  INFO - Generate signing block success, begin write it to output file
+10-27 20:31:14.502  INFO - Sign Hap success!
+10-27 20:31:14.503  INFO - sign-app success
+10-27 20:31:14.758  WARN - Missing parameter: outproof
+Signed and verified: entry/build/default/outputs/ohosTest/entry-ohosTest-signed.hap
+
+=== 3/6 host-side shadowsocks server and marker page ===
+marker page served on 127.0.0.1:18800, ssserver on 127.0.0.1:18388
+
+=== 4/6 using the already-running emulator ===
+
+=== 5/6 wait for the device ===
+[Info]App install path:/opt/git/github/shadowsocks-ohos/entry/build/default/outputs/default/entry-default-signed.hap msg:install bundle successfully. 
+AppMod finish
+[Info]App install path:/opt/git/github/shadowsocks-ohos/entry/build/default/outputs/ohosTest/entry-ohosTest-signed.hap msg:install bundle successfully. 
+AppMod finish
+
+=== 6/6 run the on-device suites ===
+start ability successfully.
+
+OHOS_REPORT_SUM: 3
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: current=1
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=exposes the native core
+OHOS_REPORT_STATUS_CODE: 1
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: current=1
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=exposes the native core
+OHOS_REPORT_STATUS_CODE: 0
+OHOS_REPORT_STATUS: consuming=1
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: current=2
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=rejects invalid configs
+OHOS_REPORT_STATUS_CODE: 1
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: current=2
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=rejects invalid configs
+OHOS_REPORT_STATUS_CODE: 0
+OHOS_REPORT_STATUS: consuming=1
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: current=3
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=rejects a negative tun fd
+OHOS_REPORT_STATUS_CODE: 1
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: current=3
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=rejects a negative tun fd
+OHOS_REPORT_STATUS_CODE: 0
+OHOS_REPORT_STATUS: consuming=1
+
+
+OHOS_REPORT_STATUS: class=SslocalNativeTest
+OHOS_REPORT_STATUS: suiteconsuming=3
+
+
+OHOS_REPORT_SUM: 2
+OHOS_REPORT_STATUS: class=SocksE2eTest
+
+
+OHOS_REPORT_STATUS: class=SocksE2eTest
+OHOS_REPORT_STATUS: current=4
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=round-trips an HTTP fetch through the shadowsocks tunnel
+OHOS_REPORT_STATUS_CODE: 1
+
+
+OHOS_REPORT_STATUS: class=SocksE2eTest
+OHOS_REPORT_STATUS: current=4
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=round-trips an HTTP fetch through the shadowsocks tunnel
+OHOS_REPORT_STATUS_CODE: 0
+OHOS_REPORT_STATUS: consuming=1030
+
+
+OHOS_REPORT_STATUS: class=SocksE2eTest
+OHOS_REPORT_STATUS: current=5
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=cannot reach the marker without the tunnel
+OHOS_REPORT_STATUS_CODE: 1
+
+
+OHOS_REPORT_STATUS: class=SocksE2eTest
+OHOS_REPORT_STATUS: current=5
+OHOS_REPORT_STATUS: id=JS
+OHOS_REPORT_STATUS: numtests=5
+OHOS_REPORT_STATUS: stream=
+OHOS_REPORT_STATUS: test=cannot reach the marker without the tunnel
+OHOS_REPORT_STATUS_CODE: 0
+OHOS_REPORT_STATUS: consuming=1
+
+
+OHOS_REPORT_STATUS: class=SocksE2eTest
+OHOS_REPORT_STATUS: suiteconsuming=1031
+
+
+OHOS_REPORT_RESULT: stream=Tests run: 5, Failure: 0, Error: 0, Pass: 5, Ignore: 0
+OHOS_REPORT_CODE: 0
+OHOS_REPORT_STATUS: taskconsuming=1034
+
+TestFinished-ResultCode: 0
+TestFinished-ResultMsg: your test finished!!!
+user test finished.
+
+host-side ssserver saw:
+1
+wrote docs/changes/CHG-20261028-hos-parity/checks/e2e-steps.json: 5 cases
+
+========================================
+  HarmonyOS on-device e2e PASSED
+========================================

@@ -24,12 +24,14 @@
  * it: `[bypass_all]` or `[proxy_all]` for the default, then `[bypass_list]`
  * and `[proxy_list]` for the exceptions. What the core does not know is the
  * `#IMPORT_URL <…>` comment shadowsocks-android uses to pull in a list served
- * somewhere else — to the core it is a comment, so if the app does not resolve
+ * somewhere else. To the core it is a comment, so if the app does not resolve
  * it, nothing ever does.
  *
  * `flattenAcl` is that resolution: it fetches each imported list, follows
  * imports inside those lists as far as the depth allows, and merges the entries
- * into the sections they belong to.
+ * into the sections they belong to. It records the lists it could not fetch,
+ * because a partial result must never replace a complete cached copy; that
+ * check is `flattenCompleteAcl`.
  */
 
 /**
@@ -68,13 +70,21 @@ export function emptyAcl(): AclDocument {
  * Reads an ACL file. A section the format does not define is skipped along with
  * its entries: a list from somewhere else must not be able to stop the tunnel
  * from starting, which is what the core would do with a file it cannot parse.
+ *
+ * `defaultBypass` sets the document default and the list that the entries
+ * before the first section belong to. Entries before a list section belong to
+ * the proxy list when the caller asks for a bypass default, because such a file
+ * lists what to proxy. The import path and the GFW List action use this form. A
+ * default line still changes the document default and leaves the current list
+ * alone. The one-argument form keeps the older behavior for every other caller.
  */
-export function parseAcl(text: string): AclDocument {
+export function parseAcl(text: string, defaultBypass: boolean = false): AclDocument {
   const doc = emptyAcl();
-  // Entries before any section header belong to the bypass list, and a default
-  // line does not change which list is current — both are what the core's own
-  // parser does, so a file it accepts reads here the way it reads there.
-  let section = 'bypass';
+  doc.bypass = defaultBypass;
+  // A default line does not change which list is current. Both the core's own
+  // parser and Android's parser work this way, so a file the core accepts reads
+  // here the way it reads there.
+  let section = defaultBypass ? 'proxy' : 'bypass';
   for (const raw of text.split('\n')) {
     const line = raw.trim();
     if (line.length === 0) {
@@ -155,8 +165,13 @@ function merge(into: string[], from: string[]): void {
  * their entries folded in. The import lines are kept, so the result can be
  * flattened again later when the lists have moved on.
  *
- * A list that cannot be fetched leaves the file as it was rather than failing:
- * an unreachable list is a stale filter, not a reason to refuse to connect.
+ * A list that cannot be fetched does not fail the flatten: an unreachable list
+ * is a stale filter, not a reason to refuse to connect. Its entries are the
+ * one part of the file that is missing, and its URL is appended to `failed`
+ * when the caller passes that array. `failed` is filled at every depth, so a
+ * nested import that fails is reported too. A caller that would publish the
+ * result over an older cached copy must check it first, because that copy is
+ * still more complete than the partial result.
  *
  * Entries keep the meaning their own section gave them, which is a deliberate
  * departure from shadowsocks-android: it discards the subnets of an imported
@@ -164,8 +179,13 @@ function merge(into: string[], from: string[]): void {
  * is tied to the list it came from. Here every entry is written back into a
  * section of the file that imports it, so an imported `[proxy_list]` stays a
  * list of names that go through the proxy whatever either file's default is.
+ *
+ * A child list takes the parent's default, as Android's `Acl.flatten` does. The
+ * default matters for the entries before the first section of a child that is
+ * read raw, which is the last level of the chain.
  */
-export async function flattenAcl(text: string, depth: number, fetch: AclFetcher): Promise<string> {
+export async function flattenAcl(text: string, depth: number, fetch: AclFetcher,
+  failed?: string[]): Promise<string> {
   const doc = parseAcl(text);
   if (depth <= 0 || doc.urls.length === 0) {
     return text;
@@ -175,13 +195,30 @@ export async function flattenAcl(text: string, depth: number, fetch: AclFetcher)
     try {
       childText = await fetch(url);
     } catch (e) {
+      if (failed !== undefined && failed.indexOf(url) < 0) {
+        failed.push(url);
+      }
       continue;
     }
-    const child = parseAcl(await flattenAcl(childText, depth - 1, fetch));
+    const child = parseAcl(await flattenAcl(childText, depth - 1, fetch, failed), doc.bypass);
     merge(doc.bypassEntries, child.bypassEntries);
     merge(doc.proxyEntries, child.proxyEntries);
   }
   return serializeAcl(doc);
+}
+
+/**
+ * The flattened file when every import resolved, or '' when any of them failed.
+ *
+ * This is the form a cache may be replaced with. A partial result would drop
+ * the entries of the list that failed, so the next start would deploy a list
+ * that is less complete than the cached copy already there. `failed` lists the
+ * URLs that did not resolve, for the caller to report.
+ */
+export async function flattenCompleteAcl(text: string, depth: number, fetch: AclFetcher,
+  failed: string[]): Promise<string> {
+  const flattened = await flattenAcl(text, depth, fetch, failed);
+  return failed.length > 0 ? '' : flattened;
 }
 
 /** The URLs an ACL file imports, for deciding whether a refresh is worth it. */

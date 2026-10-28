@@ -1,0 +1,159 @@
+{
+  "items": [
+    {
+      "title": "An abandoned probe leaves probeInFlight set, so every later session stays Connecting",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1402",
+      "severity": "high",
+      "dimension": "journey-branches",
+      "reason": "runProbe clears probeRunning and probeInFlight only when seq still equals probeSeq. disconnect (line 1127) and reloadTunnel (lines 1181 and 1200) bump probeSeq while a probe can be in flight, because the service button accepts Disconnect during VERIFYING. The abandoned probe returns at line 1378 and the finally at 1402 skips the reset. probeInFlight then stays true, so the automatic probe at line 1331 returns at 1346 for every later session. The page never reaches CONNECTED, and the Test Connection button stays disabled with the Testing label. Only a restart of the app resets the flag. Ctrl+T clears it, but a phone has no keyboard."
+    },
+    {
+      "title": "The custom-rules route deploys a stale cached ACL, and a deleted rule list can stay in force",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:441",
+      "severity": "high",
+      "dimension": "journey-branches",
+      "reason": "For route custom-rules, deployAcl composes the user file into rawText and then prefers a cached copy from an earlier start. refreshAcl writes that cache whenever the composed text holds an #IMPORT_URL line (AclSync.ets:110). From then on a connect deploys the previous rules and not the current file. refreshAcl writes nothing when the user removes the last URL rule, so deleted rules remain in acl-cache/custom-rules.acl and every later connect deploys them. The requirement for the custom-rules service file says each connect re-reads the user file and rewrites the copy. An edit made in CustomRules has no effect on the connect that follows it."
+    },
+    {
+      "title": "A stop timeout is logged only, and the profile switch starts the next profile anyway",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1217",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "waitForVpnStopped reports the 5 s timeout only to hilog. disconnect (line 1145) and reloadTunnel (line 1192) then continue as if the old tunnel had stopped. disconnect settles the counters and shows Idle, and reloadTunnel starts the new profile. The HLD profile-switch sequence says the page reports the timeout and does not start the new profile. If the old extension still runs, the new start fails with ALREADY_RUNNING and the page shows a failure over a live tunnel. The timeout itself has no user-visible outcome."
+    },
+    {
+      "title": "A failed session settle rejects disconnect and leaves the page in PHASE_STOPPING",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1149",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "disconnect awaits settleSessionTraffic before it resets the phase to IDLE. settleSessionTraffic awaits ProfileStore.addTraffic, which reaches JsonStore.write and can reject (SessionTraffic.ets:45). disconnect has no catch. A rejection skips lines 1150 to 1159, so the phase stays PHASE_STOPPING and health polling stays stopped. serviceButtonEnabled and isEnabled both reject that phase, so the page can neither start nor stop. resumeStatus returns at once for PHASE_STOPPING, so returning to the page does not recover it."
+    },
+    {
+      "title": "The notification Stop action can skip the stop when the settle rejects",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets:59",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "handleAction awaits settleSessionTraffic before it calls stopVpnExtensionAbility at line 60. A rejection from the profile write skips the stop call. onCreate (line 72) and onNewWant (line 79) call handleAction without await or catch, so nothing shows and the tunnel and its notification keep running. The Stop button then has no visible effect. The settle can reject for the same reason as the disconnect finding."
+    },
+    {
+      "title": "A status stuck in starting never times out",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1307",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "pollTick applies CONNECT_TIMEOUT_MS only when the status file is absent (lines 1279 to 1286). A status of starting returns at line 1307 with no age check. If the extension dies or stalls after markStarting, for example inside VpnConnection.create behind the consent dialog, the page stays in PHASE_CONNECTING for as long as it is open. Diagnostics.ets:71 documents CONNECT_TIMEOUT_MS as the budget for a start that sits in starting. No failure text appears and no automatic recovery runs."
+    },
+    {
+      "title": "An Active subscription profile has no path to the editor, so the read-only form is unreachable",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1778",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "The subscription row control pushes pages/Subscription. The only pushes to pages/ProfileEdit are openEditor (line 499) and addManualProfile (line 539). openEditor runs only when subscriptionActive is false. An Active subscription profile therefore never reaches ProfileEdit, so the readOnly branch at ProfileEdit.ets:583 never runs. The user cannot change the route, remote DNS, IPv6 or per-app settings of such a profile. R-UB-19 expects the subscription icon to refresh the profile and open the same editor."
+    },
+    {
+      "title": "With a stale selected id, Connect starts the first profile instead of asking for one",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:441",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "A replace import keeps the selected id (R-UD-55), and a subscription merge can reset it to an empty string (Subscription.ets:690 and 727). Both leave currentId naming no row. currentProfile falls back to profiles[0], and ProfileStore.getCurrent falls back the same way (ProfileStore.ets:273). Connect then starts an unselected profile while no row shows a check mark. The R-UA-27 branch that stops with Please select a profile has no code path when the list is not empty. ProfileStore.remove can also point currentId at an obsolete profile, which visible() hides."
+    },
+    {
+      "title": "An early extension failure is overwritten with stopped before the page polls it",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:186",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "The no-profile branch (line 176) and the plugin-error branch (line 186) write a failed status and return without setting this.failed. onDestroy (lines 324 to 326) writes stopped when this.failed is false. If the system destroys the extension after onCreate returns, the failed record is replaced before the page polls it once per second. The page then shows IDLE and no reason. The plugin branch is reachable from Connect because Index.connect never calls pluginError()."
+    },
+    {
+      "title": "A QR scan import drops the per-app and metered feature settings",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/QrImport.ets:48",
+      "severity": "medium",
+      "dimension": "journey-branches",
+      "reason": "copyFeatureSettings copies route, ipv6, udpdns and remoteDns only. R-UJ-07 also requires metered and the proxy-app settings. Profile has proxyAppsEnabled, proxyAppsBypass and proxyAppsList (Profile.ets:210 to 214), and the VPN extension reads the list at SsVpnExtensionAbility.ets:204. A scan made while Apps VPN mode is on therefore creates a profile that tunnels every app. The comment at QrImport.ets:41 is stale. No message tells the user that the setting was dropped."
+    },
+    {
+      "title": "Proxy mode's manual connection test always reports Not connected",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1350",
+      "severity": "low",
+      "dimension": "journey-branches",
+      "reason": "runProbe returns with the Not connected toast when lastStatus is null. connectProxy never sets lastStatus because no extension runs (lines 1094 to 1119), yet it sets PHASE_CONNECTED. The stats bar is visible for that phase, and the Test Connection button is enabled at line 1867. A tap on the bar or the button always shows Not connected and runs no test. R-UA-12's test branch has no working path in proxy mode. The bar also shows zero traffic for the whole session."
+    },
+    {
+      "title": "A failed file picker never shows the file-manager message",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:740",
+      "severity": "low",
+      "dimension": "journey-branches",
+      "reason": "importFromFiles catches a picker failure and shows readableMessage(e). Transfer.pickTextFiles constructs the picker and lets every rejection escape to that generic handler. No branch maps the failure to the file-manager message that R-UD-46 names. The user sees the platform message and not the instruction the requirement names. The failure branch has no code path that produces the required text."
+    },
+    {
+      "title": "A running tunnel with no live stats resumes as Idle and cannot be stopped from the page",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1490",
+      "severity": "low",
+      "dimension": "journey-branches",
+      "reason": "resumeStatus trusts a running record only when it is younger than CONNECT_TIMEOUT_MS plus STATS_STALE_MS, or when the counters are live. The extension keeps the tunnel when the stat endpoint cannot bind and only logs a warning (SsVpnExtensionAbility.ets:477 to 498), so no counters exist. After a UI process restart the page returns IDLE while the tun still captures traffic. Connect then starts a second attempt that fails with ALREADY_RUNNING. Unless the notification exists and is used, the user cannot stop the old tunnel from the page."
+    }
+  ],
+  "coverage": {
+    "dimension": "journey-branches",
+    "result": "fail",
+    "scanned_files": [
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/UdpFallback.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/CustomRules.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Settings.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileQr.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/QrDialog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/VpnGrant.ts",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/MainShell.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectivityProbe.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/TrafficStats.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SessionTraffic.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/VpnStatus.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfilesFile.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PerApp.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppCatalog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PluginOptions.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/UdpFallback.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Acl.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Settings.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Transfer.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/UndoRemoval.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/QrImport.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/QrScanner.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/NotificationContent.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AboutLinks.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AboutOpener.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppContext.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Routes.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Network.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Latency.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Throughput.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets"
+    ],
+    "note": "I walked the 11 units against the implementation for normal, boundary, failure, cancel, recovery and permission branches. U02, U05, U08 and U09 have no blocking branch of the reported kinds beyond the shared items. The QR encoder internals and its generated tables were not walked. The encode failures that the dialog and the page expose were walked through QrDialog and ProfileQr. The findings concentrate on U01 (probe abandonment, stop timeout, starting timeout, proxy-mode test), U06 (stale custom-rules ACL), U03/U02 (unreachable read-only editor, stale selection), U04/U10 (replace selection, file-picker message, scan feature copy), and U11 (settle failure, early failure overwrite)."
+  },
+  "inputs": [
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/"
+  ]
+}

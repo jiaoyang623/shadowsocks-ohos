@@ -1,0 +1,12 @@
+# A01 E2E 报告发布记录
+链接：http://100.111.99.60/proj/shadowsocks-ohos/e2e/CHG-20261028-hos-parity/index.html
+时间：2026-10-28T14:32:17+11:00
+HTTP 状态：200
+基线：e123804+dirty
+用例数：5
+通过：5
+失败：0
+跳过：0
+阻塞：0
+报告：/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/checks/e2e
+发布目录：/var/www/html/proj/shadowsocks-ohos/e2e/CHG-20261028-hos-parity

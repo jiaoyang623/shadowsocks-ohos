@@ -18,18 +18,24 @@
  *******************************************************************************/
 
 import { common } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 import { JsonStore } from './JsonStore';
-import { AppSettings, AppSettingsJson, settingsFromJson } from './Diagnostics';
+import {
+  AppSettings, AppSettingsJson, settingsFromJson, settingsJsonFrom, settingsNeedSeed,
+} from './Diagnostics';
 
+const TAG = 'Settings';
 const STORE_SETTINGS = 'settings';
 
 /**
- * Persists the two diagnostic endpoints the user can override. Kept in its own
- * file rather than folded into ProfileStore: these are app-wide, not per
- * profile, and the VPN extension process has no reason to read them.
+ * Persists the app-wide settings: the two diagnostic endpoints, the service
+ * mode, the two port texts, and the two switches.
  *
- * Reading never fails — an absent or corrupt file yields the defaults, so the
- * UI can always render something usable.
+ * Reading never fails. An absent or corrupt file yields the defaults, so the
+ * UI can always render something usable. The VPN extension reads the local DNS
+ * port through `load` before a start. Only the UI process calls `loadSeeded`,
+ * because the extension must not write the store.
  */
 export class SettingsStore {
   static async load(context: common.Context): Promise<AppSettings> {
@@ -42,6 +48,38 @@ export class SettingsStore {
     } catch (e) {
       return settingsFromJson(null);
     }
+  }
+
+  /**
+   * Loads the settings and writes the keys the file lacks. This is the
+   * settings page path only. The VPN extension calls `load`.
+   *
+   * A file that exists but cannot be read or parsed is left alone. Writing the
+   * defaults over it would destroy the values it holds.
+   */
+  static async loadSeeded(context: common.Context): Promise<AppSettings> {
+    const present = JsonStore.exists(context, STORE_SETTINGS);
+    const raw = await JsonStore.read(context, STORE_SETTINGS);
+    let parsed: AppSettingsJson | null = null;
+    let parseFailed = false;
+    if (raw.length > 0) {
+      try {
+        parsed = JSON.parse(raw) as AppSettingsJson;
+      } catch (e) {
+        parseFailed = true;
+      }
+    }
+    const settings = settingsFromJson(parsed);
+    const seed = !present || (raw.length > 0 && !parseFailed && settingsNeedSeed(parsed));
+    if (seed) {
+      try {
+        await JsonStore.write(context, STORE_SETTINGS, JSON.stringify(settingsJsonFrom(settings)));
+      } catch (e) {
+        const err = e as BusinessError;
+        hilog.warn(0x0000, TAG, 'seed failed: %{public}s', err.message ?? String(e));
+      }
+    }
+    return settings;
   }
 
   static async save(context: common.Context, settings: AppSettings): Promise<void> {

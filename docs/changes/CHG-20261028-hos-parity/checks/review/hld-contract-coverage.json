@@ -1,0 +1,179 @@
+{
+  "items": [
+    {
+      "title": "C-02 start call returns before the tun is ready",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:287",
+      "severity": "high",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-02 says the call returns after the listener or tun is ready or after the start fails. The teardown comment at line 362 states that startTunFd returns as soon as the tokio runtime spawns. It does not wait for run_local to build the local server. Line 303 then writes the running status on code 0. The page can read running while the core is already dead. The 3 s liveness check at line 339 is the only guard."
+    },
+    {
+      "title": "Profile-switch stop timeout is not reported and does not block the new start",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1217",
+      "severity": "high",
+      "dimension": "hld-contract-coverage",
+      "reason": "The profile-switch failure clause says a stop timeout is reported and the new profile does not start. waitForVpnStopped writes a hilog warning at line 1217 and returns. reloadTunnel then settles the counters and starts the new profile at lines 1195-1203. The user sees no timeout message. The new start can meet ALREADY_RUNNING when the old core is still alive."
+    },
+    {
+      "title": "Custom-rules ACL deploy prefers a stale cache over the user's edits",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:441",
+      "severity": "high",
+      "dimension": "hld-contract-coverage",
+      "reason": "deployAcl prefers cachedAcl over the freshly composed text at line 441. refreshAcl rewrites the cache only when the composed text contains an IMPORT_URL, see AclSync.ets:111. After the user removes the last URL rule the old flattened cache is deployed on every start. Other rule edits deploy one start late. The core receives an ACL that does not match the user file."
+    },
+    {
+      "title": "A failed ACL import overwrites the cached file",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Acl.ets:190",
+      "severity": "medium",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-06 says an import failure keeps the cached file. flattenAcl skips the failed URL at line 190. refreshAcl writes the partial result over the cache at AclSync.ets:115-125. The next start deploys a list that lacks the entries of the failed import."
+    },
+    {
+      "title": "C-05 error clause: a failed or malformed body still changes the profile list",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets:386",
+      "severity": "medium",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-05 says a malformed body returns an error and keeps the old list. mergeRun merges the successful bodies against the full stored list at line 386. Every Active profile that is not re-listed becomes obsolete at Subscription.ets:695-697, and ProfileStore.visible hides it at ProfileStore.ets:179. A body with no ss:// line that fails base64 decoding returns an empty list with no error at Subscription.ets:489-494. Requirements R-UE-19 and R-UE-20 describe the current behavior, so the HLD clause and the requirements disagree."
+    },
+    {
+      "title": "C-07 code 110004 has no handling path",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets:154",
+      "severity": "low",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-07 says code 110004 means the notification permission is off, and the app asks once and retries. publish catches every error at line 154 and writes a warning only. No code reads the error code. ensureEnabled asks before the start at line 222, not in response to 110004. The 2 s traffic update repeats the publish but does not ask again."
+    },
+    {
+      "title": "C-08 unavailable app query returns the stored names and no reason",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppCatalog.ets:152",
+      "severity": "medium",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-08 says an unavailable app query returns an empty list and a reason. installedNames returns the input unchanged at line 152 and drops the ResolvedApp reason. The extension calls it at SsVpnExtensionAbility.ets:205 and reports no reason. On API 12 and 13 the query is always unavailable because QUERY_MIN_API is 14."
+    },
+    {
+      "title": "C-01 missing port is not rejected before save",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets:272",
+      "severity": "low",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-01 says a missing host, port or password is rejected before save. isComplete checks the host, the password and the method only. normalizeRemotePort replaces an invalid or empty port with 8388 at Profile.ets:110-111. Requirement R-UC-07 and LLD line 2009 define that substitution. The HLD clause conflicts with them."
+    },
+    {
+      "title": "C-04 missing stat endpoint clears the sample and fails the UI phase",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:271",
+      "severity": "medium",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-04 says a missing endpoint leaves the previous sample. The extension clears the store at line 271 and then treats a failed stat server as a warning at lines 278-280. The page uses the sample as the tunnel liveness signal. With no sample it sets PROBE_FAILED after 6 s at Index.ets:1325-1329, even while the tunnel carries traffic."
+    },
+    {
+      "title": "C-04 sample lifecycle clears before settlement",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets:403",
+      "severity": "medium",
+      "dimension": "hld-contract-coverage",
+      "reason": "The data design clears traffic.json after settlement. The extension clears it on start at line 271 and on teardown at line 403. connect() does not settle first at Index.ets:1014-1048. A sample left by a crashed session is discarded, and the profile counters lose that traffic. The teardown clear also races the UI settlement in SessionTraffic.ets:38-47."
+    },
+    {
+      "title": "Session settlement rejection has no handler",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets:1149",
+      "severity": "medium",
+      "dimension": "hld-contract-coverage",
+      "reason": "settleSessionTraffic writes the profile list through JsonStore, and a write error rejects the call. disconnect() awaits it at line 1149 without a catch. The page then stays in PHASE_STOPPING with health polling stopped. EntryAbility.handleAction awaits it at EntryAbility.ets:59 without a catch. The notification Stop action then never stops the extension."
+    },
+    {
+      "title": "C-02 stat address has no proxy-mode path",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets:72",
+      "severity": "low",
+      "dimension": "hld-contract-coverage",
+      "reason": "C-02 lists a stat address as a start input. Only the VPN extension calls setStatAddress at SsVpnExtensionAbility.ets:274. ProxyService.start calls sslocal.start with the config alone at line 72. Proxy mode writes no traffic sample and the stats bar shows zeros. LLD U01 line 53 records proxy-mode counters as partial."
+    },
+    {
+      "title": "HLD data-design store names have no matching code",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/VpnStatus.ets:24",
+      "severity": "low",
+      "dimension": "hld-contract-coverage",
+      "reason": "The data design names store/status.json and store/traffic.json and puts the selection in profiles.json. The code uses vpn_status.json at VpnStatus.ets:24, traffic_stats.json at TrafficStats.ets:23 and a separate current_profile_id.json at ProfileStore.ets:25-26. The persistence layout in the HLD does not match the files the app writes."
+    },
+    {
+      "title": "A page calls the native bridge directly",
+      "anchor": "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets:96",
+      "severity": "low",
+      "dimension": "hld-contract-coverage",
+      "reason": "The architecture allowed-dependencies rule says no page calls the native bridge directly. About.ets imports libsslocal.so at line 23 and calls sslocal.version() at line 96. The version read has no model wrapper."
+    }
+  ],
+  "coverage": {
+    "dimension": "hld-contract-coverage",
+    "result": "gaps-found",
+    "scanned files": [
+      "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+      "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+      "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md",
+      "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Acl.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Routes.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/NotificationContent.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/TrafficStats.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SessionTraffic.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/VpnStatus.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PerApp.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppCatalog.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Settings.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/cpp/napi_init.cpp",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/cpp/types/libsslocal/Index.d.ts",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+      "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/zh_CN/element/string.json"
+    ],
+    "note": "C-01 has a port clause gap. C-02 has a readiness gap and a proxy stat gap. C-03 matches on the ArkTS side, but the fd dup and the native error codes live in native/sslocal-ffi, outside the allowed inputs. C-04 has an error-path and a persistence gap. C-05, C-06 and C-08 have error-clause gaps. C-07 has a minor 110004 gap. No HAP exists at entry/build/default/outputs/default, so the built artifact was not inspected. Test directories were excluded by the task, so the assembly and test boundaries are unverified."
+  },
+  "inputs": [
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/hld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/architecture.md",
+    "/opt/git/github/shadowsocks-ohos/docs/changes/CHG-20261028-hos-parity/lld.md",
+    "/opt/git/github/shadowsocks-ohos/docs/versions/5.4.0/requirements/requirements.md",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Profile.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProfileStore.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Subscription.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SubscriptionRefresh.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Acl.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AclSync.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/CustomRules.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Routes.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ConnectionNotification.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/NotificationContent.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/TrafficStats.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/SessionTraffic.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/VpnStatus.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/PerApp.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/AppCatalog.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/ProxyService.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/JsonStore.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Settings.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/model/Diagnostics.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Index.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/ProfileEdit.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/Subscription.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/AppPicker.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/pages/About.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/vpnability/SsVpnExtensionAbility.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/ets/entryability/EntryAbility.ets",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/cpp/napi_init.cpp",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/cpp/types/libsslocal/Index.d.ts",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/base/element/string.json",
+    "/opt/git/github/shadowsocks-ohos/entry/src/main/resources/zh_CN/element/string.json"
+  ]
+}

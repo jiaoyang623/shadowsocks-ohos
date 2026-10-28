@@ -14,7 +14,7 @@
     },
     {
       "name": "surface_selected",
-      "value": "#2E3350"
+      "value": "#37474F"
     },
     {
       "name": "accent",
@@ -67,6 +67,66 @@
     {
       "name": "button_neutral",
       "value": "#3A3A3A"
+    },
+    {
+      "name": "success_container",
+      "value": "#2E7D32"
+    },
+    {
+      "name": "scrim",
+      "value": "#99000000"
+    },
+    {
+      "name": "main_page",
+      "value": "#121212"
+    },
+    {
+      "name": "main_toolbar",
+      "value": "#37474F"
+    },
+    {
+      "name": "main_toolbar_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "main_status_bar",
+      "value": "#263238"
+    },
+    {
+      "name": "main_row_band",
+      "value": "#546E7A"
+    },
+    {
+      "name": "main_row_band_selected",
+      "value": "#388E3C"
+    },
+    {
+      "name": "main_fab",
+      "value": "#607D8B"
+    },
+    {
+      "name": "main_fab_connected",
+      "value": "#388E3C"
+    },
+    {
+      "name": "main_fab_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "main_stats",
+      "value": "#546E7A"
+    },
+    {
+      "name": "main_stats_text",
+      "value": "#ECEFF1"
+    },
+    {
+      "name": "main_drawer_selected",
+      "value": "#90A4AE"
+    },
+    {
+      "name": "main_toolbar_shadow",
+      "value": "#33000000"
     }
   ]
 }

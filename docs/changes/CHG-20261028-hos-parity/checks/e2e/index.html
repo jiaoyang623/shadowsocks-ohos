@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="a01-change-id" content="CHG-20261028-hos-parity">
+<meta name="a01-baseline" content="e123804+dirty">
+<meta name="a01-report-version" content="1">
+<title>HarmonyOS on-device suites: NAPI surface and SOCKS tunnel · E2E 报告</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f4f7fb; --fg:#172337; --muted:#59687c; --line:#dce4ed; --paper:#ffffff; --head:#edf2f8;
+  --accent:#205dc5; --accent-ink:#ffffff; --accent-soft:#edf3fc; --accent-line:#c8d7ee;
+  --ok-bg:#e0f3e9; --ok-ink:#18553a; --ok-line:#8cc8a8;
+  --warn-bg:#fbe4e1; --warn-ink:#842e24; --warn-line:#e0a39c;
+  --hold-bg:#fff1d6; --hold-ink:#785213; --hold-line:#e0c37a;
+  --blocked-bg:#f0e8f7; --blocked-ink:#5b2a6b; --blocked-line:#c8add9;
+  --focus:#b27b00;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10151c; --fg:#e8eef6; --muted:#a3b3c7; --line:#2f3d51; --paper:#161d27; --head:#1b2634;
+    --accent:#78aef5; --accent-ink:#10151c; --accent-soft:#1b2634; --accent-line:#2f3d51;
+    --ok-bg:#14301f; --ok-ink:#74c79b; --ok-line:#2f6b49;
+    --warn-bg:#3a1f1a; --warn-ink:#f08a68; --warn-line:#7a4237;
+    --hold-bg:#33280f; --hold-ink:#e0c37a; --hold-line:#6d5726;
+    --blocked-bg:#2b1b36; --blocked-ink:#c9a2e0; --blocked-line:#624578;
+    --focus:#e0a468;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10151c; --fg:#e8eef6; --muted:#a3b3c7; --line:#2f3d51; --paper:#161d27; --head:#1b2634;
+  --accent:#78aef5; --accent-ink:#10151c; --accent-soft:#1b2634; --accent-line:#2f3d51;
+  --ok-bg:#14301f; --ok-ink:#74c79b; --ok-line:#2f6b49;
+  --warn-bg:#3a1f1a; --warn-ink:#f08a68; --warn-line:#7a4237;
+  --hold-bg:#33280f; --hold-ink:#e0c37a; --hold-line:#6d5726;
+  --blocked-bg:#2b1b36; --blocked-ink:#c9a2e0; --blocked-line:#624578;
+  --focus:#e0a468;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 system-ui,-apple-system,"Segoe UI","Noto Sans SC",sans-serif}
+main{max-width:1280px;margin:auto;padding:36px 24px 80px}
+h1,h2,h3,h4,p{margin-top:0}h1{font-size:32px;line-height:1.25}h2{font-size:21px;margin:38px 0 14px}h3{font-size:17px;margin:8px 0 4px}h4{font-size:14px;margin:14px 0 4px}
+.eyebrow{font-size:12px;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:8px}
+.lead{max-width:900px;color:var(--muted)}
+.muted{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.notice{padding:14px 18px;border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:10px;margin:18px 0}
+.notice.warn{border-color:var(--warn-line);background:var(--warn-bg);color:var(--warn-ink)}
+.viewer{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:16px 18px;margin:18px 0}
+.viewer-title{font-weight:700;font-size:13px;margin:0 0 10px}
+.viewer-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.viewer-field{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.seg{display:flex;flex-wrap:wrap;gap:4px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.seg button{font:12px/1.4 inherit;padding:6px 10px;border-radius:5px;border:1px solid transparent;background:transparent;color:var(--fg);cursor:pointer}
+.seg button span{color:var(--muted);margin-left:3px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.seg button[aria-pressed="true"] span{color:var(--accent-ink);opacity:.85}
+select,input[type=search]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:var(--paper);color:var(--fg)}
+input[type=search]{flex:1;min-width:180px}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:var(--paper)}
+caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);padding:0 0 8px}
+th,td{text-align:left;padding:11px 12px;border:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+th{background:var(--head);font-size:13px}
+code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:4px;padding:1px 5px;overflow-wrap:anywhere}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:18px 0}
+.tile{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:9px;padding:14px 16px}
+.tile .value{font-size:30px;font-weight:750;line-height:1.1}
+.tile .label{font-size:12px;color:var(--muted);margin-top:4px}
+.tile.ok{border-top-color:var(--ok-line)}.tile.ok .value{color:var(--ok-ink)}
+.tile.fail{border-top-color:var(--warn-line)}.tile.fail .value{color:var(--warn-ink)}
+.tile.hold{border-top-color:var(--hold-line)}.tile.hold .value{color:var(--hold-ink)}
+.tile.blocked{border-top-color:var(--blocked-line)}.tile.blocked .value{color:var(--blocked-ink)}
+.bar{display:flex;width:100%;height:22px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--head);margin:12px 0 6px}
+.bar span{display:block;min-width:0}
+.bar .pass{background:var(--ok-line)}.bar .fail{background:var(--warn-line)}.bar .skip{background:var(--hold-line)}.bar .blocked{background:var(--blocked-line)}
+.bar-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:16px}
+.bar-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.bar-legend .pass{background:var(--ok-line)}.bar-legend .fail{background:var(--warn-line)}.bar-legend .skip{background:var(--hold-line)}.bar-legend .blocked{background:var(--blocked-line)}
+.badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--head);color:var(--muted)}
+.badge.pass{background:var(--ok-bg);color:var(--ok-ink)}
+.badge.fail{background:var(--warn-bg);color:var(--warn-ink)}
+.badge.skip{background:var(--hold-bg);color:var(--hold-ink)}
+.badge.blocked{background:var(--blocked-bg);color:var(--blocked-ink)}
+.cases{display:flex;flex-direction:column;gap:18px}
+.case{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:11px;padding:20px 22px}
+.case.pass{border-left-color:var(--ok-line)}.case.fail{border-left-color:var(--warn-line)}.case.skip{border-left-color:var(--hold-line)}.case.blocked{border-left-color:var(--blocked-line)}
+.case-head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.case-head .case-id{font-size:12px;color:var(--muted)}
+.case-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.chip{display:inline-block;font:12px/1.4 ui-monospace,monospace;padding:3px 7px;background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:5px;color:var(--accent);text-decoration:none;overflow-wrap:anywhere}
+.steps{list-style:none;margin:14px 0 0;padding:0}
+.step{border-top:1px dashed var(--line);padding:16px 0 6px}
+.step:first-child{border-top:0;padding-top:4px}
+.step-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.step-id{font:12px ui-monospace,monospace;color:var(--muted)}
+.step-name{font-weight:650;margin:4px 0 8px}
+dl{margin:0 0 10px}dt{font-weight:650;font-size:12px;color:var(--muted)}dd{margin:2px 0 10px}
+ul.expected{margin:0;padding-left:20px}ul.expected li{margin-bottom:3px}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0}
+.shots.single{grid-template-columns:1fr}
+figure{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px}
+figure img{display:block;width:100%;max-height:420px;height:auto;object-fit:contain;border-radius:4px;background:var(--paper)}
+figcaption{font-size:12px;color:var(--muted);padding:6px 2px 0;overflow-wrap:anywhere}
+.output{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:360px;overflow:auto}
+.failure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.failure{background:var(--paper);border:1px solid var(--warn-line);border-radius:10px;padding:16px 18px}
+.failure.blocked{border-color:var(--blocked-line)}.failure.skip{border-color:var(--hold-line)}
+.failure .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.failure .cols>div{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:10px 12px}
+.failure .cols h4{margin:0 0 4px}
+.empty-ok{background:var(--ok-bg);color:var(--ok-ink);border:1px solid var(--ok-line);border-radius:10px;padding:18px 20px;font-weight:600}
+footer{margin-top:34px;color:var(--muted);font-size:12px;line-height:1.8}
+@media(max-width:900px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.failure-grid{grid-template-columns:1fr}.shots{grid-template-columns:1fr}}
+@media(max-width:560px){main{padding:24px 16px 60px}h1{font-size:25px}.tiles{grid-template-columns:1fr}.failure .cols{grid-template-columns:1fr}.case{padding:16px}}
+@media print{.case,.failure,figure{break-inside:avoid}main{padding:0}.shots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="eyebrow">A01 · E2E 证据报告</p>
+<h1>HarmonyOS on-device suites: NAPI surface and SOCKS tunnel</h1>
+<p class="lead">每个操作有记录。UI 操作有截图。报告来自一次真实运行。</p>
+<div class="notice">Tests run: 5, Failure: 0, Error: 0, Pass: 5, Ignore: 0.</div>
+<div class="table-wrap">
+<table>
+<caption>运行元信息</caption>
+<tbody>
+<tr><th>批次</th><td><code>CHG-20261028-hos-parity</code></td><th>代码基线</th><td><code>e123804+dirty</code></td></tr>
+<tr><th>目标类型</th><td>移动端（mobile）</td><th>执行时间</th><td>2026-10-28T14:31:06+11:00</td></tr>
+<tr><th>运行环境</th><td colspan="3">HarmonyOS 6.1.1 API 24 emulator, x86_64, hdc 127.0.0.1:5555</td></tr>
+<tr><th>运行命令</th><td colspan="3"><code>ci/hos-emulator-e2e.sh (SKIP_EMULATOR=1)</code></td></tr>
+</tbody>
+</table>
+</div>
+</header>
+
+<section class="viewer" aria-label="视角筛选">
+<p class="viewer-title">换一个视角看这次运行</p>
+<div class="viewer-bar">
+<div class="seg" role="group" aria-label="按结果筛选">
+<button type="button" data-filter-status="all" aria-pressed="true">全部 <span>5</span></button>
+<button type="button" data-filter-status="fail" aria-pressed="false">失败 <span>0</span></button>
+<button type="button" data-filter-status="skip" aria-pressed="false">跳过 <span>0</span></button>
+<button type="button" data-filter-status="blocked" aria-pressed="false">阻塞 <span>0</span></button>
+<button type="button" data-filter-status="pass" aria-pressed="false">通过 <span>5</span></button>
+</div>
+<label class="viewer-field">旅程判据
+<select id="filter-oracle">
+<option value="all">全部旅程判据</option>
+<option value="O-JOURNEY-01">O-JOURNEY-01</option>
+</select>
+</label>
+<input id="filter-search" type="search" placeholder="搜索用例、步骤、期望或实际" aria-label="搜索用例、步骤、期望或实际">
+<span id="filter-count" class="muted" role="status" aria-live="polite">显示 5 个用例</span>
+</div>
+<p class="muted">先看失败。再按旅程判据或关键词缩小范围。每一步都带操作、期望、实际与证据。</p>
+</section>
+
+<section>
+<h2>结果总览</h2>
+<div class="tiles"><div class="tile "><div class="value">5</div><div class="label">用例数</div></div><div class="tile ok"><div class="value">5</div><div class="label">通过</div></div><div class="tile fail"><div class="value">0</div><div class="label">失败</div></div><div class="tile hold"><div class="value">0</div><div class="label">跳过</div></div><div class="tile blocked"><div class="value">0</div><div class="label">阻塞</div></div></div>
+<div class="bar" role="img" aria-label="用例结果比例条"><span class="pass" style="width:100.0000%"></span></div>
+<div class="bar-legend"><span><i class="pass"></i>通过</span><span><i class="fail"></i>失败</span><span><i class="skip"></i>跳过</span><span><i class="blocked"></i>阻塞</span></div>
+<div class="table-wrap">
+<table>
+<caption>用例与步骤的结果计数</caption>
+<thead><tr><th>对象</th><th>总数</th><th>通过</th><th>失败</th><th>跳过</th><th>阻塞</th></tr></thead>
+<tbody><tr><td>用例</td><td>5</td><td>5</td><td>0</td><td>0</td><td>0</td></tr><tr><td>步骤</td><td>5</td><td>5</td><td>0</td><td>0</td><td>0</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<section id="failures">
+<h2>失败与未完成</h2>
+<p class="muted">失败、跳过与阻塞优先显示。每一项带期望、实际与本次运行的证据。</p>
+<div class="empty-ok">本次运行没有失败、跳过或阻塞的用例。</div>
+</section>
+
+<section>
+<h2>旅程判据覆盖</h2>
+<p class="muted">本表把每个用例挂到旅程判据。空白表示本次运行没有覆盖该判据。</p>
+<div class="table-wrap">
+<table>
+<caption>旅程判据到用例的对应关系</caption>
+<thead><tr><th>旅程判据</th><th>用例</th><th>结果</th><th>步骤数</th></tr></thead>
+<tbody><tr><td><code>O-JOURNEY-01</code></td><td><a class="chip" href="#case-E2E-DEVICE-01">E2E-DEVICE-01</a> <a class="chip" href="#case-E2E-DEVICE-02">E2E-DEVICE-02</a> <a class="chip" href="#case-E2E-DEVICE-03">E2E-DEVICE-03</a> <a class="chip" href="#case-E2E-DEVICE-04">E2E-DEVICE-04</a> <a class="chip" href="#case-E2E-DEVICE-05">E2E-DEVICE-05</a></td><td><span class="badge pass">通过</span></td><td>5</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<section id="timeline">
+<h2>步骤时间线</h2>
+<p class="muted">按用例与步骤排列。截图和输出来自本次运行。点击截图可看原图。</p>
+<div class="cases"><article class="case pass" id="case-E2E-DEVICE-01" data-case-card data-status="pass" data-oracles="O-JOURNEY-01"><div class="case-head"><div><span class="case-id">用例 <code>E2E-DEVICE-01</code></span><h3>exposes the native core</h3></div><span class="badge pass">通过</span></div><div class="case-meta"><span class="chip">O-JOURNEY-01</span><span class="muted">步骤 1</span></div><ol class="steps"><li class="step" id="step-E2E-DEVICE-01-S-01"><div class="step-head"><span class="step-id"><code>S-01</code></span><span class="badge pass">通过</span></div><p class="step-name">Run on the emulator</p><dl><dt>操作</dt><dd>aa test -s class SslocalNativeTest on the running emulator.</dd><dt>期望</dt><dd><ul class="expected"><li>The test passes.</li></ul></dd><dt>实际</dt><dd>Pass.</dd></dl><h4>运行输出</h4><pre class="output">class=SslocalNativeTest
+test=exposes the native core
+status_code=0</pre></li></ol></article><article class="case pass" id="case-E2E-DEVICE-02" data-case-card data-status="pass" data-oracles="O-JOURNEY-01"><div class="case-head"><div><span class="case-id">用例 <code>E2E-DEVICE-02</code></span><h3>rejects invalid configs</h3></div><span class="badge pass">通过</span></div><div class="case-meta"><span class="chip">O-JOURNEY-01</span><span class="muted">步骤 1</span></div><ol class="steps"><li class="step" id="step-E2E-DEVICE-02-S-01"><div class="step-head"><span class="step-id"><code>S-01</code></span><span class="badge pass">通过</span></div><p class="step-name">Run on the emulator</p><dl><dt>操作</dt><dd>aa test -s class SslocalNativeTest on the running emulator.</dd><dt>期望</dt><dd><ul class="expected"><li>The test passes.</li></ul></dd><dt>实际</dt><dd>Pass.</dd></dl><h4>运行输出</h4><pre class="output">class=SslocalNativeTest
+test=rejects invalid configs
+status_code=0</pre></li></ol></article><article class="case pass" id="case-E2E-DEVICE-03" data-case-card data-status="pass" data-oracles="O-JOURNEY-01"><div class="case-head"><div><span class="case-id">用例 <code>E2E-DEVICE-03</code></span><h3>rejects a negative tun fd</h3></div><span class="badge pass">通过</span></div><div class="case-meta"><span class="chip">O-JOURNEY-01</span><span class="muted">步骤 1</span></div><ol class="steps"><li class="step" id="step-E2E-DEVICE-03-S-01"><div class="step-head"><span class="step-id"><code>S-01</code></span><span class="badge pass">通过</span></div><p class="step-name">Run on the emulator</p><dl><dt>操作</dt><dd>aa test -s class SslocalNativeTest on the running emulator.</dd><dt>期望</dt><dd><ul class="expected"><li>The test passes.</li></ul></dd><dt>实际</dt><dd>Pass.</dd></dl><h4>运行输出</h4><pre class="output">class=SslocalNativeTest
+test=rejects a negative tun fd
+status_code=0</pre></li></ol></article><article class="case pass" id="case-E2E-DEVICE-04" data-case-card data-status="pass" data-oracles="O-JOURNEY-01"><div class="case-head"><div><span class="case-id">用例 <code>E2E-DEVICE-04</code></span><h3>round-trips an HTTP fetch through the shadowsocks tunnel</h3></div><span class="badge pass">通过</span></div><div class="case-meta"><span class="chip">O-JOURNEY-01</span><span class="muted">步骤 1</span></div><ol class="steps"><li class="step" id="step-E2E-DEVICE-04-S-01"><div class="step-head"><span class="step-id"><code>S-01</code></span><span class="badge pass">通过</span></div><p class="step-name">Run on the emulator</p><dl><dt>操作</dt><dd>aa test -s class SocksE2eTest on the running emulator.</dd><dt>期望</dt><dd><ul class="expected"><li>The test passes.</li></ul></dd><dt>实际</dt><dd>Pass.</dd></dl><h4>运行输出</h4><pre class="output">class=SocksE2eTest
+test=round-trips an HTTP fetch through the shadowsocks tunnel
+status_code=0</pre></li></ol></article><article class="case pass" id="case-E2E-DEVICE-05" data-case-card data-status="pass" data-oracles="O-JOURNEY-01"><div class="case-head"><div><span class="case-id">用例 <code>E2E-DEVICE-05</code></span><h3>cannot reach the marker without the tunnel</h3></div><span class="badge pass">通过</span></div><div class="case-meta"><span class="chip">O-JOURNEY-01</span><span class="muted">步骤 1</span></div><ol class="steps"><li class="step" id="step-E2E-DEVICE-05-S-01"><div class="step-head"><span class="step-id"><code>S-01</code></span><span class="badge pass">通过</span></div><p class="step-name">Run on the emulator</p><dl><dt>操作</dt><dd>aa test -s class SocksE2eTest on the running emulator.</dd><dt>期望</dt><dd><ul class="expected"><li>The test passes.</li></ul></dd><dt>实际</dt><dd>Pass.</dd></dl><h4>运行输出</h4><pre class="output">class=SocksE2eTest
+test=cannot reach the marker without the tunnel
+status_code=0</pre></li></ol></article></div>
+</section>
+
+<section>
+<h2>证据清单</h2>
+<p class="muted">截图带 SHA-256 前缀。文本输出带长度与哈希。哈希由生成器按本次文件计算。</p>
+<label class="viewer-field">证据类型
+<select id="filter-evidence">
+<option value="all">全部证据</option>
+<option value="screenshot">截图</option>
+<option value="output">文本输出</option>
+</select>
+</label>
+<div class="table-wrap">
+<table>
+<caption>本次报告引用的全部证据</caption>
+<thead><tr><th>用例 / 步骤</th><th>类型</th><th>标签</th><th>报告内路径</th><th>大小</th><th>SHA-256 前缀</th></tr></thead>
+<tbody><tr data-evidence-type="output"><td><code>E2E-DEVICE-01</code> / <code>S-01</code></td><td>文本输出</td><td>terminal</td><td>—</td><td>66 字符</td><td><code>55cd96cf068e</code></td></tr><tr data-evidence-type="output"><td><code>E2E-DEVICE-02</code> / <code>S-01</code></td><td>文本输出</td><td>terminal</td><td>—</td><td>66 字符</td><td><code>ecf7f445cb66</code></td></tr><tr data-evidence-type="output"><td><code>E2E-DEVICE-03</code> / <code>S-01</code></td><td>文本输出</td><td>terminal</td><td>—</td><td>68 字符</td><td><code>d90a5d761c8f</code></td></tr><tr data-evidence-type="output"><td><code>E2E-DEVICE-04</code> / <code>S-01</code></td><td>文本输出</td><td>terminal</td><td>—</td><td>94 字符</td><td><code>de1dbbb1ef64</code></td></tr><tr data-evidence-type="output"><td><code>E2E-DEVICE-05</code> / <code>S-01</code></td><td>文本输出</td><td>terminal</td><td>—</td><td>80 字符</td><td><code>17227614a809</code></td></tr></tbody>
+</table>
+</div>
+</section>
+
+<footer>
+生成时间 2026-10-28T14:32:08+11:00 · 报告结构版本 1 · 由 <code>a01</code> 的 <code>scripts/e2e-report.py</code> 生成。<br>
+此页只投影运行日志。此页不执行测试，不自动判定开发完成。发布链接见 <code>e2e-published.txt</code>。
+</footer>
+</main>
+<script>
+(() => {
+  const cards = Array.from(document.querySelectorAll('[data-case-card]'));
+  const buttons = Array.from(document.querySelectorAll('[data-filter-status]'));
+  const oracle = document.getElementById('filter-oracle');
+  const search = document.getElementById('filter-search');
+  const count = document.getElementById('filter-count');
+  const evidenceFilter = document.getElementById('filter-evidence');
+  const evidenceRows = Array.from(document.querySelectorAll('[data-evidence-type]'));
+  let status = 'all';
+  function apply() {
+    const query = search.value.trim().toLocaleLowerCase();
+    let visible = 0;
+    for (const card of cards) {
+      const statusOk = status === 'all' || card.dataset.status === status;
+      const oracleOk = oracle.value === 'all' || (card.dataset.oracles || '').split(' ').includes(oracle.value);
+      const textOk = !query || card.textContent.toLocaleLowerCase().includes(query);
+      card.hidden = !(statusOk && oracleOk && textOk);
+      if (!card.hidden) visible += 1;
+    }
+    count.textContent = '显示 ' + visible + ' / ' + cards.length + ' 个用例';
+    for (const button of buttons) {
+      button.setAttribute('aria-pressed', String(button.dataset.filterStatus === status));
+    }
+  }
+  for (const button of buttons) {
+    button.addEventListener('click', () => { status = button.dataset.filterStatus; apply(); });
+  }
+  oracle.addEventListener('change', apply);
+  search.addEventListener('input', apply);
+  if (evidenceFilter) {
+    evidenceFilter.addEventListener('change', () => {
+      for (const row of evidenceRows) {
+        row.hidden = evidenceFilter.value !== 'all' && row.dataset.evidenceType !== evidenceFilter.value;
+      }
+    });
+  }
+  apply();
+})();
+</script>
+</body>
+</html>

@@ -37,11 +37,11 @@ const ENTRY_ABILITY = 'EntryAbility';
  * should be able to use the tunnel. The core is the same one, started with a
  * `socks` local instead of a `tun` one.
  *
- * It runs in this process — the app's own — which the platform will freeze once
- * the app is in the background unless a continuous task is requested. That is
- * what the background task below is for, and it is why this mode cannot be
- * started from a notification action the way the VPN can: there is no separate
- * process to keep it alive.
+ * It runs in this process, the app's own. The platform freezes the process
+ * once the app is in the background, unless a continuous task is requested.
+ * That is what the background task below is for. It is also why this mode
+ * cannot start from a notification action the way the VPN can. There is no
+ * separate process to keep it alive.
  */
 export class ProxyService {
   private static running: boolean = false;
@@ -60,6 +60,13 @@ export class ProxyService {
     shareOverLan: boolean): Promise<void> {
     if (ProxyService.running) {
       return;
+    }
+    // The native core rejects an unknown plugin. It does so only after it
+    // starts. Refuse the profile here, so the page shows the reason before
+    // any listener opens.
+    const pluginError: string = profile.pluginError();
+    if (pluginError.length > 0) {
+      throw new Error(pluginError);
     }
     const config = profile.toLocalConfig(port, shareOverLan);
     const code = sslocal.start(config);
